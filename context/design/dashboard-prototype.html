@@ -1,0 +1,560 @@
+<title>Kingdom Connect Dashboard</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: framed app window (navy sidebar + two-column dashboard) under a slim prototype control strip; sidebar becomes a bottom tab bar on phones. Visual direction follows the team's mockup. */
+:root{
+  --navy:#0e1d3a; --navy-2:#162a50; --navy-ink:#c9d6ee; --navy-mute:#8496b8;
+  --blue:#1f5fd6; --blue-ink:#ffffff; --blue-soft:#e8effc;
+  --bg:#eef2f8; --surface:#ffffff; --surface-2:#f6f8fc; --line:#dfe5ef;
+  --ink:#152039; --ink-2:#4a5672; --ink-3:#7a849b;
+  --good:#1a8a55; --good-soft:#e3f5ec; --warn:#b26a00; --warn-soft:#fdf1dc;
+  --bad:#c23b3b; --bad-soft:#fbe7e7; --violet:#6a42c2; --violet-soft:#efe9fb;
+  --teal:#0e7d86; --teal-soft:#e0f3f4; --rose:#b23a73; --rose-soft:#fae6f0;
+  --shadow:0 1px 2px rgba(14,29,58,.06),0 4px 14px rgba(14,29,58,.05);
+  --f-ui:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-display:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --r:12px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --navy:#081227; --navy-2:#13213f; --navy-ink:#c9d6ee; --navy-mute:#7b8db0;
+    --blue:#4d86f0; --blue-ink:#ffffff; --blue-soft:#1a2b4f;
+    --bg:#0b1222; --surface:#121c31; --surface-2:#18243d; --line:#24324f;
+    --ink:#e6ecf7; --ink-2:#aab6cd; --ink-3:#7d8aa4;
+    --good:#4cc78a; --good-soft:#123326; --warn:#f0a93a; --warn-soft:#352612;
+    --bad:#ef7373; --bad-soft:#3a1a1d; --violet:#a98af0; --violet-soft:#261d42;
+    --teal:#4cc3cc; --teal-soft:#0f2f33; --rose:#ee8ab9; --rose-soft:#3a1a2b;
+    --shadow:0 1px 2px rgba(0,0,0,.3);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --navy:#081227; --navy-2:#13213f; --navy-ink:#c9d6ee; --navy-mute:#7b8db0;
+  --blue:#4d86f0; --blue-ink:#ffffff; --blue-soft:#1a2b4f;
+  --bg:#0b1222; --surface:#121c31; --surface-2:#18243d; --line:#24324f;
+  --ink:#e6ecf7; --ink-2:#aab6cd; --ink-3:#7d8aa4;
+  --good:#4cc78a; --good-soft:#123326; --warn:#f0a93a; --warn-soft:#352612;
+  --bad:#ef7373; --bad-soft:#3a1a1d; --violet:#a98af0; --violet-soft:#261d42;
+  --teal:#4cc3cc; --teal-soft:#0f2f33; --rose:#ee8ab9; --rose-soft:#3a1a2b;
+  --shadow:0 1px 2px rgba(0,0,0,.3);
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-ui);font-size:14px;line-height:1.45;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:14px 24px}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.ic{flex:none;display:block}
+.num{font-variant-numeric:tabular-nums}
+
+/* prototype strip */
+.proto{max-width:1440px;margin:0 auto 12px;display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;font-size:12.5px;color:var(--ink-2)}
+.proto b{color:var(--ink);font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:11px}
+.seg{display:inline-flex;flex-wrap:wrap;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:3px;gap:2px}
+.seg button{border:0;background:none;padding:5px 11px;border-radius:999px;font-size:12.5px;font-weight:600;color:var(--ink-2)}
+.seg button[aria-pressed="true"]{background:var(--blue);color:var(--blue-ink)}
+.proto .note{margin-left:auto;color:var(--ink-3)}
+
+/* app frame */
+.app{max-width:1440px;margin:0 auto;display:grid;grid-template-columns:236px minmax(0,1fr);background:var(--bg);border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:var(--shadow);min-height:820px}
+.side{background:var(--navy);color:var(--navy-ink);display:flex;flex-direction:column;padding:18px 12px 16px;gap:18px}
+.brand{display:flex;align-items:center;gap:10px;padding:0 8px}
+.brand .mark{width:36px;height:36px;border-radius:10px;background:var(--blue);display:grid;place-items:center;color:#fff}
+.brand .name{font-family:var(--f-display);font-weight:800;letter-spacing:-.01em;font-size:18px;color:#fff;line-height:1.1}
+.brand .tag{font-size:10.5px;color:var(--navy-mute);letter-spacing:.04em}
+.nav{display:flex;flex-direction:column;gap:2px}
+.nav button{display:flex;align-items:center;gap:11px;border:0;background:none;color:var(--navy-ink);padding:9px 10px;border-radius:9px;text-align:left;font-weight:500;font-size:13.5px}
+.nav button:hover{background:var(--navy-2)}
+.nav button.on{background:var(--blue);color:#fff;font-weight:600}
+.nav .badge{margin-left:auto;background:#e0475b;color:#fff;font-size:11px;font-weight:700;min-width:20px;height:20px;border-radius:999px;display:grid;place-items:center;padding:0 6px}
+.nav .sub{display:flex;flex-direction:column;gap:1px;margin:0 0 4px 40px}
+.nav .sub button{padding:5px 8px;font-size:12.5px;color:var(--navy-mute)}
+.nav .sub button:hover{color:#fff}
+.report{margin-top:auto;border:1px solid var(--navy-2);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:8px;background:rgba(255,255,255,.03)}
+.report .h{display:flex;gap:8px;align-items:center;font-weight:700;color:#fff;font-size:13px}
+.report p{margin:0;font-size:12px;color:var(--navy-mute)}
+.staffnote{margin-top:auto;font-size:12px;color:var(--navy-mute);padding:0 8px}
+
+.main{display:flex;flex-direction:column;min-width:0}
+.top{display:flex;align-items:center;gap:14px;padding:12px 22px;background:var(--surface);border-bottom:1px solid var(--line)}
+.search{flex:1;max-width:520px;display:flex;align-items:center;gap:8px;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:8px 12px;color:var(--ink-3)}
+.search input{border:0;background:none;outline:none;flex:1;font:inherit;color:var(--ink);min-width:0}
+.top .sp{flex:1}
+.iconbtn{position:relative;border:0;background:none;padding:6px;border-radius:8px;color:var(--ink-2)}
+.iconbtn:hover{background:var(--surface-2)}
+.iconbtn .dot{position:absolute;top:1px;right:0;background:#e0475b;color:#fff;font-size:10px;font-weight:700;min-width:16px;height:16px;border-radius:999px;display:grid;place-items:center;padding:0 4px}
+.me{display:flex;align-items:center;gap:10px}
+.me .who{display:flex;flex-direction:column;line-height:1.2}
+.me .who b{font-size:13px}
+.me .who span{font-size:11.5px;color:var(--ink-3)}
+
+.av{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:14px;color:#fff;flex:none}
+.av.lg{width:56px;height:56px;font-size:18px}
+.av.sm{width:34px;height:34px;font-size:12px}
+
+.content{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:20px;padding:22px}
+.col{display:flex;flex-direction:column;gap:20px;min-width:0}
+.welcome{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;align-items:flex-end}
+.welcome h1{font-family:var(--f-display);font-weight:800;font-size:26px;margin:0;letter-spacing:-.02em;text-wrap:balance}
+.welcome p{margin:4px 0 0;color:var(--ink-2)}
+.when{text-align:right;color:var(--ink-2);font-size:12.5px}
+.when b{display:block;color:var(--ink);font-weight:600}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
+.card > .hd{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:16px 18px 0}
+.card > .hd h2{margin:0;font-size:15.5px;font-weight:700}
+.card > .hd .sub{font-size:12.5px;color:var(--ink-3);margin-top:2px}
+.card > .bd{padding:14px 18px 18px}
+.link{border:0;background:none;color:var(--blue);font-weight:600;font-size:12.5px;padding:0}
+
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.stat{padding:16px;display:flex;flex-direction:column;gap:10px}
+.stat .ico{width:38px;height:38px;border-radius:10px;display:grid;place-items:center}
+.stat .lbl{font-size:12.5px;color:var(--ink-2);font-weight:500}
+.stat .val{font-size:26px;font-weight:800;letter-spacing:-.02em;line-height:1}
+.stat .foot{font-size:11.5px;color:var(--ink-3)}
+button.stat{text-align:left;border:1px solid var(--line)}
+button.stat:hover{border-color:var(--blue)}
+
+.people{display:grid;grid-template-columns:repeat(auto-fill,minmax(196px,1fr));gap:12px}
+.pcard{border:1px solid var(--line);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px;background:var(--surface);position:relative}
+.pcard .row{display:flex;gap:10px;align-items:center}
+.pcard .nm{font-weight:700;font-size:13.5px;display:flex;align-items:center;gap:4px}
+.pcard .ttl{font-size:12px;color:var(--ink-2)}
+.pcard .loc{font-size:11.5px;color:var(--ink-3);display:flex;gap:4px;align-items:center}
+.vf{color:var(--good)}
+.why{font-size:11.5px;color:var(--blue);background:var(--blue-soft);border-radius:6px;padding:3px 7px;align-self:flex-start;font-weight:600}
+.skills{display:flex;flex-wrap:wrap;gap:5px}
+.skill{font-size:11px;background:var(--surface-2);border:1px solid var(--line);color:var(--ink-2);border-radius:6px;padding:2px 7px}
+.actions{display:flex;gap:6px;margin-top:auto}
+.btn{border:0;border-radius:8px;padding:8px 12px;font-weight:600;font-size:12.5px;background:var(--blue);color:var(--blue-ink);display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.btn.full{flex:1}
+.btn.ghost{background:var(--surface-2);color:var(--ink-2);border:1px solid var(--line)}
+.btn.pending{background:var(--warn-soft);color:var(--warn)}
+.btn.done{background:var(--good-soft);color:var(--good)}
+.btn.more{background:var(--surface-2);border:1px solid var(--line);color:var(--ink-2);padding:8px}
+.menu{position:absolute;right:14px;bottom:52px;background:var(--surface);border:1px solid var(--line);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.15);padding:4px;z-index:5;display:flex;flex-direction:column;min-width:150px}
+.menu button{border:0;background:none;text-align:left;padding:8px 10px;border-radius:7px;font-size:12.5px;display:flex;gap:8px;align-items:center}
+.menu button:hover{background:var(--surface-2)}
+.menu button.danger{color:var(--bad)}
+
+.duo{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px}
+.req{display:flex;gap:10px;align-items:flex-start;padding:12px 0;border-top:1px solid var(--line)}
+.req:first-child{border-top:0;padding-top:4px}
+.req .tx{flex:1;min-width:0}
+.req .tx b{font-size:13px}
+.req .tx .t{font-size:12px;color:var(--ink-2)}
+.req .tx .note{font-size:12px;color:var(--ink-2);background:var(--surface-2);border-radius:8px;padding:6px 8px;margin-top:6px}
+.req .tx .ago{font-size:11px;color:var(--ink-3);margin-top:4px}
+.req .acts{display:flex;flex-direction:column;gap:6px}
+.empty{color:var(--ink-3);font-size:12.5px;padding:8px 0}
+
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:none;margin:0 -18px;padding:0 18px}
+.tabs::-webkit-scrollbar{display:none}
+.tabs button{border:0;background:none;padding:8px 10px;font-size:12.5px;font-weight:600;color:var(--ink-3);border-bottom:2px solid transparent;white-space:nowrap}
+.tabs button[aria-selected="true"]{color:var(--blue);border-bottom-color:var(--blue)}
+.li{display:flex;gap:10px;align-items:flex-start;padding:11px 0;border-top:1px solid var(--line)}
+.li:first-child{border-top:0}
+.li .ti{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;flex:none}
+.li b{font-size:13px;font-weight:600;display:block}
+.li .meta{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:11.5px;color:var(--ink-3);margin-top:3px}
+
+.chip{font-size:10.5px;font-weight:700;border-radius:999px;padding:2px 8px;letter-spacing:.02em;white-space:nowrap}
+.c-job{background:var(--good-soft);color:var(--good)}
+.c-train{background:var(--warn-soft);color:var(--warn)}
+.c-inv{background:var(--violet-soft);color:var(--violet)}
+.c-tender{background:var(--teal-soft);color:var(--teal)}
+.c-idea{background:var(--rose-soft);color:var(--rose)}
+.c-event{background:var(--blue-soft);color:var(--blue)}
+
+.feat{display:flex;gap:12px;padding:12px 0;border-top:1px solid var(--line);align-items:flex-start}
+.feat:first-child{border-top:0;padding-top:2px}
+.logo{width:42px;height:42px;border-radius:10px;display:grid;place-items:center;font-weight:800;font-size:13px;color:#fff;flex:none}
+.feat .tx{flex:1;min-width:0}
+.feat .tx b{font-size:13px;display:block}
+.feat .tx .org{font-size:12px;color:var(--ink-2)}
+.feat .tx .meta{font-size:11.5px;color:var(--ink-3);display:flex;gap:4px;align-items:center;margin-top:3px}
+.feat .rt{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.slots{font-size:12px;color:var(--ink-3)}
+
+.qa{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.qa button{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:12px;text-align:left;display:flex;flex-direction:column;gap:6px}
+.qa button:hover{border-color:var(--blue)}
+.qa .qi{width:32px;height:32px;border-radius:9px;display:grid;place-items:center}
+.qa b{font-size:12.5px}
+.qa span{font-size:11.5px;color:var(--ink-3);line-height:1.35}
+.qa button.locked{background:var(--surface-2);border-style:dashed}
+.qa button.locked b{color:var(--ink-3)}
+.qa button.locked span{color:var(--blue);font-weight:600}
+
+.act{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.act > div{background:var(--surface-2);border-radius:10px;padding:10px;min-width:0;overflow-wrap:anywhere}
+.act .v{font-size:20px;font-weight:800}
+.act .l{font-size:11.5px;color:var(--ink-2)}
+.act .s{font-size:11px;color:var(--ink-3);margin-top:2px}
+
+.news{display:flex;gap:12px;padding:12px 0;border-top:1px solid var(--line)}
+.news:first-child{border-top:0;padding-top:2px}
+.news .art{width:76px;height:60px;border-radius:9px;flex:none}
+.news b{font-size:13px;display:block}
+.news p{margin:3px 0 0;font-size:12px;color:var(--ink-2)}
+.news .d{font-size:11px;color:var(--ink-3);margin-top:4px;display:flex;gap:6px;align-items:center}
+
+.banner{margin:0 22px 22px;border-radius:var(--r);background:var(--navy);color:#fff;padding:18px 22px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+.banner b{font-size:15px}
+.banner span{display:block;font-size:12.5px;color:var(--navy-mute)}
+.banner .btn{background:#fff;color:var(--navy)}
+
+.group{display:flex;flex-direction:column;gap:10px}
+.group h3{margin:0;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);font-weight:700}
+
+.tabbar{display:none}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-size:13px;font-weight:500;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:50;max-width:calc(100% - 32px)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media (max-width:1200px){.content{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:880px){
+  body{padding-bottom:calc(80px + env(safe-area-inset-bottom,0px))}
+  .app{grid-template-columns:minmax(0,1fr);min-height:0}
+  .side{display:none}
+  .top{padding:10px 14px;flex-wrap:wrap}
+  .search{order:3;flex-basis:100%;max-width:none}
+  .me .who{display:none}
+  .content{padding:14px;gap:14px}
+  .banner{margin:0 14px 14px}
+  .tabbar{display:flex;position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);
+    padding:6px max(8px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px));z-index:20;justify-content:space-around}
+  .tabbar button{border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10.5px;font-weight:600;color:var(--ink-3);padding:4px 6px;position:relative}
+  .tabbar button.on{color:var(--blue)}
+  .tabbar .badge{position:absolute;top:0;right:8px;background:#e0475b;color:#fff;font-size:9.5px;font-weight:700;min-width:15px;height:15px;border-radius:999px;display:grid;place-items:center;padding:0 3px}
+  .toast{bottom:calc(84px + env(safe-area-inset-bottom,0px))}
+}
+@media (max-width:460px){
+  .qa{grid-template-columns:1fr}
+  .welcome h1{font-size:22px}
+  .when{text-align:left}
+}
+@media (prefers-reduced-motion:reduce){.toast{transition:none}}
+</style>
+
+<div class="proto" role="region" aria-label="Prototype controls">
+  <b>Prototype</b>
+  <span>View as</span>
+  <div class="seg" id="roleSeg">
+    <button id="r-pro" data-role="pro">Professional (L1)</button>
+    <button id="r-biz" data-role="biz">Business (L3)</button>
+    <button id="r-admin" data-role="admin">Admin</button>
+  </div>
+  <div class="seg" id="langSeg">
+    <button id="l-en" data-lang="en">EN</button>
+    <button id="l-sw" data-lang="sw">SW</button>
+  </div>
+  <span class="note">Sample data only · Kiswahili is a draft for review</span>
+</div>
+
+<div class="app" id="app"></div>
+<nav class="tabbar" id="tabbar" aria-label="Main"></nav>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+const I={
+home:'<path d="M3 10.5 12 3l9 7.5V21h-6v-6H9v6H3z"/>',
+users:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',
+building:'<path d="M3 21h18M5 21V7l7-4 7 4v14M9 9h1M14 9h1M9 13h1M14 13h1M9 17h1M14 17h1"/>',
+briefcase:'<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2M2 13h20"/>',
+bulb:'<path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z"/>',
+book:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/>',
+calendar:'<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
+message:'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
+link:'<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>',
+shield:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
+sliders:'<path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/>',
+bell:'<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>',
+search:'<circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/>',
+check:'<path d="M20 6 9 17l-5-5"/>',
+badge:'<path d="M12 2l2.4 1.8 3-.2.9 2.9 2.5 1.7-1 2.8 1 2.8-2.5 1.7-.9 2.9-3-.2L12 22l-2.4-1.8-3 .2-.9-2.9-2.5-1.7 1-2.8-1-2.8 2.5-1.7.9-2.9 3 .2z"/><path d="m8.5 12 2.5 2.5 4.5-4.5"/>',
+pin:'<path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>',
+plus:'<path d="M12 5v14M5 12h14"/>',
+radar:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><path d="M12 12 19 5"/>',
+dots:'<circle cx="5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/>',
+flag:'<path d="M4 22V4M4 4h13l-2 4 2 4H4"/>',
+list:'<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',
+refresh:'<path d="M21 12a9 9 0 1 1-2.6-6.4L21 8M21 3v5h-5"/>',
+eyeoff:'<path d="M17.94 17.94A10 10 0 0 1 12 20c-7 0-10-8-10-8a18 18 0 0 1 5.06-5.94M9.9 4.24A9 9 0 0 1 12 4c7 0 10 8 10 8a18 18 0 0 1-2.16 3.19M1 1l22 22"/>',
+news:'<path d="M4 4h13v16H6a2 2 0 0 1-2-2zM17 8h3v10a2 2 0 0 1-2 2"/><path d="M8 8h5M8 12h5M8 16h3"/>',
+star:'<path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/>',
+history:'<path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5M12 7v5l3 2"/>',
+lock:'<rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
+ban:'<circle cx="12" cy="12" r="9"/><path d="m5.6 5.6 12.8 12.8"/>',
+xcircle:'<circle cx="12" cy="12" r="9"/><path d="m15 9-6 6M9 9l6 6"/>',
+clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+grow:'<path d="M3 17 9 11l4 4 8-8M15 7h6v6"/>',
+grad:'<path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/>',
+grid:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>'
+};
+const ic=(n,s=18)=>`<svg class="ic" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${I[n]}</svg>`;
+
+const T={en:{
+dashboard:"Dashboard",professionals:"Professionals",businesses:"Businesses",opportunities:"Opportunities",jobs:"Jobs",partnerships:"Partnerships",investment:"Investment",tenders:"Tenders",ideas:"Ideas",training:"Training & Courses",events:"Events",messages:"Messages",connections:"Connections",safety:"Reports & Safety",settings:"Settings",people:"People",more:"More",
+reportH:"Report a Scam / Bad User",reportP:"Help keep our community safe.",reportBtn:"Report now",
+search:"Search people, businesses, opportunities, skills...",
+welcome:"Welcome back, {n}!",welcomeSub:"Find people, opportunities and ideas to grow together.",welcomeAdmin:"Here is what needs review today.",
+sVerified:"Verified members",sBiz:"Registered businesses",sOpen:"Open opportunities",sIdeas:"Ideas in the pool",sUp:"+38 this month",sBizF:"Level 2 and 3",sOpenF:"12 closing this week",sIdeasF:"5 new this week",
+pymk:"People you may know",pymkSub:"Matched on your skills and location",connect:"Connect",pending:"Pending",message:"Message",
+withdrawn:"Request withdrawn",sent:"Connection request sent to {n}",
+reqs:"Connection requests",accept:"Accept",decline:"Decline",noReqs:"No new requests. Members you connect with appear in Connections.",
+latest:"Latest opportunities & more",all:"All",trainingTab:"Training",investments:"Investments",
+featured:"Featured opportunities",apply:"Apply",applied:"Applied",view:"View",viewAll:"View all",
+qa:"Quick actions",postOpp:"Post opportunity",postOppS:"Job, internship, partnership or investment",lockedS:"Verify your business to post opportunities",
+shareIdea:"Share an idea",shareIdeaS:"Find investors or partners",scan:"Scan for opportunities",scanS:"Matches for your skills and location",postTrain:"Post training",postTrainS:"Reviewed by an admin before it goes live",
+activity:"My activity",aApps:"Applications",aAppsS:"1 shortlisted",aIdea:"Idea requests",aIdeaS:"1 awaiting NDA",aReg:"Registrations",aRegS:"Training on 22 Oct",
+aPosts:"Live posts",aPostsS:"1 in review",aRecv:"New applications",aRecvS:"across 3 posts",
+news:"Latest news & updates",pinned:"Pinned",
+banner:"More connections. More opportunities. A stronger community.",bannerS:"People • Opportunities • Growth",explore:"Explore opportunities",
+verifiedMember:"Verified member",posterBadge:"Opportunity Poster",staff:"Staff",
+report:"Report",block:"Block",reported:"Report sent. You will get a reference number.",blocked:"{n} is blocked and hidden from your searches.",
+soon:"{p}: screen not part of this prototype",
+// admin
+adminDashboard:"Admin Dashboard",verifyQueue:"Verification Queue",modQueue:"Moderation Queue",reports:"Reports",reverify:"Re-verification",members:"Members",investors:"Investors",newsNav:"News",featuredNav:"Featured",audit:"Audit Log",
+gVerify:"Pending verifications",vMembers:"New members",vL2:"Level 2 businesses",vL3:"Level 3 posters",vInv:"Investor applications",
+gSafety:"Safety and moderation",rejected:"Rejected members",openReports:"Open reports",hidden:"Hidden pending review",reverifyDue:"Re-verifications due in 30 days",
+gMod:"Moderation queue",mOpp:"Opportunities",mIdeas:"Ideas",mTrain:"Training",mEvents:"Events",mTenders:"Tenders",
+gInv:"Investors (admins only)",invActive:"Active investors",invViews:"Idea views this week",
+oldest:"oldest {d} days",openQueue:"Opens {q}, filtered to {f}",
+postTender:"Post tender",postTenderS:"Published directly, no probation",postNews:"Post news",postNewsS:"Shown on every member dashboard",featureOpp:"Feature an opportunity",featureOppS:"Up to 5 at a time",postOppAdminS:"Published directly, no probation",
+slots:"{n} of 5 slots used",unfeature:"Remove",
+fulltime:"Full-time",internship:"Internship",tInvestment:"Investment",tTender:"Tender",tIdea:"Idea",tTraining:"Training",tEvent:"Event",tJob:"Job",
+ago:"{n} days ago",ago1:"1 day ago",today:"Today",remote:"Remote",studying:"Studying",anon:"A verified member"
+},sw:{
+dashboard:"Dashibodi",professionals:"Wataalamu",businesses:"Biashara",opportunities:"Fursa",jobs:"Ajira",partnerships:"Ubia",investment:"Uwekezaji",tenders:"Zabuni",ideas:"Mawazo",training:"Mafunzo na Kozi",events:"Matukio",messages:"Ujumbe",connections:"Miunganiko",safety:"Ripoti na Usalama",settings:"Mipangilio",people:"Watu",more:"Zaidi",
+reportH:"Ripoti Utapeli / Mtumiaji Mbaya",reportP:"Saidia kulinda jumuiya yetu.",reportBtn:"Ripoti sasa",
+search:"Tafuta watu, biashara, fursa, ujuzi...",
+welcome:"Karibu tena, {n}!",welcomeSub:"Pata watu, fursa na mawazo ili tukue pamoja.",welcomeAdmin:"Haya ndiyo yanayosubiri ukaguzi leo.",
+sVerified:"Wanachama waliothibitishwa",sBiz:"Biashara zilizosajiliwa",sOpen:"Fursa zilizo wazi",sIdeas:"Mawazo kwenye hazina",sUp:"+38 mwezi huu",sBizF:"Ngazi ya 2 na 3",sOpenF:"12 zinafungwa wiki hii",sIdeasF:"5 mapya wiki hii",
+pymk:"Watu unaoweza kuwafahamu",pymkSub:"Kulingana na ujuzi na eneo lako",connect:"Ungana",pending:"Inasubiri",message:"Tuma ujumbe",
+withdrawn:"Ombi limeondolewa",sent:"Ombi la kuungana limetumwa kwa {n}",
+reqs:"Maombi ya kuungana",accept:"Kubali",decline:"Kataa",noReqs:"Hakuna maombi mapya. Unaoungana nao wanaonekana kwenye Miunganiko.",
+latest:"Fursa mpya na zaidi",all:"Zote",trainingTab:"Mafunzo",investments:"Uwekezaji",
+featured:"Fursa maalum",apply:"Omba",applied:"Umeomba",view:"Tazama",viewAll:"Tazama zote",
+qa:"Vitendo vya haraka",postOpp:"Weka fursa",postOppS:"Ajira, mafunzo kazini, ubia au uwekezaji",lockedS:"Thibitisha biashara yako ili uweke fursa",
+shareIdea:"Shiriki wazo",shareIdeaS:"Pata wawekezaji au wabia",scan:"Tafuta fursa zinazokufaa",scanS:"Kulingana na ujuzi na eneo lako",postTrain:"Weka mafunzo",postTrainS:"Hukaguliwa na msimamizi kabla ya kuchapishwa",
+activity:"Shughuli zangu",aApps:"Maombi ya kazi",aAppsS:"1 limechaguliwa",aIdea:"Maombi ya mawazo",aIdeaS:"1 linasubiri NDA",aReg:"Usajili",aRegS:"Mafunzo tarehe 22 Okt",
+aPosts:"Machapisho hai",aPostsS:"1 linakaguliwa",aRecv:"Maombi mapya",aRecvS:"kwenye machapisho 3",
+news:"Habari na taarifa mpya",pinned:"Imebandikwa",
+banner:"Miunganiko zaidi. Fursa zaidi. Jumuiya imara zaidi.",bannerS:"Watu • Fursa • Ukuaji",explore:"Gundua fursa",
+verifiedMember:"Mwanachama aliyethibitishwa",posterBadge:"Mweka Fursa",staff:"Mtumishi",
+report:"Ripoti",block:"Zuia",reported:"Ripoti imetumwa. Utapokea namba ya kumbukumbu.",blocked:"{n} amezuiwa na hataonekana kwenye utafutaji wako.",
+soon:"{p}: skrini hii haipo kwenye mfano huu",
+adminDashboard:"Dashibodi ya Msimamizi",verifyQueue:"Foleni ya Uthibitishaji",modQueue:"Foleni ya Udhibiti",reports:"Ripoti",reverify:"Uthibitishaji Upya",members:"Wanachama",investors:"Wawekezaji",newsNav:"Habari",featuredNav:"Maalum",audit:"Kumbukumbu za Ukaguzi",
+gVerify:"Uthibitishaji unaosubiri",vMembers:"Wanachama wapya",vL2:"Biashara ngazi ya 2",vL3:"Waweka fursa ngazi ya 3",vInv:"Maombi ya uwekezaji",
+gSafety:"Usalama na udhibiti",rejected:"Wanachama waliokataliwa",openReports:"Ripoti zilizo wazi",hidden:"Zimefichwa zikisubiri ukaguzi",reverifyDue:"Uthibitishaji upya ndani ya siku 30",
+gMod:"Foleni ya udhibiti",mOpp:"Fursa",mIdeas:"Mawazo",mTrain:"Mafunzo",mEvents:"Matukio",mTenders:"Zabuni",
+gInv:"Wawekezaji (wasimamizi tu)",invActive:"Wawekezaji hai",invViews:"Mawazo yaliyotazamwa wiki hii",
+oldest:"la zamani zaidi siku {d}",openQueue:"Inafungua {q}, ikichuja {f}",
+postTender:"Weka zabuni",postTenderS:"Huchapishwa moja kwa moja",postNews:"Chapisha habari",postNewsS:"Huonekana kwa wanachama wote",featureOpp:"Weka fursa maalum",featureOppS:"Hadi 5 kwa wakati mmoja",postOppAdminS:"Huchapishwa moja kwa moja",
+slots:"Nafasi {n} kati ya 5 zimetumika",unfeature:"Ondoa",
+fulltime:"Muda wote",internship:"Mafunzo kazini",tInvestment:"Uwekezaji",tTender:"Zabuni",tIdea:"Wazo",tTraining:"Mafunzo",tEvent:"Tukio",tJob:"Ajira",
+ago:"siku {n} zilizopita",ago1:"siku 1 iliyopita",today:"Leo",remote:"Mtandaoni",studying:"Anasoma",anon:"Mwanachama aliyethibitishwa"
+}};
+
+const S={role:"pro",lang:"en",tab:"all",nav:"dashboard",conn:{},reqs:{},applied:{},menu:null,blocked:{},featured:["f1","f2","f3","f4"]};
+try{const s=JSON.parse(localStorage.getItem("kc-proto")||"{}");if(s.role)S.role=s.role;if(s.lang)S.lang=s.lang}catch(e){}
+const save=()=>{try{localStorage.setItem("kc-proto",JSON.stringify({role:S.role,lang:S.lang}))}catch(e){}};
+const t=(k,v={})=>{if(k==="ago"&&v.n===1)k="ago1";let s=(T[S.lang][k]??T.en[k]??k);for(const x in v)s=s.replace("{"+x+"}",v[x]);return s};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+const ME={
+  pro:{name:"Suzan Peter",first:"Suzan",title:"Cybersecurity Analyst",badge:"verifiedMember",init:"SP",col:"#2c6e8f",loc:"Dar es Salaam"},
+  biz:{name:"Neema Mushi",first:"Neema",title:"Director, Mushi Logistics Ltd",badge:"posterBadge",init:"NM",col:"#8a4b2c",loc:"Dar es Salaam"},
+  admin:{name:"Daudi Mollel",first:"Daudi",title:"Administrator",badge:"staff",init:"DM",col:"#3d4f7a",loc:"Dar es Salaam"}
+};
+const PEOPLE=[
+  {id:"p1",name:"Amina Hassan",title:"Cybersecurity Analyst",loc:"Dar es Salaam",skills:["Security","SOC","SIEM"],why:"2 shared skills",whySw:"Ujuzi 2 unaofanana",col:"#7b4fa0"},
+  {id:"p2",name:"Baraka Mwakyusa",title:"Software Developer",loc:"Dar es Salaam",skills:["Python","JavaScript","React"],why:"Also in Dar es Salaam",whySw:"Pia yuko Dar es Salaam",col:"#2f7a54"},
+  {id:"p3",name:"Grace Mhando",title:"Data Analyst",loc:"Dodoma",skills:["Excel","Power BI","SQL"],why:"Shares SQL",whySw:"Mnashiriki SQL",col:"#b0533a"},
+  {id:"p4",name:"Daniel Kimaro",title:"Network Engineer",loc:"Arusha",skills:["Cisco","Linux","VPN"],why:"Shares Linux, VPN",whySw:"Mnashiriki Linux, VPN",col:"#2a5d9c"},
+  {id:"p5",name:"Faith Njau",title:"UI/UX Designer",loc:"Dar es Salaam",skills:["Figma","UI/UX","Branding"],why:"Also in Dar es Salaam",whySw:"Pia yuko Dar es Salaam",col:"#a33f6f",study:"UDSM, BSc Computer Science, Year 3"},
+  {id:"p6",name:"Kelvin Massawe",title:"IT Auditor (CISA)",loc:"Mwanza",skills:["Audit","Risk","ISO 27001"],why:"Shares Risk",whySw:"Mnashiriki Risk",col:"#5b6b2a"}
+];
+const REQS=[
+  {id:"q1",name:"Michael Kessy",title:"Business Analyst",note:"I saw your SOC work. Could we talk about a security review for my company?",ago:2,col:"#356d7a"},
+  {id:"q2",name:"Esther Ndunguru",title:"Accountant (CPA)",note:"",ago:1,col:"#8a5a2b"},
+  {id:"q3",name:"Brian Mjema",title:"Electrical Engineer",note:"We met at the business summit.",ago:3,col:"#4b4f9a"}
+];
+const FEAT=[
+  {id:"f1",title:"Senior Cybersecurity Analyst",org:"Kilima Bank Ltd",loc:"Dar es Salaam",type:"fulltime",cls:"c-job",ago:2,init:"KB",col:"#1b6b45",btn:"apply"},
+  {id:"f2",title:"Backend Developer",org:"Pwani Tech Solutions",loc:"remote",type:"fulltime",cls:"c-job",ago:3,init:"PT",col:"#1d2f5c",btn:"apply"},
+  {id:"f3",title:"Graduate Trainee, Business & Finance",org:"Ziwa Microfinance",loc:"Mwanza",type:"internship",cls:"c-train",ago:5,init:"ZM",col:"#9a5a12",btn:"apply"},
+  {id:"f4",title:"Partner for solar cold storage",org:"Kijani Agro Ventures",loc:"Morogoro",type:"tInvestment",cls:"c-inv",ago:6,init:"KA",col:"#4e7a1f",btn:"view"}
+];
+const LATEST=[
+  {k:"tenders",type:"tTender",cls:"c-tender",ico:"building",title:"Supply of office furniture, Phase 2",who:"Mushi Logistics Ltd",loc:"Dar es Salaam",ago:1},
+  {k:"training",type:"tTraining",cls:"c-train",ico:"book",title:"Data analysis with Excel and Power BI",who:"Online · 24 seats",loc:"",ago:2},
+  {k:"jobs",type:"tJob",cls:"c-job",ico:"briefcase",title:"Civil Engineer, road projects",who:"Mbeya Works Co.",loc:"Mbeya",ago:2},
+  {k:"ideas",type:"tIdea",cls:"c-idea",ico:"bulb",title:"Clinic booking by SMS for rural patients",who:"anon",loc:"Seeking a partner",ago:3},
+  {k:"investments",type:"tInvestment",cls:"c-inv",ico:"grow",title:"Solar irrigation kits for smallholders",who:"Kijani Agro Ventures",loc:"TZS 10 to 50M",ago:4},
+  {k:"training",type:"tEvent",cls:"c-event",ico:"calendar",title:"Community business summit",who:"Mkuyuni Community",loc:"Dar es Salaam · 7 Nov",ago:4}
+];
+const NEWS=[
+  {title:"Kingdom Connect pilot opens to the first 200 members",titleSw:"Majaribio ya Kingdom Connect yafunguliwa kwa wanachama 200 wa kwanza",body:"Registration is open. Bring your NIDA number to sign up.",bodySw:"Usajili uko wazi. Andaa namba yako ya NIDA.",d:"14 Oct 2026",pin:true,art:"linear-gradient(135deg,#1f5fd6,#0e1d3a)"},
+  {title:"Business verification: what to bring",titleSw:"Uthibitishaji wa biashara: unachohitaji",body:"BRELA certificate, TRA TIN and a valid business licence.",bodySw:"Cheti cha BRELA, TIN ya TRA na leseni halali ya biashara.",d:"10 Oct 2026",art:"linear-gradient(135deg,#0e7d86,#1d3b5c)"},
+  {title:"Community business summit on 7 November",titleSw:"Mkutano wa biashara wa jumuiya tarehe 7 Novemba",body:"Register from the Events page. Seats are limited.",bodySw:"Jisajili kupitia ukurasa wa Matukio. Nafasi ni chache.",d:"8 Oct 2026",art:"linear-gradient(135deg,#9a5a12,#3b2a5c)"}
+];
+const loc=l=>l==="remote"?t("remote"):l;
+const av=(init,col,cls="")=>`<span class="av ${cls}" style="background:${col}">${init}</span>`;
+const initials=n=>n.split(" ").map(x=>x[0]).join("").slice(0,2);
+
+function navDef(){
+  if(S.role==="admin")return[["adminDashboard","home"],["verifyQueue","check",54],["modQueue","list",25],["reports","flag",6],["reverify","refresh",8],["members","users"],["investors","eyeoff"],["newsNav","news"],["featuredNav","star"],["audit","history"],["settings","sliders"]];
+  const open=REQS.filter(r=>!S.reqs[r.id]).length;
+  return[["dashboard","home"],["professionals","users"],["businesses","building"],["opportunities","briefcase",0,["jobs","partnerships","investment","tenders"]],["ideas","bulb"],["training","book"],["events","calendar"],["messages","message",5],["connections","link",open],["safety","shield"],["settings","sliders"]];
+}
+function sidebar(){
+  const home=S.role==="admin"?"adminDashboard":"dashboard";
+  const items=navDef().map(([k,i,b,sub])=>`<button data-nav="${k}" class="${k===home?"on":""}" ${k===home?'aria-current="page"':""}>${ic(i)}<span>${t(k)}</span>${b?`<span class="badge num">${b}</span>`:""}</button>${sub?`<div class="sub">${sub.map(s=>`<button data-nav="${s}">${t(s)}</button>`).join("")}</div>`:""}`).join("");
+  const foot=S.role==="admin"?`<p class="staffnote">Admins do not connect or message. Message contents open only for reported threads.</p>`:
+    `<div class="report"><div class="h">${ic("shield",16)}${t("reportH")}</div><p>${t("reportP")}</p><button class="btn" data-act="report-general">${t("reportBtn")}</button></div>`;
+  return `<aside class="side"><div class="brand"><span class="mark">${ic("users",20)}</span><div><div class="name">Kingdom Connect</div><div class="tag">People • Opportunities • Growth</div></div></div><nav class="nav" aria-label="Main">${items}</nav>${foot}</aside>`;
+}
+function topbar(){
+  const m=ME[S.role];
+  return `<header class="top"><label class="search" for="q">${ic("search",16)}<input id="q" type="search" placeholder="${t("search")}"></label><span class="sp"></span>
+  <button class="iconbtn" aria-label="Notifications" data-act="soon" data-p="Notifications">${ic("bell",20)}<span class="dot num">3</span></button>
+  ${S.role!=="admin"?`<button class="iconbtn" aria-label="${t("messages")}" data-act="soon" data-p="${t("messages")}">${ic("message",20)}<span class="dot num">5</span></button>`:""}
+  <div class="me">${av(m.init,m.col,"sm")}<div class="who"><b>${m.name}</b><span>${t(m.badge)}</span></div></div></header>`;
+}
+function dateStr(){
+  const d=new Date();
+  try{return d.toLocaleDateString(S.lang==="sw"?"sw-TZ":"en-GB",{weekday:"long",day:"numeric",month:"long",year:"numeric"})}catch(e){return d.toDateString()}
+}
+function welcome(){
+  const m=ME[S.role];
+  return `<div class="welcome"><div><h1>${t("welcome",{n:m.first})}</h1><p>${S.role==="admin"?t("welcomeAdmin"):t("welcomeSub")}</p></div><div class="when"><b>${dateStr()}</b>${ic("pin",12).replace('class="ic"','class="ic" style="display:inline;vertical-align:-1px"')} ${m.loc}</div></div>`;
+}
+function stats(){
+  const s=[["sVerified","2,480","sUp","badge","var(--good-soft)","var(--good)"],["sBiz","318","sBizF","building","var(--blue-soft)","var(--blue)"],["sOpen","146","sOpenF","briefcase","var(--warn-soft)","var(--warn)"],["sIdeas","87","sIdeasF","bulb","var(--violet-soft)","var(--violet)"]];
+  return `<div class="stats">${s.map(([l,v,f,i,bg,fg])=>`<div class="card stat"><span class="ico" style="background:${bg};color:${fg}">${ic(i)}</span><span class="lbl">${t(l)}</span><span class="val num">${v}</span><span class="foot">${t(f)}</span></div>`).join("")}</div>`;
+}
+function pcard(p){
+  const st=S.conn[p.id]||"none";
+  const btn=st==="pending"?`<button class="btn pending full" data-act="withdraw" data-id="${p.id}" title="Click to withdraw">${ic("clock",14)}${t("pending")}</button>`:
+    st==="connected"?`<button class="btn done full" data-act="soon" data-p="${t("messages")}">${ic("message",14)}${t("message")}</button>`:
+    `<button class="btn full" data-act="connect" data-id="${p.id}">${ic("plus",14)}${t("connect")}</button>`;
+  const menu=S.menu===p.id?`<div class="menu" role="menu"><button role="menuitem" data-act="report" data-id="${p.id}">${ic("flag",14)}${t("report")}</button><button role="menuitem" class="danger" data-act="block" data-id="${p.id}">${ic("ban",14)}${t("block")}</button></div>`:"";
+  return `<article class="pcard"><div class="row">${av(initials(p.name),p.col,"lg")}<div style="min-width:0"><div class="nm">${p.name}<span class="vf" title="${t("verifiedMember")}">${ic("badge",14)}</span></div><div class="ttl">${p.title}</div><div class="loc">${ic("pin",12)}${p.loc}</div></div></div>
+  <span class="why">${S.lang==="sw"?p.whySw:p.why}</span>
+  ${p.study?`<div class="loc">${ic("grad",12)}${t("studying")}: ${p.study}</div>`:""}
+  <div class="skills">${p.skills.map(s=>`<span class="skill">${s}</span>`).join("")}</div>
+  <div class="actions">${btn}<button class="btn more" aria-label="More options for ${p.name}" aria-expanded="${S.menu===p.id}" data-act="menu" data-id="${p.id}">${ic("dots",16)}</button></div>${menu}</article>`;
+}
+function pymk(){
+  const list=PEOPLE.filter(p=>!S.blocked[p.id]);
+  return `<section class="card"><div class="hd"><div><h2>${t("pymk")}</h2><div class="sub">${t("pymkSub")}</div></div><button class="link" data-act="soon" data-p="${t("professionals")}">${t("viewAll")}</button></div><div class="bd"><div class="people">${list.map(pcard).join("")}</div></div></section>`;
+}
+function requests(){
+  const open=REQS.filter(r=>!S.reqs[r.id]);
+  const body=open.length?open.map(r=>`<div class="req">${av(initials(r.name),r.col,"sm")}<div class="tx"><b>${r.name}</b><div class="t">${r.title}</div>${r.note?`<div class="note">"${esc(r.note)}"</div>`:""}<div class="ago">${t("ago",{n:r.ago})}</div></div><div class="acts"><button class="btn" data-act="accept" data-id="${r.id}">${t("accept")}</button><button class="btn ghost" data-act="decline" data-id="${r.id}">${t("decline")}</button></div></div>`).join(""):`<div class="empty">${t("noReqs")}</div>`;
+  return `<section class="card"><div class="hd"><h2>${t("reqs")}</h2><button class="link" data-act="soon" data-p="${t("connections")}">${t("viewAll")}</button></div><div class="bd">${body}</div></section>`;
+}
+function latest(){
+  const tabs=[["all","all"],["jobs","jobs"],["training","trainingTab"],["tenders","tenders"],["investments","investments"],["ideas","ideas"]];
+  const rows=LATEST.filter(x=>S.tab==="all"||x.k===S.tab);
+  const pal={"c-job":["var(--good-soft)","var(--good)"],"c-train":["var(--warn-soft)","var(--warn)"],"c-inv":["var(--violet-soft)","var(--violet)"],"c-tender":["var(--teal-soft)","var(--teal)"],"c-idea":["var(--rose-soft)","var(--rose)"],"c-event":["var(--blue-soft)","var(--blue)"]};
+  return `<section class="card"><div class="hd"><h2>${t("latest")}</h2><button class="link" data-act="soon" data-p="${t("opportunities")}">${t("viewAll")}</button></div><div class="bd"><div class="tabs" role="tablist">${tabs.map(([k,l])=>`<button role="tab" id="tab-${k}" aria-selected="${S.tab===k}" data-tab="${k}">${t(l)}</button>`).join("")}</div>
+  <div style="margin-top:6px">${rows.map(x=>`<div class="li"><span class="ti" style="background:${pal[x.cls][0]};color:${pal[x.cls][1]}">${ic(x.ico,16)}</span><div style="min-width:0"><b>${x.title}</b><div class="meta"><span class="chip ${x.cls}">${t(x.type)}</span><span>${x.who==="anon"?t("anon"):x.who}</span>${x.loc?`<span>· ${x.loc}</span>`:""}<span>· ${t("ago",{n:x.ago})}</span></div></div></div>`).join("")}</div></div></section>`;
+}
+function featured(){
+  const admin=S.role==="admin";
+  const list=FEAT.filter(f=>S.featured.includes(f.id));
+  return `<section class="card"><div class="hd"><h2>${t("featured")}</h2>${admin?`<span class="slots num">${t("slots",{n:list.length})}</span>`:`<button class="link" data-act="soon" data-p="${t("opportunities")}">${t("viewAll")}</button>`}</div><div class="bd">${list.map(f=>{
+    const b=admin?`<button class="btn ghost" data-act="unfeature" data-id="${f.id}">${t("unfeature")}</button>`:S.applied[f.id]?`<button class="btn done" disabled>${ic("check",14)}${t("applied")}</button>`:f.btn==="apply"?`<button class="btn" data-act="apply" data-id="${f.id}">${t("apply")}</button>`:`<button class="btn" data-act="soon" data-p="${f.title}">${t("view")}</button>`;
+    return `<div class="feat"><span class="logo" style="background:${f.col}">${f.init}</span><div class="tx"><b>${f.title}</b><div class="org">${f.org}</div><div class="meta">${ic("pin",12)}${loc(f.loc)} · ${t("ago",{n:f.ago})}</div></div><div class="rt"><span class="chip ${f.cls}">${t(f.type)}</span>${b}</div></div>`}).join("")}</div></section>`;
+}
+function quick(){
+  let q;
+  if(S.role==="admin")q=[["postOpp","postOppAdminS","briefcase","blue"],["postTender","postTenderS","building","teal"],["postNews","postNewsS","news","warn"],["featureOpp","featureOppS","star","violet"]];
+  else q=[["postOpp",S.role==="biz"?"postOppS":"lockedS","briefcase","blue",S.role!=="biz"],["shareIdea","shareIdeaS","bulb","warn"],["scan","scanS","radar","violet"],["postTrain","postTrainS","book","good"]];
+  return `<section class="card"><div class="hd"><h2>${t("qa")}</h2></div><div class="bd"><div class="qa">${q.map(([l,s,i,c,locked])=>`<button class="${locked?"locked":""}" data-act="${locked?"upgrade":"soon"}" data-p="${t(l)}"><span class="qi" style="background:var(--${c}-soft);color:var(--${c})">${ic(locked?"lock":i,16)}</span><b>${t(l)}</b><span>${t(s)}</span></button>`).join("")}</div></div></section>`;
+}
+function activity(){
+  const a=S.role==="biz"?[["3","aPosts","aPostsS"],["9","aRecv","aRecvS"],["1","aReg","aRegS"]]:[["2","aApps","aAppsS"],["1","aIdea","aIdeaS"],["1","aReg","aRegS"]];
+  return `<section class="card"><div class="hd"><h2>${t("activity")}</h2></div><div class="bd"><div class="act">${a.map(([v,l,s])=>`<div><div class="v num">${v}</div><div class="l">${t(l)}</div><div class="s">${t(s)}</div></div>`).join("")}</div></div></section>`;
+}
+function news(){
+  return `<section class="card"><div class="hd"><h2>${t("news")}</h2><button class="link" data-act="soon" data-p="${t("newsNav")}">${t("viewAll")}</button></div><div class="bd">${NEWS.map(n=>`<div class="news"><span class="art" style="background:${n.art}"></span><div><b>${S.lang==="sw"?n.titleSw:n.title}</b><p>${S.lang==="sw"?n.bodySw:n.body}</p><div class="d">${n.d}${n.pin?` <span class="chip c-event">${t("pinned")}</span>`:""}</div></div></div>`).join("")}</div></section>`;
+}
+function tile(label,val,sub,ico,c,q,f){
+  return `<button class="card stat" data-act="queue" data-q="${q}" data-f="${f}"><span class="ico" style="background:var(--${c}-soft);color:var(--${c})">${ic(ico)}</span><span class="lbl">${label}</span><span class="val num">${val}</span>${sub?`<span class="foot">${sub}</span>`:""}</button>`;
+}
+function adminBody(){
+  const vq=t("verifyQueue"),mq=t("modQueue");
+  return `<div class="group"><h3>${t("gVerify")}</h3><div class="stats">
+    ${tile(t("vMembers"),34,t("oldest",{d:3}),"users","blue",vq,t("vMembers"))}
+    ${tile(t("vL2"),12,t("oldest",{d:2}),"building","teal",vq,t("vL2"))}
+    ${tile(t("vL3"),5,t("oldest",{d:1}),"briefcase","violet",vq,t("vL3"))}
+    ${tile(t("vInv"),3,"","eyeoff","warn",vq,t("vInv"))}</div></div>
+  <div class="group"><h3>${t("gSafety")}</h3><div class="stats">
+    ${tile(t("openReports"),6,"","flag","bad",t("reports"),t("openReports"))}
+    ${tile(t("hidden"),2,"","eyeoff","bad",t("reports"),t("hidden"))}
+    ${tile(t("rejected"),76,"","xcircle","warn",t("members"),t("rejected"))}
+    ${tile(t("reverifyDue"),8,"","refresh","warn",t("reverify"),t("reverifyDue"))}</div></div>
+  <div class="group"><h3>${t("gMod")}</h3><div class="stats">
+    ${tile(t("mOpp"),9,"","briefcase","good",mq,t("mOpp"))}
+    ${tile(t("mIdeas"),7,"","bulb","rose",mq,t("mIdeas"))}
+    ${tile(t("mTrain"),4,"","book","warn",mq,t("mTrain"))}
+    ${tile(t("mEvents"),2,"","calendar","blue",mq,t("mEvents"))}
+    ${tile(t("mTenders"),3,"","building","teal",mq,t("mTenders"))}</div></div>
+  <div class="group"><h3>${t("gInv")}</h3><div class="stats">
+    ${tile(t("invActive"),41,"","eyeoff","violet",t("investors"),t("invActive"))}
+    ${tile(t("invViews"),17,"","search","violet",t("audit"),t("invViews"))}</div></div>`;
+}
+function tabbar(){
+  const items=S.role==="admin"?[["adminDashboard","home"],["verifyQueue","check",54],["modQueue","list",25],["reports","flag",6],["more","grid"]]:[["dashboard","home"],["people","users"],["opportunities","briefcase"],["messages","message",5],["more","grid"]];
+  const lbl={adminDashboard:t("dashboard"),verifyQueue:S.lang==="sw"?"Thibitisha":"Verify",modQueue:S.lang==="sw"?"Dhibiti":"Moderate"};
+  return items.map(([k,i,b],n)=>`<button class="${n===0?"on":""}" data-nav="${k}">${ic(i,20)}<span>${lbl[k]||t(k)}</span>${b?`<span class="badge num">${b}</span>`:""}</button>`).join("");
+}
+function render(){
+  document.documentElement.lang=S.lang==="sw"?"sw":"en";
+  document.querySelectorAll("#roleSeg button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.role===S.role));
+  document.querySelectorAll("#langSeg button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.lang===S.lang));
+  const admin=S.role==="admin";
+  const left=admin?`${welcome()}${stats()}${adminBody()}`:`${welcome()}${stats()}${pymk()}<div class="duo">${requests()}${latest()}</div>`;
+  const right=admin?`${quick()}${featured()}${news()}`:`${featured()}${quick()}${activity()}${news()}`;
+  document.getElementById("app").innerHTML=`${sidebar()}<div class="main">${topbar()}<div class="content"><div class="col">${left}</div><div class="col">${right}</div></div>${admin?"":`<div class="banner"><div><b>${t("banner")}</b><span>${t("bannerS")}</span></div><button class="btn" data-act="soon" data-p="${t("opportunities")}">${t("explore")}</button></div>`}</div>`;
+  document.getElementById("tabbar").innerHTML=tabbar();
+}
+let tt;
+function toast(m){const el=document.getElementById("toast");el.textContent=m;el.classList.add("show");clearTimeout(tt);tt=setTimeout(()=>el.classList.remove("show"),2600)}
+const person=id=>PEOPLE.find(p=>p.id===id);
+
+document.addEventListener("click",e=>{
+  const r=e.target.closest("[data-role]");if(r){S.role=r.dataset.role;S.menu=null;save();render();return}
+  const l=e.target.closest("[data-lang]");if(l){S.lang=l.dataset.lang;save();render();return}
+  const tb=e.target.closest("[data-tab]");if(tb){S.tab=tb.dataset.tab;render();document.getElementById("tab-"+S.tab)?.focus();return}
+  const nv=e.target.closest("[data-nav]");if(nv){const k=nv.dataset.nav;if(k!=="dashboard"&&k!=="adminDashboard")toast(t("soon",{p:t(k)}));return}
+  const b=e.target.closest("[data-act]");
+  if(!b){if(S.menu){S.menu=null;render()}return}
+  const id=b.dataset.id,a=b.dataset.act;
+  if(a!=="menu"&&S.menu)S.menu=null;
+  switch(a){
+    case"connect":S.conn[id]="pending";render();toast(t("sent",{n:person(id).name}));break;
+    case"withdraw":S.conn[id]="none";render();toast(t("withdrawn"));break;
+    case"menu":S.menu=S.menu===id?null:id;render();break;
+    case"report":render();toast(t("reported"));break;
+    case"block":S.blocked[id]=true;render();toast(t("blocked",{n:person(id).name}));break;
+    case"accept":S.reqs[id]="accepted";render();toast(`${REQS.find(x=>x.id===id).name}: ${S.lang==="sw"?"mmeungana. Sasa mnaweza kutumiana ujumbe.":"connected. You can now message each other."}`);break;
+    case"decline":S.reqs[id]="declined";render();toast(S.lang==="sw"?"Ombi limekataliwa. Mtumaji hatajulishwa.":"Request declined. The sender is not notified.");break;
+    case"apply":S.applied[id]=true;render();toast(S.lang==="sw"?"Ombi limetumwa pamoja na wasifu wako.":"Application sent with your profile.");break;
+    case"unfeature":S.featured=S.featured.filter(x=>x!==id);render();break;
+    case"upgrade":toast(S.lang==="sw"?"Inafungua uthibitishaji wa biashara: Ngazi ya 2, kisha Ngazi ya 3.":"Opens business verification: Level 2, then Level 3.");break;
+    case"queue":toast(t("openQueue",{q:b.dataset.q,f:b.dataset.f}));break;
+    case"report-general":toast(t("soon",{p:t("reportH")}));break;
+    default:toast(t("soon",{p:b.dataset.p||""}));
+  }
+});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&S.menu){S.menu=null;render()}});
+render();
+</script>

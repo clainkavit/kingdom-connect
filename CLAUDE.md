@@ -2,12 +2,14 @@
 
 "People • Opportunities • Growth." A verified, members-only platform where the Mkuyuni Community (Pastor Tony's congregation) finds people, opportunities and ideas, on web and mobile. Phase 1 is Tanzania only, NIDA-verified.
 
-**This folder is the source of truth.** It supersedes the earlier Osborn Ministries Jobs project (Champion's workspace, `../osborn-ministries-jobs/`), built to an older scope. Do not pull requirements from it; its code is reference only.
+**This folder is the source of truth.** It supersedes the earlier Osborn Ministries Jobs project, built to an older scope. Nothing from that project is used, neither requirements, documents nor code.
 
 ## Where things live
 
 - **[docs/prd.md](docs/prd.md)** is the source of truth: requirements, decisions (section 18) and changes since v0.1 (Appendix A). Read it before any task.
 - **The [wayfinder map](https://github.com/clainkavit/kingdom-connect/issues/1)** on GitHub Issues tracks every open decision as a ticket. The open questions live there, not in this file.
+- **[docs/wayfinding.md](docs/wayfinding.md)** is the tracker doc for the `wayfinder` skill: how to claim, create, block and resolve tickets on GitHub.
+- **[.claude/skills/](.claude/skills/)** holds the planning skills (wayfinder, grilling, domain-modeling, research, prototype), so they load for anyone working in this repo.
 - **[context/CONTEXT.md](context/CONTEXT.md)** is the glossary. Use its terms.
 - **[sources/](sources/)** holds the original Plan v1.1 (frozen, approved church document), PRD v0.1 (superseded) and the use case diagram (outdated). Extracts sit in `context/`.
 - **[context/design/](context/design/)** holds the mockup and the clickable dashboard prototype.

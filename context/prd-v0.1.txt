@@ -1,0 +1,1048 @@
+Kingdom Connect – Product Requirements Document (PRD)
+
+
+
+
+  Kingdom Connect – Product Requirements
+  Document (PRD)
+    Oct 14, 2026        · ​@Champion
+
+
+  1. Document info and purpose
+  This PRD turns the Kingdom Connect Project Plan v1.1 into buildable requirements: what
+  each screen does, who can use it, and how we know it works.
+
+
+     Item                   Detail
+
+     Product                Kingdom Connect (People • Opportunities •
+                            Growth)
+
+     PRD version            0.1 (draft)
+
+     Source                 Project Plan v1.1, 14 October 2026 (FR-01 to FR-49,
+                            UC-01 to UC-43)
+
+     Audience               Development team, UI/UX designer, Technical
+                            Committee, project lead
+
+     Status                 Draft for review
+
+
+  How to read it. Each feature section has user stories ("As a … I want … so that …") and
+  acceptance criteria (AC). Each story cites the plan's FR or UC numbers so the two
+  documents stay traceable. Where this PRD makes a product decision the plan does not
+  make, it is marked Proposed and listed in Open questions.
+
+
+  2. Product overview and goals
+  Kingdom Connect is a verified, members-only platform where the Mkuyuni Community
+  finds people, opportunities and ideas to grow together, on web and mobile.
+
+  Problem. Members meet at church but have no way to find each other's skills, businesses,
+  ideas or opportunities during the week. Opportunities get missed, and unverified
+  channels expose members to job and investment scams.
+
+  Product goals
+
+
+
+                                                                                       Page 1 of 21
+Kingdom Connect – Product Requirements Document (PRD)
+
+
+
+
+   1. Every member can find verified professionals and businesses by skill, sector and
+      location.
+   2. Members can find and apply for safe, verified opportunities, with scam posts removed
+      fast.
+   3. Innovators can share ideas and meet investors or partners without losing control of
+      their IP.
+   4. Investors can find ideas discreetly, without being publicly listed or pitched.
+   5. Members can grow through training, events, tenders and community news.
+
+  Non-goals (Phase 1)
+
+       Moving money: no payments, course fees, escrow or investment transactions.
+       Mentorship matching.
+       Members resident outside Tanzania.
+       Public, non-member access to any content beyond the landing and sign-up pages.
+
+
+  3. Users, roles and permissions
+  Roles stack: a member gains rights by passing further verification, and the investor flag is
+  a private permission added on top of a member account.
+
+
+
+
+                                                                                         Page 2 of 21
+Kingdom Connect – Product Requirements Document (PRD)
+
+
+
+
+     Role                                 How someone gets it                      Visible to other members as
+
+     Applicant                            Submits registration                     Not visible
+
+     Verified Member                      NIDA + manual review approved            Member, with profession
+     (Level 1)
+
+     Verified Business                    BRELA, TRA TIN, business licence         Member + business listing
+     (Level 2)                            approved
+
+     Opportunity Poster                   Director/authorisation proof +           Member + business listing
+     (Level 3)                            physical address approved
+
+     Investor (private                    Invitation by an Administrator or        Same as their base role;
+     flag)                                Super Administrator, or approved         never labelled investor
+                                          application from a Level 2 member
+
+     Administrator                        Assigned by Super Administrator          Staff badge
+
+     Super Administrator                  Assigned at setup                        Staff badge
+
+
+  Permission matrix (✓ = allowed, — = not allowed)
+
+
+    Action                                              Member L1   Business   Poster    Investor   Admin
+                                                                    L2         L3        flag
+
+    Browse directories, profiles,                       ✓           ✓          ✓         ✓          ✓
+    opportunities, ideas
+
+    Connect and message                                 ✓           ✓          ✓         ✓          —
+
+    Apply for opportunities, register for               ✓           ✓          ✓         ✓          —
+    training and events
+
+    Submit ideas, express named interest                ✓           ✓          ✓         ✓          —
+
+    List a business in the directory                    —           ✓          ✓         —          —
+
+    Post opportunities and tenders                      —           —          ✓         —          —
+
+    Post training and courses                           ✓ (admin    ✓          ✓         —          ✓
+                                                        approval)
+
+    Apply for investor flag                             —           ✓          ✓         —          —
+
+    Anonymous interest, silent browsing,                —           —          —         ✓          —
+    investor filters, saved list
+
+    Approve members, businesses,                        —           —          —         —          ✓
+    investors; moderate; take down
+
+
+
+
+                                                                                                              Page 3 of 21
+Kingdom Connect – Product Requirements Document (PRD)
+
+
+
+
+    Action                                              Member L1       Business    Poster    Investor   Admin
+                                                                        L2          L3        flag
+
+    See investor list and audit logs                    —               —           —         —          ✓
+
+    Manage admin accounts and settings                  —               —           —         —          Super Admin
+                                                                                                         only
+
+
+  A professional who is also a student is one Level 1 member with study information on their
+  profile (FR-09).
+
+
+  4. Scope and release plan
+  Phase 1 ships in two releases inside the 12-month plan: Release 1 builds trust and
+  connection, and Release 2 adds everything that depends on that trust.
+
+
+     Area                               Release 1 (Core, months 5–7)               Release 2 (Extended, months 7–
+                                                                                   9)
+
+     Accounts                           Registration, NIDA verification,           Annual business re-verification
+                                        MFA login, approval workflow
+
+     Dashboards                         Member and Admin dashboards                Widgets for opportunities, ideas,
+                                        (core widgets)                             featured items, news
+
+     Profiles and                       Professional and business                  Business levels 2 and 3
+     directories                        profiles, study info, search,
+                                        privacy masking
+
+     Connections                        Requests, accept/decline, secure           —
+                                        messaging
+
+     Safety                             Report a scam/bad user, admin              Fast takedown of opportunities,
+                                        review, suspension                         probation queue
+
+     Opportunities                      —                                          Posting, applications, featured,
+                                                                                   Scan for Opportunities, tenders
+
+     Ideas and investors                —                                          Ideas pool, profile Ideas tab, NDA
+                                                                                   flow, investor flag and tools
+
+     Learning and                       —                                          Training and courses, events,
+     community                                                                     news
+
+
+
+
+                                                                                                                   Page 4 of 21
+Kingdom Connect – Product Requirements Document (PRD)
+
+
+
+
+     Area                               Release 1 (Core, months 5–7)   Release 2 (Extended, months 7–
+                                                                       9)
+
+     Agreements                         —                              Agreement form, e-signing, legal
+                                                                       support (see Open questions)
+
+
+  Platforms: responsive web portal plus Android and iOS apps with the same features.
+
+  Geography: Tanzania only. Registration requires a valid NIDA number.
+
+  Out of scope: payments of any kind, investment transaction processing, e-commerce,
+  social media integrations, mentorship, members outside Tanzania.
+
+
+  5. Information architecture and navigation
+  Members and administrators get different sidebars; a member never sees admin items,
+  and an investor's sidebar looks the same as any member's.
+
+  Member sidebar: Dashboard · Professionals · Businesses · Opportunities (Jobs,
+  Partnerships, Investment, Tenders) · Ideas · Training & Courses · Events · Messages ·
+  Connections · Reports & Safety · Settings. Persistent "Report a Scam / Bad User" card at
+  the foot.
+
+  Investor additions (inside Ideas only): investor filters, Saved ideas, anonymous "Express
+  interest" option. No separate menu item.
+
+  Admin sidebar: Admin Dashboard · Verification Queue (members, businesses, investors) ·
+  Moderation Queue (opportunities, ideas, training, events, tenders) · Reports · Re-
+  verification · Members · Investors · News · Featured · Audit Log · Settings.
+
+  Key screens
+
+
+     #         Screen                                                   Used by
+
+     1         Landing, sign-up, login, OTP                             Everyone
+
+     2         Registration wizard (personal, category, category        Applicant
+               details, credentials, review)
+
+     3         Registration status                                      Applicant
+
+     4         Member dashboard                                         Members
+
+     5         Directory list + filters (Professionals, Businesses)     Members
+
+
+
+                                                                                                    Page 5 of 21
+Kingdom Connect – Product Requirements Document (PRD)
+
+
+
+
+     #         Screen                                                 Used by
+
+     6         Member profile (About, Skills, Business, Ideas tab)    Members
+
+     7         Connections and requests                               Members
+
+     8         Messages (inbox, thread)                               Connected members
+
+     9         Opportunities list, detail, apply, post form           Members, posters
+
+     10        Ideas pool, idea summary, idea detail, submit form,    Members, owners, investors
+               access manager
+
+     11        Training list, detail, post form, learning materials   Members
+
+     12        Events list, detail, registration                      Members
+
+     13        Business verification and upgrade (Level 2, Level 3,   Members
+               investor application)
+
+     14        Report form, my reports                                Members
+
+     15        Admin dashboard and each queue                         Admins
+
+     16        Settings (profile privacy, notifications, password,    All
+               MFA)
+
+
+
+
+  6. Registration, login and verification
+  No one reaches member content until an administrator has verified their NIDA identity,
+  and business rights unlock one level at a time.
+
+  Stories
+
+          REG-1 As a church member in Tanzania, I want to register on web or mobile so that I can
+          join the platform. (FR-01, UC-01–06)
+          REG-2 As an applicant, I want to see my registration status so that I know when I can
+          log in. (FR-04, FR-05)
+          REG-3 As an admin, I want to review pending profiles and approve or reject them so
+          that only real members get in. (FR-03, UC-07–08)
+          REG-4 As a member, I want to log in with password and OTP so that my account is
+          protected. (FR-02, UC-09–10)
+
+
+
+
+                                                                                               Page 6 of 21
+Kingdom Connect – Product Requirements Document (PRD)
+
+
+
+
+       REG-5 As a business owner, I want to upgrade to Verified Business, then Opportunity
+       Poster, so that I can list my business and post opportunities. (FR-32, UC-28–29)
+
+  Acceptance criteria
+
+   1. The wizard collects full name, username, address, NIDA number, email, phone,
+      occupation category (Professional, Businessperson, Entrepreneur, Other) and optional
+      study info.
+   2. Category-specific fields appear based on the category (for example, CPA number for
+      auditors; CISSP, CISM, CEH for cybersecurity).
+   3. NIDA number must be 20 digits and unique across accounts; a duplicate blocks
+       submission and alerts admins (duplicate-profile detection). In Phase 1 an admin checks
+       NIDA details manually; integration with NIDA's verification service may follow if
+       problems arise.
+   4. On submit, status = Pending and the applicant receives an email and SMS confirmation.
+   5. Admin sees each pending applicant with documents side by side and must give a
+      reason when rejecting; the reason is sent to the applicant.
+   6. Status values: Pending → Approved or Rejected. A rejected applicant can correct and
+      resubmit once (Proposed).
+   7. Login requires username/password, then a 6-digit OTP sent by email during the pilot
+      (SMS OTP considered later, depending on cost), valid 5 minutes, 3 attempts (Proposed
+       values).
+   8. Five failed password attempts lock the account for 15 minutes (Proposed).
+
+  Business verification levels
+
+
+     Level                       Unlocks                  Documents the            Admin checks
+                                                          member uploads
+
+     2. Verified                 Business directory       BRELA certificate,       Documents match
+     Business                    listing; may apply for   TRA TIN certificate,     the business name;
+                                 investor flag            valid business licence   licence not expired
+
+     3. Opportunity              Post opportunities and   Proof of directorship    Person is director or
+     Poster                      tenders                  (BRELA records) or       authorised; address
+                                                          authorisation letter;    confirmed
+                                                          physical address
+
+
+   9. A member can only request Level 3 after Level 2 is approved.
+
+
+
+
+                                                                                                     Page 7 of 21
+Kingdom Connect – Product Requirements Document (PRD)
+
+
+
+
+ 10. Each level shows its own status (Not started, Pending, Approved, Rejected, Expired)
+     on the member's verification screen.
+ 11. Licence expiry date is captured at Level 2 approval and drives annual re-verification
+     (section 13).
+
+
+  7. Dashboards
+  The member dashboard shows community activity and the member's own to-dos; every
+  approval, rejection and moderation figure lives only on the admin dashboard. (FR-30, FR-
+  31)
+
+
+     Widget                                              Member            Admin
+                                                         dashboard         dashboard
+
+     Welcome, date, location                             ✓                 ✓
+
+     Community stats: verified members, registered       ✓                 ✓
+     businesses, open opportunities, ideas in pool
+
+     My connection requests (accept/decline inline)      ✓                 —
+
+     My activity: applications, idea requests,           ✓                 —
+     registrations
+
+     Featured opportunities                              ✓                 —
+
+     Latest opportunities & more (tabs: All, Jobs,       ✓                 —
+     Training, Tenders, Investments, Ideas)
+
+     Quick actions: Post opportunity (Level 3 only),     ✓                 —
+     Share an idea, Scan for opportunities, Post
+     training
+
+     Latest news & updates                               ✓                 ✓
+
+     Pending verifications (members, Level 2, Level 3,   —                 ✓
+     investors)
+
+     Rejected/denied members                             —                 ✓
+
+     Open reports and items hidden pending review        —                 ✓
+
+     Moderation queue counts (opportunities, ideas,      —                 ✓
+     training, events, tenders)
+
+
+
+
+                                                                                        Page 8 of 21
+Kingdom Connect – Product Requirements Document (PRD)
+
+
+
+
+     Widget                                                          Member            Admin
+                                                                     dashboard         dashboard
+
+     Re-verifications due in 30 days                                 —                 ✓
+
+     Investor count and activity                                     —                 ✓
+
+
+  Acceptance criteria
+
+   1. The member dashboard API never returns pending, rejected or investor counts, so they
+       cannot appear even through a client bug.
+   2. Quick actions a member is not entitled to are hidden, with a short path to upgrade (for
+      example, "Verify your business to post opportunities").
+   3. Each admin count links straight to its filtered queue.
+   4. Stats refresh at least every 15 minutes (Proposed).
+
+
+
+  8. Profiles and directories
+  Profiles show what people do and offer, never how to reach them; contact happens only
+  through a connection. (FR-06–12, FR-25, UC-11–13)
+
+  Stories
+
+       PRO-1 As a member, I want to build a profile with my profession, skills and experience
+       so that others can find me.
+       PRO-2 As a member who is studying, I want to add my institution, course and year so
+       that I can be found as a student without a separate account.
+       PRO-3 As a member, I want to search and filter Professionals and Businesses so that I
+       can find the right person or company.
+       PRO-4 As a member, I want to see someone's ideas on their profile so that I know what
+       they are working on.
+
+  Profile fields
+
+
+     Section                       Fields                                Shown to members
+
+     Basics                        Photo, name, headline, city/region,   ✓
+                                   bio
+
+
+
+
+                                                                                                   Page 9 of 21
+Kingdom Connect – Product Requirements Document (PRD)
+
+
+
+
+     Section                       Fields                              Shown to members
+
+     Professional                  Profession, skills (tags),          ✓
+                                   experience, certifications,
+                                   credentials
+
+     Study (optional)              Institution, course, year           ✓
+
+     Business (Level               Business name, sector, size,        ✓
+     2+)                           description, logo, verified badge
+
+     Ideas tab                     Published idea summaries            ✓ (per idea settings)
+
+     Contact                       Phone, email, physical address      — (masked; member may choose
+                                                                       to share with connections)
+
+     Identity                      NIDA number, documents              — (admins only)
+
+     Investor flag                 —                                   — (admins only)
+
+
+  Acceptance criteria
+
+   1. Directory cards show photo, name, headline, location, top 3 skills, verified badge and a
+       Connect button; no contact details.
+   2. Filters: profession, skills, sector, region/city, currently studying (yes/no), verification
+      level for businesses.
+   3. Search matches name, profession, skills and business name, and returns results in
+       under 2 seconds for 10,000 members.
+   4. Location is chosen from Tanzanian regions and districts only.
+   5. Contact fields are never sent to another member's device; they are revealed only
+       inside an accepted connection, and only if the owner chooses to share them. Sharing is
+       optional and set by each member in privacy settings.
+   6. A member can hide their profile from the directory without leaving the platform
+       (Proposed).
+
+
+  9. Connections and messaging
+  Two members can message only after one accepts the other's connection request. (FR-
+  13–14, UC-14–16)
+
+  Stories
+
+
+
+
+                                                                                                Page 10 of 21
+Kingdom Connect – Product Requirements Document (PRD)
+
+
+
+
+       CON-1 As a member, I want to send a connection request with a short note so that the
+       other person knows why I'm reaching out.
+       CON-2 As a member, I want to accept or decline requests so that I control who can
+       message me.
+       CON-3 As a connected member, I want to message securely so that I don't need to
+       share my phone number.
+
+  Acceptance criteria
+
+   1. Request states: Sent → Accepted, Declined or Withdrawn. Declining does not notify
+       the sender (Proposed: the request simply stays pending for them for 30 days, then
+       expires).
+   2. The request note is optional, up to 300 characters.
+   3. A member can send at most 30 requests a day to slow spam (Proposed).
+   4. Messages support text and attachments (PDF, images, up to 10 MB). Messages are
+      encrypted in transit and at rest.
+   5. Either side can remove a connection or block a member; blocking stops messages and
+      hides each from the other's searches.
+   6. Every message thread has a "Report" action that sends the thread to admins (section
+      13).
+   7. Idea-related conversations (section 11) open as message threads too, labelled with the
+      idea title.
+
+
+  10. Opportunity marketplace
+  Only Level 3 businesses post opportunities; every post carries a no-fee declaration, and
+  new posters go through admin review first. (FR-15, FR-33–39, UC-30–31, UC-42–43)
+
+  Stories
+
+       OPP-1 As an Opportunity Poster, I want to post a job, partnership, collaboration or
+       investment opportunity so that I can reach verified members.
+       OPP-2 As a member, I want to browse, filter and apply through the platform so that my
+       details stay private until I choose to apply.
+       OPP-3 As a poster, I want to see and respond to applications in one place.
+       OPP-4 As a member, I want to "Scan for Opportunities" so that I see ones that match
+       my skills and location.
+       OPP-5 As an admin, I want to feature selected opportunities on the dashboard.
+
+
+
+                                                                                             Page 11 of 21
+Kingdom Connect – Product Requirements Document (PRD)
+
+
+
+
+  Posting form — required fields
+
+
+     Field                                              Rule
+
+     Type                                               Job, Training/Internship, Partnership, Collaboration,
+                                                        Investment
+
+     Title and role                                     Required
+
+     Employment type                                    Full-time, Part-time, Contract, Internship (jobs
+                                                        only)
+
+     Location                                           Tanzanian region/district, or Remote
+
+     Description and requirements                       Required, minimum 100 characters
+
+     Contact channel                                    Always via the platform; phone numbers, emails
+                                                        and links in the description are blocked or flagged
+                                                        (Proposed)
+
+     Closing date                                       Required, maximum 90 days ahead
+
+     No-fee declaration                                 Required tick: "No fee will be charged to applicants
+                                                        at any stage"
+
+
+  Acceptance criteria
+
+   1. A new poster's first 3 opportunities go to the moderation queue (status Pending
+      review); after 3 approvals with no upheld reports, later posts publish directly.
+   2. Opportunity states: Draft → Pending review → Published → Closed or Expired; also
+      Hidden (reported) and Removed (admin).
+   3. Apply sends the member's profile and an optional CV (PDF, max 5 MB) and cover note.
+       The poster sees applications as New, Shortlisted, Declined; the applicant sees the
+       same status.
+   4. A member can apply to an opportunity once.
+   5. Featured opportunities: an admin picks up to 5 published posts; they show with a
+      Featured badge until the admin removes them or the post closes.
+   6. Scan for Opportunities ranks open posts by matching skills, profession, location and
+      study info. Phase 1 uses rules, not AI.
+   7. Filters: type, location, sector, employment type, posted date.
+
+
+
+
+                                                                                                                Page 12 of 21
+Kingdom Connect – Product Requirements Document (PRD)
+
+
+
+
+  11. Ideas pool and investor access
+  Every verified member sees idea summaries; full details unlock only when the owner
+  approves and the requester accepts the NDA, and investors stay anonymous until that
+  moment. (FR-16–24, FR-40–44, UC-17–23, UC-35–36)
+
+
+
+
+  idea access flow · named and anonymous routes
+
+  Both routes meet at the owner's decision; an anonymous investor's name is revealed only
+  once the NDA is accepted.
+
+  Stories
+
+       IDEA-1 As a member, I want to submit an idea with a summary and choose its visibility
+       so that I can find investors or partners.
+       IDEA-2 As a member, I want to browse ideas in the Ideas section and on profiles so that
+       I can find ones to back or join.
+       IDEA-3 As any member, including a business owner, I want to say "I'm interested" as
+       investor, partner or both so that I can invest without needing the investor flag.
+       IDEA-4 As a flagged investor, I want to filter, save and express interest anonymously so
+       that I am not publicly pitched.
+       IDEA-5 As an idea owner, I want to approve, decline and revoke access so that I control
+       who sees my details.
+       IDEA-6 As a Verified Business, I want to apply for the investor flag.
+
+  Idea fields
+
+
+
+                                                                                         Page 13 of 21
+Kingdom Connect – Product Requirements Document (PRD)
+
+
+
+
+     Layer                                     Fields
+
+     Summary (all members)                     Title, problem being solved, industry, stage (Idea,
+                                               Prototype, Early revenue, Growing), seeking
+                                               (Investor, Partner, Both), optional investment range
+                                               in TZS, owner name and profile link unless hidden,
+                                               interest count
+
+     Details (approved only)                   Full description, business model, market, financials,
+                                               team, attachments (PDF, images; max 20 MB total)
+
+
+  Acceptance criteria
+
+   1. Idea states: Draft → Pending moderation → Published (named or without name) →
+       Archived; also Hidden (reported) and Removed.
+   2. A published idea appears in the pool and on the owner's profile Ideas tab. An idea
+      posted without name appears in the pool only, as "A verified member".
+   3. Named interest shows the requester's name, profile and chosen role (Investor, Partner,
+      Both) to the owner.
+   4. Anonymous interest (investor flag only) shows the owner: "A verified investor", sector
+      focus and ticket size band: under TZS 10M, TZS 10–50M, or over TZS 50M. Name and
+      profile stay hidden.
+   5. The owner approves or declines within the request card; declining sends a neutral
+      notice.
+   6. After approval, the requester must accept the NDA and IP terms before details open.
+      Acceptance timestamp, IP and version of the terms are stored.
+   7. On NDA acceptance, both identities are shown to each other and a message thread
+       opens, labelled with the idea title.
+   8. Detail pages and documents are watermarked with the viewer's name and date. Every
+      view and download is logged.
+   9. The owner's access manager lists everyone with access and a Revoke button; revoking
+      removes access at once and logs it.
+ 10. Investor silent browsing: the owner sees "Viewed by N investors", never names.
+ 11. Investor filters: sector, stage, investment range, region; a private Saved list.
+ 12. The investor flag is granted only by Administrator or Super Administrator invitation or
+     by approving a Level 2 member's application. There is no investor directory, badge or
+     member-facing count.
+
+
+
+                                                                                                       Page 14 of 21
+Kingdom Connect – Product Requirements Document (PRD)
+
+
+
+
+ 13. Agreement form, e-signing and legal support (UC-24–27) follow an approved
+     connection; see Open questions on whether these stay in Phase 1.
+
+
+  12. Training, events, tenders and news
+  These four modules are free to join in Phase 1, and anything members post passes
+  moderation before it goes live. (FR-45–48, UC-37–41)
+
+
+     Module                Who posts                    What members do          Key rules
+
+     Training &            Any verified member,         Browse, register, open   Title, provider, format (in
+     Courses               and admins; every post       learning materials       person, online), date or
+                           needs admin approval         (PDF, video links,       self-paced, seats; free
+                                                        slides)                  only; materials visible
+                                                                                 after registration
+
+     Events                Admins and Level 2+          Browse, register, add    Title, date, time, venue
+                           businesses                   to calendar, get         or link, capacity;
+                                                        reminders                reminders 1 day and 1
+                                                                                 hour before
+
+     Tenders               Opportunity Posters          Browse, express          Title, issuing business,
+                           (Level 3)                    interest through the     scope, closing date,
+                                                        platform                 eligibility; same no-fee
+                                                                                 rule and probation as
+                                                                                 opportunities
+
+     News &                Admins only                  Read on the              Title, image, body,
+     Updates                                            dashboard and News       publish date; optional
+                                                        page                     pin to top
+
+
+  Acceptance criteria
+
+   1. Training, events and tenders follow the same states as opportunities: Draft → Pending
+       review → Published → Closed; plus Hidden and Removed.
+   2. Registration stops at capacity and offers a waitlist (Proposed).
+   3. A registered member sees their trainings and events under "My activity" on the
+      dashboard.
+   4. The poster sees a registrant list (names and profiles only, no contact details).
+
+
+
+
+                                                                                                       Page 15 of 21
+Kingdom Connect – Product Requirements Document (PRD)
+
+
+
+
+   5. Learning materials open inside the platform; downloads are allowed only if the poster
+      enables them.
+
+
+  13. Reports, safety and administration
+  A reported opportunity disappears from members' view the moment it is reported;
+  admins then restore it or act on it, and every admin action is logged. (FR-26–29, FR-35–36,
+  FR-49, UC-32–34)
+
+  Stories
+
+       SAFE-1 As a member, I want to report a scam or bad user from any profile, opportunity,
+       idea or message thread.
+       SAFE-2 As an admin, I want one queue of reports, pending posts and re-verifications so
+       that nothing is missed.
+       SAFE-3 As an admin, I want to suspend repeat offenders.
+       SAFE-4 As a Super Admin, I want an audit log of every admin and sensitive action.
+
+  Acceptance criteria
+
+   1. The report form asks for a reason (Asked for money, Fake job or business, Harassment,
+      Impersonation, Spam, Other) and an optional note and screenshot.
+   2. Reporting an opportunity or tender sets it to Hidden immediately. Profiles and ideas
+      stay visible until an admin reviews them.
+   3. The reporter gets a reference number and the final outcome (Action taken / No
+      action), not the details.
+   4. Admin actions: Restore, Edit request to poster, Remove, Warn, Suspend posting rights,
+      Suspend account. Each requires a note.
+   5. Two upheld reports against a business within 12 months suspend its posting rights;
+      three suspend the account pending review.
+   6. Re-verification: 30 and 7 days before a business licence expires, the member is
+      reminded. On expiry, Level 2 and 3 rights pause until new documents are approved.
+   7. Audit log records who, what, when, and before/after values for approvals, rejections,
+       moderation, role changes, investor flag changes, and every view of idea details. Logs
+       are read-only and kept at least 5 years (Proposed).
+   8. Admins cannot see message contents unless a thread has been reported.
+
+
+
+
+                                                                                           Page 16 of 21
+Kingdom Connect – Product Requirements Document (PRD)
+
+
+
+
+  14. Notifications
+  Every event below shows in the in-app bell; during the pilot, OTPs and account messages
+  go by email, and SMS is added later if the budget allows, and members can turn off email
+  for non-critical ones. (FR-05)
+
+
+     Event                                              Who is told          In-   Email    SMS
+                                                                             app
+
+     Registration received, approved or                 Applicant            ✓     ✓        Later
+     rejected
+
+     Login OTP                                          Member               —     ✓        Later
+
+     Business level approved, rejected or               Business member      ✓     ✓        Later
+     expiring
+
+     Connection request received or                     Member               ✓     ✓        —
+     accepted
+
+     New message                                        Member               ✓     Digest   —
+
+     Application received / status changed              Poster / applicant   ✓     ✓        —
+
+     Post approved, rejected, hidden or                 Poster               ✓     ✓        —
+     removed
+
+     Interest in my idea (named or                      Idea owner           ✓     ✓        —
+     anonymous)
+
+     Access approved, NDA accepted,                     Owner and            ✓     ✓        —
+     access revoked                                     requester
+
+     Matches from Scan for Opportunities                Member               ✓     Weekly   —
+                                                                                   digest
+
+     Training or event reminder                         Registrant           ✓     ✓        —
+
+     Report outcome                                     Reporter             ✓     —        —
+
+     Investor flag granted                              Investor             ✓     ✓        —
+
+
+  Notification text never names an anonymous investor and never includes contact details.
+
+
+
+
+                                                                                            Page 17 of 21
+Kingdom Connect – Product Requirements Document (PRD)
+
+
+
+
+  15. Non-functional requirements
+  The figures below are proposed starting targets for the Technical Committee to confirm.
+
+
+     Area                             Requirement
+
+     Security                         MFA on every login; passwords hashed
+                                      (bcrypt/Argon2), minimum 8 characters with a
+                                      number; TLS 1.2+ in transit; AES-256 at rest for
+                                      documents and messages; role-based access
+                                      enforced on the server, not just hidden in the UI
+
+     Privacy and law                  Comply with Tanzania's Personal Data Protection
+                                      Act 2022: consent captured at registration,
+                                      members can download or delete their data,
+                                      hosted with a cloud provider in a region that meets
+                                      the Act's rules on storing personal data
+
+     Document storage                 Identity and business documents in a separate
+                                      encrypted store, visible to admins only, never in
+                                      public URLs
+
+     Performance                      Pages and searches load in under 2 seconds on 3G
+                                      for 95% of requests; app usable on Android 9+ and
+                                      iOS 15+
+
+     Scale                            Built for 2,000 members in year 1 and 20,000
+                                      without redesign
+
+     Availability                     99.5% monthly uptime; daily backups kept 30 days;
+                                      restore tested quarterly
+
+     Languages                        English and Kiswahili for all member-facing screens
+
+     Accessibility                    WCAG 2.1 AA contrast and text sizes; works with
+                                      screen readers on mobile
+
+     Data usage                       Images compressed; a low-data mode that hides
+                                      images on mobile
+
+     Monitoring                       Security logging, alerts on repeated failed logins,
+                                      unusual message volume, or duplicate NIDA
+                                      attempts
+
+
+
+
+                                                                                            Page 18 of 21
+Kingdom Connect – Product Requirements Document (PRD)
+
+
+
+
+  16. Key data entities and statuses
+  These are the main records the system stores and the states each can be in, for
+  developers to design the database against.
+
+
+     Entity                              Key fields                            Statuses
+
+     Member                              Name, username, NIDA                  Pending, Approved, Rejected,
+                                         (encrypted), phone, email, region,    Suspended, Deactivated
+                                         category, verification level,
+                                         investor flag (private)
+
+     Profile                             Headline, bio, skills, experience,    —
+                                         certifications, study info, privacy
+                                         settings
+
+     Business                            Name, sector, BRELA no., TIN,         Pending, Approved, Rejected,
+                                         licence no. and expiry, address,      Expired
+                                         level
+
+     Verification request                Member, level requested,              Pending, Approved, Rejected
+                                         documents, reviewer, reason
+
+     Connection                          Requester, receiver, note             Sent, Accepted, Declined,
+                                                                               Withdrawn, Expired
+
+     Message thread /                    Members, idea link (optional),        Active, Reported, Closed
+     message                             body, attachments
+
+     Opportunity                         Poster, type, title, location,        Draft, Pending review, Published,
+                                         closing date, no-fee flag, featured   Closed, Expired, Hidden,
+                                         flag                                  Removed
+
+     Application                         Opportunity, applicant, CV, note      New, Shortlisted, Declined,
+                                                                               Withdrawn
+
+     Idea                                Owner, summary fields, details,       Draft, Pending moderation,
+                                         attachments, visibility               Published, Archived, Hidden,
+                                                                               Removed
+
+     Idea access request                 Idea, requester, role, anonymous      Pending, Approved, Declined,
+                                         flag, NDA version, accepted at        NDA accepted, Revoked
+
+     Training / Event /                  Poster, title, dates, capacity,       Draft, Pending review, Published,
+     Tender                              materials                             Closed, Hidden, Removed
+
+
+
+
+                                                                                                             Page 19 of 21
+Kingdom Connect – Product Requirements Document (PRD)
+
+
+
+
+     Entity                              Key fields                              Statuses
+
+     Registration                        Member, training or event               Registered, Waitlisted,
+                                                                                 Cancelled, Attended
+
+     News item                           Title, body, image, pinned              Draft, Published
+
+     Report                              Reporter, target, reason, note          Open, Under review, Action
+                                                                                 taken, No action
+
+     Audit log entry                     Actor, action, target, before/after,    — (append only)
+                                         time, IP
+
+
+
+
+  17. Success metrics
+  Year 1 targets come from the Project Plan v1.1; the product measures below show whether
+  the features are working day to day.
+
+
+     Metric                                                            Target                    Source
+
+     Registered members                                                2,000+                    Plan
+
+     Verified professionals                                            1,000+                    Plan
+
+     Registered businesses                                             300+                      Plan
+
+     Investors (internal only)                                         50+                       Plan
+
+     Jobs published                                                    200+                      Plan
+
+     Partnerships formed                                               100+                      Plan
+
+     Platform adoption rate                                            70%+                      Plan
+
+     Median time from registration to approval                         Under 3 working days      Proposed
+
+     Reported opportunities reviewed                                   Within 24 hours           Proposed
+
+     Upheld scam reports per 100 opportunities                         Under 1                   Proposed
+
+     Ideas with at least one approved access request                   To be agreed              —
+
+     Monthly active members                                            To be agreed              —
+
+
+
+
+                                                                                                              Page 20 of 21
+Kingdom Connect – Product Requirements Document (PRD)
+
+
+
+
+  18. Open questions and decisions needed
+  These three are deferred and will be settled during or after development; each
+  "Proposed" item elsewhere in this PRD is a default the team can change.
+
+       Agreements and e-signing (UC-24–27): keep in Phase 1, or drop, since "legal and
+       investment contract management" is out of scope? Decide during development.
+       Cloud provider and region: which provider and data region, confirmed against the
+       Personal Data Protection Act. Decide during development, before the pilot goes live.
+       Admin team size: how many reviewers handle the verification and moderation queues?
+       Decide during or after development, based on pilot volumes.
+
+  Decided on 14 October 2026
+
+       NIDA: manual admin review in Phase 1; integrate with NIDA's verification service later if
+       problems arise.
+       Training: any verified member can post; every post needs admin approval.
+       Contact sharing: optional; each member chooses whether connections can see their
+       phone or email.
+       OTP: by email during the pilot; SMS considered later, depending on cost.
+       Investor invitations: Administrators and Super Administrators.
+       Probation: a new poster's first 3 posts are reviewed; 2 upheld reports in 12 months
+       suspend posting, 3 suspend the account.
+       Investor ticket bands: under TZS 10M, TZS 10–50M, over TZS 50M.
+       Hosting: cloud hosting.
+
+
+
+
+                                                                                          Page 21 of 21
+

@@ -414,6 +414,17 @@ The stack itself is decided in [Lock the tech stack](https://github.com/clainkav
 
 These are the main records the system stores and the states each can be in. The physical schema is designed in [Database schema and access rules](https://github.com/clainkavit/kingdom-connect/issues/12).
 
+**Access rules (decided 17 Oct).** The server decides what each request may read or write; the UI only hides what a user doesn't need to see, and is never relied on for privacy. Restricted data never leaves the server for a user who isn't allowed it:
+
+| Data | Who the server returns it to |
+|---|---|
+| Investor flag | Admins only. No member-facing query returns it, directly or as a count |
+| Contact details (phone, email, address) | The owner; a connected member only if the connection is accepted and the owner shares contact details |
+| NIDA number and identity or business documents | The owner and admins. Documents sit in a separate admin-only store, never at public URLs |
+| Message contents | The two members in the thread. Admins only once the thread is reported |
+
+If the stack stays on Supabase/Postgres, these rules are enforced in the database with Row-Level Security policies and restricted views, so a faulty API endpoint can't leak them. The stack is decided in [Lock the tech stack](https://github.com/clainkavit/kingdom-connect/issues/10).
+
 | Entity | Key fields | Statuses |
 |---|---|---|
 | Member | Name, username, NIDA (encrypted), phone, email, region, category, verification level, investor flag (private) | Pending, Approved, Rejected, Suspended, Deactivated |
@@ -473,6 +484,9 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 - Development uses managed Supabase with test data only; the production hosting decision, with a legal check, comes before the pilot.
 - This markdown file is the living PRD; the Plan v1.1 stays frozen as the approved church document.
 
+**Decided on 17 October 2026**
+- Access rules are enforced on the server, not in the UI: the investor flag, contact details, identity documents and message contents never reach a user who isn't allowed them (section 16). On Supabase/Postgres this means Row-Level Security in the database. The schema itself is still open in [Database schema and access rules](https://github.com/clainkavit/kingdom-connect/issues/12).
+
 **Open.** Every open question is a ticket on the [wayfinder map](https://github.com/clainkavit/kingdom-connect/issues/1) and is linked where it applies above.
 
 **Outside this spec**
@@ -489,6 +503,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | 15 Oct 2026 | Development hosting path recorded | 15, 18 |
 | 15 Oct 2026 | Phone bottom tab bar proposed; mockup and prototype linked as visual direction | 5 |
 | 15 Oct 2026 | Open items linked to wayfinder tickets; Proposed values flagged for review | Throughout |
+| 17 Oct 2026 | Server-side access rules for the investor flag, contact details, identity documents and messages | 16, 18 |
 
 ## Appendix B: Source documents
 

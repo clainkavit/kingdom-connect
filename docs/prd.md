@@ -177,7 +177,7 @@ The member dashboard shows community activity and the member's own to-dos; every
 |---|---|---|
 | Welcome, date, location | ✓ | ✓ |
 | Community stats: verified members, registered businesses, open opportunities, ideas in pool | ✓ | ✓ |
-| People you may know: members whose skills or location match yours, with a Connect button (changed 15 Oct) | ✓ | ✗ |
+| People you may know: members who share skills, location, profession, study or connections with you, with a Connect button (changed 15 Oct) | ✓ | ✗ |
 | My connection requests (accept/decline inline) | ✓ | ✗ |
 | My activity: applications, idea requests, registrations | ✓ | ✗ |
 | Featured opportunities | ✓ | ✓ (with slot count and remove, Proposed) |
@@ -197,7 +197,7 @@ The member dashboard shows community activity and the member's own to-dos; every
 2. Quick actions a member is not entitled to are hidden, with a short path to upgrade (for example, "Verify your business to post opportunities").
 3. Each admin count links straight to its filtered queue.
 4. Stats refresh at least every 15 minutes (Proposed).
-5. People you may know excludes members already connected, with a pending request, blocked, or hidden from the directory, and is rule-based like Scan for Opportunities (Proposed). The matching rules are open: see [Matching rules for Scan for Opportunities and People you may know](https://github.com/clainkavit/kingdom-connect/issues/7).
+5. People you may know excludes members already connected, with a pending request, blocked, or hidden from the directory, and is rule-based like Scan for Opportunities. The rules are in "Matching rules" in section 10 (decided 20 Oct).
 
 ## 8. Profiles and directories
 
@@ -270,6 +270,8 @@ Level 3 businesses and Administrators post opportunities, including tenders. Eve
 | Location | Tanzanian region/district, or Remote |
 | Description and requirements | Required, minimum 100 characters |
 | Contact channel | Always via the platform; phone numbers, emails and links in the description are blocked or flagged (Proposed) |
+| Skills wanted | 1 to 5 tags. Required for Jobs, Training/Internship and Collaboration; optional for other types (changed 20 Oct) |
+| Sector | Chosen from a fixed list (changed 20 Oct) |
 | Closing date | Required, maximum 90 days ahead |
 | No-fee declaration | Required tick for Level 3 posters: "No fee will be charged to applicants at any stage". Not shown for admin posts (changed 15 Oct) |
 
@@ -281,8 +283,45 @@ Level 3 businesses and Administrators post opportunities, including tenders. Eve
 3. Apply sends the member's profile and an optional CV (PDF, max 5 MB) and cover note. The poster sees applications as New, Shortlisted, Declined; the applicant sees the same status.
 4. A member can apply to an opportunity once.
 5. Featured opportunities: an admin picks up to 5 published posts; they show with a Featured badge until the admin removes them or the post closes.
-6. Scan for Opportunities ranks open posts by matching skills, profession, location and study info. Phase 1 uses rules, not AI. **Open:** the rules, see [Matching rules for Scan for Opportunities and People you may know](https://github.com/clainkavit/kingdom-connect/issues/7).
+6. Scan for Opportunities ranks open posts by matching skills, profession, location and study info. Phase 1 uses rules, not AI. The rules are under "Matching rules" below (decided 20 Oct).
 7. Filters: type, location, sector, employment type, posted date.
+
+**Matching rules** (decided 20 Oct, ticket [#7](https://github.com/clainkavit/kingdom-connect/issues/7)). Both features are rule-based, with no AI. Matching reads only tags and profile fields, never a post's description text.
+
+*Skill tags.* Typing suggests existing tags; tags are lowercased and trimmed on save. Administrators keep a synonym merge list (for example accounts to accounting) that applies everywhere.
+
+*Location.* Same district counts fully, same region partly, and a Remote post counts fully for everyone. A different region earns no location points, but an item can still appear if skills match strongly.
+
+*Scan for Opportunities.*
+
+| Signal | Points |
+|---|---|
+| Each matching skill tag (max 3 counted) | 20 each |
+| Post sector matches the member's profession or business sector | 15 |
+| Location: same district 15, same region 8, Remote 15 | up to 15 |
+| Study info, only for Training/Internship and entry-level Jobs | 10 |
+
+Eligible: published, open posts of every type. Excluded: the member's own posts, posts already applied to, and closed, expired, Hidden or Removed posts. Minimum 20 points to appear; sorted by score, ties to the post closing soonest.
+
+*People you may know.*
+
+| Signal | Points |
+|---|---|
+| Each mutual connection (max 5 counted) | 15 each |
+| Each shared skill (max 3 counted) | 10 each |
+| Same district 15, same region 8 | up to 15 |
+| Same profession | 10 |
+| Same institution or course (only if both filled it in) | 10 |
+
+Excluded: members already connected, with a pending request, blocked, hidden from the directory, suspended or deactivated, and anyone whose connection request the member declined or who declined theirs, for 90 days. Minimum 20 points; sorted by score, ties to the most recently active member.
+
+*Rules for both.*
+- The investor flag is never used, so investor status cannot shape what anyone is shown.
+- Each result shows its top two reasons, built from the member's own tags and location, for example "Matches your skills: accounting, auditing. In Mwanza." Mutual connections show as a count only ("3 mutual connections"), never names. A reason never includes anything the viewer cannot already see on that profile or post.
+- The dashboard widget shows the top 5 of each feature and a "See all" page shows up to 20. Scores are worked out when the page opens and are not stored. If that is too slow at scale, a nightly job replaces it.
+- The weekly Scan digest email sends the top 5 matches new since the last digest, only when there is at least one, and members can turn it off.
+- A member with an empty profile sees "Complete your profile to see matches", listing the missing fields. People you may know falls back to the newest verified members in the same region until the profile has data.
+- Weights and minimum scores live in a settings table. Only a Super Administrator can change them, and each change is written to the audit log with before and after values. Any Administrator can edit the synonym merge list.
 
 ## 11. Ideas pool and investor access
 
@@ -433,7 +472,7 @@ If the stack stays on Supabase/Postgres, these rules are enforced in the databas
 | Verification request | Member, level requested, documents, reviewer, reason | Pending, Approved, Rejected |
 | Connection | Requester, receiver, note | Sent, Accepted, Declined, Withdrawn, Expired |
 | Message thread / message | Members, idea link (optional), body, attachments | Active, Reported, Closed |
-| Opportunity | Poster (Level 3 member or admin), type (including Tender), title, location, closing date, no-fee flag, featured flag | Draft, Pending review, Published, Closed, Expired, Hidden, Removed |
+| Opportunity | Poster (Level 3 member or admin), type (including Tender), title, location, sector, skills wanted (tags), closing date, no-fee flag, featured flag | Draft, Pending review, Published, Closed, Expired, Hidden, Removed |
 | Application | Opportunity, applicant, CV, note | New, Shortlisted, Declined, Withdrawn |
 | Idea | Owner, summary fields, details, attachments, visibility | Draft, Pending moderation, Published, Archived, Hidden, Removed |
 | Idea access request | Idea, requester, role, anonymous flag, NDA version, accepted at | Pending, Approved, Declined, NDA accepted, Revoked |
@@ -441,6 +480,7 @@ If the stack stays on Supabase/Postgres, these rules are enforced in the databas
 | Registration | Member, training or event | Registered, Waitlisted, Cancelled, Attended |
 | News item | Title, body, image, pinned | Draft, Published |
 | Report | Reporter, target, reason, note | Open, Under review, Action taken, No action |
+| Matching setting | Feature, signal, points, minimum score; skill synonym merge list. Weights changed by Super Administrator, synonyms by Administrator | n/a |
 | Audit log entry | Actor, action, target, before/after, time, IP | Append only |
 
 Changed 15 Oct: Tender moved from the Training / Event / Tender record into Opportunity. How a member's interest in a tender is stored (as an Application or its own record) is open in ticket [Tenders as an Opportunity type](https://github.com/clainkavit/kingdom-connect/issues/5).
@@ -487,6 +527,11 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 **Decided on 17 October 2026**
 - Access rules are enforced on the server, not in the UI: the investor flag, contact details, identity documents and message contents never reach a user who isn't allowed them (section 16). On Supabase/Postgres this means Row-Level Security in the database. The schema itself is still open in [Database schema and access rules](https://github.com/clainkavit/kingdom-connect/issues/12).
 
+**Decided on 20 October 2026 (matching, ticket #7)**
+- Scan for Opportunities and People you may know are rule-based and point-scored from tags and profile fields; the rules are in section 10.
+- Opportunity posts gain skills-wanted tags and a sector.
+- The investor flag is never used in matching. Mutual connections show as a count only.
+
 **Open.** Every open question is a ticket on the [wayfinder map](https://github.com/clainkavit/kingdom-connect/issues/1) and is linked where it applies above.
 
 **Outside this spec**
@@ -504,6 +549,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | 15 Oct 2026 | Phone bottom tab bar proposed; mockup and prototype linked as visual direction | 5 |
 | 15 Oct 2026 | Open items linked to wayfinder tickets; Proposed values flagged for review | Throughout |
 | 17 Oct 2026 | Server-side access rules for the investor flag, contact details, identity documents and messages | 16, 18 |
+| 20 Oct 2026 | Matching rules for Scan for Opportunities and People you may know; skills-wanted and sector added to the posting form | 7, 10, 16, 18 |
 
 ## Appendix B: Source documents
 

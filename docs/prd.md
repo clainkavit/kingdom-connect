@@ -373,7 +373,7 @@ A reported opportunity disappears from members' view the moment it is reported; 
 | Text | Accepted where |
 |---|---|
 | Terms of use for members | Registration; again when the text changes |
-| Privacy notice and data consent (Personal Data Protection Act 2022) | Registration, as its own tick box (Proposed); again when the text changes |
+| Privacy notice and data consent (Personal Data Protection Act 2022) | Registration, as its own tick box separate from the terms of use; again when the text changes |
 | NDA | Per idea access request, after the owner approves |
 | IP terms | Per idea access request, together with the NDA |
 | Hand-off disclaimer | Per Agreed to proceed record (see section 11) |
@@ -383,6 +383,15 @@ A reported opportunity disappears from members' view the moment it is reported; 
 3. **Launch gate.** No real member registers, and no real idea or NIDA data is stored, until all five texts are approved and loaded as version 1.0. Before that, the app runs test data only.
 4. **Versions.** Each text is stored with its version number and date, and each acceptance records which version was accepted. When the terms of use or the privacy notice change, members accept again at their next login. An NDA or IP term a member has already accepted stays valid under the version they accepted; a new version applies only to new requests.
 5. **Languages.** Every text is shown in English and Kiswahili. If the two differ, the English text governs, and the Kiswahili is a faithful translation, unless a lawyer advises otherwise.
+6. **What the lawyer reviews.** Besides the wording of the five texts, the lawyer is asked to confirm:
+   - The legal form and name of the entity that runs the platform.
+   - Registration of that entity with the Personal Data Protection Commission as a data controller. The Act says no one may collect or process personal data without registering (checked against the Commission's website on 20 Oct; the lawyer confirms the process and timing).
+   - Whether holding member data on a host outside Tanzania, such as managed Supabase, needs a cross-border transfer permit or the member's consent. This feeds the production hosting decision (section 15).
+   - Whether NIDA numbers, identity documents and any record of church membership count as sensitive personal data that needs written consent.
+   - Whether one consent tick box separate from the terms of use is enough, and how a member withdraws consent.
+   - Whether the NDA and IP terms hold between members, and what the platform may and may not promise about them.
+   - Whether the hand-off disclaimer limits the platform's liability for what members do off the platform.
+   - What the platform must keep and what it must delete when a member asks to delete their data, including audit logs and Agreed to proceed records.
 
 ## 14. Notifications
 

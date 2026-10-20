@@ -90,7 +90,7 @@ Phase 1 ships in two releases inside the 12-month plan: Release 1 builds trust a
 | Opportunities | ✗ | Posting (including tenders), applications, featured, Scan for Opportunities |
 | Ideas and investors | ✗ | Ideas pool, profile Ideas tab, NDA flow, investor flag and tools |
 | Learning and community | ✗ | Training and courses, events, news |
-| Agreements | ✗ | **Open:** agreement form, e-signing, legal support. See [Agreements and e-signing: keep in Phase 1 or drop?](https://github.com/clainkavit/kingdom-connect/issues/6) |
+| Agreed to proceed | ✗ | A two-sided record that two members agreed to continue off the platform (Ideas and Opportunities). Replaces agreement forms, e-signing and legal support (decided 20 Oct, [#6](https://github.com/clainkavit/kingdom-connect/issues/6)) |
 
 **Platforms:** responsive web portal plus Android and iOS apps with the same features.
 
@@ -329,7 +329,17 @@ Both routes meet at the owner's decision; an anonymous investor's name is reveal
 10. Investor silent browsing: the owner sees "Viewed by N investors", never names.
 11. Investor filters: sector, stage, investment range, region; a private Saved list.
 12. The investor flag is granted only by Administrator or Super Administrator invitation or by approving a Level 2 member's application. There is no investor directory, badge or member-facing count.
-13. Agreement form, e-signing and legal support (UC-24–27) follow an approved connection. **Open:** see [Agreements and e-signing: keep in Phase 1 or drop?](https://github.com/clainkavit/kingdom-connect/issues/6)
+13. After an approved connection, the two members can record that they agreed to proceed. See "Agreed to proceed" below. The agreement form, e-signing and legal support (UC-24–26) are not in Phase 1.
+
+**Agreed to proceed** (changed 20 Oct; replaces UC-24 to UC-27, ticket [#6](https://github.com/clainkavit/kingdom-connect/issues/6)). It applies to an accepted Idea connection and to a connection that comes from an Opportunity (Partnership, Collaboration or Investment). It ships in Release 2.
+
+1. Either member marks "We agreed to proceed" and may add a short note. The other member must confirm.
+2. Each side must accept a hand-off disclaimer: from here the parties continue outside Kingdom Connect, and the platform is not responsible for what follows. The record is valid only when both sides have accepted. The accepted version and timestamp are stored for each side, as with the NDA. The wording is written in [Who writes the NDA, IP terms and data-consent text?](https://github.com/clainkavit/kingdom-connect/issues/11).
+3. While Pending, the member who started it may withdraw. It stays Pending for 14 days, with one reminder on day 7, then lapses. Either member can restart it. A lapsed request counts as "not recorded" in analytics. Messaging stays open throughout.
+4. Once both have accepted, either member may withdraw within 1 hour and the other is notified. After that hour the record is final.
+5. The record shows on both members' profiles and to Administrators. Administrators see names, the idea or opportunity, date, note and status only, never contact details or the investor flag. An Administrator can annotate a record but not delete it. A withdrawn record stays visible as Withdrawn.
+6. The record also gives the platform the count of people it has linked, for analytics.
+7. Not in Phase 1: an agreement form, e-signing, uploaded contracts and a legal-professional directory. A lawyer directory is a possible Phase 2 idea now that the platform is open to anyone in Tanzania.
 
 ## 12. Training, events and news
 
@@ -383,6 +393,7 @@ Every event below shows in the in-app bell; during the pilot, OTPs and account m
 | Post approved, rejected, hidden or removed | Poster | ✓ | ✓ | ✗ |
 | Interest in my idea (named or anonymous) | Idea owner | ✓ | ✓ | ✗ |
 | Access approved, NDA accepted, access revoked | Owner and requester | ✓ | ✓ | ✗ |
+| Agreed to proceed: requested, reminder, confirmed, lapsed or withdrawn | The other member (both, on withdrawal) | ✓ | ✓ | ✗ |
 | Matches from Scan for Opportunities | Member | ✓ | Weekly digest | ✗ |
 | Training or event reminder | Registrant | ✓ | ✓ | ✗ |
 | Report outcome | Reporter | ✓ | ✗ | ✗ |
@@ -437,6 +448,7 @@ If the stack stays on Supabase/Postgres, these rules are enforced in the databas
 | Application | Opportunity, applicant, CV, note | New, Shortlisted, Declined, Withdrawn |
 | Idea | Owner, summary fields, details, attachments, visibility | Draft, Pending moderation, Published, Archived, Hidden, Removed |
 | Idea access request | Idea, requester, role, anonymous flag, NDA version, accepted at | Pending, Approved, Declined, NDA accepted, Revoked |
+| Agreement record | The two members, idea or opportunity, note, disclaimer version, accepted at (each side), admin annotations | Pending, Agreed, Lapsed, Withdrawn |
 | Training / Event | Poster, title, dates, capacity, materials | Draft, Pending review, Published, Closed, Hidden, Removed |
 | Registration | Member, training or event | Registered, Waitlisted, Cancelled, Attended |
 | News item | Title, body, image, pinned | Draft, Published |
@@ -487,6 +499,10 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 **Decided on 17 October 2026**
 - Access rules are enforced on the server, not in the UI: the investor flag, contact details, identity documents and message contents never reach a user who isn't allowed them (section 16). On Supabase/Postgres this means Row-Level Security in the database. The schema itself is still open in [Database schema and access rules](https://github.com/clainkavit/kingdom-connect/issues/12).
 
+**Decided on 20 October 2026**
+- Agreements and e-signing (UC-24 to UC-27) are replaced in Phase 1 by an "Agreed to proceed" record that both members accept, with a hand-off disclaimer. It applies to Ideas and Opportunities and ships in Release 2 (section 11).
+- Legal support (UC-26) is out of Phase 1. A lawyer directory is a possible Phase 2 idea.
+
 **Open.** Every open question is a ticket on the [wayfinder map](https://github.com/clainkavit/kingdom-connect/issues/1) and is linked where it applies above.
 
 **Outside this spec**
@@ -504,6 +520,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | 15 Oct 2026 | Phone bottom tab bar proposed; mockup and prototype linked as visual direction | 5 |
 | 15 Oct 2026 | Open items linked to wayfinder tickets; Proposed values flagged for review | Throughout |
 | 17 Oct 2026 | Server-side access rules for the investor flag, contact details, identity documents and messages | 16, 18 |
+| 20 Oct 2026 | UC-24 to UC-27 replaced by a two-sided "Agreed to proceed" record; overrides the Plan's "both routes end with an agreement" (section 13 of the Plan) | 4, 11, 14, 16, 18 |
 
 ## Appendix B: Source documents
 

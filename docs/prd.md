@@ -87,7 +87,7 @@ Phase 1 ships in two releases inside the 12-month plan: Release 1 builds trust a
 | Profiles and directories | Professional and business profiles, study info, search, privacy masking | Business levels 2 and 3 |
 | Connections | Requests, accept/decline, secure messaging | ✗ |
 | Safety | Report a scam/bad user, admin review, suspension | Fast takedown of opportunities, probation queue |
-| Opportunities | ✗ | Posting (including tenders), applications, featured, Scan for Opportunities |
+| Opportunities | ✗ | Posting (including tenders), applications and expressions of interest, featured, Scan for Opportunities |
 | Ideas and investors | ✗ | Ideas pool, profile Ideas tab, NDA flow, investor flag and tools |
 | Learning and community | ✗ | Training and courses, events, news |
 | Agreements | ✗ | **Open:** agreement form, e-signing, legal support. See [Agreements and e-signing: keep in Phase 1 or drop?](https://github.com/clainkavit/kingdom-connect/issues/6) |
@@ -196,7 +196,7 @@ The member dashboard shows community activity and the member's own to-dos; every
 | People you may know: members whose skills or location match yours, with a Connect button (changed 15 Oct) | ✓ | ✗ |
 | My connection requests (accept/decline inline) | ✓ | ✗ |
 | Reference requests: "Do you know [name]?" (Yes/No inline, decided 19 Oct) | ✓ | ✗ |
-| My activity: applications, idea requests, registrations | ✓ | ✗ |
+| My activity: applications and expressions of interest, idea requests, registrations | ✓ | ✗ |
 | Featured opportunities | ✓ | ✓ (with slot count and remove, Proposed) |
 | Latest opportunities & more (tabs: All, Jobs, Training, Tenders, Investments, Ideas) | ✓ | ✗ |
 | Member quick actions: Post opportunity (Level 3 only), Share an idea, Scan for opportunities, Post training | ✓ | ✗ |
@@ -272,7 +272,7 @@ Level 3 businesses and Administrators post opportunities, including tenders. Eve
 **Stories**
 - **OPP-1** As an Opportunity Poster, I want to post a job, partnership, collaboration, investment opportunity or tender so that I can reach verified members.
 - **OPP-2** As a member, I want to browse, filter and apply through the platform so that my details stay private until I choose to apply.
-- **OPP-3** As a poster, I want to see and respond to applications in one place.
+- **OPP-3** As a poster, I want to see and respond to applications and expressions of interest in one place.
 - **OPP-4** As a member, I want to "Scan for Opportunities" so that I see ones that match my skills and location.
 - **OPP-5** As an admin, I want to feature selected opportunities on the dashboard.
 - **OPP-6** As an admin, I want to post opportunities and tenders on behalf of the community so that members see them without waiting for a business to post (changed 15 Oct).
@@ -281,25 +281,37 @@ Level 3 businesses and Administrators post opportunities, including tenders. Eve
 
 | Field | Rule |
 |---|---|
-| Type | Job, Training/Internship, Partnership, Collaboration, Investment, Tender (Tender added 15 Oct) |
+| Type | Job, Partnership, Collaboration, Investment, Tender (Tender added 15 Oct). An internship is a Job with employment type Internship; training goes in Training & Courses (section 12). Training/Internship removed 19 Oct |
 | Title and role | Required |
 | Employment type | Full-time, Part-time, Contract, Internship (jobs only) |
 | Location | Tanzanian region/district, or Remote |
 | Description and requirements | Required, minimum 100 characters |
 | Contact channel | Always via the platform; phone numbers, emails and links in the description are blocked or flagged (Proposed) |
 | Closing date | Required, maximum 90 days ahead |
-| No-fee declaration | Required tick for Level 3 posters: "No fee will be charged to applicants at any stage". Not shown for admin posts (changed 15 Oct) |
+| No-fee declaration | Required tick for Level 3 posters: "No fee will be charged to applicants at any stage". It covers tenders too, so a tender that charges a document fee or bid security cannot be posted in Phase 1 (decided 19 Oct). Not shown for admin posts (changed 15 Oct), but admin posts never ask members for a fee either |
 
-**Tender type (changed 15 Oct).** A tender is an Opportunity type, not a separate module. Draft tender fields carried from v0.1: issuing business, scope, closing date, eligibility. Members express interest in a tender rather than apply. **Open:** the exact fields and actions per type, and whether Training/Internship belongs here or in Training & Courses. See [Tenders as an Opportunity type: how do they differ?](https://github.com/clainkavit/kingdom-connect/issues/5)
+**Types and responses (decided 19 Oct).** Members apply to Jobs and express interest in every other type. Both are stored as a Response. Decided in [Tenders as an Opportunity type: how do they differ?](https://github.com/clainkavit/kingdom-connect/issues/5)
+
+| Type | Member action | What the member sends | Who can respond |
+|---|---|---|---|
+| Job (including internships) | Apply | Profile, optional CV (PDF, max 5 MB), cover note | Any member |
+| Partnership, Collaboration | Express interest | Profile, short note, optional attachment (PDF, max 5 MB) | Any member |
+| Investment | Express interest | Profile, short note, optional attachment (PDF, max 5 MB) | Any member |
+| Tender | Express interest | Profile, short note, optional attachment such as a company profile (PDF, max 5 MB) | Verified Business (Level 2) and up |
+
+Partnership and Collaboration keep both names from the Plan but share the same fields and action.
+
+**Tender fields.** On top of the posting form above, a tender has: issuing organisation (the business, or "Kingdom Connect" for admin posts), tender reference number, scope of work, eligibility, required documents (a list), closing date and time, optional estimated value in TZS, and the tender document (PDF attachment). The formal bid follows the instructions in the tender document; the platform handles interest and conversation, not bid submission.
 
 **Acceptance criteria**
 1. A new Level 3 poster's first 3 opportunities go to the moderation queue (status Pending review); after 3 approvals with no upheld reports, later posts publish directly. Admin posts always publish directly (changed 15 Oct).
 2. Opportunity states: Draft → Pending review → Published → Closed or Expired; also Hidden (reported) and Removed (admin).
-3. Apply sends the member's profile and an optional CV (PDF, max 5 MB) and cover note. The poster sees applications as New, Shortlisted, Declined; the applicant sees the same status.
-4. A member can apply to an opportunity once.
+3. Apply and Express interest send what the table above lists. The poster sees each Response as New, Shortlisted or Declined, the member sees the same status, and the conversation continues in a message thread.
+4. A member can respond to an opportunity once.
 5. Featured opportunities: an admin picks up to 5 published posts; they show with a Featured badge until the admin removes them or the post closes.
 6. Scan for Opportunities ranks open posts by matching skills, profession, location and study info. Phase 1 uses rules, not AI. **Open:** the rules, see [Matching rules for Scan for Opportunities and People you may know](https://github.com/clainkavit/kingdom-connect/issues/7).
 7. Filters: type, location, sector, employment type, posted date.
+8. A member below Level 2 sees a tender but, instead of Express interest, sees "Verify your business to respond".
 
 ## 11. Ideas pool and investor access
 
@@ -398,7 +410,7 @@ Every event below shows in the in-app bell; during the pilot, OTPs and account m
 | Business level approved, rejected or expiring | Business member | ✓ | ✓ | Later |
 | Connection request received or accepted | Member | ✓ | ✓ | ✗ |
 | New message | Member | ✓ | Digest | ✗ |
-| Application received / status changed | Poster / applicant | ✓ | ✓ | ✗ |
+| Application or interest received / status changed | Poster / member who responded | ✓ | ✓ | ✗ |
 | Post approved, rejected, hidden or removed | Poster | ✓ | ✓ | ✗ |
 | Interest in my idea (named or anonymous) | Idea owner | ✓ | ✓ | ✗ |
 | Access approved, NDA accepted, access revoked | Owner and requester | ✓ | ✓ | ✗ |
@@ -454,7 +466,7 @@ If the stack stays on Supabase/Postgres, these rules are enforced in the databas
 | Connection | Requester, receiver, note | Sent, Accepted, Declined, Withdrawn, Expired |
 | Message thread / message | Members, idea link (optional), body, attachments | Active, Reported, Closed |
 | Opportunity | Poster (Level 3 member or admin), type (including Tender), title, location, closing date, no-fee flag, featured flag | Draft, Pending review, Published, Closed, Expired, Hidden, Removed |
-| Application | Opportunity, applicant, CV, note | New, Shortlisted, Declined, Withdrawn |
+| Response (replaces Application, 19 Oct) | Opportunity, member, kind (Application for Jobs, Interest for other types), CV or attachment, note | New, Shortlisted, Declined, Withdrawn |
 | Idea | Owner, summary fields, details, attachments, visibility | Draft, Pending moderation, Published, Archived, Hidden, Removed |
 | Idea access request | Idea, requester, role, anonymous flag, NDA version, accepted at | Pending, Approved, Declined, NDA accepted, Revoked |
 | Training / Event | Poster, title, dates, capacity, materials | Draft, Pending review, Published, Closed, Hidden, Removed |
@@ -463,7 +475,7 @@ If the stack stays on Supabase/Postgres, these rules are enforced in the databas
 | Report | Reporter, target, reason, note | Open, Under review, Action taken, No action |
 | Audit log entry | Actor, action, target, before/after, time, IP | Append only |
 
-Changed 15 Oct: Tender moved from the Training / Event / Tender record into Opportunity. How a member's interest in a tender is stored (as an Application or its own record) is open in ticket [Tenders as an Opportunity type](https://github.com/clainkavit/kingdom-connect/issues/5).
+Changed 15 Oct: Tender moved from the Training / Event / Tender record into Opportunity. Decided 19 Oct: applications and expressions of interest share one Response record, and tenders carry their extra fields (section 10) on the Opportunity record.
 
 ## 17. Success metrics
 
@@ -510,6 +522,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 **Decided on 19 October 2026**
 - Level 1 verification checks identity and church membership (section 6, Member verification). Identity: a completed profile, a required face photo and a NIDA card photo. Church membership: 2 to 3 Mkuyuni church references, in person or online, of whom at least 2 must answer Yes. Founding members are approved from a church leadership list. Resolves [What does an admin check to approve a member?](https://github.com/clainkavit/kingdom-connect/issues/3)
 - The Proposed approval target (median under 3 working days, section 17) stays, even though references can take up to 7 days to answer.
+- Opportunity types are Job, Partnership, Collaboration, Investment and Tender (section 10). Training/Internship is removed: internships are Jobs, training goes in Training & Courses. Members apply to Jobs and express interest in the rest, stored as one Response record. Only Level 2 and up can respond to a tender, tenders get 8 extra fields, and tenders that charge any fee cannot be posted. Resolves [Tenders as an Opportunity type: how do they differ?](https://github.com/clainkavit/kingdom-connect/issues/5)
 
 **Open.** Every open question is a ticket on the [wayfinder map](https://github.com/clainkavit/kingdom-connect/issues/1) and is linked where it applies above.
 
@@ -529,6 +542,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | 15 Oct 2026 | Open items linked to wayfinder tickets; Proposed values flagged for review | Throughout |
 | 17 Oct 2026 | Server-side access rules for the investor flag, contact details, identity documents and messages | 16, 18 |
 | 19 Oct 2026 | Level 1 verification: identity plus church membership through references; founding members; Reference record, dashboard widget and notifications | 3, 5, 6, 7, 13, 14, 16, 18 |
+| 19 Oct 2026 | Opportunity types and responses: Training/Internship removed, Apply vs Express interest, tender fields and no-fee rule, Response record | 4, 7, 10, 14, 16, 18 |
 
 ## Appendix B: Source documents
 

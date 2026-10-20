@@ -444,7 +444,7 @@ The stack itself is decided in [Lock the tech stack](https://github.com/clainkav
 
 ## 16. Key data entities and statuses
 
-These are the main records the system stores and the states each can be in. The physical schema is designed in [Database schema and access rules](https://github.com/clainkavit/kingdom-connect/issues/12).
+These are the main records the system stores and the states each can be in. Every table, its access rules and the functions that guard private data are in [docs/schema.md](schema.md) (decided 20 Oct, ticket [#12](https://github.com/clainkavit/kingdom-connect/issues/12)).
 
 **Access rules (decided 17 Oct).** The server decides what each request may read or write; the UI only hides what a user doesn't need to see, and is never relied on for privacy. Restricted data never leaves the server for a user who isn't allowed it:
 
@@ -518,13 +518,20 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 - This markdown file is the living PRD; the Plan v1.1 stays frozen as the approved church document.
 
 **Decided on 17 October 2026**
-- Access rules are enforced on the server, not in the UI: the investor flag, contact details, identity documents and message contents never reach a user who isn't allowed them (section 16). On Supabase/Postgres this means Row-Level Security in the database. The schema itself is still open in [Database schema and access rules](https://github.com/clainkavit/kingdom-connect/issues/12).
+- Access rules are enforced on the server, not in the UI: the investor flag, contact details, identity documents and message contents never reach a user who isn't allowed them (section 16). On Supabase/Postgres this means Row-Level Security in the database. The schema is in [docs/schema.md](schema.md).
 
 **Decided on 19 October 2026**
 - Level 1 verification checks identity and church membership (section 6, Member verification). Identity: a completed profile, a required face photo and a NIDA card photo. Church membership: 2 to 3 Mkuyuni church references, in person or online, of whom at least 2 must answer Yes. Founding members are approved from a church leadership list. Resolves [What does an admin check to approve a member?](https://github.com/clainkavit/kingdom-connect/issues/3)
 - The Proposed approval target (median under 3 working days, section 17) stays, even though references can take up to 7 days to answer.
 - Opportunity types are Job, Partnership, Collaboration, Investment and Tender (section 10). Training/Internship is removed: internships are Jobs, training goes in Training & Courses. Members apply to Jobs and express interest in the rest, stored as one Response record. Only Level 2 and up can respond to a tender, tenders get 8 extra fields, and tenders that charge any fee cannot be posted. Resolves [Tenders as an Opportunity type: how do they differ?](https://github.com/clainkavit/kingdom-connect/issues/5)
 - Every Proposed value is confirmed, with these changes: OTP valid 10 minutes with a resend after 60 seconds; phone numbers and emails blocked in posts and links sent to review; a second rejection is final unless an admin reopens it; waitlists move the first person up automatically; audit logs survive a member's data deletion; idea access target 30% and monthly active members 50%. Resolves [Confirm or change the PRD's Proposed defaults](https://github.com/clainkavit/kingdom-connect/issues/4)
+
+**Decided on 20 October 2026 (database schema, ticket #12)**
+- The schema and access rules are in [docs/schema.md](schema.md). Private data (contact details and NIDA, investor flag, business registration numbers) sits in separate admin-only tables; other members reach contact details only through one checked function, with three share switches (phone, email, address) off by default.
+- Admin accounts are separate from member accounts.
+- NIDA numbers are encrypted in the database with a fingerprint for duplicate checks; messages and documents rely on the host's disk encryption.
+- A deleted member becomes a "Deleted member" placeholder; the lawyer review (#11) confirms what must be kept.
+- Nothing hard-codes the community name, so the schema survives the national pivot noted on the map.
 
 **Open.** Every open question is a ticket on the [wayfinder map](https://github.com/clainkavit/kingdom-connect/issues/1) and is linked where it applies above.
 
@@ -546,6 +553,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | 19 Oct 2026 | Level 1 verification: identity plus church membership through references; founding members; Reference record, dashboard widget and notifications | 3, 5, 6, 7, 13, 14, 16, 18 |
 | 19 Oct 2026 | Opportunity types and responses: Training/Internship removed, Apply vs Express interest, tender fields and no-fee rule, Response record | 4, 7, 10, 14, 16, 18 |
 | 19 Oct 2026 | All Proposed values confirmed or changed; success-metric targets set | 1, 5, 6, 7, 8, 9, 10, 12, 13, 14, 17, 18 |
+| 20 Oct 2026 | Database schema and access rules written in docs/schema.md | 16, 18 |
 
 ## Appendix B: Source documents
 

@@ -270,7 +270,7 @@ Level 3 businesses and Administrators post opportunities, including tenders. Eve
 | Location | Tanzanian region/district, or Remote |
 | Description and requirements | Required, minimum 100 characters |
 | Contact channel | Always via the platform; phone numbers, emails and links in the description are blocked or flagged (Proposed) |
-| Skills wanted | 1 to 5 tags. Required for Jobs, Training/Internship and Collaboration; optional for other types (changed 20 Oct) |
+| Skills wanted | 1 to 5 tags. Required for Jobs and Collaboration; optional for other types (changed 20 Oct) |
 | Sector | Chosen from a fixed list (changed 20 Oct) |
 | Closing date | Required, maximum 90 days ahead |
 | No-fee declaration | Required tick for Level 3 posters: "No fee will be charged to applicants at any stage". Not shown for admin posts (changed 15 Oct) |
@@ -299,7 +299,7 @@ Level 3 businesses and Administrators post opportunities, including tenders. Eve
 | Each matching skill tag (max 3 counted) | 20 each |
 | Post sector matches the member's profession or business sector | 15 |
 | Location: same district 15, same region 8, Remote 15 | up to 15 |
-| Study info, only for Training/Internship and entry-level Jobs | 10 |
+| Study info, only for Jobs with employment type Internship and entry-level Jobs | 10 |
 
 Eligible: published, open posts of every type. Excluded: the member's own posts, posts already applied to, and closed, expired, Hidden or Removed posts. Minimum 20 points to appear; sorted by score, ties to the post closing soonest.
 

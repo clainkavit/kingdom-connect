@@ -222,6 +222,11 @@ To: both members. Channels: in-app, email.
 - **EN** Title: Plan withdrawn. Message: The plan for {item} was withdrawn by {name}.
 - **SW** Title: Mpango umefutwa. Message: Mpango wa {item} umefutwa na {name}.
 
+### P10 Plan ended
+To: the other member. Channels: in-app, email.
+- **EN** Title: A plan was ended. Message: {name} ended the plan for {item}. Reason: {reason}. The record stays on your profile.
+- **SW** Title: Mpango umesitishwa. Message: {name} amesitisha mpango wa {item}. Sababu: {reason}. Kumbukumbu inabaki kwenye wasifu wako.
+
 ## 7. Matches, training and events
 
 ### S1 Matches from Scan for Opportunities

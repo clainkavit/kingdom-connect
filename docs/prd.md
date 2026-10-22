@@ -16,7 +16,7 @@ This PRD turns the Kingdom Connect Project Plan v1.1 into buildable requirements
 **How to read it.** Each feature section has user stories ("As a … I want … so that …") and acceptance criteria (AC). Each story cites the Plan's FR or UC numbers so the two documents stay traceable.
 
 **Markers.**
-- **Proposed**: a default the PRD sets that the Plan does not. Every Proposed value was confirmed or changed on 19 Oct in [Confirm or change the PRD's Proposed defaults](https://github.com/clainkavit/kingdom-connect/issues/4), so none remain. Section 15 targets are separate and still need the Technical Committee.
+- **Proposed**: a default the PRD sets that the Plan does not. Every Proposed value that existed on 19 Oct was confirmed or changed in [Confirm or change the PRD's Proposed defaults](https://github.com/clainkavit/kingdom-connect/issues/4). Values marked Proposed after that date are still waiting for confirmation. Section 15 targets are separate and still need the Technical Committee.
 - **Changed 15 Oct**: a decision made after v0.1. Where it overrides the Plan, the Plan is not edited; this PRD wins. See Appendix A.
 - **Open**: a question with a ticket on the map. The ticket is linked where it applies.
 
@@ -48,7 +48,7 @@ Roles stack: a member gains rights by passing further verification, and the inve
 | Role | How someone gets it | Visible to other members as |
 |---|---|---|
 | Applicant | Submits registration | Not visible |
-| Verified Member (Level 1) | Identity and church membership checked by an admin (section 6, Member verification) | Member, with profession |
+| Verified Member (Level 1) | Identity checked by an admin with one accepted ID (section 6, Member verification) | Member, with profession |
 | Verified Business (Level 2) | BRELA, TRA TIN, business licence approved | Member + business listing |
 | Opportunity Poster (Level 3) | Director/authorisation proof + physical address approved | Member + business listing |
 | Investor (private flag) | Invitation by an Administrator or Super Administrator, or approved application from a Level 2 member | Same as their base role; never labelled investor |
@@ -90,11 +90,11 @@ Phase 1 ships in two releases inside the 12-month plan: Release 1 builds trust a
 | Opportunities | ✗ | Posting (including tenders), applications and expressions of interest, featured, Scan for Opportunities |
 | Ideas and investors | ✗ | Ideas pool, profile Ideas tab, NDA flow, investor flag and tools |
 | Learning and community | ✗ | Training and courses, events, news |
-| Agreements | ✗ | **Open:** agreement form, e-signing, legal support. See [Agreements and e-signing: keep in Phase 1 or drop?](https://github.com/clainkavit/kingdom-connect/issues/6) |
+| Milestone plans | ✗ | A step-by-step plan two connected members agree on and track on the platform, ending with an upload of their signed agreement. Replaces agreement forms and e-signing (decided 20 Oct, reworked 22 Oct, [#6](https://github.com/clainkavit/kingdom-connect/issues/6)) |
 
 **Platforms (changed 20 Oct):** the pilot launches as a responsive web portal that can be added to a phone's home screen. Android and iOS apps with the same features follow once the web version is stable, built from the same codebase (section 15).
 
-**Geography:** Tanzania only. Registration requires a valid NIDA number.
+**Geography:** Tanzania only, enforced by a Tanzanian (+255) phone number and a Tanzanian address on registration. There is no nationality rule, so a foreign resident can join (changed 22 Oct).
 
 **Out of scope:** payments of any kind, investment transaction processing, e-commerce, social media integrations, mentorship, members outside Tanzania.
 
@@ -117,7 +117,7 @@ Members and administrators get different sidebars; a member never sees admin ite
 | # | Screen | Used by |
 |---|---|---|
 | 1 | Landing, sign-up, login, OTP | Everyone |
-| 2 | Registration wizard (personal, category, category details, photos, references, credentials, review) | Applicant |
+| 2 | Registration wizard (personal, category, category details, photos, credentials, review) | Applicant |
 | 3 | Registration status | Applicant |
 | 4 | Member dashboard | Members |
 | 5 | Directory list + filters (Professionals, Businesses) | Members |
@@ -137,19 +137,19 @@ The full screen list with states is being built in [Screen list with states](htt
 
 ## 6. Registration, login and verification
 
-No one reaches member content until an administrator has verified their NIDA identity and their church membership, and business rights unlock one level at a time.
+No one reaches member content until an administrator has verified their identity, and business rights unlock one level at a time.
 
 **Stories**
-- **REG-1** As a church member in Tanzania, I want to register on web or mobile so that I can join the platform. (FR-01, UC-01–06)
+- **REG-1** As a person in Tanzania, I want to register on web or mobile so that I can join the platform. (FR-01, UC-01–06)
 - **REG-2** As an applicant, I want to see my registration status so that I know when I can log in. (FR-04, FR-05)
 - **REG-3** As an admin, I want to review pending profiles and approve or reject them so that only real members get in. (FR-03, UC-07–08)
 - **REG-4** As a member, I want to log in with password and OTP so that my account is protected. (FR-02, UC-09–10)
 - **REG-5** As a business owner, I want to upgrade to Verified Business, then Opportunity Poster, so that I can list my business and post opportunities. (FR-32, UC-28–29)
 
 **Acceptance criteria**
-1. The wizard collects full name, username, address, NIDA number, email, phone, occupation category (Professional, Businessperson, Entrepreneur, Other), optional study info, a face photo for the profile (required), a photo of the front of the NIDA card, and 2 to 3 references (see Member verification below).
+1. The wizard collects full name, username, a Tanzanian address chosen from the region and district lists, email, a Tanzanian phone number (+255), one accepted ID (NIDA, passport, driving licence or voter's ID) with its type and number, occupation category (Professional, Businessperson, Entrepreneur, Other), optional study info, a face photo (required), and a photo of the ID (see Member verification below).
 2. Category-specific fields appear based on the category (for example, CPA number for auditors; CISSP, CISM, CEH for cybersecurity).
-3. NIDA number must be 20 digits and unique across accounts; a duplicate blocks submission and alerts admins (duplicate-profile detection). In Phase 1 an admin checks NIDA details manually; integration with NIDA's verification service may follow if problems arise.
+3. An ID number must be unique for its ID type, and a NIDA number must be 20 digits. A duplicate blocks submission and alerts admins (duplicate-profile detection). Because one person could register twice with two different IDs, admins also compare face photos. In Phase 1 an admin checks the ID manually; a connection to NIDA's verification service for NIDA holders may follow (ticket [#30](https://github.com/clainkavit/kingdom-connect/issues/30)).
 4. On submit, status = Pending and the applicant receives an email and SMS confirmation.
 5. Admin sees each pending applicant with documents side by side and must give a reason when rejecting; the reason is sent to the applicant.
 6. Status values: Pending → Approved or Rejected. A rejected applicant can correct and resubmit once; a second rejection is final unless an admin reopens the application.
@@ -167,23 +167,16 @@ No one reaches member content until an administrator has verified their NIDA ide
 10. Each level shows its own status (Not started, Pending, Approved, Rejected, Expired) on the member's verification screen.
 11. Licence expiry date is captured at Level 2 approval and drives annual re-verification (section 13).
 
-**Member verification (Level 1), decided 19 Oct.** An admin approves an applicant only after checking two things: that they are who they say they are (identity), and that they belong to the Mkuyuni community (church membership). Decided in [What does an admin check to approve a member?](https://github.com/clainkavit/kingdom-connect/issues/3)
+**Member verification (Level 1), decided 19 Oct and changed 22 Oct for the nationwide scope.** An admin approves an applicant only after checking that they are who they say they are. Church membership is no longer checked. Decided in [What does an admin check to approve a member?](https://github.com/clainkavit/kingdom-connect/issues/3)
 
 | Check | Evidence | What the admin confirms |
 |---|---|---|
-| Identity | Completed profile, a face photo, a photo of the front of the NIDA card | Name and NIDA number on the card match the form; the face photo matches the card photo |
-| Church membership | 2 to 3 references: Mkuyuni church members who know the applicant, attending in person or online | At least 2 references answer Yes |
+| Identity | Completed profile, a face photo, and a photo of one accepted ID: NIDA, passport, driving licence or voter's ID | Name and ID number on the ID match the form; the face photo matches the ID photo; the ID has not expired (Proposed) |
+| Location | A +255 phone number and a Tanzanian address chosen from the region and district lists | Both are present. There is no nationality rule |
 
-12. For each reference the applicant enters full name, phone number, and how they know them (for example "sits near me in church", "online service group", "family"). References do not need to be on the platform.
-13. If the phone number matches a member, that member gets an in-app request: "Do you know [name] from Mkuyuni church?" with Yes or No. They see only the applicant's name and face photo. Otherwise an admin phones the reference and records the answer.
-14. At least 2 Yes answers are needed. A No does not reject the applicant automatically; it flags the application and the admin decides.
-15. A reference who has not answered gets a reminder after 3 days. After 7 days the admin can phone them or ask the applicant to name a replacement.
-16. The applicant only sees "Your references are being checked", never who answered Yes or No. Only admins see each answer.
-17. Reference phone numbers are used only for this check, visible to admins only, and deleted once the application is approved or rejected.
-18. Every reference answer is written to the audit log. A member who vouched for 2 people later removed for fraud gets an admin warning, and their future answers go to admin review. No automatic penalty.
-19. The NIDA card photo is stored in the admin-only document store (section 15) and is never shown to members.
-
-**Founding members.** At launch there are no members to act as references. Church leadership (Pastor Tony's office) provides a list of founding members, such as church leaders and staff. A Super Admin approves each one after the identity check, with the list standing in for references. Every applicant after them follows the normal rule.
+12. Each ID number is unique for its ID type. Admins compare face photos to catch one person registering with two different IDs; a suspected duplicate is flagged and the admin decides.
+13. The ID photo is stored in the admin-only document store (section 15) and is never shown to members. **Open:** how long the photo is kept after the decision, for the lawyer (see Legal texts in section 13).
+14. NIDA's verification service may be connected later for NIDA holders (ticket [#30](https://github.com/clainkavit/kingdom-connect/issues/30)). Passports, driving licences and voter's IDs stay manual, and Persona is deferred until the company exists.
 
 ## 7. Dashboards
 
@@ -193,9 +186,8 @@ The member dashboard shows community activity and the member's own to-dos; every
 |---|---|---|
 | Welcome, date, location | ✓ | ✓ |
 | Community stats: verified members, registered businesses, open opportunities, ideas in pool | ✓ | ✓ |
-| People you may know: members whose skills or location match yours, with a Connect button (changed 15 Oct) | ✓ | ✗ |
+| People you may know: members who share skills, location, profession, study or connections with you, with a Connect button (changed 15 Oct) | ✓ | ✗ |
 | My connection requests (accept/decline inline) | ✓ | ✗ |
-| Reference requests: "Do you know [name]?" (Yes/No inline, decided 19 Oct) | ✓ | ✗ |
 | My activity: applications and expressions of interest, idea requests, registrations | ✓ | ✗ |
 | Featured opportunities | ✓ | ✓ (with slot count and remove) |
 | Latest opportunities & more (tabs: All, Jobs, Training, Tenders, Investments, Ideas) | ✓ | ✗ |
@@ -214,7 +206,7 @@ The member dashboard shows community activity and the member's own to-dos; every
 2. Quick actions a member is not entitled to are hidden, with a short path to upgrade (for example, "Verify your business to post opportunities").
 3. Each admin count links straight to its filtered queue.
 4. Stats refresh at least every 15 minutes.
-5. People you may know excludes members already connected, with a pending request, blocked, or hidden from the directory, and is rule-based like Scan for Opportunities. The matching rules are open: see [Matching rules for Scan for Opportunities and People you may know](https://github.com/clainkavit/kingdom-connect/issues/7).
+5. People you may know excludes members already connected, with a pending request, blocked, or hidden from the directory, and is rule-based like Scan for Opportunities. The rules are in "Matching rules" in section 10 (decided 20 Oct).
 
 ## 8. Profiles and directories
 
@@ -287,6 +279,8 @@ Level 3 businesses and Administrators post opportunities, including tenders. Eve
 | Location | Tanzanian region/district, or Remote |
 | Description and requirements | Required, minimum 100 characters |
 | Contact channel | Always via the platform. Phone numbers and emails in the description are blocked at posting, with a short explanation; a post that contains a link goes to admin review (decided 19 Oct) |
+| Skills wanted | 1 to 5 tags. Required for Jobs and Collaboration; optional for other types (changed 20 Oct) |
+| Sector | Chosen from a fixed list (changed 20 Oct) |
 | Closing date | Required, maximum 90 days ahead |
 | No-fee declaration | Required tick for Level 3 posters: "No fee will be charged to applicants at any stage". It covers tenders too, so a tender that charges a document fee or bid security cannot be posted in Phase 1 (decided 19 Oct). Not shown for admin posts (changed 15 Oct), but admin posts never ask members for a fee either |
 
@@ -309,9 +303,46 @@ Partnership and Collaboration keep both names from the Plan but share the same f
 3. Apply and Express interest send what the table above lists. The poster sees each Response as New, Shortlisted or Declined, the member sees the same status, and the conversation continues in a message thread.
 4. A member can respond to an opportunity once.
 5. Featured opportunities: an admin picks up to 5 published posts; they show with a Featured badge until the admin removes them or the post closes.
-6. Scan for Opportunities ranks open posts by matching skills, profession, location and study info. Phase 1 uses rules, not AI. **Open:** the rules, see [Matching rules for Scan for Opportunities and People you may know](https://github.com/clainkavit/kingdom-connect/issues/7).
+6. Scan for Opportunities ranks open posts by matching skills, profession, location and study info. Phase 1 uses rules, not AI. The rules are under "Matching rules" below (decided 20 Oct).
 7. Filters: type, location, sector, employment type, posted date.
 8. A member below Level 2 sees a tender but, instead of Express interest, sees "Verify your business to respond".
+
+**Matching rules** (decided 20 Oct, ticket [#7](https://github.com/clainkavit/kingdom-connect/issues/7)). Both features are rule-based, with no AI. Matching reads only tags and profile fields, never a post's description text.
+
+*Skill tags.* Typing suggests existing tags; tags are lowercased and trimmed on save. Administrators keep a synonym merge list (for example accounts to accounting) that applies everywhere.
+
+*Location.* Same district counts fully, same region partly, and a Remote post counts fully for everyone. A different region earns no location points, but an item can still appear if skills match strongly.
+
+*Scan for Opportunities.*
+
+| Signal | Points |
+|---|---|
+| Each matching skill tag (max 3 counted) | 20 each |
+| Post sector matches the member's profession or business sector | 15 |
+| Location: same district 15, same region 8, Remote 15 | up to 15 |
+| Study info, only for Jobs with employment type Internship and entry-level Jobs | 10 |
+
+Eligible: published, open posts of every type. Excluded: the member's own posts, posts already applied to, and closed, expired, Hidden or Removed posts. Minimum 20 points to appear; sorted by score, ties to the post closing soonest.
+
+*People you may know.*
+
+| Signal | Points |
+|---|---|
+| Each mutual connection (max 5 counted) | 15 each |
+| Each shared skill (max 3 counted) | 10 each |
+| Same district 15, same region 8 | up to 15 |
+| Same profession | 10 |
+| Same institution or course (only if both filled it in) | 10 |
+
+Excluded: members already connected, with a pending request, blocked, hidden from the directory, suspended or deactivated, and anyone whose connection request the member declined or who declined theirs, for 90 days. Minimum 20 points; sorted by score, ties to the most recently active member.
+
+*Rules for both.*
+- The investor flag is never used, so investor status cannot shape what anyone is shown.
+- Each result shows its top two reasons, built from the member's own tags and location, for example "Matches your skills: accounting, auditing. In Mwanza." Mutual connections show as a count only ("3 mutual connections"), never names. A reason never includes anything the viewer cannot already see on that profile or post.
+- The dashboard widget shows the top 5 of each feature and a "See all" page shows up to 20. Scores are worked out when the page opens and are not stored. If that is too slow at scale, a nightly job replaces it.
+- The weekly Scan digest email sends the top 5 matches new since the last digest, only when there is at least one, and members can turn it off.
+- A member with an empty profile sees "Complete your profile to see matches", listing the missing fields. People you may know falls back to the newest verified members in the same region until the profile has data.
+- Weights and minimum scores live in a settings table. Only a Super Administrator can change them, and each change is written to the audit log with before and after values. Any Administrator can edit the synonym merge list.
 
 ## 11. Ideas pool and investor access
 
@@ -351,14 +382,29 @@ Both routes meet at the owner's decision; an anonymous investor's name is reveal
 3. Named interest shows the requester's name, profile and chosen role (Investor, Partner, Both) to the owner.
 4. Anonymous interest (investor flag only) shows the owner: "A verified investor", sector focus and ticket size band: under TZS 10M, TZS 10–50M, or over TZS 50M. Name and profile stay hidden.
 5. The owner approves or declines within the request card; declining sends a neutral notice.
-6. After approval, the requester must accept the NDA and IP terms before details open. Acceptance timestamp, IP and version of the terms are stored. **Open:** who drafts the terms, see [Who writes the NDA, IP terms and data-consent text?](https://github.com/clainkavit/kingdom-connect/issues/11)
+6. After approval, the requester must accept the NDA and IP terms before details open. Acceptance timestamp, IP and version of the terms are stored. The terms are one of the legal texts described under "Legal texts" in section 13.
 7. On NDA acceptance, both identities are shown to each other and a message thread opens, labelled with the idea title.
 8. Detail pages and documents are watermarked with the viewer's name and date. Every view and download is logged.
 9. The owner's access manager lists everyone with access and a Revoke button; revoking removes access at once and logs it.
 10. Investor silent browsing: the owner sees "Viewed by N investors", never names.
 11. Investor filters: sector, stage, investment range, region; a private Saved list.
 12. The investor flag is granted only by Administrator or Super Administrator invitation or by approving a Level 2 member's application. There is no investor directory, badge or member-facing count.
-13. Agreement form, e-signing and legal support (UC-24–27) follow an approved connection. **Open:** see [Agreements and e-signing: keep in Phase 1 or drop?](https://github.com/clainkavit/kingdom-connect/issues/6)
+13. After an accepted connection, the two members can set up a milestone plan. See "Milestone plans" below. In-platform agreement forms, e-signing and legal support (UC-24 to UC-26) are not in Phase 1.
+
+**Milestone plans** (decided 20 Oct and reworked 22 Oct; replaces UC-24 to UC-27, ticket [#6](https://github.com/clainkavit/kingdom-connect/issues/6)). Two members who have decided to work together agree the stages up front, track them on the platform, and finish by uploading their signed agreement. The idea comes from a similar concept on Upwork. It ships in Release 2.
+
+1. **Who.** Any two verified members connected through an Idea or an Opportunity (Partnership, Collaboration or Investment). There is no minimum level, so a Level 1 member with an idea can use it. Either member can start the plan; the other must accept it before it begins.
+2. **Stages.** A plan has 1 to 10 milestones (Proposed limit), each with a title, a description and a target date. Stage 1 is always "Agreed in principle". The last stage is the signed document.
+3. **Doing a milestone.** The member responsible marks it done, and the other member confirms.
+4. **Hand-off disclaimer.** Each side accepts, at the start, that the platform provides a record only, is not a party to the agreement, does not guarantee or mediate anything, and that dealings outside the platform are the members' own. The accepted version and timestamp are stored for each side, as with the NDA. The wording is written in [Who writes the NDA, IP terms and data-consent text?](https://github.com/clainkavit/kingdom-connect/issues/11).
+5. **Waiting for the other member.** A proposed plan stays Pending for 14 days, with one reminder on day 7, then lapses. Either member can restart it. A lapsed plan counts as "not started" in analytics. Messaging stays open throughout.
+6. **Withdrawing.** While Pending, the member who proposed it may withdraw. Once both have accepted stage 1, either may withdraw within 1 hour and the other is notified. After that hour, stage 1 is final. Later stages keep an audit trail and cannot be removed.
+7. **Signed document.** At the end, if both members agree, each is prompted to upload the signed agreement to the platform (PDF, up to 10 MB, Proposed). The platform stores it. It does not draft, review or e-sign anything.
+8. **Who sees what.** The plan shows on both members' profiles. Administrators see names, the idea or opportunity, stage statuses, dates and notes, never contact details or the investor flag. Administrators do not see the signed document unless a report is filed on the partnership (Proposed). An Administrator can annotate a plan but not delete it. A withdrawn plan stays visible as Withdrawn.
+9. **What protection means in Phase 1.** Evidence only: timestamped stages, the stored signed document and a record both members accepted. The platform does not mediate disputes or guarantee anything. The lawyer confirms the wording before launch (section 13, Legal texts).
+10. **Analytics.** The platform counts people linked, plans started and plans completed.
+11. **Open:** what happens when one member wants to stop partway, after the first hour, and whether the platform may later charge for completed plans (billing is a Phase 2 ticket; Phase 1 has no payments).
+12. **Not in Phase 1:** drafting agreements on the platform, e-signing and a legal-professional directory. A lawyer directory is a possible Phase 2 idea.
 
 ## 12. Training, events and news
 
@@ -394,8 +440,34 @@ A reported opportunity disappears from members' view the moment it is reported; 
 4. Admin actions: Restore, Edit request to poster, Remove, Warn, Suspend posting rights, Suspend account. Each requires a note.
 5. Two upheld reports against a business within 12 months suspend its posting rights; three suspend the account pending review.
 6. Re-verification: 30 and 7 days before a business licence expires, the member is reminded. On expiry, Level 2 and 3 rights pause until new documents are approved.
-7. Audit log records who, what, when, and before/after values for approvals, rejections, reference answers, moderation, role changes, investor flag changes, admin-posted opportunities, and every view of idea details. Logs are read-only and kept at least 5 years, including after a member deletes their data, as a legal record.
+7. Audit log records who, what, when, and before/after values for approvals, rejections, moderation, role changes, investor flag changes, admin-posted opportunities, and every view of idea details. Logs are read-only and kept at least 5 years, including after a member deletes their data, as a legal record.
 8. Admins cannot see message contents unless a thread has been reported.
+
+**Legal texts** (decided 20 Oct, ticket [#11](https://github.com/clainkavit/kingdom-connect/issues/11)). The platform needs five legal texts, each with a version number:
+
+| Text | Accepted where |
+|---|---|
+| Terms of use for members | Registration; again when the text changes |
+| Privacy notice and data consent (Personal Data Protection Act 2022) | Registration, as its own tick box separate from the terms of use; again when the text changes |
+| NDA | Per idea access request, after the owner approves |
+| IP terms | Per idea access request, together with the NDA |
+| Hand-off disclaimer | Per milestone plan, at the start (see section 11) |
+
+1. **Who writes and approves.** Champion and the collaborator draft the texts, with Claude's help. The texts are real drafts from the start, not placeholders, and the app shows them as they stand. Reviewers are the testers, the church leadership and a lawyer. A text that is not approved is edited and reviewed again. Where a lawyer's edit changes the legal meaning, the lawyer's wording is used. A text written with AI help is a draft, not legal advice, until a lawyer has approved it.
+2. **Who they name.** The platform will be its own legal entity. The name is not final (Kingdom Connect for now), so every text takes the entity name from one setting, and the final name is filled in at the end.
+3. **Launch gate.** No real member registers, and no real idea or NIDA data is stored, until all five texts are approved and loaded as version 1.0. Before that, the app runs test data only.
+4. **Versions.** Each text is stored with its version number and date, and each acceptance records which version was accepted. When the terms of use or the privacy notice change, members accept again at their next login. An NDA or IP term a member has already accepted stays valid under the version they accepted; a new version applies only to new requests.
+5. **Languages.** Every text is shown in English and Kiswahili. If the two differ, the English text governs, and the Kiswahili is a faithful translation, unless a lawyer advises otherwise.
+6. **What the lawyer reviews.** Besides the wording of the five texts, the lawyer is asked to confirm:
+   - The legal form and name of the entity that runs the platform.
+   - Registration of that entity with the Personal Data Protection Commission as a data controller. The Act says no one may collect or process personal data without registering (checked against the Commission's website on 20 Oct; the lawyer confirms the process and timing).
+   - Whether holding member data on a host outside Tanzania, such as managed Supabase, needs a cross-border transfer permit or the member's consent. This feeds the production hosting decision (section 15).
+   - Whether NIDA numbers, identity documents and any record of church membership count as sensitive personal data that needs written consent.
+   - Whether one consent tick box separate from the terms of use is enough, and how a member withdraws consent.
+   - Whether the NDA and IP terms hold between members, and what the platform may and may not promise about them.
+   - Whether the platform's role in milestone plans (a record and a stored signed document, with no mediation or guarantee) limits its liability, and whether storing members' signed agreements is allowed.
+   - Whether sending ID images to a foreign verification service is allowed, and what a connection to NIDA's verification service requires.
+   - What the platform must keep and what it must delete when a member asks to delete their data, including audit logs and milestone plans.
 
 ## 14. Notifications
 
@@ -404,8 +476,6 @@ Every event below shows in the in-app bell; during the pilot, OTPs and account m
 | Event | Who is told | In-app | Email | SMS |
 |---|---|---|---|---|
 | Registration received, approved or rejected | Applicant | ✓ | ✓ | Later |
-| Asked to name a replacement reference | Applicant | ✓ | ✓ | Later |
-| Reference request received, or reminder after 3 days | Member named as a reference | ✓ | ✓ | ✗ |
 | Login OTP | Member | ✗ | ✓ | Later |
 | Business level approved, rejected or expiring | Business member | ✓ | ✓ | Later |
 | Connection request received or accepted | Member | ✓ | ✓ | ✗ |
@@ -414,6 +484,7 @@ Every event below shows in the in-app bell; during the pilot, OTPs and account m
 | Post approved, rejected, hidden or removed | Poster | ✓ | ✓ | ✗ |
 | Interest in my idea (named or anonymous) | Idea owner | ✓ | ✓ | ✗ |
 | Access approved, NDA accepted, access revoked | Owner and requester | ✓ | ✓ | ✗ |
+| Milestone plan: proposed, reminder, accepted, milestone done or confirmed, signed document uploaded, lapsed or withdrawn | The other member (both, on withdrawal) | ✓ | ✓ | ✗ |
 | Matches from Scan for Opportunities | Member | ✓ | Weekly digest | ✗ |
 | Training or event reminder | Registrant | ✓ | ✓ | ✗ |
 | Waitlist place confirmed | Member who was waiting | ✓ | ✓ | ✗ |
@@ -421,7 +492,7 @@ Every event below shows in the in-app bell; during the pilot, OTPs and account m
 | Investor flag granted | Investor | ✓ | ✓ | ✗ |
 
 **Push notifications** (decided 20 Oct) are sent to the Android and iOS apps once they ship; the web pilot has the in-app bell and email only.
-- Push is sent for: connection request received or accepted, new message, application status change, idea access approved or NDA accepted, an Agreed to proceed request, post approved or rejected, and registration approved or rejected. The weekly Scan digest is email only, and report outcomes are in-app only.
+- Push is sent for: connection request received or accepted, new message, application status change, idea access approved or NDA accepted, a milestone plan request, post approved or rejected, and registration approved or rejected. The weekly Scan digest is email only, and report outcomes are in-app only.
 - The app asks for notification permission after the first login, not at install. Once permission is granted, push is on by default, with one master switch and a switch per category in Settings.
 - A new-message push says "You have a new message", with no preview.
 
@@ -480,18 +551,19 @@ On Supabase/Postgres (the stack, decided 20 Oct, see section 15), these rules ar
 | Member | Name, username, NIDA (encrypted), phone, email, region, category, verification level, investor flag (private) | Pending, Approved, Rejected, Suspended, Deactivated |
 | Profile | Headline, bio, skills, experience, certifications, study info, privacy settings | n/a |
 | Business | Name, sector, BRELA no., TIN, licence no. and expiry, address, level | Pending, Approved, Rejected, Expired |
-| Verification request | Member, level requested, documents, reviewer, reason, route for Level 1 (references or founding member list) | Pending, Approved, Rejected |
-| Reference (added 19 Oct) | Applicant, name, phone (deleted after the decision), how they know the applicant, matched member (if any), answer, answered by (member in app or admin by phone), answered at | Waiting, Yes, No, No response, Replaced |
+| Verification request | Member, level requested, documents, reviewer, reason | Pending, Approved, Rejected |
 | Connection | Requester, receiver, note | Sent, Accepted, Declined, Withdrawn, Expired |
 | Message thread / message | Members, idea link (optional), body, attachments | Active, Reported, Closed |
-| Opportunity | Poster (Level 3 member or admin), type (including Tender), title, location, closing date, no-fee flag, featured flag | Draft, Pending review, Published, Closed, Expired, Hidden, Removed |
+| Opportunity | Poster (Level 3 member or admin), type (including Tender), title, location, sector, skills wanted (tags), closing date, no-fee flag, featured flag | Draft, Pending review, Published, Closed, Expired, Hidden, Removed |
 | Response (replaces Application, 19 Oct) | Opportunity, member, kind (Application for Jobs, Interest for other types), CV or attachment, note | New, Shortlisted, Declined, Withdrawn |
 | Idea | Owner, summary fields, details, attachments, visibility | Draft, Pending moderation, Published, Archived, Hidden, Removed |
 | Idea access request | Idea, requester, role, anonymous flag, NDA version, accepted at | Pending, Approved, Declined, NDA accepted, Revoked |
+| Milestone plan | The two members, idea or opportunity, milestones (title, description, target date, status), disclaimer version, accepted at (each side), signed document, admin annotations | Pending, Active, Completed, Lapsed, Withdrawn |
 | Training / Event | Poster, title, dates, capacity, materials | Draft, Pending review, Published, Closed, Hidden, Removed |
 | Registration | Member, training or event | Registered, Waitlisted, Cancelled, Attended |
 | News item | Title, body, image, pinned | Draft, Published |
 | Report | Reporter, target, reason, note | Open, Under review, Action taken, No action |
+| Matching setting | Feature, signal, points, minimum score; skill synonym merge list. Weights changed by Super Administrator, synonyms by Administrator | n/a |
 | Audit log entry | Actor, action, target, before/after, time, IP | Append only |
 
 Changed 15 Oct: Tender moved from the Training / Event / Tender record into Opportunity. Decided 19 Oct: applications and expressions of interest share one Response record, and tenders carry their extra fields (section 10) on the Opportunity record.
@@ -514,6 +586,28 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | Upheld scam reports per 100 opportunities | Under 1 | Agreed 19 Oct |
 | Ideas with at least one approved access request | 30% of published ideas in year 1 | Agreed 19 Oct |
 | Monthly active members | 50% of verified members | Agreed 19 Oct |
+
+**Testing and pilot readiness** (decided 20 Oct, ticket [#15](https://github.com/clainkavit/kingdom-connect/issues/15)).
+
+| Layer | What it covers | Where it runs |
+|---|---|---|
+| Unit tests (Vitest) | Pure logic such as matching scores, status changes and validation | On every commit |
+| Format and typecheck | Prettier on staged files, TypeScript typecheck | On every commit |
+| Access-rule tests | One test per restricted item in section 16 (investor flag, contact details, identity documents, message contents): signed in as the wrong person, nothing comes back. Run against the real database rules | On every pull request (CI) |
+| End-to-end tests (Playwright, web only) | Registration to approval; login with the email code and lockout; connection to message; idea access with NDA; a milestone plan with its 1-hour withdrawal after stage 1; reporting a post and it disappearing; the member dashboard never showing admin-only counts | On pull requests that change app code (CI) |
+| Manual use by testers | Testers use the web version as ordinary members and report problems as feedback | Before the pilot |
+
+1. **CI blocks merges.** A pull request with a failing check cannot merge. Pull requests that change only documents skip the end-to-end tests to save CI minutes on a private repository.
+2. **Database tests run locally.** Tests use a local copy of Supabase in Docker on each machine and in CI, reset to a clean state each run. Both developers need Docker Desktop. Login-code emails are read from the local test mail catcher.
+3. **Test data.** One seed script creates fake members in every role (applicant, member, Level 2, Level 3, investor-flagged, administrator, super administrator, suspended) with fake ideas, posts and connections. All tests and demos use it. No real person's data enters any test environment.
+4. **Tests first for the costly parts.** Access rules and anything that moves through statuses (registration, idea access request, milestone plan, connection requests) get their tests written before the code. Ordinary screens get tests after.
+5. **Phone apps.** End-to-end tests for the Android and iOS apps are added when the store apps ship (a tool such as Maestro).
+6. **Ready for the pilot** only when all of these hold:
+   - All CI checks pass on `main`.
+   - Every access-rule test passes.
+   - The testers have used the web version as ordinary members, and no serious issue they reported is still unresolved.
+   - The five legal texts are approved as version 1.0 (section 13).
+   - The email login code is confirmed arriving on Gmail and on Tanzanian mobile-provider addresses.
 
 ## 18. Decisions and open questions
 
@@ -538,18 +632,44 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 **Decided on 17 October 2026**
 - Access rules are enforced on the server, not in the UI: the investor flag, contact details, identity documents and message contents never reach a user who isn't allowed them (section 16). On Supabase/Postgres this means Row-Level Security in the database. The schema is in [docs/schema.md](schema.md).
 
-**Decided on 19 October 2026**
-- Level 1 verification checks identity and church membership (section 6, Member verification). Identity: a completed profile, a required face photo and a NIDA card photo. Church membership: 2 to 3 Mkuyuni church references, in person or online, of whom at least 2 must answer Yes. Founding members are approved from a church leadership list. Resolves [What does an admin check to approve a member?](https://github.com/clainkavit/kingdom-connect/issues/3)
-- The Proposed approval target (median under 3 working days, section 17) stays, even though references can take up to 7 days to answer.
+**Decided on 19 October 2026 (changed 22 October)**
+- Level 1 verification checks identity only (section 6, Member verification): a completed profile, a face photo and a photo of one accepted ID (NIDA, passport, driving licence or voter's ID). Location is a +255 phone and a Tanzanian address, with no nationality rule. The 19 Oct version also checked church membership through references and a founding-members list; that was dropped on 22 Oct when the platform went nationwide. Resolves [What does an admin check to approve a member?](https://github.com/clainkavit/kingdom-connect/issues/3)
+- The Proposed approval target (median under 3 working days, section 17) stays.
+
+**Decided on 20 October 2026 (test strategy, ticket #15)**
+- Unit tests and typecheck on commit; database access-rule tests and web end-to-end tests in CI on pull requests, blocking merges (section 17).
+- Local Supabase in Docker for database tests; one seed script of fake members; tests first for access rules and status changes.
+- Testers give feedback as ordinary members; there is no formal checklist.
+- Pilot-readiness list as in section 17.
+
+**Decided on 20 October 2026 (legal texts, ticket #11)**
+- Five versioned legal texts: terms of use, privacy notice and consent, NDA, IP terms, hand-off disclaimer (section 13).
+- Drafted by Champion and the collaborator as real text; reviewed by testers, church leadership and a lawyer; edited until approved.
+- No real member data until all five are approved as version 1.0.
+- The platform is its own legal entity; the name is not final.
+
+**Decided on 20 October 2026 (matching, ticket #7)**
+- Scan for Opportunities and People you may know are rule-based and point-scored from tags and profile fields; the rules are in section 10.
+- Opportunity posts gain skills-wanted tags and a sector.
+- The investor flag is never used in matching. Mutual connections show as a count only.
+
+**Decided on 20 October 2026**
+- Agreements and e-signing (UC-24 to UC-27) are replaced in Phase 1 by milestone plans: two connected verified members agree stages, track them on the platform and upload their signed agreement at the end (section 11). A first version on 20 Oct was a simple "Agreed to proceed" record; it was reworked on 22 Oct.
+- Legal support (UC-26) is out of Phase 1. A lawyer directory is a possible Phase 2 idea.
+
+**Decided on 19 October 2026 (opportunity types and tenders, ticket #5)**
 - Opportunity types are Job, Partnership, Collaboration, Investment and Tender (section 10). Training/Internship is removed: internships are Jobs, training goes in Training & Courses. Members apply to Jobs and express interest in the rest, stored as one Response record. Only Level 2 and up can respond to a tender, tenders get 8 extra fields, and tenders that charge any fee cannot be posted. Resolves [Tenders as an Opportunity type: how do they differ?](https://github.com/clainkavit/kingdom-connect/issues/5)
+
+**Decided on 19 October 2026 (Proposed defaults, ticket #4)**
 - Every Proposed value is confirmed, with these changes: OTP valid 10 minutes with a resend after 60 seconds; phone numbers and emails blocked in posts and links sent to review; a second rejection is final unless an admin reopens it; waitlists move the first person up automatically; audit logs survive a member's data deletion; idea access target 30% and monthly active members 50%. Resolves [Confirm or change the PRD's Proposed defaults](https://github.com/clainkavit/kingdom-connect/issues/4)
 
 **Decided on 20 October 2026 (database schema, ticket #12)**
-- The schema and access rules are in [docs/schema.md](schema.md). Private data (contact details and NIDA, investor flag, business registration numbers) sits in separate admin-only tables; other members reach contact details only through one checked function, with three share switches (phone, email, address) off by default.
+- The schema and access rules are in [docs/schema.md](schema.md). Private data (contact details and ID numbers, investor flag, business registration numbers) sits in separate admin-only tables; other members reach contact details only through one checked function, with three share switches (phone, email, address) off by default.
 - Admin accounts are separate from member accounts.
-- NIDA numbers are encrypted in the database with a fingerprint for duplicate checks; messages and documents rely on the host's disk encryption.
+- ID numbers (NIDA, passport, driving licence or voter's ID) are encrypted in the database with a fingerprint for duplicate checks; messages and documents rely on the host's disk encryption.
+- Milestone plans have their own tables (plans, milestones, signed documents); signed documents are visible to the two members, and to staff only while a report is open on the plan (Proposed).
 - A deleted member becomes a "Deleted member" placeholder; the lawyer review (#11) confirms what must be kept.
-- Nothing hard-codes the community name, so the schema survives the national pivot noted on the map.
+- Nothing hard-codes the community name, and church references and the founding list are not in the schema, so it fits the nationwide scope (ticket #30).
 
 **Decided on 20 October 2026 (tech stack, ticket #10)**
 - Stack as in section 15: Expo universal member app, Next.js admin console, Supabase, Brevo email, Sentry, pnpm workspace, TypeScript, Vitest, Husky.
@@ -575,7 +695,11 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | 15 Oct 2026 | Phone bottom tab bar proposed; mockup and prototype linked as visual direction | 5 |
 | 15 Oct 2026 | Open items linked to wayfinder tickets; Proposed values flagged for review | Throughout |
 | 17 Oct 2026 | Server-side access rules for the investor flag, contact details, identity documents and messages | 16, 18 |
-| 19 Oct 2026 | Level 1 verification: identity plus church membership through references; founding members; Reference record, dashboard widget and notifications | 3, 5, 6, 7, 13, 14, 16, 18 |
+| 19 Oct 2026 | Level 1 verification: identity check with one of four accepted IDs, +255 phone and Tanzanian address, no nationality rule; church references and founding members dropped on 22 Oct | 3, 5, 6, 7, 13, 14, 16, 18 |
+| 20 Oct 2026 | Test strategy and pilot-readiness list | 17, 18 |
+| 20 Oct 2026 | Legal texts: who drafts and approves, versioning, languages, launch gate | 11, 13, 18 |
+| 20 Oct 2026 | Matching rules for Scan for Opportunities and People you may know; skills-wanted and sector added to the posting form | 7, 10, 16, 18 |
+| 20 Oct 2026 | UC-24 to UC-27 replaced by milestone plans (reworked 22 Oct); overrides the Plan's "both routes end with an agreement" (section 13 of the Plan) | 4, 11, 14, 16, 18 |
 | 19 Oct 2026 | Opportunity types and responses: Training/Internship removed, Apply vs Express interest, tender fields and no-fee rule, Response record | 4, 7, 10, 14, 16, 18 |
 | 19 Oct 2026 | All Proposed values confirmed or changed; success-metric targets set | 1, 5, 6, 7, 8, 9, 10, 12, 13, 14, 17, 18 |
 | 20 Oct 2026 | Database schema and access rules written in docs/schema.md | 16, 18 |

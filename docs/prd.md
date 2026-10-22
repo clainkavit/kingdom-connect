@@ -565,6 +565,28 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | Ideas with at least one approved access request | To be agreed | n/a |
 | Monthly active members | To be agreed | n/a |
 
+**Testing and pilot readiness** (decided 20 Oct, ticket [#15](https://github.com/clainkavit/kingdom-connect/issues/15)).
+
+| Layer | What it covers | Where it runs |
+|---|---|---|
+| Unit tests (Vitest) | Pure logic such as matching scores, status changes and validation | On every commit |
+| Format and typecheck | Prettier on staged files, TypeScript typecheck | On every commit |
+| Access-rule tests | One test per restricted item in section 16 (investor flag, contact details, identity documents, message contents): signed in as the wrong person, nothing comes back. Run against the real database rules | On every pull request (CI) |
+| End-to-end tests (Playwright, web only) | Registration to approval; login with the email code and lockout; connection to message; idea access with NDA; a milestone plan with its 1-hour withdrawal after stage 1; reporting a post and it disappearing; the member dashboard never showing admin-only counts | On pull requests that change app code (CI) |
+| Manual use by testers | Testers use the web version as ordinary members and report problems as feedback | Before the pilot |
+
+1. **CI blocks merges.** A pull request with a failing check cannot merge. Pull requests that change only documents skip the end-to-end tests to save CI minutes on a private repository.
+2. **Database tests run locally.** Tests use a local copy of Supabase in Docker on each machine and in CI, reset to a clean state each run. Both developers need Docker Desktop. Login-code emails are read from the local test mail catcher.
+3. **Test data.** One seed script creates fake members in every role (applicant, member, Level 2, Level 3, investor-flagged, administrator, super administrator, suspended) with fake ideas, posts and connections. All tests and demos use it. No real person's data enters any test environment.
+4. **Tests first for the costly parts.** Access rules and anything that moves through statuses (registration, idea access request, milestone plan, connection requests) get their tests written before the code. Ordinary screens get tests after.
+5. **Phone apps.** End-to-end tests for the Android and iOS apps are added when the store apps ship (a tool such as Maestro).
+6. **Ready for the pilot** only when all of these hold:
+   - All CI checks pass on `main`.
+   - Every access-rule test passes.
+   - The testers have used the web version as ordinary members, and no serious issue they reported is still unresolved.
+   - The five legal texts are approved as version 1.0 (section 13).
+   - The email login code is confirmed arriving on Gmail and on Tanzanian mobile-provider addresses.
+
 ## 18. Decisions and open questions
 
 **Decided on 14 October 2026**
@@ -587,6 +609,12 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 
 **Decided on 17 October 2026**
 - Access rules are enforced on the server, not in the UI: the investor flag, contact details, identity documents and message contents never reach a user who isn't allowed them (section 16). On Supabase/Postgres this means Row-Level Security in the database. The schema itself is still open in [Database schema and access rules](https://github.com/clainkavit/kingdom-connect/issues/12).
+
+**Decided on 20 October 2026 (test strategy, ticket #15)**
+- Unit tests and typecheck on commit; database access-rule tests and web end-to-end tests in CI on pull requests, blocking merges (section 17).
+- Local Supabase in Docker for database tests; one seed script of fake members; tests first for access rules and status changes.
+- Testers give feedback as ordinary members; there is no formal checklist.
+- Pilot-readiness list as in section 17.
 
 **Decided on 20 October 2026 (legal texts, ticket #11)**
 - Five versioned legal texts: terms of use, privacy notice and consent, NDA, IP terms, hand-off disclaimer (section 13).
@@ -627,6 +655,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | 15 Oct 2026 | Phone bottom tab bar proposed; mockup and prototype linked as visual direction | 5 |
 | 15 Oct 2026 | Open items linked to wayfinder tickets; Proposed values flagged for review | Throughout |
 | 17 Oct 2026 | Server-side access rules for the investor flag, contact details, identity documents and messages | 16, 18 |
+| 20 Oct 2026 | Test strategy and pilot-readiness list | 17, 18 |
 | 20 Oct 2026 | Legal texts: who drafts and approves, versioning, languages, launch gate | 11, 13, 18 |
 | 20 Oct 2026 | Matching rules for Scan for Opportunities and People you may know; skills-wanted and sector added to the posting form | 7, 10, 16, 18 |
 | 20 Oct 2026 | UC-24 to UC-27 replaced by milestone plans (reworked 22 Oct); overrides the Plan's "both routes end with an agreement" (section 13 of the Plan) | 4, 11, 14, 16, 18 |

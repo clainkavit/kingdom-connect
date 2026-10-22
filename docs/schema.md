@@ -76,7 +76,7 @@ Private data sits in its own tables, so each rule is "this whole table is admin-
 | `skills` | `name` (citext, lowercased and trimmed, unique) | Approved members | Members create through tag entry; staff merge |
 | `skill_synonyms` | `from_name`, `skill_id` | Approved members | Staff (PRD section 10, Matching rules) |
 | `matching_settings` | `feature` (scan, people), `signal`, `points`, `min_score` | Staff | Super Admin, audit logged (PRD section 10, Matching rules) |
-| `platform_settings` | `key`, `value` (community name, legal entity name, featured slot limit) | Everyone signed in | Super Admin, audit logged |
+| `platform_settings` | `key`, `value` (community name, legal entity name, featured slot limit, `daily_application_cap`: off by default) | Everyone signed in. The registration function reads the cap for signed-out visitors | Super Admin, audit logged |
 
 Matching scores are worked out when a page opens and are not stored (PRD section 10). The investor flag is never an input to matching.
 

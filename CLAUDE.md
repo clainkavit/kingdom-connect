@@ -1,6 +1,6 @@
 # Kingdom Connect
 
-"People • Opportunities • Growth." A verified, members-only platform where the Mkuyuni Community (Pastor Tony's congregation) finds people, opportunities and ideas, on web and mobile. Phase 1 is Tanzania only, NIDA-verified.
+"People • Opportunities • Growth." A verified, members-only platform for people in Tanzania, open to anyone with a verified identity, piloting with the Mkuyuni Community (Pastor Tony's congregation), on web and mobile. Phase 1 is Tanzania only.
 
 **This folder is the source of truth.** It supersedes the earlier Osborn Ministries Jobs project, built to an older scope. Nothing from that project is used, neither requirements, documents nor code.
 

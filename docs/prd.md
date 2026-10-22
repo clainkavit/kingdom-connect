@@ -92,7 +92,7 @@ Phase 1 ships in two releases inside the 12-month plan: Release 1 builds trust a
 | Learning and community | ✗ | Training and courses, events, news |
 | Agreements | ✗ | **Open:** agreement form, e-signing, legal support. See [Agreements and e-signing: keep in Phase 1 or drop?](https://github.com/clainkavit/kingdom-connect/issues/6) |
 
-**Platforms:** responsive web portal plus Android and iOS apps with the same features.
+**Platforms (changed 20 Oct):** the pilot launches as a responsive web portal that can be added to a phone's home screen. Android and iOS apps with the same features follow once the web version is stable, built from the same codebase (section 15).
 
 **Geography:** Tanzania only. Registration requires a valid NIDA number.
 
@@ -419,6 +419,11 @@ Every event below shows in the in-app bell; during the pilot, OTPs and account m
 | Report outcome | Reporter | ✓ | ✗ | ✗ |
 | Investor flag granted | Investor | ✓ | ✓ | ✗ |
 
+**Push notifications** (decided 20 Oct) are sent to the Android and iOS apps once they ship; the web pilot has the in-app bell and email only.
+- Push is sent for: connection request received or accepted, new message, application status change, idea access approved or NDA accepted, an Agreed to proceed request, post approved or rejected, and registration approved or rejected. The weekly Scan digest is email only, and report outcomes are in-app only.
+- The app asks for notification permission after the first login, not at install. Once permission is granted, push is on by default, with one master switch and a switch per category in Settings.
+- A new-message push says "You have a new message", with no preview.
+
 Notification text never names an anonymous investor and never includes contact details. The wording is written in [Notification copy in English and Kiswahili](https://github.com/clainkavit/kingdom-connect/issues/14).
 
 ## 15. Non-functional requirements
@@ -437,9 +442,22 @@ The figures below are proposed starting targets for the Technical Committee to c
 | Languages | English and Kiswahili for all member-facing screens |
 | Accessibility | WCAG 2.1 AA contrast and text sizes; works with screen readers on mobile |
 | Data usage | Images compressed; a low-data mode that hides images on mobile |
-| Monitoring | Security logging, alerts on repeated failed logins, unusual message volume, or duplicate NIDA attempts |
+| Monitoring | Security logging, alerts on repeated failed logins, unusual message volume, or duplicate NIDA attempts. Supabase logs for the server and Sentry (free plan) for app crashes (changed 20 Oct) |
 
-The stack itself is decided in [Lock the tech stack](https://github.com/clainkavit/kingdom-connect/issues/10).
+**Technical stack** (decided 20 Oct, ticket [#10](https://github.com/clainkavit/kingdom-connect/issues/10)). The priorities are a low budget while developing, one codebase for every platform, and privacy rules enforced in the database.
+
+| Layer | Choice |
+|---|---|
+| Member app | One Expo (React Native) universal app in TypeScript: web first, then Android and iOS from the same code. If the web build misses the 3G target in a prototype test, only the member website moves to Next.js |
+| Admin console | Separate Next.js web app, sharing types and Supabase client code with the member app |
+| Backend | Supabase: Postgres, Auth, Storage, Realtime. No separate server. Access rules are Row-Level Security; matching scores and agreement records are Postgres functions; Edge Functions handle login and OTP, email sending and signed links to private documents. Auth follows the custom design in [Supabase Auth login flow](../context/memory/supabase-auth-login-flow.md) |
+| Interface | NativeWind in the Expo app, shadcn/ui in the admin console, on shared design tokens |
+| Code and quality | pnpm workspace (no Turborepo at first), TypeScript with a typecheck script, Vitest, Husky with lint-staged and typecheck on pre-commit |
+| Email | Brevo. Free plan (300 a day) for development and the start of the pilot, with an alert at 200 a day and a move to the paid plan when it fires. Test delivery to Gmail and Tanzanian mobile-provider addresses before the pilot |
+| Push | Expo push service, for the Android and iOS apps once they ship. The web pilot uses the in-app bell and email only |
+| Languages | English and Kiswahili from the start, with every screen string kept in translation files |
+| Development hosting | Supabase Free plan and Vercel for development and preview builds, test data only |
+| Production hosting | Not decided. Hostinger is a candidate, which would probably mean self-hosting Supabase on a VPS, so the team would run backups and security updates. Decided before the pilot with the legal check against the Act (see Hosting above) |
 
 ## 16. Key data entities and statuses
 
@@ -454,7 +472,7 @@ These are the main records the system stores and the states each can be in. The 
 | NIDA number and identity or business documents | The owner and admins. Documents sit in a separate admin-only store, never at public URLs |
 | Message contents | The two members in the thread. Admins only once the thread is reported |
 
-If the stack stays on Supabase/Postgres, these rules are enforced in the database with Row-Level Security policies and restricted views, so a faulty API endpoint can't leak them. The stack is decided in [Lock the tech stack](https://github.com/clainkavit/kingdom-connect/issues/10).
+On Supabase/Postgres (the stack, decided 20 Oct, see section 15), these rules are enforced in the database with Row-Level Security policies and restricted views, so a faulty API endpoint can't leak them.
 
 | Entity | Key fields | Statuses |
 |---|---|---|
@@ -524,6 +542,13 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 - The Proposed approval target (median under 3 working days, section 17) stays, even though references can take up to 7 days to answer.
 - Opportunity types are Job, Partnership, Collaboration, Investment and Tender (section 10). Training/Internship is removed: internships are Jobs, training goes in Training & Courses. Members apply to Jobs and express interest in the rest, stored as one Response record. Only Level 2 and up can respond to a tender, tenders get 8 extra fields, and tenders that charge any fee cannot be posted. Resolves [Tenders as an Opportunity type: how do they differ?](https://github.com/clainkavit/kingdom-connect/issues/5)
 
+**Decided on 20 October 2026 (tech stack, ticket #10)**
+- Stack as in section 15: Expo universal member app, Next.js admin console, Supabase, Brevo email, Sentry, pnpm workspace, TypeScript, Vitest, Husky.
+- The pilot launches on the web first; Android and iOS follow from the same code. This supersedes the earlier plan to publish all three for the pilot.
+- Push notifications are in scope for the mobile apps, with a master switch and per-category switches.
+- English and Kiswahili from the start.
+- Production hosting stays open until before the pilot.
+
 **Open.** Every open question is a ticket on the [wayfinder map](https://github.com/clainkavit/kingdom-connect/issues/1) and is linked where it applies above.
 
 **Outside this spec**
@@ -543,6 +568,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | 17 Oct 2026 | Server-side access rules for the investor flag, contact details, identity documents and messages | 16, 18 |
 | 19 Oct 2026 | Level 1 verification: identity plus church membership through references; founding members; Reference record, dashboard widget and notifications | 3, 5, 6, 7, 13, 14, 16, 18 |
 | 19 Oct 2026 | Opportunity types and responses: Training/Internship removed, Apply vs Express interest, tender fields and no-fee rule, Response record | 4, 7, 10, 14, 16, 18 |
+| 20 Oct 2026 | Tech stack decided; pilot launches web first, mobile apps follow; push notifications scoped | 4, 14, 15, 16, 18 |
 
 ## Appendix B: Source documents
 

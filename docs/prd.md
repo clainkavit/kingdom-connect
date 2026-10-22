@@ -16,7 +16,7 @@ This PRD turns the Kingdom Connect Project Plan v1.1 into buildable requirements
 **How to read it.** Each feature section has user stories ("As a … I want … so that …") and acceptance criteria (AC). Each story cites the Plan's FR or UC numbers so the two documents stay traceable.
 
 **Markers.**
-- **Proposed**: a default the PRD sets that the Plan does not. Under review in [Confirm or change the PRD's Proposed defaults](https://github.com/clainkavit/kingdom-connect/issues/4).
+- **Proposed**: a default the PRD sets that the Plan does not. Every Proposed value that existed on 19 Oct was confirmed or changed in [Confirm or change the PRD's Proposed defaults](https://github.com/clainkavit/kingdom-connect/issues/4). Values marked Proposed after that date are still waiting for confirmation. Section 15 targets are separate and still need the Technical Committee.
 - **Changed 15 Oct**: a decision made after v0.1. Where it overrides the Plan, the Plan is not edited; this PRD wins. See Appendix A.
 - **Open**: a question with a ticket on the map. The ticket is linked where it applies.
 
@@ -108,7 +108,7 @@ Members and administrators get different sidebars; a member never sees admin ite
 
 **Admin sidebar:** Admin Dashboard · Verification Queue (members, businesses, investors) · Moderation Queue (opportunities, ideas, training, events, tenders) · Reports · Re-verification · Members · Investors · News · Featured · Audit Log · Settings.
 
-**On phones** the sidebar becomes a bottom tab bar (Proposed): Home, People, Opportunities, Messages, More for members; Home, Verify, Moderate, Reports, More for admins.
+**On phones** the sidebar becomes a bottom tab bar: Home, People, Opportunities, Messages, More for members; Home, Verify, Moderate, Reports, More for admins.
 
 **Visual direction.** The team's mockup ([context/design/dashboard-mockup.jpg](../context/design/dashboard-mockup.jpg)) sets the look. The clickable prototype ([context/design/dashboard-prototype.html](../context/design/dashboard-prototype.html)) applies this PRD to it. Where the mockup conflicts with this PRD, the PRD wins.
 
@@ -152,9 +152,9 @@ No one reaches member content until an administrator has verified their identity
 3. An ID number must be unique for its ID type, and a NIDA number must be 20 digits. A duplicate blocks submission and alerts admins (duplicate-profile detection). Because one person could register twice with two different IDs, admins also compare face photos. In Phase 1 an admin checks the ID manually; a connection to NIDA's verification service for NIDA holders may follow (ticket [#30](https://github.com/clainkavit/kingdom-connect/issues/30)).
 4. On submit, status = Pending and the applicant receives an email and SMS confirmation.
 5. Admin sees each pending applicant with documents side by side and must give a reason when rejecting; the reason is sent to the applicant.
-6. Status values: Pending → Approved or Rejected. A rejected applicant can correct and resubmit once (Proposed).
-7. Login requires username/password, then a 6-digit OTP sent by email during the pilot (SMS OTP considered later, depending on cost), valid 5 minutes, 3 attempts (Proposed values). **Open:** whether the chosen auth service supports this natively, see [Can Supabase Auth do username login plus an email OTP second step?](https://github.com/clainkavit/kingdom-connect/issues/8)
-8. Five failed password attempts lock the account for 15 minutes (Proposed).
+6. Status values: Pending → Approved or Rejected. A rejected applicant can correct and resubmit once; a second rejection is final unless an admin reopens the application.
+7. Login requires username/password, then a 6-digit OTP sent by email during the pilot (SMS OTP considered later, depending on cost), valid 10 minutes, 3 attempts, with a resend allowed after 60 seconds (changed 19 Oct: email can arrive slowly on mobile networks). **Open:** whether the chosen auth service supports this natively, see [Can Supabase Auth do username login plus an email OTP second step?](https://github.com/clainkavit/kingdom-connect/issues/8)
+8. Five failed password attempts lock the account for 15 minutes.
 
 **Business verification levels**
 
@@ -189,10 +189,10 @@ The member dashboard shows community activity and the member's own to-dos; every
 | People you may know: members who share skills, location, profession, study or connections with you, with a Connect button (changed 15 Oct) | ✓ | ✗ |
 | My connection requests (accept/decline inline) | ✓ | ✗ |
 | My activity: applications and expressions of interest, idea requests, registrations | ✓ | ✗ |
-| Featured opportunities | ✓ | ✓ (with slot count and remove, Proposed) |
+| Featured opportunities | ✓ | ✓ (with slot count and remove) |
 | Latest opportunities & more (tabs: All, Jobs, Training, Tenders, Investments, Ideas) | ✓ | ✗ |
 | Member quick actions: Post opportunity (Level 3 only), Share an idea, Scan for opportunities, Post training | ✓ | ✗ |
-| Admin quick actions: Post opportunity, Post tender, Post news, Feature an opportunity (Proposed) | ✗ | ✓ |
+| Admin quick actions: Post opportunity, Post tender, Post news, Feature an opportunity | ✗ | ✓ |
 | Latest news & updates | ✓ | ✓ |
 | Pending verifications (members, Level 2, Level 3, investors) | ✗ | ✓ |
 | Rejected/denied members | ✗ | ✓ |
@@ -205,7 +205,7 @@ The member dashboard shows community activity and the member's own to-dos; every
 1. The member dashboard API never returns pending, rejected or investor counts, so they cannot appear even through a client bug.
 2. Quick actions a member is not entitled to are hidden, with a short path to upgrade (for example, "Verify your business to post opportunities").
 3. Each admin count links straight to its filtered queue.
-4. Stats refresh at least every 15 minutes (Proposed).
+4. Stats refresh at least every 15 minutes.
 5. People you may know excludes members already connected, with a pending request, blocked, or hidden from the directory, and is rule-based like Scan for Opportunities. The rules are in "Matching rules" in section 10 (decided 20 Oct).
 
 ## 8. Profiles and directories
@@ -237,7 +237,7 @@ Profiles show what people do and offer, never how to reach them; contact happens
 3. Search matches name, profession, skills and business name, and returns results in under 2 seconds for 10,000 members.
 4. Location is chosen from Tanzanian regions and districts only.
 5. Contact fields are never sent to another member's device; they are revealed only inside an accepted connection, and only if the owner chooses to share them. Sharing is optional and set by each member in privacy settings.
-6. A member can hide their profile from the directory without leaving the platform (Proposed).
+6. A member can hide their profile from the directory without leaving the platform. Existing connections can still see the profile.
 
 ## 9. Connections and messaging
 
@@ -249,9 +249,9 @@ Two members can message only after one accepts the other's connection request. (
 - **CON-3** As a connected member, I want to message securely so that I don't need to share my phone number.
 
 **Acceptance criteria**
-1. Request states: Sent → Accepted, Declined or Withdrawn. Declining does not notify the sender (Proposed: the request simply stays pending for them for 30 days, then expires).
+1. Request states: Sent → Accepted, Declined or Withdrawn. Declining does not notify the sender: the request simply stays pending for them for 30 days, then expires.
 2. The request note is optional, up to 300 characters.
-3. A member can send at most 30 requests a day to slow spam (Proposed).
+3. A member can send at most 30 requests a day to slow spam.
 4. Messages support text and attachments (PDF, images, up to 10 MB). Messages are encrypted in transit and at rest.
 5. Either side can remove a connection or block a member; blocking stops messages and hides each from the other's searches.
 6. Every message thread has a "Report" action that sends the thread to admins (section 13).
@@ -278,7 +278,7 @@ Level 3 businesses and Administrators post opportunities, including tenders. Eve
 | Employment type | Full-time, Part-time, Contract, Internship (jobs only) |
 | Location | Tanzanian region/district, or Remote |
 | Description and requirements | Required, minimum 100 characters |
-| Contact channel | Always via the platform; phone numbers, emails and links in the description are blocked or flagged (Proposed) |
+| Contact channel | Always via the platform. Phone numbers and emails in the description are blocked at posting, with a short explanation; a post that contains a link goes to admin review (decided 19 Oct) |
 | Skills wanted | 1 to 5 tags. Required for Jobs and Collaboration; optional for other types (changed 20 Oct) |
 | Sector | Chosen from a fixed list (changed 20 Oct) |
 | Closing date | Required, maximum 90 days ahead |
@@ -418,7 +418,7 @@ These modules are free to join in Phase 1, and anything members post passes mode
 
 **Acceptance criteria**
 1. Training and events follow the same states as opportunities: Draft → Pending review → Published → Closed; plus Hidden and Removed.
-2. Registration stops at capacity and offers a waitlist (Proposed).
+2. Registration stops at capacity and offers a waitlist. When a place frees up, the first person waiting gets it automatically and is notified.
 3. A registered member sees their trainings and events under "My activity" on the dashboard.
 4. The poster sees a registrant list (names and profiles only, no contact details).
 5. Learning materials open inside the platform; downloads are allowed only if the poster enables them.
@@ -440,7 +440,7 @@ A reported opportunity disappears from members' view the moment it is reported; 
 4. Admin actions: Restore, Edit request to poster, Remove, Warn, Suspend posting rights, Suspend account. Each requires a note.
 5. Two upheld reports against a business within 12 months suspend its posting rights; three suspend the account pending review.
 6. Re-verification: 30 and 7 days before a business licence expires, the member is reminded. On expiry, Level 2 and 3 rights pause until new documents are approved.
-7. Audit log records who, what, when, and before/after values for approvals, rejections, moderation, role changes, investor flag changes, admin-posted opportunities, and every view of idea details. Logs are read-only and kept at least 5 years (Proposed).
+7. Audit log records who, what, when, and before/after values for approvals, rejections, moderation, role changes, investor flag changes, admin-posted opportunities, and every view of idea details. Logs are read-only and kept at least 5 years, including after a member deletes their data, as a legal record.
 8. Admins cannot see message contents unless a thread has been reported.
 
 **Legal texts** (decided 20 Oct, ticket [#11](https://github.com/clainkavit/kingdom-connect/issues/11)). The platform needs five legal texts, each with a version number:
@@ -487,6 +487,7 @@ Every event below shows in the in-app bell; during the pilot, OTPs and account m
 | Milestone plan: proposed, reminder, accepted, milestone done or confirmed, signed document uploaded, lapsed or withdrawn | The other member (both, on withdrawal) | ✓ | ✓ | ✗ |
 | Matches from Scan for Opportunities | Member | ✓ | Weekly digest | ✗ |
 | Training or event reminder | Registrant | ✓ | ✓ | ✗ |
+| Waitlist place confirmed | Member who was waiting | ✓ | ✓ | ✗ |
 | Report outcome | Reporter | ✓ | ✗ | ✗ |
 | Investor flag granted | Investor | ✓ | ✓ | ✗ |
 
@@ -580,11 +581,11 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | Jobs published | 200+ | Plan |
 | Partnerships formed | 100+ | Plan |
 | Platform adoption rate | 70%+ | Plan |
-| Median time from registration to approval | Under 3 working days | Proposed |
-| Reported opportunities reviewed | Within 24 hours | Proposed |
-| Upheld scam reports per 100 opportunities | Under 1 | Proposed |
-| Ideas with at least one approved access request | To be agreed | n/a |
-| Monthly active members | To be agreed | n/a |
+| Median time from registration to approval | Under 3 working days | Agreed 19 Oct |
+| Reported opportunities reviewed | Within 24 hours | Agreed 19 Oct |
+| Upheld scam reports per 100 opportunities | Under 1 | Agreed 19 Oct |
+| Ideas with at least one approved access request | 30% of published ideas in year 1 | Agreed 19 Oct |
+| Monthly active members | 50% of verified members | Agreed 19 Oct |
 
 **Testing and pilot readiness** (decided 20 Oct, ticket [#15](https://github.com/clainkavit/kingdom-connect/issues/15)).
 
@@ -659,6 +660,9 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 **Decided on 19 October 2026 (opportunity types and tenders, ticket #5)**
 - Opportunity types are Job, Partnership, Collaboration, Investment and Tender (section 10). Training/Internship is removed: internships are Jobs, training goes in Training & Courses. Members apply to Jobs and express interest in the rest, stored as one Response record. Only Level 2 and up can respond to a tender, tenders get 8 extra fields, and tenders that charge any fee cannot be posted. Resolves [Tenders as an Opportunity type: how do they differ?](https://github.com/clainkavit/kingdom-connect/issues/5)
 
+**Decided on 19 October 2026 (Proposed defaults, ticket #4)**
+- Every Proposed value is confirmed, with these changes: OTP valid 10 minutes with a resend after 60 seconds; phone numbers and emails blocked in posts and links sent to review; a second rejection is final unless an admin reopens it; waitlists move the first person up automatically; audit logs survive a member's data deletion; idea access target 30% and monthly active members 50%. Resolves [Confirm or change the PRD's Proposed defaults](https://github.com/clainkavit/kingdom-connect/issues/4)
+
 **Decided on 20 October 2026 (tech stack, ticket #10)**
 - Stack as in section 15: Expo universal member app, Next.js admin console, Supabase, Brevo email, Sentry, pnpm workspace, TypeScript, Vitest, Husky.
 - The pilot launches on the web first; Android and iOS follow from the same code. This supersedes the earlier plan to publish all three for the pilot.
@@ -689,6 +693,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | 20 Oct 2026 | Matching rules for Scan for Opportunities and People you may know; skills-wanted and sector added to the posting form | 7, 10, 16, 18 |
 | 20 Oct 2026 | UC-24 to UC-27 replaced by milestone plans (reworked 22 Oct); overrides the Plan's "both routes end with an agreement" (section 13 of the Plan) | 4, 11, 14, 16, 18 |
 | 19 Oct 2026 | Opportunity types and responses: Training/Internship removed, Apply vs Express interest, tender fields and no-fee rule, Response record | 4, 7, 10, 14, 16, 18 |
+| 19 Oct 2026 | All Proposed values confirmed or changed; success-metric targets set | 1, 5, 6, 7, 8, 9, 10, 12, 13, 14, 17, 18 |
 | 20 Oct 2026 | Tech stack decided; pilot launches web first, mobile apps follow; push notifications scoped | 4, 14, 15, 16, 18 |
 
 ## Appendix B: Source documents

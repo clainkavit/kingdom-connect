@@ -40,9 +40,9 @@ The tables below list only a screen's **special states**: the ones beyond these 
 |---|---|---|---|---|
 | S01 | Landing | Visitor | What the platform is, Sign up, Log in, language switch | Signed-in people go straight to the dashboard |
 | S02 | Sign up | Visitor | Username, email, +255 phone, password | **Cap reached:** "We're reviewing a high number of applications, please try again tomorrow" (Super Admin setting). **Duplicate:** an already used ID or email is stopped with a plain message |
-| S03 | Log in | Visitor | Username and password | **Locked:** 5 failed attempts lock the account for 15 minutes, with a countdown. A wrong username or password gets the same message, so nobody can test who exists. **Pending or rejected:** same message as a wrong password |
+| S03 | Log in | Visitor | Username and password | **Locked:** 5 failed attempts lock the account for 15 minutes, with a countdown. A wrong username or password gets the same message, so nobody can test who exists. **Pending or rejected:** same message as a wrong password. **Suspended:** after the password is right, "Your account is suspended. An admin will review it" |
 | S04 | Email code | Visitor | 6-digit code, valid 10 minutes | Wrong code (3 attempts), expired code, resend available after 60 seconds, too many attempts |
-| S05 | Registration wizard | Applicant | Steps: personal details (with a Tanzanian address from the region and district lists), category, category details, photos (face photo and one accepted ID with its type and number), legal acceptance, review | **Legal acceptance:** terms of use and privacy notice are two separate tick boxes, each with the text in English and Kiswahili. **Validation:** a NIDA number must be 20 digits, phone must start with +255. **Duplicate ID:** blocked. **Interrupted:** open question 1 |
+| S05 | Registration wizard | Applicant | Steps: personal details (with a Tanzanian address from the region and district lists), category, category details, photos (face photo and one accepted ID with its type and number), legal acceptance, review | **Legal acceptance:** terms of use and privacy notice are two separate tick boxes, each with the text in English and Kiswahili. **Validation:** a NIDA number must be 20 digits, phone must start with +255. **Duplicate ID:** blocked. **Interrupted:** each step is saved when it is completed, so the applicant signs in again and continues where they stopped, on any device. A draft is not an application until Submit; the admin queue never shows drafts |
 | S06 | Registration status | Applicant | Where the application is | **Under review:** "Your application is being reviewed", with the expected time. **Rejected first time:** the reason and Fix and resubmit (once). **Rejected final:** the reason and "This decision is final unless an admin reopens it". **Approved:** moves on to the dashboard |
 | S07 | Accept updated text | Member | A changed terms of use or privacy notice, in both languages | Blocks the app until accepted at next login. An NDA already accepted never prompts again |
 
@@ -160,6 +160,10 @@ Each notification in [docs/notifications.md](notifications.md) opens the screen 
 | O5 to O8 Post status | S21 |
 | I1, I2 Interest in my idea | S28 |
 | I3 to I6 Idea access | S25 or S26 |
+| L1 Account locked | S03 |
+| X1 Account suspended | S03 |
+| X2 Posting rights paused | S20 or S21 |
+| H1, H2 Idea hidden or removed | S27 |
 | P1 to P9 Milestone plans | S32, S33 or S34 |
 | S1 Scan matches | S16 |
 | T1, T2, W1 Training and events | S35 or S38 |
@@ -173,7 +177,8 @@ Each notification in [docs/notifications.md](notifications.md) opens the screen 
 
 ## Open questions
 
-1. **Half-finished registration.** If the connection drops or someone closes the app part-way through the wizard, is the form saved so they can continue?
-2. **Notices with no PRD row.** Login lockout, account suspension, and a hidden or removed profile or idea have no notification and no screen yet (also listed in docs/notifications.md).
-3. **Empty-state wording.** The examples above set the tone; the final English and Kiswahili text for each empty and error state is written during the build.
-4. **A plan stopped partway.** What happens after the first hour when a member wants to stop (PRD section 11, open).
+1. **A plan stopped partway.** What happens after the first hour when a member wants to stop (PRD section 11, open). Proposed answer: either member can end the plan at any time with a reason, the other is told, and the plan stays on record as ended with its milestones.
+2. **Warn and Edit request notices.** Two admin actions (PRD section 13) still have no notification and no screen state (also listed in docs/notifications.md).
+3. **Unfinished registrations.** How long a saved, unsubmitted registration (with its uploaded ID photo) is kept before it is deleted. For the lawyer's retention review (PRD section 13).
+
+Final English and Kiswahili wording for every empty and error state is written during the build (agreed 22 Oct).

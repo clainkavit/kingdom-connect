@@ -1,0 +1,23 @@
+{
+  "name": "kingdom-connect",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Kingdom Connect: member app (Expo), admin console (Next.js) and shared code.",
+  "scripts": {
+    "typecheck": "pnpm -r --if-present run typecheck",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "format": "prettier --write .",
+    "member": "pnpm --filter @kingdom-connect/member start",
+    "member:web": "pnpm --filter @kingdom-connect/member web",
+    "admin": "pnpm --filter @kingdom-connect/admin dev",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "husky": "^9.1.7",
+    "lint-staged": "^16.0.0",
+    "prettier": "^3.5.0",
+    "typescript": "^5.8.0",
+    "vitest": "^3.2.0"
+  }
+}

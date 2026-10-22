@@ -10,9 +10,11 @@ The words this project uses, and the ones it avoids. Definitions only; requireme
 
 **Opportunity Poster (Level 3)**: a Verified Business whose directorship or authorisation and address are approved. Can post Opportunities.
 
-**Opportunity**: a post members can respond to. Types: Job, Training/Internship, Partnership, Collaboration, Investment, Tender. Posted by an Opportunity Poster or an Administrator.
+**Opportunity**: a post members can respond to. Types: Job, Partnership, Collaboration, Investment, Tender. Posted by an Opportunity Poster or an Administrator. An internship is a Job with employment type Internship. _Avoid:_ Training/Internship (removed 19 Oct 2026; training belongs in Training & Courses).
 
-**Tender**: a type of Opportunity (decided 15 Oct 2026), not a separate module. Members express interest rather than apply. Exact fields: see ticket "Tenders as an Opportunity type".
+**Tender**: a type of Opportunity (decided 15 Oct 2026), not a separate module. Verified Businesses (Level 2 and up) express interest rather than apply. Fields: PRD section 10.
+
+**Response**: what a member sends to an Opportunity. Its kind is Application (for a Job) or Interest (for every other type). _Avoid:_ application, when meaning both kinds.
 
 **Investor flag**: a private permission on a member account that adds anonymous interest, silent browsing, investor filters and a saved list. Never shown to members. _Avoid:_ investor, as a role name or category shown in the UI. Any member can invest without the flag.
 

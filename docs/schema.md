@@ -102,7 +102,7 @@ Matching scores are worked out when a page opens and are not stored (PRD section
 
 Reporting an opportunity sets it to `hidden` at once, through `report()` (section 9).
 
-## 8. Ideas and agreements
+## 8. Ideas and milestone plans
 
 | Table | Key columns | Who can read | Who can write |
 |---|---|---|---|

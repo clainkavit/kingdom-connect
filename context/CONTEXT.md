@@ -6,10 +6,6 @@ The words this project uses, and the ones it avoids. Definitions only; requireme
 
 **Applicant**: someone who has registered but is not yet approved. Cannot see member content.
 
-**Reference**: a Mkuyuni church member, attending in person or online, whom an Applicant names as someone who knows them. Answers Yes or No to "Do you know this person?", in the app if they are a Member, otherwise by phone with an Administrator. _Avoid:_ referee, sponsor, voucher.
-
-**Founding member**: one of the first Members, approved by a Super Administrator from a list provided by church leadership instead of through References.
-
 **Verified Business (Level 2)**: a member whose business documents (BRELA, TRA TIN, licence) are approved. Listed in the Business directory. _Avoid:_ business owner, for this level; a business owner may still be Level 1.
 
 **Opportunity Poster (Level 3)**: a Verified Business whose directorship or authorisation and address are approved. Can post Opportunities.

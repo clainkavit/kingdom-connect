@@ -495,6 +495,10 @@ Every event below shows in the in-app bell; during the pilot, OTPs and account m
 | Waitlist place confirmed | Member who was waiting | ✓ | ✓ | ✗ |
 | Report outcome | Reporter | ✓ | ✗ | ✗ |
 | Investor flag granted | Investor | ✓ | ✓ | ✗ |
+| Login locked after 5 failed attempts | Member | ✗ | ✓ | ✗ |
+| Account suspended | Member | ✗ | ✓ | ✗ |
+| Posting rights paused | Poster | ✓ | ✓ | ✗ |
+| Idea hidden or removed by an admin | Idea owner | ✓ | ✓ | ✗ |
 
 **Push notifications** (decided 20 Oct) are sent to the Android and iOS apps once they ship; the web pilot has the in-app bell and email only.
 - Push is sent for: connection request received or accepted, new message, application status change, idea access approved or NDA accepted, a milestone plan request, post approved or rejected, and registration approved or rejected. The weekly Scan digest is email only, and report outcomes are in-app only.
@@ -719,6 +723,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | 19 Oct 2026 | Opportunity types and responses: Training/Internship removed, Apply vs Express interest, tender fields and no-fee rule, Response record | 4, 7, 10, 14, 16, 18 |
 | 19 Oct 2026 | All Proposed values confirmed or changed; success-metric targets set | 1, 5, 6, 7, 8, 9, 10, 12, 13, 14, 17, 18 |
 | 22 Oct 2026 | The four Proposed items added on 20 to 22 Oct confirmed; no Proposed markers remain | 6, 11, 18 |
+| 22 Oct 2026 | Four notifications added: login lockout, account suspended, posting paused, idea hidden or removed | 14 |
 | 20 Oct 2026 | Database schema and access rules written in docs/schema.md | 16, 18 |
 | 20 Oct 2026 | Tech stack decided; pilot launches web first, mobile apps follow; push notifications scoped | 4, 14, 15, 16, 18 |
 

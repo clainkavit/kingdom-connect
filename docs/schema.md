@@ -51,7 +51,7 @@ Private data sits in its own tables, so each rule is "this whole table is admin-
 | `staff` | `id` (= auth user), `full_name`, `role` (admin, super_admin), `active` | Staff | Super Admin only |
 | `profiles` | `member_id`, `full_name`, `headline`, `bio`, `photo_path`, `region_id`, `district_id`, `profession`, `experience`, `certifications`, `study_institution`, `study_course`, `study_year`, `hidden_from_directory`, `last_active_at` | Approved members, unless hidden or blocked; a hidden profile stays visible to the owner and existing connections; staff | The owner |
 | `profile_skills` | `member_id`, `skill_id` | Same as `profiles` | The owner |
-| `member_private` | `member_id`, `email`, `phone` (must start with +255), `address`, `id_type` (nida, passport, driving_licence, voters_id), `id_encrypted` (bytea), `id_fingerprint` (unique), `id_expires_on` (date, optional, Proposed), `share_phone`, `share_email`, `share_address` (all false by default), `language` (en, sw) | The owner; staff. **Never** other members: they use `get_contact_details()` | The owner, except `id_*`, which only the registration function writes |
+| `member_private` | `member_id`, `email`, `phone` (must start with +255), `address`, `id_type` (nida, passport, driving_licence, voters_id), `id_encrypted` (bytea), `id_fingerprint` (unique), `id_expires_on` (date, optional), `share_phone`, `share_email`, `share_address` (all false by default), `language` (en, sw) | The owner; staff. **Never** other members: they use `get_contact_details()` | The owner, except `id_*`, which only the registration function writes |
 | `investor_flags` | `member_id`, `granted_by` (staff), `route` (invitation, application), `sector_focus`, `ticket_band` (under_10m, 10m_to_50m, over_50m), `granted_at`, `revoked_at` | The investor themselves (so the app shows investor tools); staff. **No other member, ever** | Staff |
 
 **Admin accounts are separate.** A staff account has no member profile and cannot connect, message, apply or post ideas. A staff person who also wants to network uses a separate member account.
@@ -114,7 +114,7 @@ Reporting an opportunity sets it to `hidden` at once, through `report()` (sectio
 | `saved_ideas` | `investor_id`, `idea_id` | The investor | The investor (requires an investor flag) |
 | `milestone_plans` | `member_a`, `member_b`, `idea_id` or `opportunity_id` (exactly one), `started_by`, `status` (pending, active, completed, lapsed, withdrawn), `a_acceptance_id`, `b_acceptance_id` (hand-off disclaimer acceptances), `stage1_agreed_at`, `expires_at` (14 days while pending), `withdrawn_by`, `withdrawn_at`, `completed_at` | The two members; staff (names, item, stage statuses, dates and notes only) | The two members, through the plan functions below. Both must be approved members with an accepted connection that came from that idea or opportunity. No minimum level |
 | `milestones` | `plan_id`, `position` (1 to 10; 1 is always "Agreed in principle"), `title`, `description`, `target_date`, `responsible_member_id`, `status` (open, done, confirmed), `done_at`, `confirmed_at` | The two members; staff | The responsible member marks done, the other confirms. A confirmed milestone is never edited or removed |
-| `plan_documents` | `plan_id`, `uploaded_by`, `storage_path`, `size` (max 10 MB, Proposed), `uploaded_at`; one per member per plan | The two members. Staff only while a report is open on that plan (Proposed) | The two members upload once the milestones before it are confirmed |
+| `plan_documents` | `plan_id`, `uploaded_by`, `storage_path`, `size` (max 10 MB), `uploaded_at`; one per member per plan | The two members. Staff only while a report is open on that plan | The two members upload once the milestones before it are confirmed |
 | `plan_annotations` | `plan_id`, `staff_id`, `note` | Staff | Staff add; nobody edits or deletes |
 
 **Anonymous investors.** `requests_for_my_idea()` returns "A verified investor", the sector focus and the ticket band for an anonymous request, with the requester's identity blank, until the requester accepts the NDA. Only then does it return their name and profile. Investor silent browsing is logged in `idea_views`, and the owner only ever sees the count.
@@ -177,7 +177,7 @@ All buckets are private. No file is ever at a public web address. Files are open
 | `message-files` | The two members in the thread; staff only if it is reported |
 | `learning-materials` | Members registered for that training, the poster, staff |
 | `public-media` (tender documents, event and news images) | Approved members |
-| `plan-documents` (signed agreements) | The two members in the plan; staff only while a report is open on that plan (Proposed) |
+| `plan-documents` (signed agreements) | The two members in the plan; staff only while a report is open on that plan |
 | `report-screenshots` | The reporter and staff |
 
 ## 13. Encryption

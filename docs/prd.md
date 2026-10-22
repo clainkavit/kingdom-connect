@@ -16,7 +16,7 @@ This PRD turns the Kingdom Connect Project Plan v1.1 into buildable requirements
 **How to read it.** Each feature section has user stories ("As a … I want … so that …") and acceptance criteria (AC). Each story cites the Plan's FR or UC numbers so the two documents stay traceable.
 
 **Markers.**
-- **Proposed**: a default the PRD sets that the Plan does not. Every Proposed value that existed on 19 Oct was confirmed or changed in [Confirm or change the PRD's Proposed defaults](https://github.com/clainkavit/kingdom-connect/issues/4). Values marked Proposed after that date are still waiting for confirmation. Section 15 targets are separate and still need the Technical Committee.
+- **Proposed**: a default the PRD sets that the Plan does not. Every Proposed value that existed on 19 Oct was confirmed or changed in [Confirm or change the PRD's Proposed defaults](https://github.com/clainkavit/kingdom-connect/issues/4). The four added on 20 to 22 Oct (ID expiry check, 10 milestones, 10 MB signed document, staff access to the signed document) were confirmed on 22 Oct, so none remain. Section 15 targets are separate and still need the Technical Committee.
 - **Changed 15 Oct**: a decision made after v0.1. Where it overrides the Plan, the Plan is not edited; this PRD wins. See Appendix A.
 - **Open**: a question with a ticket on the map. The ticket is linked where it applies.
 
@@ -171,7 +171,7 @@ No one reaches member content until an administrator has verified their identity
 
 | Check | Evidence | What the admin confirms |
 |---|---|---|
-| Identity | Completed profile, a face photo, and a photo of one accepted ID: NIDA, passport, driving licence or voter's ID | Name and ID number on the ID match the form; the face photo matches the ID photo; the ID has not expired (Proposed) |
+| Identity | Completed profile, a face photo, and a photo of one accepted ID: NIDA, passport, driving licence or voter's ID | Name and ID number on the ID match the form; the face photo matches the ID photo; the ID has not expired |
 | Location | A +255 phone number and a Tanzanian address chosen from the region and district lists | Both are present. There is no nationality rule |
 
 12. Each ID number is unique for its ID type. Admins compare face photos to catch one person registering with two different IDs; a suspected duplicate is flagged and the admin decides.
@@ -399,13 +399,13 @@ Both routes meet at the owner's decision; an anonymous investor's name is reveal
 **Milestone plans** (decided 20 Oct and reworked 22 Oct; replaces UC-24 to UC-27, ticket [#6](https://github.com/clainkavit/kingdom-connect/issues/6)). Two members who have decided to work together agree the stages up front, track them on the platform, and finish by uploading their signed agreement. The idea comes from a similar concept on Upwork. It ships in Release 2.
 
 1. **Who.** Any two verified members connected through an Idea or an Opportunity (Partnership, Collaboration or Investment). There is no minimum level, so a Level 1 member with an idea can use it. Either member can start the plan; the other must accept it before it begins.
-2. **Stages.** A plan has 1 to 10 milestones (Proposed limit), each with a title, a description and a target date. Stage 1 is always "Agreed in principle". The last stage is the signed document.
+2. **Stages.** A plan has 1 to 10 milestones, each with a title, a description and a target date. Stage 1 is always "Agreed in principle". The last stage is the signed document.
 3. **Doing a milestone.** The member responsible marks it done, and the other member confirms.
 4. **Hand-off disclaimer.** Each side accepts, at the start, that the platform provides a record only, is not a party to the agreement, does not guarantee or mediate anything, and that dealings outside the platform are the members' own. The accepted version and timestamp are stored for each side, as with the NDA. The wording is written in [Who writes the NDA, IP terms and data-consent text?](https://github.com/clainkavit/kingdom-connect/issues/11).
 5. **Waiting for the other member.** A proposed plan stays Pending for 14 days, with one reminder on day 7, then lapses. Either member can restart it. A lapsed plan counts as "not started" in analytics. Messaging stays open throughout.
 6. **Withdrawing.** While Pending, the member who proposed it may withdraw. Once both have accepted stage 1, either may withdraw within 1 hour and the other is notified. After that hour, stage 1 is final. Later stages keep an audit trail and cannot be removed.
-7. **Signed document.** At the end, if both members agree, each is prompted to upload the signed agreement to the platform (PDF, up to 10 MB, Proposed). The platform stores it. It does not draft, review or e-sign anything.
-8. **Who sees what.** The plan shows on both members' profiles. Administrators see names, the idea or opportunity, stage statuses, dates and notes, never contact details or the investor flag. Administrators do not see the signed document unless a report is filed on the partnership (Proposed). An Administrator can annotate a plan but not delete it. A withdrawn plan stays visible as Withdrawn.
+7. **Signed document.** At the end, if both members agree, each is prompted to upload the signed agreement to the platform (PDF, up to 10 MB). The platform stores it. It does not draft, review or e-sign anything.
+8. **Who sees what.** The plan shows on both members' profiles. Administrators see names, the idea or opportunity, stage statuses, dates and notes, never contact details or the investor flag. Administrators do not see the signed document unless a report is filed on the partnership. An Administrator can annotate a plan but not delete it. A withdrawn plan stays visible as Withdrawn.
 9. **What protection means in Phase 1.** Evidence only: timestamped stages, the stored signed document and a record both members accepted. The platform does not mediate disputes or guarantee anything. The lawyer confirms the wording before launch (section 13, Legal texts).
 10. **Analytics.** The platform counts people linked, plans started and plans completed.
 11. **Open:** what happens when one member wants to stop partway, after the first hour, and whether the platform may later charge for completed plans (billing is a Phase 2 ticket; Phase 1 has no payments).
@@ -672,7 +672,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 - The schema and access rules are in [docs/schema.md](schema.md). Private data (contact details and ID numbers, investor flag, business registration numbers) sits in separate admin-only tables; other members reach contact details only through one checked function, with three share switches (phone, email, address) off by default.
 - Admin accounts are separate from member accounts.
 - ID numbers (NIDA, passport, driving licence or voter's ID) are encrypted in the database with a fingerprint for duplicate checks; messages and documents rely on the host's disk encryption.
-- Milestone plans have their own tables (plans, milestones, signed documents); signed documents are visible to the two members, and to staff only while a report is open on the plan (Proposed).
+- Milestone plans have their own tables (plans, milestones, signed documents); signed documents are visible to the two members, and to staff only while a report is open on the plan.
 - A deleted member becomes a "Deleted member" placeholder; the lawyer review (#11) confirms what must be kept.
 - Nothing hard-codes the community name, and church references and the founding list are not in the schema, so it fits the nationwide scope (ticket #30).
 
@@ -689,6 +689,9 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 - The NIDA verification service is a post-pilot step, after the company exists and hosting is decided.
 - The adoption target is reworded for the pilot community; the national target comes after the pilot.
 - The name Kingdom Connect stays for now; the final name is decided late, and every text takes it from one setting (section 13).
+
+**Decided on 22 October 2026 (confirmed Proposed items)**
+- Confirmed: an admin checks that the ID has not expired; a milestone plan has 1 to 10 milestones; a signed document is a PDF up to 10 MB; staff see a signed document only while a report is open on that plan.
 
 **Open.** Every open question is a ticket on the [wayfinder map](https://github.com/clainkavit/kingdom-connect/issues/1) and is linked where it applies above.
 
@@ -715,6 +718,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | 20 Oct 2026 | UC-24 to UC-27 replaced by milestone plans (reworked 22 Oct); overrides the Plan's "both routes end with an agreement" (section 13 of the Plan) | 4, 11, 14, 16, 18 |
 | 19 Oct 2026 | Opportunity types and responses: Training/Internship removed, Apply vs Express interest, tender fields and no-fee rule, Response record | 4, 7, 10, 14, 16, 18 |
 | 19 Oct 2026 | All Proposed values confirmed or changed; success-metric targets set | 1, 5, 6, 7, 8, 9, 10, 12, 13, 14, 17, 18 |
+| 22 Oct 2026 | The four Proposed items added on 20 to 22 Oct confirmed; no Proposed markers remain | 6, 11, 18 |
 | 20 Oct 2026 | Database schema and access rules written in docs/schema.md | 16, 18 |
 | 20 Oct 2026 | Tech stack decided; pilot launches web first, mobile apps follow; push notifications scoped | 4, 14, 15, 16, 18 |
 

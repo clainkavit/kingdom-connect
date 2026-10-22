@@ -90,9 +90,9 @@ Phase 1 ships in two releases inside the 12-month plan: Release 1 builds trust a
 | Opportunities | ✗ | Posting (including tenders), applications, featured, Scan for Opportunities |
 | Ideas and investors | ✗ | Ideas pool, profile Ideas tab, NDA flow, investor flag and tools |
 | Learning and community | ✗ | Training and courses, events, news |
-| Agreed to proceed | ✗ | A two-sided record that two members agreed to continue off the platform (Ideas and Opportunities). Replaces agreement forms, e-signing and legal support (decided 20 Oct, [#6](https://github.com/clainkavit/kingdom-connect/issues/6)) |
+| Milestone plans | ✗ | A step-by-step plan two connected members agree on and track on the platform, ending with an upload of their signed agreement. Replaces agreement forms and e-signing (decided 20 Oct, reworked 22 Oct, [#6](https://github.com/clainkavit/kingdom-connect/issues/6)) |
 
-**Platforms:** responsive web portal plus Android and iOS apps with the same features.
+**Platforms (changed 20 Oct):** the pilot launches as a responsive web portal that can be added to a phone's home screen. Android and iOS apps with the same features follow once the web version is stable, built from the same codebase (section 15).
 
 **Geography:** Tanzania only. Registration requires a valid NIDA number.
 
@@ -329,17 +329,22 @@ Both routes meet at the owner's decision; an anonymous investor's name is reveal
 10. Investor silent browsing: the owner sees "Viewed by N investors", never names.
 11. Investor filters: sector, stage, investment range, region; a private Saved list.
 12. The investor flag is granted only by Administrator or Super Administrator invitation or by approving a Level 2 member's application. There is no investor directory, badge or member-facing count.
-13. After an approved connection, the two members can record that they agreed to proceed. See "Agreed to proceed" below. The agreement form, e-signing and legal support (UC-24–26) are not in Phase 1.
+13. After an accepted connection, the two members can set up a milestone plan. See "Milestone plans" below. In-platform agreement forms, e-signing and legal support (UC-24 to UC-26) are not in Phase 1.
 
-**Agreed to proceed** (changed 20 Oct; replaces UC-24 to UC-27, ticket [#6](https://github.com/clainkavit/kingdom-connect/issues/6)). It applies to an accepted Idea connection and to a connection that comes from an Opportunity (Partnership, Collaboration or Investment). It ships in Release 2.
+**Milestone plans** (decided 20 Oct and reworked 22 Oct; replaces UC-24 to UC-27, ticket [#6](https://github.com/clainkavit/kingdom-connect/issues/6)). Two members who have decided to work together agree the stages up front, track them on the platform, and finish by uploading their signed agreement. The idea comes from a similar concept on Upwork. It ships in Release 2.
 
-1. Either member marks "We agreed to proceed" and may add a short note. The other member must confirm.
-2. Each side must accept a hand-off disclaimer: from here the parties continue outside Kingdom Connect, and the platform is not responsible for what follows. The record is valid only when both sides have accepted. The accepted version and timestamp are stored for each side, as with the NDA. The wording is written in [Who writes the NDA, IP terms and data-consent text?](https://github.com/clainkavit/kingdom-connect/issues/11).
-3. While Pending, the member who started it may withdraw. It stays Pending for 14 days, with one reminder on day 7, then lapses. Either member can restart it. A lapsed request counts as "not recorded" in analytics. Messaging stays open throughout.
-4. Once both have accepted, either member may withdraw within 1 hour and the other is notified. After that hour the record is final.
-5. The record shows on both members' profiles and to Administrators. Administrators see names, the idea or opportunity, date, note and status only, never contact details or the investor flag. An Administrator can annotate a record but not delete it. A withdrawn record stays visible as Withdrawn.
-6. The record also gives the platform the count of people it has linked, for analytics.
-7. Not in Phase 1: an agreement form, e-signing, uploaded contracts and a legal-professional directory. A lawyer directory is a possible Phase 2 idea now that the platform is open to anyone in Tanzania.
+1. **Who.** Any two verified members connected through an Idea or an Opportunity (Partnership, Collaboration or Investment). There is no minimum level, so a Level 1 member with an idea can use it. Either member can start the plan; the other must accept it before it begins.
+2. **Stages.** A plan has 1 to 10 milestones (Proposed limit), each with a title, a description and a target date. Stage 1 is always "Agreed in principle". The last stage is the signed document.
+3. **Doing a milestone.** The member responsible marks it done, and the other member confirms.
+4. **Hand-off disclaimer.** Each side accepts, at the start, that the platform provides a record only, is not a party to the agreement, does not guarantee or mediate anything, and that dealings outside the platform are the members' own. The accepted version and timestamp are stored for each side, as with the NDA. The wording is written in [Who writes the NDA, IP terms and data-consent text?](https://github.com/clainkavit/kingdom-connect/issues/11).
+5. **Waiting for the other member.** A proposed plan stays Pending for 14 days, with one reminder on day 7, then lapses. Either member can restart it. A lapsed plan counts as "not started" in analytics. Messaging stays open throughout.
+6. **Withdrawing.** While Pending, the member who proposed it may withdraw. Once both have accepted stage 1, either may withdraw within 1 hour and the other is notified. After that hour, stage 1 is final. Later stages keep an audit trail and cannot be removed.
+7. **Signed document.** At the end, if both members agree, each is prompted to upload the signed agreement to the platform (PDF, up to 10 MB, Proposed). The platform stores it. It does not draft, review or e-sign anything.
+8. **Who sees what.** The plan shows on both members' profiles. Administrators see names, the idea or opportunity, stage statuses, dates and notes, never contact details or the investor flag. Administrators do not see the signed document unless a report is filed on the partnership (Proposed). An Administrator can annotate a plan but not delete it. A withdrawn plan stays visible as Withdrawn.
+9. **What protection means in Phase 1.** Evidence only: timestamped stages, the stored signed document and a record both members accepted. The platform does not mediate disputes or guarantee anything. The lawyer confirms the wording before launch (section 13, Legal texts).
+10. **Analytics.** The platform counts people linked, plans started and plans completed.
+11. **Open:** what happens when one member wants to stop partway, after the first hour, and whether the platform may later charge for completed plans (billing is a Phase 2 ticket; Phase 1 has no payments).
+12. **Not in Phase 1:** drafting agreements on the platform, e-signing and a legal-professional directory. A lawyer directory is a possible Phase 2 idea.
 
 ## 12. Training, events and news
 
@@ -393,11 +398,16 @@ Every event below shows in the in-app bell; during the pilot, OTPs and account m
 | Post approved, rejected, hidden or removed | Poster | ✓ | ✓ | ✗ |
 | Interest in my idea (named or anonymous) | Idea owner | ✓ | ✓ | ✗ |
 | Access approved, NDA accepted, access revoked | Owner and requester | ✓ | ✓ | ✗ |
-| Agreed to proceed: requested, reminder, confirmed, lapsed or withdrawn | The other member (both, on withdrawal) | ✓ | ✓ | ✗ |
+| Milestone plan: proposed, reminder, accepted, milestone done or confirmed, signed document uploaded, lapsed or withdrawn | The other member (both, on withdrawal) | ✓ | ✓ | ✗ |
 | Matches from Scan for Opportunities | Member | ✓ | Weekly digest | ✗ |
 | Training or event reminder | Registrant | ✓ | ✓ | ✗ |
 | Report outcome | Reporter | ✓ | ✗ | ✗ |
 | Investor flag granted | Investor | ✓ | ✓ | ✗ |
+
+**Push notifications** (decided 20 Oct) are sent to the Android and iOS apps once they ship; the web pilot has the in-app bell and email only.
+- Push is sent for: connection request received or accepted, new message, application status change, idea access approved or NDA accepted, a milestone plan request, post approved or rejected, and registration approved or rejected. The weekly Scan digest is email only, and report outcomes are in-app only.
+- The app asks for notification permission after the first login, not at install. Once permission is granted, push is on by default, with one master switch and a switch per category in Settings.
+- A new-message push says "You have a new message", with no preview.
 
 Notification text never names an anonymous investor and never includes contact details. The wording is written in [Notification copy in English and Kiswahili](https://github.com/clainkavit/kingdom-connect/issues/14).
 
@@ -417,9 +427,22 @@ The figures below are proposed starting targets for the Technical Committee to c
 | Languages | English and Kiswahili for all member-facing screens |
 | Accessibility | WCAG 2.1 AA contrast and text sizes; works with screen readers on mobile |
 | Data usage | Images compressed; a low-data mode that hides images on mobile |
-| Monitoring | Security logging, alerts on repeated failed logins, unusual message volume, or duplicate NIDA attempts |
+| Monitoring | Security logging, alerts on repeated failed logins, unusual message volume, or duplicate NIDA attempts. Supabase logs for the server and Sentry (free plan) for app crashes (changed 20 Oct) |
 
-The stack itself is decided in [Lock the tech stack](https://github.com/clainkavit/kingdom-connect/issues/10).
+**Technical stack** (decided 20 Oct, ticket [#10](https://github.com/clainkavit/kingdom-connect/issues/10)). The priorities are a low budget while developing, one codebase for every platform, and privacy rules enforced in the database.
+
+| Layer | Choice |
+|---|---|
+| Member app | One Expo (React Native) universal app in TypeScript: web first, then Android and iOS from the same code. If the web build misses the 3G target in a prototype test, only the member website moves to Next.js |
+| Admin console | Separate Next.js web app, sharing types and Supabase client code with the member app |
+| Backend | Supabase: Postgres, Auth, Storage, Realtime. No separate server. Access rules are Row-Level Security; matching scores and agreement records are Postgres functions; Edge Functions handle login and OTP, email sending and signed links to private documents. Auth follows the custom design in [Supabase Auth login flow](../context/memory/supabase-auth-login-flow.md) |
+| Interface | NativeWind in the Expo app, shadcn/ui in the admin console, on shared design tokens |
+| Code and quality | pnpm workspace (no Turborepo at first), TypeScript with a typecheck script, Vitest, Husky with lint-staged and typecheck on pre-commit |
+| Email | Brevo. Free plan (300 a day) for development and the start of the pilot, with an alert at 200 a day and a move to the paid plan when it fires. Test delivery to Gmail and Tanzanian mobile-provider addresses before the pilot |
+| Push | Expo push service, for the Android and iOS apps once they ship. The web pilot uses the in-app bell and email only |
+| Languages | English and Kiswahili from the start, with every screen string kept in translation files |
+| Development hosting | Supabase Free plan and Vercel for development and preview builds, test data only |
+| Production hosting | Not decided. Hostinger is a candidate, which would probably mean self-hosting Supabase on a VPS, so the team would run backups and security updates. Decided before the pilot with the legal check against the Act (see Hosting above) |
 
 ## 16. Key data entities and statuses
 
@@ -434,7 +457,7 @@ These are the main records the system stores and the states each can be in. The 
 | NIDA number and identity or business documents | The owner and admins. Documents sit in a separate admin-only store, never at public URLs |
 | Message contents | The two members in the thread. Admins only once the thread is reported |
 
-If the stack stays on Supabase/Postgres, these rules are enforced in the database with Row-Level Security policies and restricted views, so a faulty API endpoint can't leak them. The stack is decided in [Lock the tech stack](https://github.com/clainkavit/kingdom-connect/issues/10).
+On Supabase/Postgres (the stack, decided 20 Oct, see section 15), these rules are enforced in the database with Row-Level Security policies and restricted views, so a faulty API endpoint can't leak them.
 
 | Entity | Key fields | Statuses |
 |---|---|---|
@@ -448,7 +471,7 @@ If the stack stays on Supabase/Postgres, these rules are enforced in the databas
 | Application | Opportunity, applicant, CV, note | New, Shortlisted, Declined, Withdrawn |
 | Idea | Owner, summary fields, details, attachments, visibility | Draft, Pending moderation, Published, Archived, Hidden, Removed |
 | Idea access request | Idea, requester, role, anonymous flag, NDA version, accepted at | Pending, Approved, Declined, NDA accepted, Revoked |
-| Agreement record | The two members, idea or opportunity, note, disclaimer version, accepted at (each side), admin annotations | Pending, Agreed, Lapsed, Withdrawn |
+| Milestone plan | The two members, idea or opportunity, milestones (title, description, target date, status), disclaimer version, accepted at (each side), signed document, admin annotations | Pending, Active, Completed, Lapsed, Withdrawn |
 | Training / Event | Poster, title, dates, capacity, materials | Draft, Pending review, Published, Closed, Hidden, Removed |
 | Registration | Member, training or event | Registered, Waitlisted, Cancelled, Attended |
 | News item | Title, body, image, pinned | Draft, Published |
@@ -500,8 +523,15 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 - Access rules are enforced on the server, not in the UI: the investor flag, contact details, identity documents and message contents never reach a user who isn't allowed them (section 16). On Supabase/Postgres this means Row-Level Security in the database. The schema itself is still open in [Database schema and access rules](https://github.com/clainkavit/kingdom-connect/issues/12).
 
 **Decided on 20 October 2026**
-- Agreements and e-signing (UC-24 to UC-27) are replaced in Phase 1 by an "Agreed to proceed" record that both members accept, with a hand-off disclaimer. It applies to Ideas and Opportunities and ships in Release 2 (section 11).
+- Agreements and e-signing (UC-24 to UC-27) are replaced in Phase 1 by milestone plans: two connected verified members agree stages, track them on the platform and upload their signed agreement at the end (section 11). A first version on 20 Oct was a simple "Agreed to proceed" record; it was reworked on 22 Oct.
 - Legal support (UC-26) is out of Phase 1. A lawyer directory is a possible Phase 2 idea.
+
+**Decided on 20 October 2026 (tech stack, ticket #10)**
+- Stack as in section 15: Expo universal member app, Next.js admin console, Supabase, Brevo email, Sentry, pnpm workspace, TypeScript, Vitest, Husky.
+- The pilot launches on the web first; Android and iOS follow from the same code. This supersedes the earlier plan to publish all three for the pilot.
+- Push notifications are in scope for the mobile apps, with a master switch and per-category switches.
+- English and Kiswahili from the start.
+- Production hosting stays open until before the pilot.
 
 **Open.** Every open question is a ticket on the [wayfinder map](https://github.com/clainkavit/kingdom-connect/issues/1) and is linked where it applies above.
 
@@ -520,7 +550,8 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | 15 Oct 2026 | Phone bottom tab bar proposed; mockup and prototype linked as visual direction | 5 |
 | 15 Oct 2026 | Open items linked to wayfinder tickets; Proposed values flagged for review | Throughout |
 | 17 Oct 2026 | Server-side access rules for the investor flag, contact details, identity documents and messages | 16, 18 |
-| 20 Oct 2026 | UC-24 to UC-27 replaced by a two-sided "Agreed to proceed" record; overrides the Plan's "both routes end with an agreement" (section 13 of the Plan) | 4, 11, 14, 16, 18 |
+| 20 Oct 2026 | UC-24 to UC-27 replaced by milestone plans (reworked 22 Oct); overrides the Plan's "both routes end with an agreement" (section 13 of the Plan) | 4, 11, 14, 16, 18 |
+| 20 Oct 2026 | Tech stack decided; pilot launches web first, mobile apps follow; push notifications scoped | 4, 14, 15, 16, 18 |
 
 ## Appendix B: Source documents
 

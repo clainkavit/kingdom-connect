@@ -24,9 +24,9 @@ Terms follow the glossary in [context/CONTEXT.md](../context/CONTEXT.md).
 
 ## 2. Product overview and goals
 
-Kingdom Connect is a verified, members-only platform where the Mkuyuni Community finds people, opportunities and ideas to grow together, on web and mobile.
+Kingdom Connect is a verified, members-only platform where people in Tanzania find people, opportunities and ideas to grow together, on web and mobile. It is open to anyone in Tanzania with a verified identity. The pilot starts with the Mkuyuni Community.
 
-**Problem.** Members meet at church but have no way to find each other's skills, businesses, ideas or opportunities during the week. Opportunities get missed, and unverified channels expose members to job and investment scams.
+**Problem.** People have no trusted place to find each other's skills, businesses, ideas or opportunities. Opportunities get missed, and unverified channels expose people to job and investment scams.
 
 **Product goals**
 1. Every member can find verified professionals and businesses by skill, sector and location.
@@ -176,7 +176,12 @@ No one reaches member content until an administrator has verified their identity
 
 12. Each ID number is unique for its ID type. Admins compare face photos to catch one person registering with two different IDs; a suspected duplicate is flagged and the admin decides.
 13. The ID photo is stored in the admin-only document store (section 15) and is never shown to members. **Open:** how long the photo is kept after the decision, for the lawyer (see Legal texts in section 13).
-14. NIDA's verification service may be connected later for NIDA holders (ticket [#30](https://github.com/clainkavit/kingdom-connect/issues/30)). Passports, driving licences and voter's IDs stay manual, and Persona is deferred until the company exists.
+14. NIDA's verification service may be connected after the pilot, for NIDA holders, once the company exists and the production hosting is decided (NIDA asks where the server is; ticket [#30](https://github.com/clainkavit/kingdom-connect/issues/30)). Passports, driving licences and voter's IDs stay manual, and Persona is deferred until the company exists.
+15. **Sign-up is open from day one (decided 22 Oct, ticket [#30](https://github.com/clainkavit/kingdom-connect/issues/30)),** so review volume is managed in four ways:
+    - The sign-up form checks what it can before an admin sees the application: a NIDA number must be 20 digits, the phone must start with +255, the address must come from the region and district lists, a duplicate ID is flagged automatically, and the face photo and ID photo are required.
+    - Applications are reviewed oldest first. The admin dashboard shows queue size and the age of the oldest application, with an alert when an application has waited 2 working days. Applicants see "Your application is being reviewed" with the expected time.
+    - A daily cap on new applications is a Super Administrator setting, off by default. When it is on, people over the cap see "We're reviewing a high number of applications, please try again tomorrow".
+    - The pilot starts with at least 3 staff accounts, including trusted volunteers, not one admin.
 
 ## 7. Dashboards
 
@@ -194,7 +199,7 @@ The member dashboard shows community activity and the member's own to-dos; every
 | Member quick actions: Post opportunity (Level 3 only), Share an idea, Scan for opportunities, Post training | ✓ | ✗ |
 | Admin quick actions: Post opportunity, Post tender, Post news, Feature an opportunity | ✗ | ✓ |
 | Latest news & updates | ✓ | ✓ |
-| Pending verifications (members, Level 2, Level 3, investors) | ✗ | ✓ |
+| Pending verifications (members, Level 2, Level 3, investors), with queue size and the age of the oldest application | ✗ | ✓ |
 | Rejected/denied members | ✗ | ✓ |
 | Open reports and items hidden pending review | ✗ | ✓ |
 | Moderation queue counts (opportunities, ideas, training, events, tenders) | ✗ | ✓ |
@@ -580,7 +585,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | Investors (internal only) | 50+ | Plan |
 | Jobs published | 200+ | Plan |
 | Partnerships formed | 100+ | Plan |
-| Platform adoption rate | 70%+ | Plan |
+| Platform adoption rate | 70%+ of the pilot community (the church members told about it) registered and approved. The national target is set after the pilot | Plan, reworded 22 Oct |
 | Median time from registration to approval | Under 3 working days | Agreed 19 Oct |
 | Reported opportunities reviewed | Within 24 hours | Agreed 19 Oct |
 | Upheld scam reports per 100 opportunities | Under 1 | Agreed 19 Oct |
@@ -678,11 +683,18 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 - English and Kiswahili from the start.
 - Production hosting stays open until before the pilot.
 
+**Decided on 22 October 2026 (nationwide scope, ticket #30)**
+- The platform is open to anyone in Tanzania with a verified identity, with a Christian character kept in the name and tone. The church is the first community, not a requirement.
+- Sign-up is open from day one; review volume is managed by form checks, a visible queue with an alert, a daily-cap switch and at least 3 staff accounts (section 6).
+- The NIDA verification service is a post-pilot step, after the company exists and hosting is decided.
+- The adoption target is reworded for the pilot community; the national target comes after the pilot.
+- The name Kingdom Connect stays for now; the final name is decided late, and every text takes it from one setting (section 13).
+
 **Open.** Every open question is a ticket on the [wayfinder map](https://github.com/clainkavit/kingdom-connect/issues/1) and is linked where it applies above.
 
 **Outside this spec**
 - Cloud provider and region: before the pilot (see Hosting in section 15).
-- Admin team size: decided from pilot volumes.
+- Admin team size: decided from pilot volumes. The pilot starts with at least 3 staff accounts (section 6).
 
 ## Appendix A: Changes since v0.1
 
@@ -695,6 +707,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | 15 Oct 2026 | Phone bottom tab bar proposed; mockup and prototype linked as visual direction | 5 |
 | 15 Oct 2026 | Open items linked to wayfinder tickets; Proposed values flagged for review | Throughout |
 | 17 Oct 2026 | Server-side access rules for the investor flag, contact details, identity documents and messages | 16, 18 |
+| 22 Oct 2026 | Nationwide scope: overview and problem reworded, open sign-up with review-volume measures, NIDA service after the pilot, adoption target reworded | 2, 6, 7, 17, 18 |
 | 19 Oct 2026 | Level 1 verification: identity check with one of four accepted IDs, +255 phone and Tanzanian address, no nationality rule; church references and founding members dropped on 22 Oct | 3, 5, 6, 7, 13, 14, 16, 18 |
 | 20 Oct 2026 | Test strategy and pilot-readiness list | 17, 18 |
 | 20 Oct 2026 | Legal texts: who drafts and approves, versioning, languages, launch gate | 11, 13, 18 |

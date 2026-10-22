@@ -20,7 +20,7 @@ This PRD turns the Kingdom Connect Project Plan v1.1 into buildable requirements
 - **Changed 15 Oct**: a decision made after v0.1. Where it overrides the Plan, the Plan is not edited; this PRD wins. See Appendix A.
 - **Open**: a question with a ticket on the map. The ticket is linked where it applies.
 
-Terms follow the glossary in [context/CONTEXT.md](../context/CONTEXT.md).
+Terms follow the glossary in [context/GLOSSARY.md](../context/GLOSSARY.md).
 
 ## 2. Product overview and goals
 

@@ -10,7 +10,7 @@
 - **The [wayfinder map](https://github.com/clainkavit/kingdom-connect/issues/1)** on GitHub Issues tracks every open decision as a ticket. The open questions live there, not in this file.
 - **[docs/wayfinding.md](docs/wayfinding.md)** is the tracker doc for the `wayfinder` skill: how to claim, create, block and resolve tickets on GitHub.
 - **[.claude/skills/](.claude/skills/)** holds the planning skills (wayfinder, grilling, domain-modeling, research, prototype), so they load for anyone working in this repo.
-- **[context/CONTEXT.md](context/CONTEXT.md)** is the glossary. Use its terms.
+- **[context/GLOSSARY.md](context/GLOSSARY.md)** is the glossary. Use its terms.
 - **[sources/](sources/)** holds the original Plan v1.1 (frozen, approved church document), PRD v0.1 (superseded) and the use case diagram (outdated). Extracts sit in `context/`.
 - **[context/design/](context/design/)** holds the mockup and the clickable dashboard prototype.
 - [context/memory.md](context/memory.md) indexes facts discovered while working.

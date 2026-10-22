@@ -133,7 +133,7 @@ Members and administrators get different sidebars; a member never sees admin ite
 | 15 | Admin dashboard and each queue | Admins |
 | 16 | Settings (profile privacy, notifications, password, MFA) | All |
 
-The full screen list with states is being built in [Screen list with states](https://github.com/clainkavit/kingdom-connect/issues/13).
+The full screen list with states, which replaces this table for the build, is in [docs/screens.md](screens.md) (ticket [#13](https://github.com/clainkavit/kingdom-connect/issues/13)).
 
 ## 6. Registration, login and verification
 

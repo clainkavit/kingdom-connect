@@ -1,0 +1,179 @@
+# Kingdom Connect: screen list with states
+
+| Item | Detail |
+|---|---|
+| Version | 0.1 (draft), 22 October 2026 |
+| Ticket | [Screen list with states](https://github.com/clainkavit/kingdom-connect/issues/13) |
+| Built on | [docs/prd.md](prd.md) sections 3 to 14, [docs/schema.md](schema.md) and the dashboard prototype in [context/design/](../context/design/) |
+| Status | Design. The build tickets in [#16](https://github.com/clainkavit/kingdom-connect/issues/16) are cut from this list |
+
+Every screen the product needs, who can open it, what it shows, and the states that differ from the normal case. It replaces the 16-screen list in PRD section 5, which predates several decisions (milestone plans, the nationwide sign-up, legal texts and the notification centre).
+
+## How to read it
+
+**Roles.** Visitor (signed out), Applicant (registered, not yet approved), Member (Level 1 and up), Business (Level 2), Poster (Level 3), Investor (a member with the private flag), Admin, Super Admin. Rights stack as in PRD section 3.
+
+**Screen IDs.** `S` is a member-side screen, `A` is an admin-side screen. They are the reference for the build tickets and the access-rule tests.
+
+### Five states every screen is checked for
+
+| State | What the screen does |
+|---|---|
+| Loading | Shows a skeleton of the final layout, not a blank page or a spinner alone. Lists show skeleton rows. |
+| Empty | Says what will appear here and how to add the first item (for example "No connection requests yet. Find people to connect with."). Never a blank area. |
+| Error | Says what failed in plain words, offers Try again, and keeps anything the person typed. No technical codes. |
+| Locked for this role | A signed-in member who lacks the level sees the screen's name, one line of reason and the path forward (for example "Verify your business to respond"). Screens that must not reveal that they exist (admin screens, investor tools) show nothing at all to people without them, as if they were not there. |
+| Slow or offline | The PRD targets 3G. A screen keeps showing what it already loaded, shows a small "Slow connection" banner, queues sends (a message, a request) and retries, and never shows an empty state because the network failed. |
+
+The tables below list only a screen's **special states**: the ones beyond these five.
+
+### Everywhere
+
+- **Languages.** Every screen is English and Kiswahili. Visitors and signed-in members switch from the footer or Settings.
+- **Phone layout.** The sidebar becomes a bottom tab bar (member: Home, People, Opportunities, Messages, More; admin: Home, Verify, Moderate, Reports, More). Tables become cards and filters open in a sheet.
+- **The investor flag is never visible.** An investor's sidebar looks the same as any member's. Investor tools (filters, Saved ideas, anonymous interest) appear inside Ideas only, and are absent, not locked, for everyone else.
+- **Report.** Profiles, opportunities, ideas and message threads each carry a Report action that opens S42.
+
+## 1. Entry and account
+
+| ID | Screen | Who | What it shows | Special states |
+|---|---|---|---|---|
+| S01 | Landing | Visitor | What the platform is, Sign up, Log in, language switch | Signed-in people go straight to the dashboard |
+| S02 | Sign up | Visitor | Username, email, +255 phone, password | **Cap reached:** "We're reviewing a high number of applications, please try again tomorrow" (Super Admin setting). **Duplicate:** an already used ID or email is stopped with a plain message |
+| S03 | Log in | Visitor | Username and password | **Locked:** 5 failed attempts lock the account for 15 minutes, with a countdown. A wrong username or password gets the same message, so nobody can test who exists. **Pending or rejected:** same message as a wrong password |
+| S04 | Email code | Visitor | 6-digit code, valid 10 minutes | Wrong code (3 attempts), expired code, resend available after 60 seconds, too many attempts |
+| S05 | Registration wizard | Applicant | Steps: personal details (with a Tanzanian address from the region and district lists), category, category details, photos (face photo and one accepted ID with its type and number), legal acceptance, review | **Legal acceptance:** terms of use and privacy notice are two separate tick boxes, each with the text in English and Kiswahili. **Validation:** a NIDA number must be 20 digits, phone must start with +255. **Duplicate ID:** blocked. **Interrupted:** open question 1 |
+| S06 | Registration status | Applicant | Where the application is | **Under review:** "Your application is being reviewed", with the expected time. **Rejected first time:** the reason and Fix and resubmit (once). **Rejected final:** the reason and "This decision is final unless an admin reopens it". **Approved:** moves on to the dashboard |
+| S07 | Accept updated text | Member | A changed terms of use or privacy notice, in both languages | Blocks the app until accepted at next login. An NDA already accepted never prompts again |
+
+## 2. Home and notifications
+
+| ID | Screen | Who | What it shows | Special states |
+|---|---|---|---|---|
+| S08 | Member dashboard | Member | Welcome, community stats, People you may know, my connection requests, my activity, featured opportunities, latest opportunities and more (tabs), quick actions, news | **Each widget has its own empty state.** People you may know and Scan results: "Complete your profile to see matches" with the missing fields. **Locked quick actions** are hidden with a path to upgrade ("Verify your business to post opportunities"). Pending, rejected and investor figures never appear (PRD section 7) |
+| S09 | Notification centre | Member | The bell: every notification, newest first, read and unread | Empty: "Nothing new". Opens the screen the notification is about (see the table at the end) |
+
+## 3. People, connections and messages
+
+| ID | Screen | Who | What it shows | Special states |
+|---|---|---|---|---|
+| S10 | Directory | Member | Professionals and Businesses tabs; cards with photo, name, headline, location, top 3 skills, badge, Connect; filters for profession, skills, sector, region, studying, level | **No results:** suggests clearing filters. **Businesses tab** lists approved Level 2 and up only. Hidden and blocked profiles are not listed |
+| S11 | Member profile | Member | About, Skills, Business, Ideas tab, Milestone plans; Connect, Message, Report | **Hidden profile:** visible to existing connections and the owner only. **Blocked:** shown as not found. **Contact details:** masked unless the owner shares them with a connection. **Own profile:** Edit |
+| S12 | Edit profile | Member | Headline, bio, skills (tag entry with suggestions), experience, certifications, study, photo | Skill tags are lowercased and matched to the synonym list. Empty skills show a nudge ("Add skills to get matched") |
+| S13 | Connections and requests | Member | Requests received (accept or decline), requests sent, my connections | **A declined request looks "sent"** to the sender for 30 days, then expires. **Daily limit:** "You have sent 30 requests today. Try again tomorrow". Empty: "No requests yet. Find people to connect with" |
+| S14 | Messages inbox | Connected members | Threads, newest first, with the idea or opportunity label where there is one | Empty: "No messages yet" |
+| S15 | Message thread | The two members | Messages, text and attachments (PDF, images, up to 10 MB), Report | **Blocked:** no sending. **Reported:** a notice that admins can read this thread. **Attachment too large or wrong type:** stated before sending. Admins cannot see the thread unless it is reported |
+
+## 4. Opportunities
+
+| ID | Screen | Who | What it shows | Special states |
+|---|---|---|---|---|
+| S16 | Opportunities list | Member | Filters (type, location, sector, employment type, posted date); Scan for Opportunities results with the top two reasons for each match | **Scan empty:** "Complete your profile to see matches". Types: Job, Partnership, Collaboration, Investment, Tender. Reported posts disappear at once |
+| S17 | Opportunity detail | Member | The post, the poster, the closing date; tender extra fields (issuing organisation, reference number, scope, eligibility, required documents, closing date and time, estimated value, tender document) | **Level 1 on a tender:** "Verify your business to respond". **Closed or expired:** read-only. **Already responded:** shows my response status instead of the button |
+| S18 | Apply or express interest | Member | Jobs: apply with an optional CV (PDF, 5 MB) and note. Other types: express interest with a note and attachment | Applied once only. Withdraw while New |
+| S19 | My responses | Member | My applications and expressions of interest with status (New, Shortlisted, Declined, Withdrawn) | Empty: "You haven't responded to anything yet" |
+| S20 | Post an opportunity | Poster, Admin | The posting form: type, title, location, sector, skills wanted (1 to 5), description (100 characters minimum), closing date, no-fee tick for Poster posts | **Draft, Pending review, Published.** A new Poster's first 3 posts are reviewed. Admin posts publish at once with no no-fee tick. Phone numbers and emails in the text are blocked; a link sends the post to review |
+| S21 | My posts and their responses | Poster, Admin | My posts with status; each post's responses as New, Shortlisted, Declined | **Hidden by a report:** shown with "Our team is reviewing it". Empty: "You haven't posted anything yet" |
+
+## 5. Ideas and investors
+
+| ID | Screen | Who | What it shows | Special states |
+|---|---|---|---|---|
+| S22 | Ideas pool | Member | Idea summary cards with an interest count; Investor filters (sector, stage, range, region) and Saved | **Investor tools exist only for the flag holder.** Ideas posted without a name show "A verified member". Empty: "No ideas yet. Share yours" |
+| S23 | Idea summary | Member | Title, problem, industry, stage, seeking, range, owner (unless hidden), Interest | **Own idea:** shows Edit and the access manager. Details stay locked until the owner approves and the NDA is accepted |
+| S24 | Express interest | Member | Named: choose Investor, Partner or Both. Anonymous: flag holders only, shows sector focus and ticket band | **Anonymous never shows a name** to the owner. The option is absent for members without the flag |
+| S25 | Accept NDA and IP terms | Requester | Both texts in English and Kiswahili, Accept | Needs approval first. After acceptance, identities are revealed to each other and a thread opens |
+| S26 | Idea details | Approved member, Owner | Full description, business model, market, financials, team, attachments (20 MB total) | **Watermarked** with the viewer's name and date; every view and download is logged. Revoked access shows "The owner has removed your access" |
+| S27 | Submit or edit an idea | Member | The idea form, with a choice to post named or without a name | **Draft, Pending moderation, Published, Archived, Hidden, Removed** |
+| S28 | Access manager | Idea owner | Request cards (approve or decline), everyone with access (Revoke), "Viewed by N investors" | **Anonymous request card:** "A verified investor", sector, band. **Declined:** the requester gets a neutral notice. Empty: "No requests yet" |
+| S29 | Saved ideas | Investor | The private saved list | Absent for non-flag holders. Empty: "Nothing saved yet" |
+
+## 6. Milestone plans
+
+| ID | Screen | Who | What it shows | Special states |
+|---|---|---|---|---|
+| S30 | My plans | Member | All my plans with status, shown also on each party's profile | Empty: "No plans yet. A plan starts from a connection made through an idea or opportunity" |
+| S31 | Propose a plan | Member | Choose the idea or opportunity; add 1 to 10 milestones (title, description, target date, who is responsible); stage 1 is always Agreed in principle | Only possible with an accepted connection from that idea or opportunity |
+| S32 | Review and accept a plan | The other member | The proposed plan; the hand-off disclaimer (version shown) with Accept | **Pending:** a 14-day countdown. **Lapsed:** "This plan expired. You can start it again". **Withdrawn:** read-only |
+| S33 | Plan overview | The two members | Status; milestones (open, done, confirmed); mark done, confirm; a "Withdraw" button | **First hour after both accept:** banner "You can withdraw for 1 more hour". After that no withdrawal for stage 1. A confirmed milestone is never editable. **Completed** and **Withdrawn** are read-only |
+| S34 | Upload the signed agreement | The two members | Upload a PDF (up to 10 MB), see whether the other side has uploaded | Only after the earlier milestones are confirmed. **Too large or not a PDF:** stated before sending |
+
+## 7. Learning, events and news
+
+| ID | Screen | Who | What it shows | Special states |
+|---|---|---|---|---|
+| S35 | Training list and detail | Member | Title, provider, format, date or self-paced, seats; Register | **Full:** Join the waitlist. **Waitlisted:** shows position; the first person moves up automatically. Materials appear after registering |
+| S36 | Learning materials | Registered member | PDFs, video links, slides, inside the platform | **Downloads** only if the poster allowed them. Not registered: locked with Register |
+| S37 | Post a training | Member, Admin | The training form | Member posts go to **Pending review** before they are live |
+| S38 | Events list and detail | Member | Title, date and time, venue or link, capacity; Register; Add to calendar | Full: waitlist. Posting is for Admins and Level 2 and up (**locked** with a reason for others) |
+| S39 | News | Member | News and updates, pinned item first | Empty: "No news yet" |
+
+## 8. Business levels, safety and settings
+
+| ID | Screen | Who | What it shows | Special states |
+|---|---|---|---|---|
+| S40 | Business verification and upgrade | Member | Level 2 and Level 3 documents, the investor application (Level 2 and up), status per level | **Status:** Not started, Pending, Approved, Rejected (with reason), Expired. Level 3 locked until Level 2 is approved |
+| S41 | Re-verification | Business | Licence expiry date, upload new documents | **Reminders** at 30 and 7 days. **Expired:** Level 2 and 3 rights paused until approved |
+| S42 | Report form | Member | Reason (Asked for money, Fake job or business, Harassment, Impersonation, Spam, Other), optional note and screenshot | Success shows a reference number |
+| S43 | My reports | Member | Each report with its reference number and outcome only (Action taken or No action) | Empty: "You haven't reported anything" |
+| S44 | Settings | All signed in | Entry to the subpages below | |
+| S45 | Profile privacy and contact sharing | Member | Hide from the directory; three switches for phone, email and address, all off by default | Hiding keeps existing connections' view |
+| S46 | Notification settings | Member | Email for non-critical notifications; push master switch and one per category | **Push not yet permitted by the phone:** shows how to allow it. Web pilot: push section hidden |
+| S47 | Password and sign-in | Member | Change password; the email code is always required | Errors never reveal whether an account exists |
+| S48 | Language | All | English or Kiswahili | |
+| S49 | Download or delete my data | Member | Download my data; request deletion | **Deletion confirmation** is a full screen with what is removed and what is kept (audit entries are kept, PRD section 13) |
+
+## 9. Admin
+
+| ID | Screen | Who | What it shows | Special states |
+|---|---|---|---|---|
+| A01 | Admin dashboard | Admin | Queue counts and the age of the oldest item, alerts, featured slots, investor activity, re-verifications due in 30 days | **Alert:** an application waiting 2 working days. Each count links to its filtered queue. The daily-cap switch is shown to Super Admins |
+| A02 | Verification queue | Admin | Members, businesses and investors waiting, oldest first | Empty: "Nothing waiting" |
+| A03 | Verification detail | Admin | The profile, face photo and ID photo side by side, name and ID number check, ID expiry, a duplicate flag from the ID fingerprint, Approve, Reject (reason required) | **Suspected duplicate:** staff compare face photos and mark it. Decrypting an ID number is logged |
+| A04 | Moderation queue | Admin | Pending and hidden items: opportunities, ideas, training, events, tenders | Empty: "Nothing to review" |
+| A05 | Moderation item | Admin | The item and its history; Restore, Edit request, Remove, Warn, Suspend posting, Suspend account | **A note is required** for each action |
+| A06 | Reports queue | Admin | Open and under-review reports, with the reference number | Empty: "No open reports" |
+| A07 | Report detail | Admin | The report, the target and its thread (readable only because it was reported), decision and note | The signed document of a reported plan becomes visible to staff here |
+| A08 | Re-verification | Admin | Licences expiring soon and expired | |
+| A09 | Members | Admin | Search and open a member; suspend; invite for the investor flag | Staff cannot connect or message, and have no member profile |
+| A10 | Investors | Admin | Flag holders, invitations and applications (staff only) | The investor list is never visible outside staff |
+| A11 | News editor | Admin | Create, publish, pin | Draft and Published |
+| A12 | Featured | Admin | Up to 5 featured opportunities, remove | Slot count shown; full: remove one first |
+| A13 | Audit log | Admin | Read-only list of actions with before and after values | Cannot be edited by anyone. Filterable by actor, action and date |
+| A14 | Milestone plans (admin view) | Admin | Names, the idea or opportunity, stage statuses, dates, notes; add an annotation | Never shows contact details or the investor flag. Annotations cannot be deleted |
+| A15 | Post as admin | Admin | Post an opportunity, tender or news | Publishes at once; no no-fee tick; marked as an admin post |
+| A16 | Settings | Super Admin | Matching weights and minimum scores, the daily application cap, platform settings (name, entity name, featured slots), staff accounts, legal text versions | **Super Admin only.** The skill synonym list can also be edited by any Admin. Every change is written to the audit log |
+
+## Notification to screen
+
+Each notification in [docs/notifications.md](notifications.md) opens the screen that fits it.
+
+| Notification | Opens |
+|---|---|
+| A1 to A4 Registration | S06 |
+| A5 Login code | S04 |
+| B1 to B4 Business levels | S40 or S41 |
+| C1, C2 Connection | S13 |
+| C3 New message | S15 |
+| O1, O2 Response received | S21 |
+| O3, O4 Response status | S19 |
+| O5 to O8 Post status | S21 |
+| I1, I2 Interest in my idea | S28 |
+| I3 to I6 Idea access | S25 or S26 |
+| P1 to P9 Milestone plans | S32, S33 or S34 |
+| S1 Scan matches | S16 |
+| T1, T2, W1 Training and events | S35 or S38 |
+| R1, R2 Report outcome | S43 |
+| V1 Investor tools | S22 |
+
+## Checks against the PRD
+
+- **Every one of the 16 screens in PRD section 5 is covered.** 1 Landing, sign-up, login, OTP is S01 to S04. 2 Registration wizard is S05. 3 Registration status is S06. 4 Member dashboard is S08. 5 Directory is S10. 6 Member profile is S11 and S12. 7 Connections is S13. 8 Messages is S14 and S15. 9 Opportunities is S16 to S21. 10 Ideas is S22 to S29. 11 Training is S35 to S37. 12 Events is S38. 13 Business verification is S40. 14 Report form, my reports is S42 and S43. 15 Admin is A01 to A16. 16 Settings is S44 to S49.
+- **Added since PRD section 5:** S07, S09, S30 to S34, S41, S45 to S49, A14 to A16, plus the sign-up states.
+
+## Open questions
+
+1. **Half-finished registration.** If the connection drops or someone closes the app part-way through the wizard, is the form saved so they can continue?
+2. **Notices with no PRD row.** Login lockout, account suspension, and a hidden or removed profile or idea have no notification and no screen yet (also listed in docs/notifications.md).
+3. **Empty-state wording.** The examples above set the tone; the final English and Kiswahili text for each empty and error state is written during the build.
+4. **A plan stopped partway.** What happens after the first hour when a member wants to stop (PRD section 11, open).

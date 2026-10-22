@@ -501,7 +501,7 @@ Every event below shows in the in-app bell; during the pilot, OTPs and account m
 - The app asks for notification permission after the first login, not at install. Once permission is granted, push is on by default, with one master switch and a switch per category in Settings.
 - A new-message push says "You have a new message", with no preview.
 
-Notification text never names an anonymous investor and never includes contact details. The wording is written in [Notification copy in English and Kiswahili](https://github.com/clainkavit/kingdom-connect/issues/14).
+Notification text never names an anonymous investor and never includes contact details. The wording, in English and Kiswahili, is in [docs/notifications.md](notifications.md) (ticket [#14](https://github.com/clainkavit/kingdom-connect/issues/14)). The Kiswahili is a draft until a native speaker has reviewed it.
 
 ## 15. Non-functional requirements
 

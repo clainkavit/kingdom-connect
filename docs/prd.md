@@ -361,7 +361,7 @@ Both routes meet at the owner's decision; an anonymous investor's name is reveal
 3. Named interest shows the requester's name, profile and chosen role (Investor, Partner, Both) to the owner.
 4. Anonymous interest (investor flag only) shows the owner: "A verified investor", sector focus and ticket size band: under TZS 10M, TZS 10–50M, or over TZS 50M. Name and profile stay hidden.
 5. The owner approves or declines within the request card; declining sends a neutral notice.
-6. After approval, the requester must accept the NDA and IP terms before details open. Acceptance timestamp, IP and version of the terms are stored. **Open:** who drafts the terms, see [Who writes the NDA, IP terms and data-consent text?](https://github.com/clainkavit/kingdom-connect/issues/11)
+6. After approval, the requester must accept the NDA and IP terms before details open. Acceptance timestamp, IP and version of the terms are stored. The terms are one of the legal texts described under "Legal texts" in section 13.
 7. On NDA acceptance, both identities are shown to each other and a message thread opens, labelled with the idea title.
 8. Detail pages and documents are watermarked with the viewer's name and date. Every view and download is logged.
 9. The owner's access manager lists everyone with access and a Revoke button; revoking removes access at once and logs it.
@@ -421,6 +421,32 @@ A reported opportunity disappears from members' view the moment it is reported; 
 6. Re-verification: 30 and 7 days before a business licence expires, the member is reminded. On expiry, Level 2 and 3 rights pause until new documents are approved.
 7. Audit log records who, what, when, and before/after values for approvals, rejections, moderation, role changes, investor flag changes, admin-posted opportunities, and every view of idea details. Logs are read-only and kept at least 5 years (Proposed).
 8. Admins cannot see message contents unless a thread has been reported.
+
+**Legal texts** (decided 20 Oct, ticket [#11](https://github.com/clainkavit/kingdom-connect/issues/11)). The platform needs five legal texts, each with a version number:
+
+| Text | Accepted where |
+|---|---|
+| Terms of use for members | Registration; again when the text changes |
+| Privacy notice and data consent (Personal Data Protection Act 2022) | Registration, as its own tick box separate from the terms of use; again when the text changes |
+| NDA | Per idea access request, after the owner approves |
+| IP terms | Per idea access request, together with the NDA |
+| Hand-off disclaimer | Per milestone plan, at the start (see section 11) |
+
+1. **Who writes and approves.** Champion and the collaborator draft the texts, with Claude's help. The texts are real drafts from the start, not placeholders, and the app shows them as they stand. Reviewers are the testers, the church leadership and a lawyer. A text that is not approved is edited and reviewed again. Where a lawyer's edit changes the legal meaning, the lawyer's wording is used. A text written with AI help is a draft, not legal advice, until a lawyer has approved it.
+2. **Who they name.** The platform will be its own legal entity. The name is not final (Kingdom Connect for now), so every text takes the entity name from one setting, and the final name is filled in at the end.
+3. **Launch gate.** No real member registers, and no real idea or NIDA data is stored, until all five texts are approved and loaded as version 1.0. Before that, the app runs test data only.
+4. **Versions.** Each text is stored with its version number and date, and each acceptance records which version was accepted. When the terms of use or the privacy notice change, members accept again at their next login. An NDA or IP term a member has already accepted stays valid under the version they accepted; a new version applies only to new requests.
+5. **Languages.** Every text is shown in English and Kiswahili. If the two differ, the English text governs, and the Kiswahili is a faithful translation, unless a lawyer advises otherwise.
+6. **What the lawyer reviews.** Besides the wording of the five texts, the lawyer is asked to confirm:
+   - The legal form and name of the entity that runs the platform.
+   - Registration of that entity with the Personal Data Protection Commission as a data controller. The Act says no one may collect or process personal data without registering (checked against the Commission's website on 20 Oct; the lawyer confirms the process and timing).
+   - Whether holding member data on a host outside Tanzania, such as managed Supabase, needs a cross-border transfer permit or the member's consent. This feeds the production hosting decision (section 15).
+   - Whether NIDA numbers, identity documents and any record of church membership count as sensitive personal data that needs written consent.
+   - Whether one consent tick box separate from the terms of use is enough, and how a member withdraws consent.
+   - Whether the NDA and IP terms hold between members, and what the platform may and may not promise about them.
+   - Whether the platform's role in milestone plans (a record and a stored signed document, with no mediation or guarantee) limits its liability, and whether storing members' signed agreements is allowed.
+   - Whether sending ID images to a foreign verification service is allowed, and what a connection to NIDA's verification service requires.
+   - What the platform must keep and what it must delete when a member asks to delete their data, including audit logs and milestone plans.
 
 ## 14. Notifications
 
@@ -562,6 +588,12 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 **Decided on 17 October 2026**
 - Access rules are enforced on the server, not in the UI: the investor flag, contact details, identity documents and message contents never reach a user who isn't allowed them (section 16). On Supabase/Postgres this means Row-Level Security in the database. The schema itself is still open in [Database schema and access rules](https://github.com/clainkavit/kingdom-connect/issues/12).
 
+**Decided on 20 October 2026 (legal texts, ticket #11)**
+- Five versioned legal texts: terms of use, privacy notice and consent, NDA, IP terms, hand-off disclaimer (section 13).
+- Drafted by Champion and the collaborator as real text; reviewed by testers, church leadership and a lawyer; edited until approved.
+- No real member data until all five are approved as version 1.0.
+- The platform is its own legal entity; the name is not final.
+
 **Decided on 20 October 2026 (matching, ticket #7)**
 - Scan for Opportunities and People you may know are rule-based and point-scored from tags and profile fields; the rules are in section 10.
 - Opportunity posts gain skills-wanted tags and a sector.
@@ -595,6 +627,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | 15 Oct 2026 | Phone bottom tab bar proposed; mockup and prototype linked as visual direction | 5 |
 | 15 Oct 2026 | Open items linked to wayfinder tickets; Proposed values flagged for review | Throughout |
 | 17 Oct 2026 | Server-side access rules for the investor flag, contact details, identity documents and messages | 16, 18 |
+| 20 Oct 2026 | Legal texts: who drafts and approves, versioning, languages, launch gate | 11, 13, 18 |
 | 20 Oct 2026 | Matching rules for Scan for Opportunities and People you may know; skills-wanted and sector added to the posting form | 7, 10, 16, 18 |
 | 20 Oct 2026 | UC-24 to UC-27 replaced by milestone plans (reworked 22 Oct); overrides the Plan's "both routes end with an agreement" (section 13 of the Plan) | 4, 11, 14, 16, 18 |
 | 20 Oct 2026 | Tech stack decided; pilot launches web first, mobile apps follow; push notifications scoped | 4, 14, 15, 16, 18 |

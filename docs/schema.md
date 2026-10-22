@@ -161,7 +161,7 @@ These run as `security definer`: they check who is calling, then return only wha
 | `report(target_type, target_id, ...)` | Creates the report; hides an opportunity at once |
 | `reveal_id_number(member_id)` | The decrypted ID number, for staff only; logged |
 | `propose_plan()`, `accept_plan()`, `mark_milestone_done()`, `confirm_milestone()`, `withdraw_plan()`, `end_plan(plan_id, reason)`, `upload_plan_document()` | The milestone plan steps. They check the caller is one of the two members, enforce the 14-day lapse, the 1-hour withdrawal window after both accept stage 1, that ending a plan after the first hour needs a reason, and that a confirmed milestone is never changed. A scheduled job sends the day-7 reminder and lapses expired plans |
-| `member_dashboard_stats()` | Community counts only. Never pending, rejected or investor counts (PRD section 7, criterion 1) |
+| `admin_dashboard_stats()` | The community counts (verified members, registered businesses, open opportunities, ideas in the pool), for staff only. A member's dashboard has no platform-wide counts (PRD section 7, criterion 1) |
 
 ## 12. File storage
 

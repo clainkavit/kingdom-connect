@@ -50,7 +50,7 @@ The tables below list only a screen's **special states**: the ones beyond these 
 
 | ID | Screen | Who | What it shows | Special states |
 |---|---|---|---|---|
-| S08 | Member dashboard | Member | Welcome, community stats, People you may know, my connection requests, my activity, featured opportunities, latest opportunities and more (tabs), quick actions, news | **Each widget has its own empty state.** People you may know and Scan results: "Complete your profile to see matches" with the missing fields. **Locked quick actions** are hidden with a path to upgrade ("Verify your business to post opportunities"). Pending, rejected and investor figures never appear (PRD section 7) |
+| S08 | Member dashboard | Member | Welcome, People you may know, my connection requests, my activity, featured opportunities, latest opportunities and more (tabs), quick actions, news | **Each widget has its own empty state.** People you may know and Scan results: "Complete your profile to see matches" with the missing fields. **Locked quick actions** are hidden with a path to upgrade ("Verify your business to post opportunities"). No platform-wide figures at all: the community counts are admin-only (PRD section 7) |
 | S09 | Notification centre | Member | The bell: every notification, newest first, read and unread | Empty: "Nothing new". Opens the screen the notification is about (see the table at the end) |
 
 ## 3. People, connections and messages
@@ -127,7 +127,7 @@ The tables below list only a screen's **special states**: the ones beyond these 
 
 | ID | Screen | Who | What it shows | Special states |
 |---|---|---|---|---|
-| A01 | Admin dashboard | Admin | Queue counts and the age of the oldest item, alerts, featured slots, investor activity, re-verifications due in 30 days | **Alert:** an application waiting 2 working days. Each count links to its filtered queue. The daily-cap switch is shown to Super Admins |
+| A01 | Admin dashboard | Admin | The community counts (verified members, registered businesses, open opportunities, ideas in the pool), queue counts and the age of the oldest item, alerts, featured slots, investor activity, re-verifications due in 30 days | **Alert:** an application waiting 2 working days. Each count links to its filtered queue. The daily-cap switch is shown to Super Admins |
 | A02 | Verification queue | Admin | Members, businesses and investors waiting, oldest first | Empty: "Nothing waiting" |
 | A03 | Verification detail | Admin | The profile, face photo and ID photo side by side, name and ID number check, ID expiry, a duplicate flag from the ID fingerprint, Approve, Reject (reason required) | **Suspected duplicate:** staff compare face photos and mark it. Decrypting an ID number is logged |
 | A04 | Moderation queue | Admin | Pending and hidden items: opportunities, ideas, training, events, tenders | Empty: "Nothing to review" |

@@ -92,7 +92,7 @@ Phase 1 ships in two releases inside the 12-month plan: Release 1 builds trust a
 | Learning and community | ✗ | Training and courses, events, news |
 | Agreements | ✗ | **Open:** agreement form, e-signing, legal support. See [Agreements and e-signing: keep in Phase 1 or drop?](https://github.com/clainkavit/kingdom-connect/issues/6) |
 
-**Platforms:** responsive web portal plus Android and iOS apps with the same features.
+**Platforms (changed 20 Oct):** the pilot launches as a responsive web portal that can be added to a phone's home screen. Android and iOS apps with the same features follow once the web version is stable, built from the same codebase (section 15).
 
 **Geography:** Tanzania only. Registration requires a valid NIDA number.
 
@@ -376,7 +376,7 @@ A reported opportunity disappears from members' view the moment it is reported; 
 | Privacy notice and data consent (Personal Data Protection Act 2022) | Registration, as its own tick box separate from the terms of use; again when the text changes |
 | NDA | Per idea access request, after the owner approves |
 | IP terms | Per idea access request, together with the NDA |
-| Hand-off disclaimer | Per Agreed to proceed record (see section 11) |
+| Hand-off disclaimer | Per milestone plan, at the start (see section 11) |
 
 1. **Who writes and approves.** Champion and the collaborator draft the texts, with Claude's help. The texts are real drafts from the start, not placeholders, and the app shows them as they stand. Reviewers are the testers, the church leadership and a lawyer. A text that is not approved is edited and reviewed again. Where a lawyer's edit changes the legal meaning, the lawyer's wording is used. A text written with AI help is a draft, not legal advice, until a lawyer has approved it.
 2. **Who they name.** The platform will be its own legal entity. The name is not final (Kingdom Connect for now), so every text takes the entity name from one setting, and the final name is filled in at the end.
@@ -390,8 +390,9 @@ A reported opportunity disappears from members' view the moment it is reported; 
    - Whether NIDA numbers, identity documents and any record of church membership count as sensitive personal data that needs written consent.
    - Whether one consent tick box separate from the terms of use is enough, and how a member withdraws consent.
    - Whether the NDA and IP terms hold between members, and what the platform may and may not promise about them.
-   - Whether the hand-off disclaimer limits the platform's liability for what members do off the platform.
-   - What the platform must keep and what it must delete when a member asks to delete their data, including audit logs and Agreed to proceed records.
+   - Whether the platform's role in milestone plans (a record and a stored signed document, with no mediation or guarantee) limits its liability, and whether storing members' signed agreements is allowed.
+   - Whether sending ID images to a foreign verification service is allowed, and what a connection to NIDA's verification service requires.
+   - What the platform must keep and what it must delete when a member asks to delete their data, including audit logs and milestone plans.
 
 ## 14. Notifications
 
@@ -413,6 +414,11 @@ Every event below shows in the in-app bell; during the pilot, OTPs and account m
 | Report outcome | Reporter | ✓ | ✗ | ✗ |
 | Investor flag granted | Investor | ✓ | ✓ | ✗ |
 
+**Push notifications** (decided 20 Oct) are sent to the Android and iOS apps once they ship; the web pilot has the in-app bell and email only.
+- Push is sent for: connection request received or accepted, new message, application status change, idea access approved or NDA accepted, a milestone plan request, post approved or rejected, and registration approved or rejected. The weekly Scan digest is email only, and report outcomes are in-app only.
+- The app asks for notification permission after the first login, not at install. Once permission is granted, push is on by default, with one master switch and a switch per category in Settings.
+- A new-message push says "You have a new message", with no preview.
+
 Notification text never names an anonymous investor and never includes contact details. The wording is written in [Notification copy in English and Kiswahili](https://github.com/clainkavit/kingdom-connect/issues/14).
 
 ## 15. Non-functional requirements
@@ -431,9 +437,22 @@ The figures below are proposed starting targets for the Technical Committee to c
 | Languages | English and Kiswahili for all member-facing screens |
 | Accessibility | WCAG 2.1 AA contrast and text sizes; works with screen readers on mobile |
 | Data usage | Images compressed; a low-data mode that hides images on mobile |
-| Monitoring | Security logging, alerts on repeated failed logins, unusual message volume, or duplicate NIDA attempts |
+| Monitoring | Security logging, alerts on repeated failed logins, unusual message volume, or duplicate NIDA attempts. Supabase logs for the server and Sentry (free plan) for app crashes (changed 20 Oct) |
 
-The stack itself is decided in [Lock the tech stack](https://github.com/clainkavit/kingdom-connect/issues/10).
+**Technical stack** (decided 20 Oct, ticket [#10](https://github.com/clainkavit/kingdom-connect/issues/10)). The priorities are a low budget while developing, one codebase for every platform, and privacy rules enforced in the database.
+
+| Layer | Choice |
+|---|---|
+| Member app | One Expo (React Native) universal app in TypeScript: web first, then Android and iOS from the same code. If the web build misses the 3G target in a prototype test, only the member website moves to Next.js |
+| Admin console | Separate Next.js web app, sharing types and Supabase client code with the member app |
+| Backend | Supabase: Postgres, Auth, Storage, Realtime. No separate server. Access rules are Row-Level Security; matching scores and agreement records are Postgres functions; Edge Functions handle login and OTP, email sending and signed links to private documents. Auth follows the custom design in [Supabase Auth login flow](../context/memory/supabase-auth-login-flow.md) |
+| Interface | NativeWind in the Expo app, shadcn/ui in the admin console, on shared design tokens |
+| Code and quality | pnpm workspace (no Turborepo at first), TypeScript with a typecheck script, Vitest, Husky with lint-staged and typecheck on pre-commit |
+| Email | Brevo. Free plan (300 a day) for development and the start of the pilot, with an alert at 200 a day and a move to the paid plan when it fires. Test delivery to Gmail and Tanzanian mobile-provider addresses before the pilot |
+| Push | Expo push service, for the Android and iOS apps once they ship. The web pilot uses the in-app bell and email only |
+| Languages | English and Kiswahili from the start, with every screen string kept in translation files |
+| Development hosting | Supabase Free plan and Vercel for development and preview builds, test data only |
+| Production hosting | Not decided. Hostinger is a candidate, which would probably mean self-hosting Supabase on a VPS, so the team would run backups and security updates. Decided before the pilot with the legal check against the Act (see Hosting above) |
 
 ## 16. Key data entities and statuses
 
@@ -448,7 +467,7 @@ These are the main records the system stores and the states each can be in. The 
 | NIDA number and identity or business documents | The owner and admins. Documents sit in a separate admin-only store, never at public URLs |
 | Message contents | The two members in the thread. Admins only once the thread is reported |
 
-If the stack stays on Supabase/Postgres, these rules are enforced in the database with Row-Level Security policies and restricted views, so a faulty API endpoint can't leak them. The stack is decided in [Lock the tech stack](https://github.com/clainkavit/kingdom-connect/issues/10).
+On Supabase/Postgres (the stack, decided 20 Oct, see section 15), these rules are enforced in the database with Row-Level Security policies and restricted views, so a faulty API endpoint can't leak them.
 
 | Entity | Key fields | Statuses |
 |---|---|---|
@@ -518,6 +537,13 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 - No real member data until all five are approved as version 1.0.
 - The platform is its own legal entity; the name is not final.
 
+**Decided on 20 October 2026 (tech stack, ticket #10)**
+- Stack as in section 15: Expo universal member app, Next.js admin console, Supabase, Brevo email, Sentry, pnpm workspace, TypeScript, Vitest, Husky.
+- The pilot launches on the web first; Android and iOS follow from the same code. This supersedes the earlier plan to publish all three for the pilot.
+- Push notifications are in scope for the mobile apps, with a master switch and per-category switches.
+- English and Kiswahili from the start.
+- Production hosting stays open until before the pilot.
+
 **Open.** Every open question is a ticket on the [wayfinder map](https://github.com/clainkavit/kingdom-connect/issues/1) and is linked where it applies above.
 
 **Outside this spec**
@@ -536,6 +562,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | 15 Oct 2026 | Open items linked to wayfinder tickets; Proposed values flagged for review | Throughout |
 | 17 Oct 2026 | Server-side access rules for the investor flag, contact details, identity documents and messages | 16, 18 |
 | 20 Oct 2026 | Legal texts: who drafts and approves, versioning, languages, launch gate | 11, 13, 18 |
+| 20 Oct 2026 | Tech stack decided; pilot launches web first, mobile apps follow; push notifications scoped | 4, 14, 15, 16, 18 |
 
 ## Appendix B: Source documents
 

@@ -48,7 +48,7 @@ Roles stack: a member gains rights by passing further verification, and the inve
 | Role | How someone gets it | Visible to other members as |
 |---|---|---|
 | Applicant | Submits registration | Not visible |
-| Verified Member (Level 1) | Identity and church membership checked by an admin (section 6, Member verification) | Member, with profession |
+| Verified Member (Level 1) | Identity checked by an admin with one accepted ID (section 6, Member verification) | Member, with profession |
 | Verified Business (Level 2) | BRELA, TRA TIN, business licence approved | Member + business listing |
 | Opportunity Poster (Level 3) | Director/authorisation proof + physical address approved | Member + business listing |
 | Investor (private flag) | Invitation by an Administrator or Super Administrator, or approved application from a Level 2 member | Same as their base role; never labelled investor |
@@ -94,7 +94,7 @@ Phase 1 ships in two releases inside the 12-month plan: Release 1 builds trust a
 
 **Platforms (changed 20 Oct):** the pilot launches as a responsive web portal that can be added to a phone's home screen. Android and iOS apps with the same features follow once the web version is stable, built from the same codebase (section 15).
 
-**Geography:** Tanzania only. Registration requires a valid NIDA number.
+**Geography:** Tanzania only, enforced by a Tanzanian (+255) phone number and a Tanzanian address on registration. There is no nationality rule, so a foreign resident can join (changed 22 Oct).
 
 **Out of scope:** payments of any kind, investment transaction processing, e-commerce, social media integrations, mentorship, members outside Tanzania.
 
@@ -117,7 +117,7 @@ Members and administrators get different sidebars; a member never sees admin ite
 | # | Screen | Used by |
 |---|---|---|
 | 1 | Landing, sign-up, login, OTP | Everyone |
-| 2 | Registration wizard (personal, category, category details, photos, references, credentials, review) | Applicant |
+| 2 | Registration wizard (personal, category, category details, photos, credentials, review) | Applicant |
 | 3 | Registration status | Applicant |
 | 4 | Member dashboard | Members |
 | 5 | Directory list + filters (Professionals, Businesses) | Members |
@@ -137,19 +137,19 @@ The full screen list with states is being built in [Screen list with states](htt
 
 ## 6. Registration, login and verification
 
-No one reaches member content until an administrator has verified their NIDA identity and their church membership, and business rights unlock one level at a time.
+No one reaches member content until an administrator has verified their identity, and business rights unlock one level at a time.
 
 **Stories**
-- **REG-1** As a church member in Tanzania, I want to register on web or mobile so that I can join the platform. (FR-01, UC-01–06)
+- **REG-1** As a person in Tanzania, I want to register on web or mobile so that I can join the platform. (FR-01, UC-01–06)
 - **REG-2** As an applicant, I want to see my registration status so that I know when I can log in. (FR-04, FR-05)
 - **REG-3** As an admin, I want to review pending profiles and approve or reject them so that only real members get in. (FR-03, UC-07–08)
 - **REG-4** As a member, I want to log in with password and OTP so that my account is protected. (FR-02, UC-09–10)
 - **REG-5** As a business owner, I want to upgrade to Verified Business, then Opportunity Poster, so that I can list my business and post opportunities. (FR-32, UC-28–29)
 
 **Acceptance criteria**
-1. The wizard collects full name, username, address, NIDA number, email, phone, occupation category (Professional, Businessperson, Entrepreneur, Other), optional study info, a face photo for the profile (required), a photo of the front of the NIDA card, and 2 to 3 references (see Member verification below).
+1. The wizard collects full name, username, a Tanzanian address chosen from the region and district lists, email, a Tanzanian phone number (+255), one accepted ID (NIDA, passport, driving licence or voter's ID) with its type and number, occupation category (Professional, Businessperson, Entrepreneur, Other), optional study info, a face photo (required), and a photo of the ID (see Member verification below).
 2. Category-specific fields appear based on the category (for example, CPA number for auditors; CISSP, CISM, CEH for cybersecurity).
-3. NIDA number must be 20 digits and unique across accounts; a duplicate blocks submission and alerts admins (duplicate-profile detection). In Phase 1 an admin checks NIDA details manually; integration with NIDA's verification service may follow if problems arise.
+3. An ID number must be unique for its ID type, and a NIDA number must be 20 digits. A duplicate blocks submission and alerts admins (duplicate-profile detection). Because one person could register twice with two different IDs, admins also compare face photos. In Phase 1 an admin checks the ID manually; a connection to NIDA's verification service for NIDA holders may follow (ticket [#30](https://github.com/clainkavit/kingdom-connect/issues/30)).
 4. On submit, status = Pending and the applicant receives an email and SMS confirmation.
 5. Admin sees each pending applicant with documents side by side and must give a reason when rejecting; the reason is sent to the applicant.
 6. Status values: Pending → Approved or Rejected. A rejected applicant can correct and resubmit once (Proposed).
@@ -167,23 +167,16 @@ No one reaches member content until an administrator has verified their NIDA ide
 10. Each level shows its own status (Not started, Pending, Approved, Rejected, Expired) on the member's verification screen.
 11. Licence expiry date is captured at Level 2 approval and drives annual re-verification (section 13).
 
-**Member verification (Level 1), decided 19 Oct.** An admin approves an applicant only after checking two things: that they are who they say they are (identity), and that they belong to the Mkuyuni community (church membership). Decided in [What does an admin check to approve a member?](https://github.com/clainkavit/kingdom-connect/issues/3)
+**Member verification (Level 1), decided 19 Oct and changed 22 Oct for the nationwide scope.** An admin approves an applicant only after checking that they are who they say they are. Church membership is no longer checked. Decided in [What does an admin check to approve a member?](https://github.com/clainkavit/kingdom-connect/issues/3)
 
 | Check | Evidence | What the admin confirms |
 |---|---|---|
-| Identity | Completed profile, a face photo, a photo of the front of the NIDA card | Name and NIDA number on the card match the form; the face photo matches the card photo |
-| Church membership | 2 to 3 references: Mkuyuni church members who know the applicant, attending in person or online | At least 2 references answer Yes |
+| Identity | Completed profile, a face photo, and a photo of one accepted ID: NIDA, passport, driving licence or voter's ID | Name and ID number on the ID match the form; the face photo matches the ID photo; the ID has not expired (Proposed) |
+| Location | A +255 phone number and a Tanzanian address chosen from the region and district lists | Both are present. There is no nationality rule |
 
-12. For each reference the applicant enters full name, phone number, and how they know them (for example "sits near me in church", "online service group", "family"). References do not need to be on the platform.
-13. If the phone number matches a member, that member gets an in-app request: "Do you know [name] from Mkuyuni church?" with Yes or No. They see only the applicant's name and face photo. Otherwise an admin phones the reference and records the answer.
-14. At least 2 Yes answers are needed. A No does not reject the applicant automatically; it flags the application and the admin decides.
-15. A reference who has not answered gets a reminder after 3 days. After 7 days the admin can phone them or ask the applicant to name a replacement.
-16. The applicant only sees "Your references are being checked", never who answered Yes or No. Only admins see each answer.
-17. Reference phone numbers are used only for this check, visible to admins only, and deleted once the application is approved or rejected.
-18. Every reference answer is written to the audit log. A member who vouched for 2 people later removed for fraud gets an admin warning, and their future answers go to admin review. No automatic penalty.
-19. The NIDA card photo is stored in the admin-only document store (section 15) and is never shown to members.
-
-**Founding members.** At launch there are no members to act as references. Church leadership (Pastor Tony's office) provides a list of founding members, such as church leaders and staff. A Super Admin approves each one after the identity check, with the list standing in for references. Every applicant after them follows the normal rule.
+12. Each ID number is unique for its ID type. Admins compare face photos to catch one person registering with two different IDs; a suspected duplicate is flagged and the admin decides.
+13. The ID photo is stored in the admin-only document store (section 15) and is never shown to members. **Open:** how long the photo is kept after the decision, for the lawyer (see Legal texts in section 13).
+14. NIDA's verification service may be connected later for NIDA holders (ticket [#30](https://github.com/clainkavit/kingdom-connect/issues/30)). Passports, driving licences and voter's IDs stay manual, and Persona is deferred until the company exists.
 
 ## 7. Dashboards
 
@@ -195,7 +188,6 @@ The member dashboard shows community activity and the member's own to-dos; every
 | Community stats: verified members, registered businesses, open opportunities, ideas in pool | ✓ | ✓ |
 | People you may know: members whose skills or location match yours, with a Connect button (changed 15 Oct) | ✓ | ✗ |
 | My connection requests (accept/decline inline) | ✓ | ✗ |
-| Reference requests: "Do you know [name]?" (Yes/No inline, decided 19 Oct) | ✓ | ✗ |
 | My activity: applications, idea requests, registrations | ✓ | ✗ |
 | Featured opportunities | ✓ | ✓ (with slot count and remove, Proposed) |
 | Latest opportunities & more (tabs: All, Jobs, Training, Tenders, Investments, Ideas) | ✓ | ✗ |
@@ -382,7 +374,7 @@ A reported opportunity disappears from members' view the moment it is reported; 
 4. Admin actions: Restore, Edit request to poster, Remove, Warn, Suspend posting rights, Suspend account. Each requires a note.
 5. Two upheld reports against a business within 12 months suspend its posting rights; three suspend the account pending review.
 6. Re-verification: 30 and 7 days before a business licence expires, the member is reminded. On expiry, Level 2 and 3 rights pause until new documents are approved.
-7. Audit log records who, what, when, and before/after values for approvals, rejections, reference answers, moderation, role changes, investor flag changes, admin-posted opportunities, and every view of idea details. Logs are read-only and kept at least 5 years (Proposed).
+7. Audit log records who, what, when, and before/after values for approvals, rejections, moderation, role changes, investor flag changes, admin-posted opportunities, and every view of idea details. Logs are read-only and kept at least 5 years (Proposed).
 8. Admins cannot see message contents unless a thread has been reported.
 
 ## 14. Notifications
@@ -392,8 +384,6 @@ Every event below shows in the in-app bell; during the pilot, OTPs and account m
 | Event | Who is told | In-app | Email | SMS |
 |---|---|---|---|---|
 | Registration received, approved or rejected | Applicant | ✓ | ✓ | Later |
-| Asked to name a replacement reference | Applicant | ✓ | ✓ | Later |
-| Reference request received, or reminder after 3 days | Member named as a reference | ✓ | ✓ | ✗ |
 | Login OTP | Member | ✗ | ✓ | Later |
 | Business level approved, rejected or expiring | Business member | ✓ | ✓ | Later |
 | Connection request received or accepted | Member | ✓ | ✓ | ✗ |
@@ -467,8 +457,7 @@ On Supabase/Postgres (the stack, decided 20 Oct, see section 15), these rules ar
 | Member | Name, username, NIDA (encrypted), phone, email, region, category, verification level, investor flag (private) | Pending, Approved, Rejected, Suspended, Deactivated |
 | Profile | Headline, bio, skills, experience, certifications, study info, privacy settings | n/a |
 | Business | Name, sector, BRELA no., TIN, licence no. and expiry, address, level | Pending, Approved, Rejected, Expired |
-| Verification request | Member, level requested, documents, reviewer, reason, route for Level 1 (references or founding member list) | Pending, Approved, Rejected |
-| Reference (added 19 Oct) | Applicant, name, phone (deleted after the decision), how they know the applicant, matched member (if any), answer, answered by (member in app or admin by phone), answered at | Waiting, Yes, No, No response, Replaced |
+| Verification request | Member, level requested, documents, reviewer, reason | Pending, Approved, Rejected |
 | Connection | Requester, receiver, note | Sent, Accepted, Declined, Withdrawn, Expired |
 | Message thread / message | Members, idea link (optional), body, attachments | Active, Reported, Closed |
 | Opportunity | Poster (Level 3 member or admin), type (including Tender), title, location, closing date, no-fee flag, featured flag | Draft, Pending review, Published, Closed, Expired, Hidden, Removed |
@@ -525,9 +514,9 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 **Decided on 17 October 2026**
 - Access rules are enforced on the server, not in the UI: the investor flag, contact details, identity documents and message contents never reach a user who isn't allowed them (section 16). On Supabase/Postgres this means Row-Level Security in the database. The schema itself is still open in [Database schema and access rules](https://github.com/clainkavit/kingdom-connect/issues/12).
 
-**Decided on 19 October 2026**
-- Level 1 verification checks identity and church membership (section 6, Member verification). Identity: a completed profile, a required face photo and a NIDA card photo. Church membership: 2 to 3 Mkuyuni church references, in person or online, of whom at least 2 must answer Yes. Founding members are approved from a church leadership list. Resolves [What does an admin check to approve a member?](https://github.com/clainkavit/kingdom-connect/issues/3)
-- The Proposed approval target (median under 3 working days, section 17) stays, even though references can take up to 7 days to answer.
+**Decided on 19 October 2026 (changed 22 October)**
+- Level 1 verification checks identity only (section 6, Member verification): a completed profile, a face photo and a photo of one accepted ID (NIDA, passport, driving licence or voter's ID). Location is a +255 phone and a Tanzanian address, with no nationality rule. The 19 Oct version also checked church membership through references and a founding-members list; that was dropped on 22 Oct when the platform went nationwide. Resolves [What does an admin check to approve a member?](https://github.com/clainkavit/kingdom-connect/issues/3)
+- The Proposed approval target (median under 3 working days, section 17) stays.
 
 **Decided on 20 October 2026 (tech stack, ticket #10)**
 - Stack as in section 15: Expo universal member app, Next.js admin console, Supabase, Brevo email, Sentry, pnpm workspace, TypeScript, Vitest, Husky.
@@ -553,7 +542,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | 15 Oct 2026 | Phone bottom tab bar proposed; mockup and prototype linked as visual direction | 5 |
 | 15 Oct 2026 | Open items linked to wayfinder tickets; Proposed values flagged for review | Throughout |
 | 17 Oct 2026 | Server-side access rules for the investor flag, contact details, identity documents and messages | 16, 18 |
-| 19 Oct 2026 | Level 1 verification: identity plus church membership through references; founding members; Reference record, dashboard widget and notifications | 3, 5, 6, 7, 13, 14, 16, 18 |
+| 19 Oct 2026 | Level 1 verification: identity check with one of four accepted IDs, +255 phone and Tanzanian address, no nationality rule; church references and founding members dropped on 22 Oct | 3, 5, 6, 7, 13, 14, 16, 18 |
 | 20 Oct 2026 | Tech stack decided; pilot launches web first, mobile apps follow; push notifications scoped | 4, 14, 15, 16, 18 |
 
 ## Appendix B: Source documents

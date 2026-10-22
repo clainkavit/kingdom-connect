@@ -403,12 +403,12 @@ Both routes meet at the owner's decision; an anonymous investor's name is reveal
 3. **Doing a milestone.** The member responsible marks it done, and the other member confirms.
 4. **Hand-off disclaimer.** Each side accepts, at the start, that the platform provides a record only, is not a party to the agreement, does not guarantee or mediate anything, and that dealings outside the platform are the members' own. The accepted version and timestamp are stored for each side, as with the NDA. The wording is written in [Who writes the NDA, IP terms and data-consent text?](https://github.com/clainkavit/kingdom-connect/issues/11).
 5. **Waiting for the other member.** A proposed plan stays Pending for 14 days, with one reminder on day 7, then lapses. Either member can restart it. A lapsed plan counts as "not started" in analytics. Messaging stays open throughout.
-6. **Withdrawing.** While Pending, the member who proposed it may withdraw. Once both have accepted stage 1, either may withdraw within 1 hour and the other is notified. After that hour, stage 1 is final. Later stages keep an audit trail and cannot be removed.
+6. **Withdrawing.** While Pending, the member who proposed it may withdraw. Once both have accepted stage 1, either may withdraw within 1 hour and the other is notified. After that hour, stage 1 is final and the plan can only be ended (see 11). Later stages keep an audit trail and cannot be removed.
 7. **Signed document.** At the end, if both members agree, each is prompted to upload the signed agreement to the platform (PDF, up to 10 MB). The platform stores it. It does not draft, review or e-sign anything.
 8. **Who sees what.** The plan shows on both members' profiles. Administrators see names, the idea or opportunity, stage statuses, dates and notes, never contact details or the investor flag. Administrators do not see the signed document unless a report is filed on the partnership. An Administrator can annotate a plan but not delete it. A withdrawn plan stays visible as Withdrawn.
 9. **What protection means in Phase 1.** Evidence only: timestamped stages, the stored signed document and a record both members accepted. The platform does not mediate disputes or guarantee anything. The lawyer confirms the wording before launch (section 13, Legal texts).
 10. **Analytics.** The platform counts people linked, plans started and plans completed.
-11. **Open:** what happens when one member wants to stop partway, after the first hour, and whether the platform may later charge for completed plans (billing is a Phase 2 ticket; Phase 1 has no payments).
+11. **Ending a plan (decided 22 Oct).** After the first hour, either member can end the plan at any time and must give a reason. The other member is told, and the plan stays on record as Ended, showing who ended it, when, why, and every milestone so far. Nothing is deleted. A member who is being ignored can also report the partnership (section 13). **Open:** whether the platform may later charge for completed plans (billing is a Phase 2 ticket; Phase 1 has no payments).
 12. **Not in Phase 1:** drafting agreements on the platform, e-signing and a legal-professional directory. A lawyer directory is a possible Phase 2 idea.
 
 ## 12. Training, events and news
@@ -489,12 +489,16 @@ Every event below shows in the in-app bell; during the pilot, OTPs and account m
 | Post approved, rejected, hidden or removed | Poster | ✓ | ✓ | ✗ |
 | Interest in my idea (named or anonymous) | Idea owner | ✓ | ✓ | ✗ |
 | Access approved, NDA accepted, access revoked | Owner and requester | ✓ | ✓ | ✗ |
-| Milestone plan: proposed, reminder, accepted, milestone done or confirmed, signed document uploaded, lapsed or withdrawn | The other member (both, on withdrawal) | ✓ | ✓ | ✗ |
+| Milestone plan: proposed, reminder, accepted, milestone done or confirmed, signed document uploaded, lapsed, withdrawn or ended | The other member (both, on withdrawal) | ✓ | ✓ | ✗ |
 | Matches from Scan for Opportunities | Member | ✓ | Weekly digest | ✗ |
 | Training or event reminder | Registrant | ✓ | ✓ | ✗ |
 | Waitlist place confirmed | Member who was waiting | ✓ | ✓ | ✗ |
 | Report outcome | Reporter | ✓ | ✗ | ✗ |
 | Investor flag granted | Investor | ✓ | ✓ | ✗ |
+| Login locked after 5 failed attempts | Member | ✗ | ✓ | ✗ |
+| Account suspended | Member | ✗ | ✓ | ✗ |
+| Posting rights paused | Poster | ✓ | ✓ | ✗ |
+| Idea hidden or removed by an admin | Idea owner | ✓ | ✓ | ✗ |
 
 **Push notifications** (decided 20 Oct) are sent to the Android and iOS apps once they ship; the web pilot has the in-app bell and email only.
 - Push is sent for: connection request received or accepted, new message, application status change, idea access approved or NDA accepted, a milestone plan request, post approved or rejected, and registration approved or rejected. The weekly Scan digest is email only, and report outcomes are in-app only.
@@ -563,7 +567,7 @@ On Supabase/Postgres (the stack, decided 20 Oct, see section 15), these rules ar
 | Response (replaces Application, 19 Oct) | Opportunity, member, kind (Application for Jobs, Interest for other types), CV or attachment, note | New, Shortlisted, Declined, Withdrawn |
 | Idea | Owner, summary fields, details, attachments, visibility | Draft, Pending moderation, Published, Archived, Hidden, Removed |
 | Idea access request | Idea, requester, role, anonymous flag, NDA version, accepted at | Pending, Approved, Declined, NDA accepted, Revoked |
-| Milestone plan | The two members, idea or opportunity, milestones (title, description, target date, status), disclaimer version, accepted at (each side), signed document, admin annotations | Pending, Active, Completed, Lapsed, Withdrawn |
+| Milestone plan | The two members, idea or opportunity, milestones (title, description, target date, status), disclaimer version, accepted at (each side), signed document, admin annotations | Pending, Active, Completed, Lapsed, Withdrawn, Ended |
 | Training / Event | Poster, title, dates, capacity, materials | Draft, Pending review, Published, Closed, Hidden, Removed |
 | Registration | Member, training or event | Registered, Waitlisted, Cancelled, Attended |
 | News item | Title, body, image, pinned | Draft, Published |
@@ -693,6 +697,9 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 **Decided on 22 October 2026 (confirmed Proposed items)**
 - Confirmed: an admin checks that the ID has not expired; a milestone plan has 1 to 10 milestones; a signed document is a PDF up to 10 MB; staff see a signed document only while a report is open on that plan.
 
+**Decided on 22 October 2026 (ending a milestone plan)**
+- After the first hour, either member can end a plan at any time with a reason. The other is told, and the plan stays on record as Ended with all its milestones. Nothing is deleted (section 11).
+
 **Open.** Every open question is a ticket on the [wayfinder map](https://github.com/clainkavit/kingdom-connect/issues/1) and is linked where it applies above.
 
 **Outside this spec**
@@ -719,6 +726,8 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | 19 Oct 2026 | Opportunity types and responses: Training/Internship removed, Apply vs Express interest, tender fields and no-fee rule, Response record | 4, 7, 10, 14, 16, 18 |
 | 19 Oct 2026 | All Proposed values confirmed or changed; success-metric targets set | 1, 5, 6, 7, 8, 9, 10, 12, 13, 14, 17, 18 |
 | 22 Oct 2026 | The four Proposed items added on 20 to 22 Oct confirmed; no Proposed markers remain | 6, 11, 18 |
+| 22 Oct 2026 | Four notifications added: login lockout, account suspended, posting paused, idea hidden or removed | 14 |
+| 22 Oct 2026 | A milestone plan can be ended by either member after the first hour; status Ended | 11, 14, 16, 18 |
 | 20 Oct 2026 | Database schema and access rules written in docs/schema.md | 16, 18 |
 | 20 Oct 2026 | Tech stack decided; pilot launches web first, mobile apps follow; push notifications scoped | 4, 14, 15, 16, 18 |
 

@@ -222,6 +222,11 @@ To: both members. Channels: in-app, email.
 - **EN** Title: Plan withdrawn. Message: The plan for {item} was withdrawn by {name}.
 - **SW** Title: Mpango umefutwa. Message: Mpango wa {item} umefutwa na {name}.
 
+### P10 Plan ended
+To: the other member. Channels: in-app, email.
+- **EN** Title: A plan was ended. Message: {name} ended the plan for {item}. Reason: {reason}. The record stays on your profile.
+- **SW** Title: Mpango umesitishwa. Message: {name} amesitisha mpango wa {item}. Sababu: {reason}. Kumbukumbu inabaki kwenye wasifu wako.
+
 ## 7. Matches, training and events
 
 ### S1 Matches from Scan for Opportunities
@@ -261,10 +266,33 @@ To: the member who received the flag. Channels: in-app, email. Only that member 
 - **EN** Title: You now have investor tools. Message: You can show interest anonymously, browse without being seen, use investor filters and keep a saved list. Only you and admins can see this.
 - **SW** Title: Sasa una zana za mwekezaji. Message: Unaweza kuonyesha nia bila kujulikana, kuvinjari kimya kimya, kutumia vichujio vya mwekezaji na kuhifadhi orodha yako. Ni wewe na wasimamizi pekee mnaoweza kuona hili.
 
-## Not in the PRD table
+## 9. Security and admin actions
 
-These events have no row in PRD section 14 and no copy here yet. Each needs a decision before it is written:
+### L1 Account locked after failed sign-ins
+To: member. Channels: email only, because the member cannot open the app while locked.
+- **EN** Title: Your account is locked for 15 minutes. Message: There were 5 failed sign-in attempts. Try again after 15 minutes. If this was not you, change your password afterwards.
+- **SW** Title: Akaunti yako imefungwa kwa dakika 15. Message: Kumekuwa na majaribio 5 ya kuingia yaliyoshindwa. Jaribu tena baada ya dakika 15. Kama si wewe, badilisha nenosiri lako baadaye.
 
-- A login lockout notice (5 failed attempts lock the account for 15 minutes).
-- A suspension or deactivation notice for a member's account.
-- A notice to a member whose profile or idea was hidden or removed after a report (posts are covered, profiles and ideas are not).
+### X1 Account suspended
+To: member. Channels: email only.
+- **EN** Title: Your account is suspended. Message: Reason: {reason}. An admin will review it.
+- **SW** Title: Akaunti yako imesimamishwa. Message: Sababu: {reason}. Msimamizi atalipitia.
+
+### X2 Posting rights paused
+To: poster. Channels: in-app, email.
+- **EN** Title: Your posting is paused. Message: Reason: {reason}. You cannot post new items until an admin lifts this.
+- **SW** Title: Kuchapisha kumesitishwa. Message: Sababu: {reason}. Huwezi kuchapisha mapya hadi msimamizi atakapoliondoa.
+
+### H1 Idea hidden by an admin
+To: idea owner. Channels: in-app, email.
+- **EN** Title: Your idea is hidden for now. Message: An admin hid {idea_title} while a report is reviewed.
+- **SW** Title: Wazo lako limefichwa kwa muda. Message: Msimamizi amelificha {idea_title} wakati ripoti inapitiwa.
+
+### H2 Idea removed
+To: idea owner. Channels: in-app, email.
+- **EN** Title: Your idea was removed. Message: {idea_title}: {reason}.
+- **SW** Title: Wazo lako limeondolewa. Message: {idea_title}: {reason}.
+
+## Not covered
+
+A profile has no separate "hidden" or "removed" state in the PRD: an admin's actions on a profile are a warning or an account suspension, and the suspension is X1. Two admin actions still have no notification: **Warn** and **Edit request to poster** (PRD section 13, criterion 4). Each needs a decision before copy is written.

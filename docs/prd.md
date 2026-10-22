@@ -48,7 +48,7 @@ Roles stack: a member gains rights by passing further verification, and the inve
 | Role | How someone gets it | Visible to other members as |
 |---|---|---|
 | Applicant | Submits registration | Not visible |
-| Verified Member (Level 1) | NIDA + manual review approved. **Open:** what the review checks, see [What does an admin check to approve a member?](https://github.com/clainkavit/kingdom-connect/issues/3) | Member, with profession |
+| Verified Member (Level 1) | Identity checked by an admin with one accepted ID (section 6, Member verification) | Member, with profession |
 | Verified Business (Level 2) | BRELA, TRA TIN, business licence approved | Member + business listing |
 | Opportunity Poster (Level 3) | Director/authorisation proof + physical address approved | Member + business listing |
 | Investor (private flag) | Invitation by an Administrator or Super Administrator, or approved application from a Level 2 member | Same as their base role; never labelled investor |
@@ -94,7 +94,7 @@ Phase 1 ships in two releases inside the 12-month plan: Release 1 builds trust a
 
 **Platforms (changed 20 Oct):** the pilot launches as a responsive web portal that can be added to a phone's home screen. Android and iOS apps with the same features follow once the web version is stable, built from the same codebase (section 15).
 
-**Geography:** Tanzania only. Registration requires a valid NIDA number.
+**Geography:** Tanzania only, enforced by a Tanzanian (+255) phone number and a Tanzanian address on registration. There is no nationality rule, so a foreign resident can join (changed 22 Oct).
 
 **Out of scope:** payments of any kind, investment transaction processing, e-commerce, social media integrations, mentorship, members outside Tanzania.
 
@@ -117,7 +117,7 @@ Members and administrators get different sidebars; a member never sees admin ite
 | # | Screen | Used by |
 |---|---|---|
 | 1 | Landing, sign-up, login, OTP | Everyone |
-| 2 | Registration wizard (personal, category, category details, credentials, review) | Applicant |
+| 2 | Registration wizard (personal, category, category details, photos, credentials, review) | Applicant |
 | 3 | Registration status | Applicant |
 | 4 | Member dashboard | Members |
 | 5 | Directory list + filters (Professionals, Businesses) | Members |
@@ -137,26 +137,24 @@ The full screen list with states is being built in [Screen list with states](htt
 
 ## 6. Registration, login and verification
 
-No one reaches member content until an administrator has verified their NIDA identity, and business rights unlock one level at a time.
+No one reaches member content until an administrator has verified their identity, and business rights unlock one level at a time.
 
 **Stories**
-- **REG-1** As a church member in Tanzania, I want to register on web or mobile so that I can join the platform. (FR-01, UC-01–06)
+- **REG-1** As a person in Tanzania, I want to register on web or mobile so that I can join the platform. (FR-01, UC-01–06)
 - **REG-2** As an applicant, I want to see my registration status so that I know when I can log in. (FR-04, FR-05)
 - **REG-3** As an admin, I want to review pending profiles and approve or reject them so that only real members get in. (FR-03, UC-07–08)
 - **REG-4** As a member, I want to log in with password and OTP so that my account is protected. (FR-02, UC-09–10)
 - **REG-5** As a business owner, I want to upgrade to Verified Business, then Opportunity Poster, so that I can list my business and post opportunities. (FR-32, UC-28–29)
 
 **Acceptance criteria**
-1. The wizard collects full name, username, address, NIDA number, email, phone, occupation category (Professional, Businessperson, Entrepreneur, Other) and optional study info.
+1. The wizard collects full name, username, a Tanzanian address chosen from the region and district lists, email, a Tanzanian phone number (+255), one accepted ID (NIDA, passport, driving licence or voter's ID) with its type and number, occupation category (Professional, Businessperson, Entrepreneur, Other), optional study info, a face photo (required), and a photo of the ID (see Member verification below).
 2. Category-specific fields appear based on the category (for example, CPA number for auditors; CISSP, CISM, CEH for cybersecurity).
-3. NIDA number must be 20 digits and unique across accounts; a duplicate blocks submission and alerts admins (duplicate-profile detection). In Phase 1 an admin checks NIDA details manually; integration with NIDA's verification service may follow if problems arise.
+3. An ID number must be unique for its ID type, and a NIDA number must be 20 digits. A duplicate blocks submission and alerts admins (duplicate-profile detection). Because one person could register twice with two different IDs, admins also compare face photos. In Phase 1 an admin checks the ID manually; a connection to NIDA's verification service for NIDA holders may follow (ticket [#30](https://github.com/clainkavit/kingdom-connect/issues/30)).
 4. On submit, status = Pending and the applicant receives an email and SMS confirmation.
 5. Admin sees each pending applicant with documents side by side and must give a reason when rejecting; the reason is sent to the applicant.
 6. Status values: Pending → Approved or Rejected. A rejected applicant can correct and resubmit once (Proposed).
 7. Login requires username/password, then a 6-digit OTP sent by email during the pilot (SMS OTP considered later, depending on cost), valid 5 minutes, 3 attempts (Proposed values). **Open:** whether the chosen auth service supports this natively, see [Can Supabase Auth do username login plus an email OTP second step?](https://github.com/clainkavit/kingdom-connect/issues/8)
 8. Five failed password attempts lock the account for 15 minutes (Proposed).
-
-**Open:** what the admin's manual review actually checks, and whether it confirms church membership as well as identity. See [What does an admin check to approve a member?](https://github.com/clainkavit/kingdom-connect/issues/3)
 
 **Business verification levels**
 
@@ -168,6 +166,17 @@ No one reaches member content until an administrator has verified their NIDA ide
 9. A member can only request Level 3 after Level 2 is approved.
 10. Each level shows its own status (Not started, Pending, Approved, Rejected, Expired) on the member's verification screen.
 11. Licence expiry date is captured at Level 2 approval and drives annual re-verification (section 13).
+
+**Member verification (Level 1), decided 19 Oct and changed 22 Oct for the nationwide scope.** An admin approves an applicant only after checking that they are who they say they are. Church membership is no longer checked. Decided in [What does an admin check to approve a member?](https://github.com/clainkavit/kingdom-connect/issues/3)
+
+| Check | Evidence | What the admin confirms |
+|---|---|---|
+| Identity | Completed profile, a face photo, and a photo of one accepted ID: NIDA, passport, driving licence or voter's ID | Name and ID number on the ID match the form; the face photo matches the ID photo; the ID has not expired (Proposed) |
+| Location | A +255 phone number and a Tanzanian address chosen from the region and district lists | Both are present. There is no nationality rule |
+
+12. Each ID number is unique for its ID type. Admins compare face photos to catch one person registering with two different IDs; a suspected duplicate is flagged and the admin decides.
+13. The ID photo is stored in the admin-only document store (section 15) and is never shown to members. **Open:** how long the photo is kept after the decision, for the lawyer (see Legal texts in section 13).
+14. NIDA's verification service may be connected later for NIDA holders (ticket [#30](https://github.com/clainkavit/kingdom-connect/issues/30)). Passports, driving licences and voter's IDs stay manual, and Persona is deferred until the company exists.
 
 ## 7. Dashboards
 
@@ -610,6 +619,10 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 **Decided on 17 October 2026**
 - Access rules are enforced on the server, not in the UI: the investor flag, contact details, identity documents and message contents never reach a user who isn't allowed them (section 16). On Supabase/Postgres this means Row-Level Security in the database. The schema itself is still open in [Database schema and access rules](https://github.com/clainkavit/kingdom-connect/issues/12).
 
+**Decided on 19 October 2026 (changed 22 October)**
+- Level 1 verification checks identity only (section 6, Member verification): a completed profile, a face photo and a photo of one accepted ID (NIDA, passport, driving licence or voter's ID). Location is a +255 phone and a Tanzanian address, with no nationality rule. The 19 Oct version also checked church membership through references and a founding-members list; that was dropped on 22 Oct when the platform went nationwide. Resolves [What does an admin check to approve a member?](https://github.com/clainkavit/kingdom-connect/issues/3)
+- The Proposed approval target (median under 3 working days, section 17) stays.
+
 **Decided on 20 October 2026 (test strategy, ticket #15)**
 - Unit tests and typecheck on commit; database access-rule tests and web end-to-end tests in CI on pull requests, blocking merges (section 17).
 - Local Supabase in Docker for database tests; one seed script of fake members; tests first for access rules and status changes.
@@ -655,6 +668,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | 15 Oct 2026 | Phone bottom tab bar proposed; mockup and prototype linked as visual direction | 5 |
 | 15 Oct 2026 | Open items linked to wayfinder tickets; Proposed values flagged for review | Throughout |
 | 17 Oct 2026 | Server-side access rules for the investor flag, contact details, identity documents and messages | 16, 18 |
+| 19 Oct 2026 | Level 1 verification: identity check with one of four accepted IDs, +255 phone and Tanzanian address, no nationality rule; church references and founding members dropped on 22 Oct | 3, 5, 6, 7, 13, 14, 16, 18 |
 | 20 Oct 2026 | Test strategy and pilot-readiness list | 17, 18 |
 | 20 Oct 2026 | Legal texts: who drafts and approves, versioning, languages, launch gate | 11, 13, 18 |
 | 20 Oct 2026 | Matching rules for Scan for Opportunities and People you may know; skills-wanted and sector added to the posting form | 7, 10, 16, 18 |

@@ -533,7 +533,7 @@ The figures below are proposed starting targets for the Technical Committee to c
 
 ## 16. Key data entities and statuses
 
-These are the main records the system stores and the states each can be in. The physical schema is designed in [Database schema and access rules](https://github.com/clainkavit/kingdom-connect/issues/12).
+These are the main records the system stores and the states each can be in. Every table, its access rules and the functions that guard private data are in [docs/schema.md](schema.md) (decided 20 Oct, ticket [#12](https://github.com/clainkavit/kingdom-connect/issues/12)).
 
 **Access rules (decided 17 Oct).** The server decides what each request may read or write; the UI only hides what a user doesn't need to see, and is never relied on for privacy. Restricted data never leaves the server for a user who isn't allowed it:
 
@@ -630,7 +630,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 - This markdown file is the living PRD; the Plan v1.1 stays frozen as the approved church document.
 
 **Decided on 17 October 2026**
-- Access rules are enforced on the server, not in the UI: the investor flag, contact details, identity documents and message contents never reach a user who isn't allowed them (section 16). On Supabase/Postgres this means Row-Level Security in the database. The schema itself is still open in [Database schema and access rules](https://github.com/clainkavit/kingdom-connect/issues/12).
+- Access rules are enforced on the server, not in the UI: the investor flag, contact details, identity documents and message contents never reach a user who isn't allowed them (section 16). On Supabase/Postgres this means Row-Level Security in the database. The schema is in [docs/schema.md](schema.md).
 
 **Decided on 19 October 2026 (changed 22 October)**
 - Level 1 verification checks identity only (section 6, Member verification): a completed profile, a face photo and a photo of one accepted ID (NIDA, passport, driving licence or voter's ID). Location is a +255 phone and a Tanzanian address, with no nationality rule. The 19 Oct version also checked church membership through references and a founding-members list; that was dropped on 22 Oct when the platform went nationwide. Resolves [What does an admin check to approve a member?](https://github.com/clainkavit/kingdom-connect/issues/3)
@@ -663,6 +663,14 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 **Decided on 19 October 2026 (Proposed defaults, ticket #4)**
 - Every Proposed value is confirmed, with these changes: OTP valid 10 minutes with a resend after 60 seconds; phone numbers and emails blocked in posts and links sent to review; a second rejection is final unless an admin reopens it; waitlists move the first person up automatically; audit logs survive a member's data deletion; idea access target 30% and monthly active members 50%. Resolves [Confirm or change the PRD's Proposed defaults](https://github.com/clainkavit/kingdom-connect/issues/4)
 
+**Decided on 20 October 2026 (database schema, ticket #12)**
+- The schema and access rules are in [docs/schema.md](schema.md). Private data (contact details and ID numbers, investor flag, business registration numbers) sits in separate admin-only tables; other members reach contact details only through one checked function, with three share switches (phone, email, address) off by default.
+- Admin accounts are separate from member accounts.
+- ID numbers (NIDA, passport, driving licence or voter's ID) are encrypted in the database with a fingerprint for duplicate checks; messages and documents rely on the host's disk encryption.
+- Milestone plans have their own tables (plans, milestones, signed documents); signed documents are visible to the two members, and to staff only while a report is open on the plan (Proposed).
+- A deleted member becomes a "Deleted member" placeholder; the lawyer review (#11) confirms what must be kept.
+- Nothing hard-codes the community name, and church references and the founding list are not in the schema, so it fits the nationwide scope (ticket #30).
+
 **Decided on 20 October 2026 (tech stack, ticket #10)**
 - Stack as in section 15: Expo universal member app, Next.js admin console, Supabase, Brevo email, Sentry, pnpm workspace, TypeScript, Vitest, Husky.
 - The pilot launches on the web first; Android and iOS follow from the same code. This supersedes the earlier plan to publish all three for the pilot.
@@ -694,6 +702,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | 20 Oct 2026 | UC-24 to UC-27 replaced by milestone plans (reworked 22 Oct); overrides the Plan's "both routes end with an agreement" (section 13 of the Plan) | 4, 11, 14, 16, 18 |
 | 19 Oct 2026 | Opportunity types and responses: Training/Internship removed, Apply vs Express interest, tender fields and no-fee rule, Response record | 4, 7, 10, 14, 16, 18 |
 | 19 Oct 2026 | All Proposed values confirmed or changed; success-metric targets set | 1, 5, 6, 7, 8, 9, 10, 12, 13, 14, 17, 18 |
+| 20 Oct 2026 | Database schema and access rules written in docs/schema.md | 16, 18 |
 | 20 Oct 2026 | Tech stack decided; pilot launches web first, mobile apps follow; push notifications scoped | 4, 14, 15, 16, 18 |
 
 ## Appendix B: Source documents

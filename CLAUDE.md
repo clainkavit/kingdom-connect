@@ -20,7 +20,7 @@
 - **Traceability.** Cite PRD story IDs (REG-1, IDEA-5...) and Plan FR/UC numbers in specs and tickets.
 - **Privacy is the product.** Contact details never reach another member's device unless shared inside an accepted connection. The investor flag is never labelled, listed or counted for members. Enforce on the server, not in the UI.
 - **Nothing is decided by assumption.** "Proposed" items and open tickets need Champion's and the collaborator's answer.
-- **No stack locked yet.** Development runs on managed Supabase with test data only; the full stack is decided in the "Lock the tech stack" ticket.
+- **Stack decided 20 Oct.** Expo member app, Next.js admin console, Supabase, Brevo email. See [docs/prd.md](docs/prd.md) section 15. Development uses test data only; production hosting is decided before the pilot.
 - No payments of any kind in Phase 1.
 
 ## Collaboration

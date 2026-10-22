@@ -95,7 +95,7 @@ The tables below list only a screen's **special states**: the ones beyond these 
 | S30 | My plans | Member | All my plans with status, shown also on each party's profile | Empty: "No plans yet. A plan starts from a connection made through an idea or opportunity" |
 | S31 | Propose a plan | Member | Choose the idea or opportunity; add 1 to 10 milestones (title, description, target date, who is responsible); stage 1 is always Agreed in principle | Only possible with an accepted connection from that idea or opportunity |
 | S32 | Review and accept a plan | The other member | The proposed plan; the hand-off disclaimer (version shown) with Accept | **Pending:** a 14-day countdown. **Lapsed:** "This plan expired. You can start it again". **Withdrawn:** read-only |
-| S33 | Plan overview | The two members | Status; milestones (open, done, confirmed); mark done, confirm; a "Withdraw" button | **First hour after both accept:** banner "You can withdraw for 1 more hour". After that no withdrawal for stage 1. A confirmed milestone is never editable. **Completed** and **Withdrawn** are read-only |
+| S33 | Plan overview | The two members | Status; milestones (open, done, confirmed); mark done, confirm; a "Withdraw" button in the first hour and an "End plan" button after it | **First hour after both accept:** banner "You can withdraw for 1 more hour". After that no withdrawal for stage 1; "End plan" asks for a reason, tells the other member, and leaves the plan on record as Ended. A confirmed milestone is never editable. **Completed**, **Withdrawn** and **Ended** are read-only |
 | S34 | Upload the signed agreement | The two members | Upload a PDF (up to 10 MB), see whether the other side has uploaded | Only after the earlier milestones are confirmed. **Too large or not a PDF:** stated before sending |
 
 ## 7. Learning, events and news
@@ -164,7 +164,7 @@ Each notification in [docs/notifications.md](notifications.md) opens the screen 
 | X1 Account suspended | S03 |
 | X2 Posting rights paused | S20 or S21 |
 | H1, H2 Idea hidden or removed | S27 |
-| P1 to P9 Milestone plans | S32, S33 or S34 |
+| P1 to P10 Milestone plans | S32, S33 or S34 |
 | S1 Scan matches | S16 |
 | T1, T2, W1 Training and events | S35 or S38 |
 | R1, R2 Report outcome | S43 |
@@ -177,8 +177,7 @@ Each notification in [docs/notifications.md](notifications.md) opens the screen 
 
 ## Open questions
 
-1. **A plan stopped partway.** What happens after the first hour when a member wants to stop (PRD section 11, open). Proposed answer: either member can end the plan at any time with a reason, the other is told, and the plan stays on record as ended with its milestones.
-2. **Warn and Edit request notices.** Two admin actions (PRD section 13) still have no notification and no screen state (also listed in docs/notifications.md).
-3. **Unfinished registrations.** How long a saved, unsubmitted registration (with its uploaded ID photo) is kept before it is deleted. For the lawyer's retention review (PRD section 13).
+1. **Warn and Edit request notices.** Two admin actions (PRD section 13) still have no notification and no screen state (also listed in docs/notifications.md).
+2. **Unfinished registrations.** How long a saved, unsubmitted registration (with its uploaded ID photo) is kept before it is deleted. For the lawyer's retention review (PRD section 13).
 
 Final English and Kiswahili wording for every empty and error state is written during the build (agreed 22 Oct).

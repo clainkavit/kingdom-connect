@@ -24,19 +24,3 @@ The two branches produce very different artifacts, so getting this wrong wastes 
 4. **Skip the polish.** No tests, no error handling beyond what makes the prototype _runnable_, no abstractions. The point is to learn something fast.
 5. **Surface the state.** After every action (logic) or on every variant switch (UI), print or render the full relevant state so the user can see what changed.
 6. **Capture it when done.** Fold any validated decision into the real code, then capture the prototype itself as a **primary source**: commit it to a throwaway branch, out of main, and leave a context pointer to that branch on the implementation issue. Capture the answer too (the verdict and the question it settled) in the issue or a commit. The main branch keeps only the validated decision.
-
-## Self-Improvement Loop
-
-At the end of every run of this skill, before ending the turn, review the run:
-
-- Did any step fail, need a workaround, or behave differently than this file describes?
-- Did the user correct, reject, or meaningfully rework something this skill produced?
-- Did you discover something a future run needs (a changed ID, a tool quirk, a better sequence)?
-
-**The bar:** propose an update ONLY if it would change what a future run actually does, or prevent a repeat of a real mistake. No cosmetic tweaks, no hypothetical improvements, no flagging for the sake of it. Most runs should end with nothing to propose.
-
-If something clears the bar, end the run with:
-
-> **Proposed update to this skill:** [one line — what changes and why]
-
-Wait for approval. On approval, edit this SKILL.md in place (update the relevant section — don't append a changelog). If this skill lives in a git repo, commit and push the change in the same turn.

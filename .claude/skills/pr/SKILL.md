@@ -168,19 +168,3 @@ Execution-based evidence is A-tier. Test results, console output. Show the exact
 Describe whether it's a one-way or two-way door. You can walk back through two-way doors, but not one-way doors. A PR that is cheap to roll back is lower risk. Changes that involve destructive actions or hard-to-reverse decisions are one-way doors.
 
 The blast radius is the potential impact or scope of the changes introduced by this PR. Consider all possibilities. Examples are layout shift, breakages for consumers, mobile responsiveness, etc.
-
-## Self-Improvement Loop
-
-At the end of every run of this skill, before ending the turn, review the run:
-
-- Did any step fail, need a workaround, or behave differently than this file describes?
-- Did the user correct, reject, or meaningfully rework something this skill produced?
-- Did you discover something a future run needs (a changed ID, a tool quirk, a better sequence)?
-
-**The bar:** propose an update ONLY if it would change what a future run actually does, or prevent a repeat of a real mistake. No cosmetic tweaks, no hypothetical improvements, no flagging for the sake of it. Most runs should end with nothing to propose.
-
-If something clears the bar, end the run with:
-
-> **Proposed update to this skill:** [one line — what changes and why]
-
-Wait for approval. On approval, edit this SKILL.md in place (update the relevant section — don't append a changelog). If this skill lives in a git repo, commit and push the change in the same turn.

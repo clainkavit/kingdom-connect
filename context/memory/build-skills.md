@@ -5,7 +5,7 @@ metadata:
   type: reference
 ---
 
-Installed 2026-10-24 so both collaborators get identical skills on pull: `implement`, `tdd`, `code-review`, `diagnosing-bugs`, `codebase-design`, `handoff`, `pr`. Source is mattpocock/skills v1.3.1, with Champion's Self-Improvement Loop block appended to each fetched `SKILL.md` (see [[planning-skills-v1-3]]).
+Installed 2026-10-24 so both collaborators get identical skills on pull: `implement`, `tdd`, `code-review`, `diagnosing-bugs`, `codebase-design`, `handoff`, `pr`. Source is mattpocock/skills v1.3.1, unmodified (see [[planning-skills-v1-3]]).
 
 - **Workflow per ticket:** claim a `build` issue, branch `build/<key>-<slug>`, `/implement #N` (calls `tdd` then `code-review`, commits to the current branch only), push, PR with `Closes #N`. Details in `docs/agents/issue-tracker.md`.
 - **Left out on purpose:** `implement-spec` (builds a whole spec on an integration branch, wrong fit for two people claiming separate tickets), `triage` (only for externally created issues), `setup-matt-pocock-skills` (its outputs were hand-written).

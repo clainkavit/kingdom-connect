@@ -5,9 +5,9 @@ metadata:
   type: reference
 ---
 
-Refreshed 2026-10-22 from mattpocock/skills v1.3.1: `domain-modeling`, `grilling`, `prototype`, `research`, `wayfinder` in [../.claude/skills/](../.claude/skills/). Each `SKILL.md` ends with Champion's Self-Improvement Loop block, which upstream does not have.
+Refreshed 2026-10-22 from mattpocock/skills v1.3.1: `domain-modeling`, `grilling`, `prototype`, `research`, `wayfinder` in [../.claude/skills/](../.claude/skills/). The copies match upstream; no personal additions live in this repo.
 
 - **Glossary is `context/GLOSSARY.md`**, renamed from `CONTEXT.md` because v1.3 renamed the convention. `domain-modeling` now looks for `GLOSSARY.md`, and `GLOSSARY-FORMAT.md` replaced `CONTEXT-FORMAT.md`. The glossary stays in `context/`, not the repo root.
 - **Do not run `/setup-matt-pocock-skills` here.** On 2026-10-24 its outputs were hand-written instead: [../docs/agents/issue-tracker.md](../docs/agents/issue-tracker.md) (absorbed the old `docs/wayfinding.md`) and [../docs/agents/domain.md](../docs/agents/domain.md). There is no `triage-labels.md` because `triage` is not installed. The setup skill is not installed in the repo either.
-- **Re-sync by merge, not overwrite.** Take the upstream files, then re-append the Self-Improvement Loop block. The workspace-wide procedure is in `me/context/memory/skill-workflow-conventions.md` in the parent repo.
+- **Re-sync by merge, not overwrite.** Take the upstream files and merge; there is nothing local to re-apply.
 - **Collaborator:** these copies are committed so the collaborator gets the same skills on pull. They were pushed in commit c099d7d.

@@ -8,8 +8,8 @@
 
 - **[docs/prd.md](docs/prd.md)** is the source of truth: requirements, decisions (section 18) and changes since v0.1 (Appendix A). Read it before any task.
 - **The [wayfinder map](https://github.com/clainkavit/kingdom-connect/issues/1)** on GitHub Issues tracks every open decision as a ticket. The open questions live there, not in this file.
-- **[docs/wayfinding.md](docs/wayfinding.md)** is the tracker doc for the `wayfinder` skill: how to claim, create, block and resolve tickets on GitHub.
-- **[.claude/skills/](.claude/skills/)** holds the planning skills (wayfinder, grilling, domain-modeling, research, prototype), so they load for anyone working in this repo.
+- **[docs/agents/issue-tracker.md](docs/agents/issue-tracker.md)** is the tracker doc for the skills: how to claim, create, block and resolve tickets on GitHub, and how build issues work.
+- **[.claude/skills/](.claude/skills/)** holds the planning skills (wayfinder, grilling, domain-modeling, research, prototype) and the build skills (implement, tdd, code-review, diagnosing-bugs, codebase-design, handoff, pr), so they load for anyone working in this repo.
 - **[context/GLOSSARY.md](context/GLOSSARY.md)** is the glossary. Use its terms.
 - **[sources/](sources/)** holds the original Plan v1.1 (frozen, approved church document), PRD v0.1 (superseded) and the use case diagram (outdated). Extracts sit in `context/`.
 - **[context/design/](context/design/)** holds the mockup and the clickable dashboard prototype.
@@ -22,6 +22,13 @@
 - **Nothing is decided by assumption.** "Proposed" items and open tickets need Champion's and the collaborator's answer.
 - **Stack decided 20 Oct.** Expo member app, Next.js admin console, Supabase, Brevo email. See [docs/prd.md](docs/prd.md) section 15. Development uses test data only; production hosting is decided before the pilot.
 - No payments of any kind in Phase 1.
+
+## Agent skills
+
+- **Issue tracker:** GitHub issues, see [docs/agents/issue-tracker.md](docs/agents/issue-tracker.md).
+- **Domain docs:** single context. The glossary is `context/GLOSSARY.md` and there is no `docs/adr/`, see [docs/agents/domain.md](docs/agents/domain.md).
+- **Spec for build issues:** [docs/prd.md](docs/prd.md), [docs/schema.md](docs/schema.md), [docs/screens.md](docs/screens.md) and [docs/notifications.md](docs/notifications.md), at the parts the issue names.
+- **Building:** claim a `build` issue, make branch `build/<key>-<slug>`, run `/implement #N`, then open a pull request with `Closes #N`. `implement-spec` and `triage` are deliberately not installed.
 
 ## Collaboration
 

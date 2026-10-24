@@ -4,7 +4,7 @@ How the engineering skills should read this repo's domain documentation when exp
 
 ## Before exploring, read these
 
-- **`context/GLOSSARY.md`**. This repo keeps its glossary in `context/`, not at the repo root. Where a skill says "`GLOSSARY.md` at the repo root", read this file instead.
+- **`GLOSSARY.md`** at the repo root.
 - There is **no `docs/adr/`** folder. A hard-to-reverse decision is recorded in [docs/prd.md](../prd.md) section 18 and in the ticket that resolved it. Read section 18 before changing anything it covers.
 
 If the glossary is missing a term you need, that is a signal: either you are inventing language the project does not use (reconsider), or there is a real gap (note it for `/domain-modeling`).
@@ -15,7 +15,7 @@ Single context:
 
 ```
 /
-├── context/GLOSSARY.md
+├── GLOSSARY.md
 ├── docs/prd.md            ← decisions in section 18
 ├── docs/schema.md
 ├── docs/screens.md

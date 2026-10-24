@@ -88,4 +88,4 @@ done
 
 - Decisions: the resolving ticket's comment, then `docs/prd.md`.
 - Research findings: `context/memory/<slug>.md`, indexed in `context/memory.md`.
-- New terms: `context/GLOSSARY.md`.
+- New terms: `GLOSSARY.md`.

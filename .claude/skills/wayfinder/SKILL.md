@@ -126,19 +126,3 @@ User invokes with a map (URL or number). A ticket is **optional**: without one, 
 5. Add newly-surfaced tickets (create-then-wire); graduate any fog the answer has made specifiable, clearing each graduated patch from **Not yet specified** so it lives only as its new ticket. If the answer reveals that a ticket (this one or another) sits beyond the destination, **rule it out of scope** rather than resolving it on the route. If the decision invalidates other parts of the map, update or delete those tickets.
 
 The user may run unblocked tickets in parallel, so expect other sessions to be editing the tracker concurrently.
-
-## Self-Improvement Loop
-
-At the end of every run of this skill, before ending the turn, review the run:
-
-- Did any step fail, need a workaround, or behave differently than this file describes?
-- Did the user correct, reject, or meaningfully rework something this skill produced?
-- Did you discover something a future run needs (a changed ID, a tool quirk, a better sequence)?
-
-**The bar:** propose an update ONLY if it would change what a future run actually does, or prevent a repeat of a real mistake. No cosmetic tweaks, no hypothetical improvements, no flagging for the sake of it. Most runs should end with nothing to propose.
-
-If something clears the bar, end the run with:
-
-> **Proposed update to this skill:** [one line — what changes and why]
-
-Wait for approval. On approval, edit this SKILL.md in place (update the relevant section — don't append a changelog). If this skill lives in a git repo, commit and push the change in the same turn.

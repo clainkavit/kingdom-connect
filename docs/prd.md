@@ -190,7 +190,7 @@ The member dashboard shows community activity and the member's own to-dos; every
 | Widget | Member dashboard | Admin dashboard |
 |---|---|---|
 | Welcome, date, location | ✓ | ✓ |
-| Community stats: verified members, registered businesses, open opportunities, ideas in pool | ✓ | ✓ |
+| Community stats: verified members, registered businesses, open opportunities, ideas in pool (changed 22 Oct: admins only) | ✗ | ✓ |
 | People you may know: members who share skills, location, profession, study or connections with you, with a Connect button (changed 15 Oct) | ✓ | ✗ |
 | My connection requests (accept/decline inline) | ✓ | ✗ |
 | My activity: applications and expressions of interest, idea requests, registrations | ✓ | ✗ |
@@ -207,7 +207,7 @@ The member dashboard shows community activity and the member's own to-dos; every
 | Investor count and activity | ✗ | ✓ |
 
 **Acceptance criteria**
-1. The member dashboard API never returns pending, rejected or investor counts, so they cannot appear even through a client bug.
+1. The member dashboard API never returns pending, rejected or investor counts, or any platform-wide count (members, businesses, opportunities, ideas), so they cannot appear even through a client bug.
 2. Quick actions a member is not entitled to are hidden, with a short path to upgrade (for example, "Verify your business to post opportunities").
 3. Each admin count links straight to its filtered queue.
 4. Stats refresh at least every 15 minutes.
@@ -700,6 +700,9 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 **Decided on 22 October 2026 (ending a milestone plan)**
 - After the first hour, either member can end a plan at any time with a reason. The other is told, and the plan stays on record as Ended with all its milestones. Nothing is deleted (section 11).
 
+**Decided on 22 October 2026 (dashboard counts)**
+- The community counts (verified members, registered businesses, open opportunities, ideas in the pool) are shown to administrators only. Members see no platform-wide figures (section 7).
+
 **Open.** Every open question is a ticket on the [wayfinder map](https://github.com/clainkavit/kingdom-connect/issues/1) and is linked where it applies above.
 
 **Outside this spec**
@@ -728,6 +731,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | 22 Oct 2026 | The four Proposed items added on 20 to 22 Oct confirmed; no Proposed markers remain | 6, 11, 18 |
 | 22 Oct 2026 | Four notifications added: login lockout, account suspended, posting paused, idea hidden or removed | 14 |
 | 22 Oct 2026 | A milestone plan can be ended by either member after the first hour; status Ended | 11, 14, 16, 18 |
+| 22 Oct 2026 | Community stats on the dashboard are admin-only | 7, 18 |
 | 20 Oct 2026 | Database schema and access rules written in docs/schema.md | 16, 18 |
 | 20 Oct 2026 | Tech stack decided; pilot launches web first, mobile apps follow; push notifications scoped | 4, 14, 15, 16, 18 |
 

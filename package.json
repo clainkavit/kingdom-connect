@@ -11,12 +11,19 @@
     "member": "pnpm --filter @kingdom-connect/member start",
     "member:web": "pnpm --filter @kingdom-connect/member web",
     "admin": "pnpm --filter @kingdom-connect/admin dev",
+    "db:start": "supabase start",
+    "db:stop": "supabase stop",
+    "db:status": "supabase status",
+    "db:reset": "supabase db reset",
+    "db:test": "supabase test db",
+    "db:new": "supabase migration new",
     "prepare": "husky"
   },
   "devDependencies": {
     "husky": "^9.1.7",
     "lint-staged": "^16.0.0",
     "prettier": "^3.5.0",
+    "supabase": "^2.122.0",
     "typescript": "^5.8.0",
     "vitest": "^3.2.0"
   }

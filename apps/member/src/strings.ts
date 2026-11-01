@@ -1,0 +1,15 @@
+export const strings = {
+  appName: "Kingdom Connect",
+  tagline: "People • Opportunities • Growth",
+  loading: "Loading",
+  tryAgain: "Try again",
+  slowConnection: "Slow connection. Showing what was already loaded.",
+  comingSoonTitle: "Coming soon",
+  comingSoonMessage: "This screen is not built yet.",
+  more: "More",
+  memberMenu: "Member menu",
+  memberTabs: "Member tabs",
+  reportTitle: "Report a Scam / Bad User",
+  reportMessage: "Help keep our community safe.",
+  reportAction: "Report now",
+} as const;

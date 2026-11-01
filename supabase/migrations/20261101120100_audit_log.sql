@@ -1,9 +1,3 @@
--- The append-only audit log (docs/schema.md section 10; PRD section 13, criterion 7).
--- Written only by triggers and database functions. Nobody can update, delete or truncate it,
--- not the app, not Edge Functions, not the database owner. Kept at least 5 years, so actors
--- and targets are plain ids with no foreign keys: a member deleting their data never removes a row.
--- The one way round this is a schema change: the table owner can drop the triggers in a migration,
--- which goes through review like any other change.
 create table private.audit_log (
   id uuid primary key default gen_random_uuid(),
   actor_member_id uuid,
@@ -34,7 +28,6 @@ create trigger append_only before update or delete on private.audit_log
 create trigger append_only_truncate before truncate on private.audit_log
   for each statement execute function private.audit_log_is_append_only();
 
--- The client address, from the API gateway's forwarded header when the request came through it.
 create function private.request_ip() returns inet
 language plpgsql stable set search_path = '' as $$
 declare forwarded text;
@@ -45,8 +38,6 @@ exception when others then
   return null;
 end $$;
 
--- Logs one row per changed record. The actor is whoever the request's session belongs to,
--- as staff or as a member; a change made directly in the database has no actor.
 create function private.log_change() returns trigger
 language plpgsql security definer set search_path = '' as $$
 declare
@@ -69,7 +60,6 @@ begin
   return null;
 end $$;
 
--- Logged actions in this migration's tables. Later tickets add their own triggers.
 create trigger audit_status after update of status on public.members
   for each row when (old.status is distinct from new.status) execute function private.log_change();
 create trigger audit after insert or update or delete on public.staff

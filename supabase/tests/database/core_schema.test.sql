@@ -1,9 +1,7 @@
--- Structure of the core schema and the append-only audit log (docs/schema.md sections 2, 3 and 10).
 begin;
 create extension if not exists pgtap with schema extensions;
 select plan(23);
 
--- ---------------------------------------------------------------- every public table carries the base rule
 select is(
   (select array_agg(c.relname::text order by c.relname) from pg_class c join pg_namespace n on n.oid = c.relnamespace
    where n.nspname = 'public' and c.relkind = 'r' and not c.relrowsecurity),
@@ -19,14 +17,12 @@ select is(
    where n.nspname = 'public' and c.relkind = 'r' and has_table_privilege('anon', c.oid, 'select')),
   null, 'signed-out visitors have no table privilege on any public table');
 
--- ---------------------------------------------------------------- helper functions
 select ok(not has_schema_privilege('anon', 'access', 'usage'), 'signed-out visitors cannot use the helper functions');
 select ok(has_function_privilege('authenticated', 'access.is_connected(uuid, uuid)', 'execute'), 'policies run as signed-in users can call the helpers');
 select is(
   (select array_agg(p.proname::text order by p.proname) from pg_proc p where p.pronamespace = 'public'::regnamespace and p.prosecdef),
   null, 'no security definer function sits in public, the schema the API exposes');
 
--- ---------------------------------------------------------------- the ID fingerprint is unique per ID type
 insert into auth.users (id, email) values
   ('00000000-0000-0000-0000-000000000001', 'one@test.invalid'),
   ('00000000-0000-0000-0000-000000000002', 'two@test.invalid'),
@@ -51,7 +47,6 @@ select throws_ok($$insert into public.members (id, username) values ('00000000-0
 select throws_ok($$insert into public.staff (id, full_name, role) values ('00000000-0000-0000-0000-000000000001', 'X', 'admin')$$,
   '23505', null, 'a member account cannot also be staff');
 
--- ---------------------------------------------------------------- audit log: logged actions
 select set_config('request.jwt.claims',
   '{"sub":"00000000-0000-0000-0000-0000000000a1","role":"authenticated","otp_verified":true}', true);
 set local role authenticated;
@@ -74,7 +69,6 @@ update public.platform_settings set value = '3' where key = 'featured_slot_limit
 select is((select count(*)::int from private.audit_log where action = 'platform_settings.update'), 1, 'changing a platform setting is logged');
 select is((select count(*)::int from private.audit_log where target_type = 'member_private'), 0, 'private data changes are never copied into the log');
 
--- ---------------------------------------------------------------- audit log: append only, for everyone
 select throws_ok($$update private.audit_log set action = 'tampered'$$, 'P0001', null, 'the database owner cannot update the audit log');
 select throws_ok($$delete from private.audit_log$$, 'P0001', null, 'the database owner cannot delete from the audit log');
 select throws_ok($$truncate private.audit_log$$, 'P0001', null, 'the database owner cannot truncate the audit log');

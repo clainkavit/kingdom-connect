@@ -1,5 +1,3 @@
--- Accounts, identity, shared lists and the few relationship tables the access helpers need
--- (docs/schema.md sections 1, 3, 4, 5 and 6). Access rules are in the access_rules migration.
 create extension if not exists citext with schema extensions;
 
 create function private.set_updated_at() returns trigger
@@ -8,8 +6,6 @@ begin
   new.updated_at := now();
   return new;
 end $$;
-
--- ---------------------------------------------------------------- shared lists
 
 create table public.regions (
   id uuid primary key default gen_random_uuid(),
@@ -27,7 +23,7 @@ create table public.districts (
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
   unique (region_id, name_en),
-  unique (id, region_id) -- lets a profile check its district belongs to its region
+  unique (id, region_id)
 );
 
 create table public.sectors (
@@ -61,12 +57,9 @@ create table public.platform_settings (
   updated_at timestamptz not null default now()
 );
 
--- PRD section 10 (up to 5 featured posts) and section 6 (daily application cap, off by default).
 insert into public.platform_settings (key, value) values
   ('featured_slot_limit', '5'),
   ('daily_application_cap', 'null');
-
--- ---------------------------------------------------------------- accounts
 
 create table public.members (
   id uuid primary key references auth.users (id),
@@ -81,7 +74,6 @@ create table public.members (
   updated_at timestamptz not null default now()
 );
 
--- A staff account has no member profile (docs/schema.md section 3).
 create table public.staff (
   id uuid primary key references auth.users (id),
   full_name text not null,
@@ -91,7 +83,6 @@ create table public.staff (
   updated_at timestamptz not null default now()
 );
 
--- One sign-in account is a member or staff, never both (docs/schema.md section 3).
 create function private.member_or_staff_not_both() returns trigger
 language plpgsql security definer set search_path = '' as $$
 begin
@@ -139,9 +130,6 @@ create table public.profile_skills (
   unique (member_id, skill_id)
 );
 
--- Private data in its own table, so the rule is "this whole table is owner and staff only".
--- id_encrypted (pgcrypto, key in Vault) and id_fingerprint (keyed HMAC of type plus number)
--- are written only by the registration function.
 create table public.member_private (
   id uuid primary key default gen_random_uuid(),
   member_id uuid not null unique references public.members (id) on delete cascade,
@@ -174,12 +162,7 @@ create table public.investor_flags (
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
--- One live flag per member; revoked ones stay as history.
 create unique index investor_flags_one_live on public.investor_flags (member_id) where revoked_at is null;
-
--- ---------------------------------------------------------------- tables the helpers read
--- Created here so is_connected(), is_blocked() and member_level() work from the start.
--- R09 adds connection requests and the flows that write these; R01 adds the applicant functions.
 
 create table public.connections (
   id uuid primary key default gen_random_uuid(),
@@ -219,7 +202,6 @@ create table public.verification_requests (
 );
 create index verification_requests_member on public.verification_requests (member_id, status);
 
--- ---------------------------------------------------------------- updated_at on every table
 do $$
 declare t text;
 begin

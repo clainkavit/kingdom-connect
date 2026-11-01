@@ -1,18 +1,7 @@
--- Access-rule tests for the core tables (docs/schema.md sections 2, 3, 5 and 6; PRD section 17).
--- Every "who can read" cell gets a check signed in as the right person and as the wrong one.
 begin;
 create extension if not exists pgtap with schema extensions;
 select plan(86);
 
--- People, one per role. Fixed ids so the checks below read plainly.
---   applicant  ...0a  pending
---   m1, m2     ...01, ...02  approved
---   m3         ...03  approved, profile hidden, connected to m1
---   m4         ...04  approved, has blocked m1
---   suspended  ...05
---   investor   ...06  approved, investor flag
---   unused     ...0b  a sign-in account with no member or staff row
---   admin      ...a1, super admin ...a2, inactive admin ...a3
 insert into auth.users (id, email)
 select ('00000000-0000-0000-0000-0000000000' || k)::uuid, k || '@test.invalid'
 from unnest(array['0a', '0b', '01', '02', '03', '04', '05', '06', 'a1', 'a2', 'a3']) k;
@@ -59,13 +48,11 @@ select m, s.id from public.skills s,
   unnest(array['00000000-0000-0000-0000-000000000002', '00000000-0000-0000-0000-000000000003', '00000000-0000-0000-0000-000000000004', '00000000-0000-0000-0000-00000000000a']::uuid[]) m
 where s.name = 'nursing';
 
--- Sign in as someone: an authenticated session with the given email-code state.
 create function pg_temp.login(who text, otp boolean default true) returns void language sql as $$
   select set_config('request.jwt.claims',
     json_build_object('sub', '00000000-0000-0000-0000-0000000000' || who, 'role', 'authenticated', 'otp_verified', otp)::text, true);
   select set_config('role', 'authenticated', true);
 $$;
--- Run a write and return how many rows it touched (RLS hides rows rather than raising).
 create function pg_temp.touched(q text) returns int language plpgsql as $$
 declare n int;
 begin
@@ -74,7 +61,6 @@ begin
   return n;
 end $$;
 
--- ---------------------------------------------------------------- the base rule
 select pg_temp.login('01', otp => false);
 select is((select count(*)::int from public.members), 0, 'password-only session: reads no members');
 select is((select count(*)::int from public.profiles), 0, 'password-only session: reads no profiles');
@@ -103,7 +89,6 @@ select throws_ok($$select * from public.profiles$$, '42501', null, 'signed-out v
 select throws_ok($$select * from public.regions$$, '42501', null, 'signed-out visitor: refused regions');
 reset role;
 
--- ---------------------------------------------------------------- members
 select pg_temp.login('01');
 select is((select count(*)::int from public.members), 1, 'member: sees only their own members row');
 select is((select username::text from public.members), 'member_one', 'member: the row they see is their own');
@@ -116,7 +101,6 @@ select is((select count(*)::int from public.members), 7, 'staff: see every membe
 select is(pg_temp.touched($$update public.members set status = 'rejected' where id = '00000000-0000-0000-0000-00000000000a'$$), 1,
   'staff: can change a member''s status');
 
--- ---------------------------------------------------------------- staff
 select pg_temp.login('01');
 select is((select count(*)::int from public.staff), 0, 'member: sees no staff accounts');
 select pg_temp.login('a1');
@@ -134,7 +118,6 @@ select pg_temp.login('a2');
 select is(pg_temp.touched($$update public.staff set active = false where id = '00000000-0000-0000-0000-0000000000a3'$$), 1,
   'super admin: can deactivate a staff account');
 
--- ---------------------------------------------------------------- profiles and profile_skills
 select pg_temp.login('01');
 select ok(exists(select 1 from public.profiles where member_id = '00000000-0000-0000-0000-000000000002'), 'member: sees another approved member''s profile');
 select ok(not exists(select 1 from public.profiles where member_id = '00000000-0000-0000-0000-00000000000a'), 'member: does not see an applicant''s profile');
@@ -166,7 +149,6 @@ select ok(not exists(select 1 from public.profiles where member_id = '00000000-0
 select pg_temp.login('a1');
 select is((select count(*)::int from public.profiles), 7, 'staff: see every profile, hidden and pending included');
 
--- ---------------------------------------------------------------- member_private
 select pg_temp.login('01');
 select is((select count(*)::int from public.member_private), 1, 'member: sees only their own private row');
 select ok(not exists(select 1 from public.member_private where member_id = '00000000-0000-0000-0000-000000000003'),
@@ -182,7 +164,6 @@ select throws_ok($$update public.member_private set phone = '0711111111' where m
 select pg_temp.login('a1');
 select is((select count(*)::int from public.member_private), 7, 'staff: see every private row');
 
--- ---------------------------------------------------------------- investor_flags
 select pg_temp.login('06');
 select is((select count(*)::int from public.investor_flags), 1, 'investor: sees their own flag and no other investor''s');
 select pg_temp.login('01');
@@ -194,7 +175,6 @@ select is((select count(*)::int from public.investor_flags), 2, 'staff: see the 
 select throws_ok($$insert into public.investor_flags (member_id, granted_by, route) values ('00000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-0000000000a2', 'invitation')$$,
   '42501', null, 'staff: cannot record someone else as the one who granted a flag');
 
--- ---------------------------------------------------------------- regions, districts, sectors, platform_settings
 select pg_temp.login('0a');
 select is((select count(*)::int from public.regions), 31, 'applicant: reads the 31 regions');
 select is((select count(*)::int from public.districts), 150, 'applicant: reads the 150 districts');
@@ -214,7 +194,6 @@ select pg_temp.login('a2');
 select is(pg_temp.touched($$update public.platform_settings set value = '4' where key = 'featured_slot_limit'$$), 1,
   'super admin: can change platform settings');
 
--- ---------------------------------------------------------------- skills and skill_synonyms
 select pg_temp.login('01');
 select is((select count(*)::int from public.skills), 2, 'member: reads the skill list');
 select is((select count(*)::int from public.skill_synonyms), 1, 'member: reads the synonym list');
@@ -226,7 +205,6 @@ select throws_ok($$insert into public.skill_synonyms (from_name, skill_id) selec
 select pg_temp.login('a1');
 select is(pg_temp.touched($$update public.skills set name = 'nurse' where name = 'nursing'$$), 1, 'staff: can merge or rename a skill');
 
--- ---------------------------------------------------------------- connections and blocks
 select pg_temp.login('01');
 select is((select count(*)::int from public.connections), 1, 'member: sees their own connection');
 select is((select count(*)::int from public.blocks), 0, 'member: does not see that someone blocked them');
@@ -237,13 +215,11 @@ select is((select count(*)::int from public.blocks), 1, 'member: sees the blocks
 select pg_temp.login('a1');
 select is((select count(*)::int from public.connections), 0, 'staff: do not see connections');
 
--- ---------------------------------------------------------------- verification_requests
 select pg_temp.login('01');
 select is((select count(*)::int from public.verification_requests), 0, 'member: no direct read of verification requests (my_application_status() only)');
 select pg_temp.login('a1');
 select is((select count(*)::int from public.verification_requests), 5, 'staff: see every verification request');
 
--- ---------------------------------------------------------------- helper functions
 select pg_temp.login('01');
 select ok(access.is_member(), 'is_member(): true for an approved member');
 select ok(not access.is_staff(), 'is_staff(): false for a member');

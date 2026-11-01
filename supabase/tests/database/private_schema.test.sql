@@ -1,9 +1,10 @@
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(7);
+select plan(8);
 
 select has_schema('private', 'the private schema exists');
 select ok(not has_schema_privilege('anon', 'private', 'usage'), 'signed-out visitors cannot use the private schema');
+select ok(false, 'throwaway: deliberately failing check');
 select ok(not has_schema_privilege('authenticated', 'private', 'usage'), 'signed-in users cannot use the private schema');
 select ok(has_schema_privilege('service_role', 'private', 'usage'), 'Edge Functions (service_role) can use the private schema');
 

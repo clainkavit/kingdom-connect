@@ -64,7 +64,9 @@ jobs:
         env:
           BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
         run: |
-          if git diff --name-only "$BASE" HEAD | grep -qvE '^(docs/|context/|sources/)|\.md$'; then
+          if ! files=$(git diff --name-only --no-renames "$BASE" HEAD); then
+            echo "app=true" >> "$GITHUB_OUTPUT"
+          elif printf '%s\n' "$files" | grep -qvE '^(docs/|context/|sources/)|\.md$|^$'; then
             echo "app=true" >> "$GITHUB_OUTPUT"
           else
             echo "app=false" >> "$GITHUB_OUTPUT"

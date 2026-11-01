@@ -8,3 +8,5 @@ sources
 docs
 context
 *.md
+apps/admin/src/app/theme.css
+apps/member/global.css

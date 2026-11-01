@@ -1,8 +1,38 @@
+import { fileURLToPath } from "node:url";
 import { defineConfig } from "vitest/config";
+
+const exclude = ["**/node_modules/**", "**/.next/**", "**/.expo/**", "**/dist/**"];
 
 export default defineConfig({
   test: {
-    include: ["packages/**/*.test.ts", "apps/**/*.test.ts", "apps/**/*.test.tsx"],
-    exclude: ["**/node_modules/**", "**/.next/**", "**/.expo/**"],
+    projects: [
+      {
+        test: { name: "shared", include: ["packages/**/*.test.ts"], exclude },
+      },
+      {
+        esbuild: { jsx: "automatic" },
+        resolve: {
+          alias: { "@": fileURLToPath(new URL("./apps/admin/src", import.meta.url)) },
+        },
+        test: {
+          name: "admin",
+          include: ["apps/admin/**/*.test.{ts,tsx}"],
+          exclude,
+          environment: "jsdom",
+        },
+      },
+      {
+        esbuild: { jsx: "automatic" },
+        resolve: {
+          alias: { "react-native": "react-native-web", "lucide-react-native": "lucide-react" },
+        },
+        test: {
+          name: "member",
+          include: ["apps/member/**/*.test.{ts,tsx}"],
+          exclude,
+          environment: "jsdom",
+        },
+      },
+    ],
   },
 });

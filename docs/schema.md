@@ -6,13 +6,13 @@
 | Ticket | [Database schema and access rules](https://github.com/clainkavit/kingdom-connect/issues/12) |
 | Built on | [docs/prd.md](prd.md) section 16 and the decisions merged up to 22 October 2026 (tickets #3 to #7, #10, #11, #15) |
 | Stack | Supabase: Postgres with Row-Level Security (RLS), Storage, Auth (PRD section 15) |
-| Status | Design. The SQL migrations are written when the build starts (ticket #16) and tested as in PRD section 17 |
+| Status | Being built. Sections 1 to 3, 5 and 10 are migrated (F04, #42) in `supabase/migrations/`, tested as in PRD section 17. The rest is still design |
 
 This document lists every table, who can read and write it, and the database functions that hide private data. The rule behind all of it: **the server decides what each person may see; the app only hides what they don't need** (PRD section 16, Access rules).
 
 ## 1. Conventions
 
-- Every table has `id uuid` (random) as its primary key, plus `created_at` and `updated_at` timestamps. Member and staff IDs equal the Supabase Auth user ID.
+- Every table has `id uuid` (random) as its primary key, plus `created_at` and `updated_at` timestamps, except `private.audit_log`, which is never updated and so has only `created_at`. Member and staff IDs equal the Supabase Auth user ID, and one sign-in account is a member or staff, never both.
 - Statuses are `text` with a `CHECK` list of allowed values, not Postgres enums, so values can be added or removed later.
 - Money is `numeric` in Tanzanian shillings (TZS). Times are `timestamptz`.
 - No table or value hard-codes the community or platform name. Names come from `platform_settings` so the schema survives the national pivot (map ticket #1).
@@ -22,15 +22,21 @@ This document lists every table, who can read and write it, and the database fun
 
 ## 2. The base rule on every table
 
-Every `public` table carries one **restrictive** RLS policy that must pass before any other policy counts:
+Every `public` table carries a **restrictive** RLS base rule that must pass before any other policy counts:
 
 > The request comes from a session whose email code is verified (`otp_verified` claim), and the account is an approved member or an active staff account.
 
 This follows the login design in [context/memory/supabase-auth-login-flow.md](../context/memory/supabase-auth-login-flow.md). A session with only a password, an applicant, or a suspended account reads nothing from the member tables.
 
+Decided 1 Nov (F04, #42):
+
+- **Status is read from the tables**, not from a token claim, so a suspension or rejection takes effect on the next request. The email-code step comes from the `otp_verified` claim that the access token hook adds (F09).
+- **The shared lists are the exception.** `regions`, `districts`, `sectors` and `platform_settings` are readable by any signed-in session, applicants included, so the address step works. Writing them still needs the strict rule.
+- **Signed-out visitors get no table privilege at all** on `public` tables. A table they must read (terms and privacy in `legal_texts`) is granted explicitly when it lands.
+
 **Applicants** (pending or rejected) reach only their own application, and only through these functions (section 9): view status, upload documents, edit and resubmit.
 
-**Helper functions** used inside policies (each `security definer`, read-only):
+**Helper functions** used inside policies (each `security definer`, read-only). They live in the `access` schema, which the API does not expose, so policies can call them but no app user can call them directly:
 
 | Function | Returns true when |
 |---|---|
@@ -39,7 +45,7 @@ This follows the login design in [context/memory/supabase-auth-login-flow.md](..
 | `is_super_admin()` | The caller is an active Super Administrator |
 | `is_connected(a, b)` | Members `a` and `b` have an accepted connection |
 | `is_blocked(a, b)` | Either member has blocked the other |
-| `member_level(id)` | The member's highest approved level (1, 2 or 3) |
+| `member_level(id)` | The member's highest approved level (1, 2 or 3); 0 for anyone who is not an approved member |
 
 ## 3. Accounts and identity
 

@@ -49,6 +49,7 @@ export type LoginResult =
   | { kind: "invalid" }
   | { kind: "locked"; retryAfterSeconds: number }
   | { kind: "suspended" }
+  | { kind: "too_many_codes" }
   | { kind: "network" };
 
 export type VerifyResult =
@@ -62,6 +63,7 @@ export type VerifyResult =
 export type ResendResult =
   | { kind: "sent"; resendAfterSeconds: number }
   | { kind: "too_soon"; retryAfterSeconds: number }
+  | { kind: "too_many_codes" }
   | { kind: "network" };
 
 type Options = { url: string; anonKey: string; fetch?: typeof fetch };
@@ -98,6 +100,7 @@ export function createLoginClient({ url, anonKey, fetch: fetchImpl = fetch }: Op
       if (r.error === "locked")
         return { kind: "locked", retryAfterSeconds: Number(r.retry_after_seconds) };
       if (r.error === "suspended") return { kind: "suspended" };
+      if (r.error === "too_many_codes") return { kind: "too_many_codes" };
       return { kind: "invalid" };
     },
 
@@ -117,9 +120,60 @@ export function createLoginClient({ url, anonKey, fetch: fetchImpl = fetch }: Op
       if (!r) return { kind: "network" };
       if (r.error === "too_soon")
         return { kind: "too_soon", retryAfterSeconds: Number(r.retry_after_seconds) };
+      if (r.error === "too_many_codes") return { kind: "too_many_codes" };
       return { kind: "sent", resendAfterSeconds: Number(r.resend_after_seconds ?? 60) };
     },
   };
 }
 
 export type LoginClient = ReturnType<typeof createLoginClient>;
+
+export type LoginMessages = {
+  invalidLogin: string;
+  locked: (time: string) => string;
+  suspended: string;
+  network: string;
+  tooManyCodes: string;
+  wrongCode: (attemptsLeft: number) => string;
+  tooManyWrongCodes: string;
+  codeExpired: string;
+  noCode: string;
+};
+
+export const minutesAndSeconds = (seconds: number): string =>
+  `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`;
+
+/** The message under the Log in form; locked is shown by the screen's own countdown. */
+export function loginMessage(
+  result: Exclude<LoginResult, { kind: "code_sent" } | { kind: "locked" }>,
+  text: LoginMessages,
+): string {
+  switch (result.kind) {
+    case "invalid":
+      return text.invalidLogin;
+    case "suspended":
+      return text.suspended;
+    case "too_many_codes":
+      return text.tooManyCodes;
+    case "network":
+      return text.network;
+  }
+}
+
+export function codeMessage(
+  result: Exclude<VerifyResult, { kind: "verified" }>,
+  text: LoginMessages,
+): string {
+  switch (result.kind) {
+    case "wrong_code":
+      return text.wrongCode(result.attemptsLeft);
+    case "too_many":
+      return text.tooManyWrongCodes;
+    case "expired":
+      return text.codeExpired;
+    case "no_code":
+      return text.noCode;
+    case "network":
+      return text.network;
+  }
+}

@@ -387,6 +387,7 @@ deno_version = 2
 [edge_runtime.secrets]
 MAIL_API_URL = "http://inbucket:8025/api/v1/send"
 DB_URL = "postgresql://postgres:postgres@db:5432/postgres"
+OTP_SECRET = "local-development-only-otp-secret"
 MAIL_FROM = "noreply@example.test"
 
 [analytics]

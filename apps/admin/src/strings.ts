@@ -26,7 +26,8 @@ export const strings = {
   verify: "Verify",
   wrongCode: (left: number) =>
     `That code is not right. ${left} ${left === 1 ? "try" : "tries"} left.`,
-  tooManyCodes: "Too many wrong codes. Send a new code.",
+  tooManyWrongCodes: "Too many wrong codes. Send a new code.",
+  tooManyCodes: "We have sent too many codes. Try again in an hour.",
   codeExpired: "This code has expired. Send a new code.",
   noCode: "Send a new code to continue.",
   resend: "Send a new code",

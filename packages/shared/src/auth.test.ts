@@ -1,5 +1,12 @@
 import { describe, expect, it, vi } from "vitest";
-import { createLoginClient, routeFor } from "./auth";
+import {
+  codeMessage,
+  createLoginClient,
+  loginMessage,
+  minutesAndSeconds,
+  routeFor,
+  type LoginMessages,
+} from "./auth";
 
 const token = (claims: object) =>
   `x.${Buffer.from(JSON.stringify(claims)).toString("base64url")}.y`;
@@ -130,5 +137,58 @@ describe("createLoginClient", () => {
       kind: "too_soon",
       retryAfterSeconds: 12,
     });
+  });
+});
+
+describe("too many codes", () => {
+  const respond = (status: number, body: object) =>
+    vi.fn().mockResolvedValue(new Response(JSON.stringify(body), { status }));
+  const client = (fetchImpl: typeof fetch) =>
+    createLoginClient({ url: "http://api.test", anonKey: "anon", fetch: fetchImpl });
+
+  it("is its own result at login and at resend", async () => {
+    expect(
+      await client(respond(429, { error: "too_many_codes" })).logIn({
+        username: "x",
+        password: "y",
+      }),
+    ).toEqual({ kind: "too_many_codes" });
+    expect(await client(respond(429, { error: "too_many_codes" })).resendCode("t")).toEqual({
+      kind: "too_many_codes",
+    });
+  });
+});
+
+describe("messages for the sign-in screens", () => {
+  const strings: LoginMessages = {
+    invalidLogin: "invalid",
+    locked: (t) => `locked ${t}`,
+    suspended: "suspended",
+    network: "network",
+    tooManyCodes: "too many codes",
+    wrongCode: (n) => `wrong ${n}`,
+    tooManyWrongCodes: "too many wrong",
+    codeExpired: "expired",
+    noCode: "no code",
+  };
+
+  it("maps every login result that is not a success", () => {
+    expect(loginMessage({ kind: "invalid" }, strings)).toBe("invalid");
+    expect(loginMessage({ kind: "suspended" }, strings)).toBe("suspended");
+    expect(loginMessage({ kind: "network" }, strings)).toBe("network");
+    expect(loginMessage({ kind: "too_many_codes" }, strings)).toBe("too many codes");
+  });
+
+  it("maps every code result that is not a success", () => {
+    expect(codeMessage({ kind: "wrong_code", attemptsLeft: 2 }, strings)).toBe("wrong 2");
+    expect(codeMessage({ kind: "too_many" }, strings)).toBe("too many wrong");
+    expect(codeMessage({ kind: "expired" }, strings)).toBe("expired");
+    expect(codeMessage({ kind: "no_code" }, strings)).toBe("no code");
+    expect(codeMessage({ kind: "network" }, strings)).toBe("network");
+  });
+
+  it("formats a countdown as minutes and seconds", () => {
+    expect(minutesAndSeconds(900)).toBe("15:00");
+    expect(minutesAndSeconds(61)).toBe("1:01");
   });
 });

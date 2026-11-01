@@ -1,3 +1,4 @@
+import { platformName } from "./db.ts";
 import type { Email } from "./login-rules.ts";
 
 export async function sendEmail(to: string, email: Email): Promise<void> {
@@ -5,7 +6,10 @@ export async function sendEmail(to: string, email: Email): Promise<void> {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      From: { Email: Deno.env.get("MAIL_FROM") ?? "noreply@example.test", Name: "Kingdom Connect" },
+      From: {
+        Email: Deno.env.get("MAIL_FROM") ?? "noreply@example.test",
+        Name: await platformName(),
+      },
       To: [{ Email: to }],
       Subject: email.subject,
       Text: email.text,

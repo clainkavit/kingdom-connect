@@ -1,4 +1,10 @@
-import type { LoginClient, Session } from "@kingdom-connect/shared";
+import {
+  codeMessage,
+  loginMessage,
+  minutesAndSeconds,
+  type LoginClient,
+  type Session,
+} from "@kingdom-connect/shared";
 import { useEffect, useState } from "react";
 import { Pressable, Text, TextInput, View } from "react-native";
 import { strings } from "../strings";
@@ -18,9 +24,6 @@ function useCountdown(initialSeconds: number) {
   };
   return { secondsLeft, restart };
 }
-
-const mmss = (seconds: number) =>
-  `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`;
 
 function Field(props: {
   label: string;
@@ -98,16 +101,8 @@ export function LoginForm({
     const result = await client.logIn({ username, password });
     setBusy(false);
     if (result.kind === "code_sent") return onCodeSent(result.session, result.resendAfterSeconds);
-    if (result.kind === "locked") lock.restart(result.retryAfterSeconds);
-    setMessage(
-      result.kind === "invalid"
-        ? strings.invalidLogin
-        : result.kind === "suspended"
-          ? strings.suspended
-          : result.kind === "network"
-            ? strings.network
-            : null,
-    );
+    if (result.kind === "locked") return lock.restart(result.retryAfterSeconds);
+    setMessage(loginMessage(result, strings));
   };
 
   const locked = lock.secondsLeft > 0;
@@ -115,7 +110,7 @@ export function LoginForm({
     <View className="gap-4">
       <Field label={strings.username} value={username} onChange={setUsername} />
       <Field label={strings.password} value={password} onChange={setPassword} secure />
-      <Message text={locked ? strings.locked(mmss(lock.secondsLeft)) : message} />
+      <Message text={locked ? strings.locked(minutesAndSeconds(lock.secondsLeft)) : message} />
       <Button
         label={strings.logIn}
         onPress={submit}
@@ -146,17 +141,7 @@ export function CodeForm({
     const result = await client.verifyCode(accessToken, code);
     setBusy(false);
     if (result.kind === "verified") return onVerified();
-    setMessage(
-      result.kind === "wrong_code"
-        ? strings.wrongCode(result.attemptsLeft)
-        : result.kind === "too_many"
-          ? strings.tooManyCodes
-          : result.kind === "expired"
-            ? strings.codeExpired
-            : result.kind === "network"
-              ? strings.network
-              : strings.noCode,
-    );
+    setMessage(codeMessage(result, strings));
   };
 
   const sendNew = async () => {
@@ -167,6 +152,8 @@ export function CodeForm({
       setCode("");
     } else if (result.kind === "too_soon") {
       resend.restart(result.retryAfterSeconds);
+    } else if (result.kind === "too_many_codes") {
+      setMessage(strings.tooManyCodes);
     } else {
       setMessage(strings.network);
     }

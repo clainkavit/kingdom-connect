@@ -181,3 +181,4 @@ Each notification in [docs/notifications.md](notifications.md) opens the screen 
 2. **Unfinished registrations.** How long a saved, unsubmitted registration (with its uploaded ID photo) is kept before it is deleted. For the lawyer's retention review (PRD section 13).
 
 Final English and Kiswahili wording for every empty and error state is written during the build (agreed 22 Oct).
+

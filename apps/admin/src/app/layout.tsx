@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Figtree } from "next/font/google";
-import { AdminShell } from "@/components/shell";
+import { AuthProvider } from "@/lib/auth";
 import "./globals.css";
 
 const figtree = Figtree({
@@ -18,7 +18,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={figtree.variable}>
       <body>
-        <AdminShell>{children}</AdminShell>
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
   );

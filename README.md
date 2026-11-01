@@ -73,6 +73,10 @@ pnpm db:stop              # stop the stack
 | Administrator | test.admin@example.test | |
 | Super Administrator | test.superadmin@example.test | |
 
+**Signing in locally.** Members sign in with their username and Administrators with their email, then type the 6-digit code from the email catcher. Five wrong passwords lock an account for 15 minutes; `pnpm db:reset` clears every lock.
+
+**End-to-end tests.** `pnpm e2e` runs the Playwright browser tests in `e2e/` against the local stack. It starts the member app on port 8081 and the admin console on port 3000, or reuses them if they are already running (set `MEMBER_URL` and `ADMIN_URL` to use other ports). Run `pnpm db:start` first, and once `pnpm exec playwright install chromium`.
+
 **Login codes and other emails.** Nothing is really sent locally. Every email the app sends, including the 6-digit login code, appears in the email catcher at http://127.0.0.1:54324.
 
 **Changing the database.** Never edit a migration that is already on `main`. Add a new one with `pnpm db:new`, run `pnpm db:reset` to check it builds from scratch, and add access-rule tests in `supabase/tests/database/` for every new table (PRD section 17).

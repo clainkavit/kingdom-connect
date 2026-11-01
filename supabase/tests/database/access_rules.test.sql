@@ -21,11 +21,12 @@ insert into public.staff (id, full_name, role, active) values
   ('00000000-0000-0000-0000-0000000000a3', 'Test Former Admin', 'admin', false);
 
 insert into public.profiles (member_id, full_name, hidden_from_directory)
-select id, 'Fake ' || username, username = 'member_three' from public.members;
+select id, 'Fake ' || username, username = 'member_three' from public.members where id::text like '00000000-%';
 
 insert into public.member_private (member_id, email, phone)
 select id, username || '@test.invalid', '+255700000' || lpad((row_number() over (order by id))::text, 3, '0')
-from public.members;
+from public.members
+where id::text like '00000000-%';
 
 insert into public.connections (member_a, member_b) values
   ('00000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000003');
@@ -41,12 +42,12 @@ insert into public.verification_requests (member_id, level, status) values
   ('00000000-0000-0000-0000-000000000002', 3, 'pending'),
   ('00000000-0000-0000-0000-00000000000a', 1, 'pending');
 
-insert into public.skills (name) values ('nursing'), ('accounting');
-insert into public.skill_synonyms (from_name, skill_id) select 'bookkeeping', id from public.skills where name = 'accounting';
+insert into public.skills (name) values ('fixture nursing'), ('fixture accounting');
+insert into public.skill_synonyms (from_name, skill_id) select 'bookkeeping', id from public.skills where name = 'fixture accounting';
 insert into public.profile_skills (member_id, skill_id)
 select m, s.id from public.skills s,
   unnest(array['00000000-0000-0000-0000-000000000002', '00000000-0000-0000-0000-000000000003', '00000000-0000-0000-0000-000000000004', '00000000-0000-0000-0000-00000000000a']::uuid[]) m
-where s.name = 'nursing';
+where s.name = 'fixture nursing';
 
 create function pg_temp.login(who text, otp boolean default true) returns void language sql as $$
   select set_config('request.jwt.claims',
@@ -97,14 +98,14 @@ select is(pg_temp.touched($$update public.members set status = 'approved' where 
 select throws_ok($$update public.members set username = 'renamed' where id = '00000000-0000-0000-0000-000000000001'$$, '42501', null,
   'member: cannot change their own members row');
 select pg_temp.login('a1');
-select is((select count(*)::int from public.members), 7, 'staff: see every members row');
+select is((select count(*)::int from public.members where id::text like '00000000-%'), 7, 'staff: see every members row');
 select is(pg_temp.touched($$update public.members set status = 'rejected' where id = '00000000-0000-0000-0000-00000000000a'$$), 1,
   'staff: can change a member''s status');
 
 select pg_temp.login('01');
 select is((select count(*)::int from public.staff), 0, 'member: sees no staff accounts');
 select pg_temp.login('a1');
-select is((select count(*)::int from public.staff), 3, 'staff: see the staff accounts');
+select is((select count(*)::int from public.staff where id::text like '00000000-%'), 3, 'staff: see the staff accounts');
 select throws_ok($$insert into public.staff (id, full_name, role) values ('00000000-0000-0000-0000-00000000000b', 'X', 'admin')$$, '42501', null,
   'admin: cannot create a staff account');
 select is(pg_temp.touched($$update public.staff set role = 'super_admin' where id = '00000000-0000-0000-0000-0000000000a1'$$), 0,
@@ -113,7 +114,7 @@ select pg_temp.login('a2');
 select is(pg_temp.touched($$update public.staff set active = true where id = '00000000-0000-0000-0000-0000000000a3'$$), 1,
   'super admin: can reactivate a staff account');
 select pg_temp.login('a3');
-select is((select count(*)::int from public.staff), 3, 'reactivated staff: the base rule lets them back in');
+select is((select count(*)::int from public.staff where id::text like '00000000-%'), 3, 'reactivated staff: the base rule lets them back in');
 select pg_temp.login('a2');
 select is(pg_temp.touched($$update public.staff set active = false where id = '00000000-0000-0000-0000-0000000000a3'$$), 1,
   'super admin: can deactivate a staff account');
@@ -133,7 +134,7 @@ select is(pg_temp.touched($$update public.profiles set headline = 'Nurse in Mwan
   'member: can edit their own profile');
 select throws_ok($$insert into public.profile_skills (member_id, skill_id) select '00000000-0000-0000-0000-000000000002', id from public.skills limit 1$$, '42501', null,
   'member: cannot add a skill to another member''s profile');
-select lives_ok($$insert into public.profile_skills (member_id, skill_id) select '00000000-0000-0000-0000-000000000001', id from public.skills where name = 'nursing'$$,
+select lives_ok($$insert into public.profile_skills (member_id, skill_id) select '00000000-0000-0000-0000-000000000001', id from public.skills where name = 'fixture nursing'$$,
   'member: can add a skill to their own profile');
 
 select pg_temp.login('02');
@@ -147,7 +148,7 @@ select pg_temp.login('04');
 select ok(not exists(select 1 from public.profiles where member_id = '00000000-0000-0000-0000-000000000001'), 'member: does not see the profile of someone they blocked');
 
 select pg_temp.login('a1');
-select is((select count(*)::int from public.profiles), 7, 'staff: see every profile, hidden and pending included');
+select is((select count(*)::int from public.profiles where member_id::text like '00000000-%'), 7, 'staff: see every profile, hidden and pending included');
 
 select pg_temp.login('01');
 select is((select count(*)::int from public.member_private), 1, 'member: sees only their own private row');
@@ -162,7 +163,7 @@ select throws_ok($$update public.member_private set id_fingerprint = '\x00' wher
 select throws_ok($$update public.member_private set phone = '0711111111' where member_id = '00000000-0000-0000-0000-000000000001'$$, '23514', null,
   'a phone number must start with +255');
 select pg_temp.login('a1');
-select is((select count(*)::int from public.member_private), 7, 'staff: see every private row');
+select is((select count(*)::int from public.member_private where member_id::text like '00000000-%'), 7, 'staff: see every private row');
 
 select pg_temp.login('06');
 select is((select count(*)::int from public.investor_flags), 1, 'investor: sees their own flag and no other investor''s');
@@ -171,7 +172,7 @@ select is((select count(*)::int from public.investor_flags), 0, 'member: sees no
 select throws_ok($$insert into public.investor_flags (member_id, granted_by, route) values ('00000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-0000000000a1', 'application')$$,
   '42501', null, 'member: cannot grant themselves a flag');
 select pg_temp.login('a1');
-select is((select count(*)::int from public.investor_flags), 2, 'staff: see the investor flags');
+select is((select count(*)::int from public.investor_flags where member_id::text like '00000000-%'), 2, 'staff: see the investor flags');
 select throws_ok($$insert into public.investor_flags (member_id, granted_by, route) values ('00000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-0000000000a2', 'invitation')$$,
   '42501', null, 'staff: cannot record someone else as the one who granted a flag');
 
@@ -195,15 +196,15 @@ select is(pg_temp.touched($$update public.platform_settings set value = '4' wher
   'super admin: can change platform settings');
 
 select pg_temp.login('01');
-select is((select count(*)::int from public.skills), 2, 'member: reads the skill list');
+select is((select count(*)::int from public.skills where name like 'fixture %'), 2, 'member: reads the skill list');
 select is((select count(*)::int from public.skill_synonyms), 1, 'member: reads the synonym list');
 select lives_ok($$insert into public.skills (name) values ('welding')$$, 'member: can create a new skill tag');
 select throws_ok($$insert into public.skills (name) values ('Welding ')$$, '23514', null, 'a skill name must be lowercased and trimmed');
-select is(pg_temp.touched($$update public.skills set name = 'nurse' where name = 'nursing'$$), 0, 'member: cannot rename a skill');
-select throws_ok($$insert into public.skill_synonyms (from_name, skill_id) select 'nurse', id from public.skills where name = 'nursing'$$, '42501', null,
+select is(pg_temp.touched($$update public.skills set name = 'nurse' where name = 'fixture nursing'$$), 0, 'member: cannot rename a skill');
+select throws_ok($$insert into public.skill_synonyms (from_name, skill_id) select 'nurse', id from public.skills where name = 'fixture nursing'$$, '42501', null,
   'member: cannot add a synonym');
 select pg_temp.login('a1');
-select is(pg_temp.touched($$update public.skills set name = 'nurse' where name = 'nursing'$$), 1, 'staff: can merge or rename a skill');
+select is(pg_temp.touched($$update public.skills set name = 'nurse' where name = 'fixture nursing'$$), 1, 'staff: can merge or rename a skill');
 
 select pg_temp.login('01');
 select is((select count(*)::int from public.connections), 1, 'member: sees their own connection');
@@ -218,7 +219,7 @@ select is((select count(*)::int from public.connections), 0, 'staff: do not see 
 select pg_temp.login('01');
 select is((select count(*)::int from public.verification_requests), 0, 'member: no direct read of verification requests (my_application_status() only)');
 select pg_temp.login('a1');
-select is((select count(*)::int from public.verification_requests), 5, 'staff: see every verification request');
+select is((select count(*)::int from public.verification_requests where member_id::text like '00000000-%'), 5, 'staff: see every verification request');
 
 select pg_temp.login('01');
 select ok(access.is_member(), 'is_member(): true for an approved member');

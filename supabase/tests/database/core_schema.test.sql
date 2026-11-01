@@ -64,7 +64,7 @@ select is((select count(*)::int from private.audit_log where target_id = '000000
 
 insert into public.investor_flags (member_id, granted_by, route) values
   ('00000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-0000000000a1', 'invitation');
-select is((select count(*)::int from private.audit_log where action = 'investor_flags.insert'), 1, 'granting an investor flag is logged');
+select is((select count(*)::int from private.audit_log where action = 'investor_flags.insert' and created_at = now()), 1, 'granting an investor flag is logged');
 update public.platform_settings set value = '3' where key = 'featured_slot_limit';
 select is((select count(*)::int from private.audit_log where action = 'platform_settings.update'), 1, 'changing a platform setting is logged');
 select is((select count(*)::int from private.audit_log where target_type = 'member_private'), 0, 'private data changes are never copied into the log');
@@ -79,7 +79,7 @@ reset role;
 set local role authenticated;
 select throws_ok($$delete from private.audit_log$$, '42501', null, 'signed-in users cannot touch the audit log');
 reset role;
-select is((select count(*)::int from private.audit_log), 4, 'every audit row survived (status change, staff account, flag, setting)');
+select is((select count(*)::int from private.audit_log where created_at = now()), 4, 'every audit row survived (status change, staff account, flag, setting)');
 
 select * from finish();
 rollback;

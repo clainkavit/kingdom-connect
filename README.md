@@ -60,6 +60,19 @@ pnpm db:stop              # stop the stack
 | Studio (browse tables) | http://127.0.0.1:54323 |
 | Email catcher | http://127.0.0.1:54324 |
 
+**Test accounts.** `pnpm db:reset` loads [supabase/seed.sql](supabase/seed.sql): fake people for every role, safe to load again. All of them use the password `kingdom-test-only`. Never use real names, ID numbers or phone numbers in test data (PRD section 17).
+
+| Role | Email | Username |
+|---|---|---|
+| Applicant (pending) | test.applicant@example.test | test_applicant |
+| Level 1 Member, connected to test_level2 | test.level1@example.test | test_level1 |
+| Level 2 Member | test.level2@example.test | test_level2 |
+| Level 3 Member | test.level3@example.test | test_level3 |
+| Level 1 Member with the investor flag (never shown to other Members) | test.level1b@example.test | test_level1b |
+| Suspended Member | test.suspended@example.test | test_suspended |
+| Administrator | test.admin@example.test | |
+| Super Administrator | test.superadmin@example.test | |
+
 **Login codes and other emails.** Nothing is really sent locally. Every email the app sends, including the 6-digit login code, appears in the email catcher at http://127.0.0.1:54324.
 
 **Changing the database.** Never edit a migration that is already on `main`. Add a new one with `pnpm db:new`, run `pnpm db:reset` to check it builds from scratch, and add access-rule tests in `supabase/tests/database/` for every new table (PRD section 17).

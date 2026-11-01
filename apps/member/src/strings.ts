@@ -10,6 +10,6 @@ export const strings = {
   memberMenu: "Member menu",
   memberTabs: "Member tabs",
   reportTitle: "Report a Scam / Bad User",
-  reportMessage: "Seen a fake job, a fee request or someone acting badly? Tell us.",
-  reportAction: "Report",
+  reportMessage: "Help keep our community safe.",
+  reportAction: "Report now",
 } as const;

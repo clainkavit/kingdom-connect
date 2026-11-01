@@ -10,6 +10,9 @@ export default defineConfig({
         test: { name: "shared", include: ["packages/**/*.test.ts"], exclude },
       },
       {
+        test: { name: "functions", include: ["supabase/functions/**/*.test.ts"], exclude },
+      },
+      {
         esbuild: { jsx: "automatic" },
         resolve: {
           alias: { "@": fileURLToPath(new URL("./apps/admin/src", import.meta.url)) },

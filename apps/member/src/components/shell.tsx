@@ -1,6 +1,6 @@
 import { isCurrent, memberNav, memberPhoneTabs, type NavItem } from "@kingdom-connect/shared";
 import { usePathname } from "expo-router";
-import { ScrollView, Text, useWindowDimensions, View } from "react-native";
+import { Pressable, ScrollView, Text, useWindowDimensions, View } from "react-native";
 import { strings } from "../strings";
 import { LinkButton } from "./link-button";
 import { NavIcon } from "./nav-icon";
@@ -39,7 +39,7 @@ function SidebarSubLinks({ item }: { item: NavItem }) {
   );
 }
 
-function Sidebar({ pathname }: { pathname: string }) {
+function Sidebar({ pathname, onSignOut }: { pathname: string; onSignOut?: () => void }) {
   const palette = usePalette();
   return (
     <View className="w-[236px] gap-5 bg-navy px-3 pb-4 pt-[18px]">
@@ -70,6 +70,11 @@ function Sidebar({ pathname }: { pathname: string }) {
           <Text className="font-figtree-semibold text-xs text-navy">{strings.reportAction}</Text>
         </LinkButton>
       </View>
+      {onSignOut ? (
+        <Pressable role="button" aria-label={strings.logOut} onPress={onSignOut} className="px-2">
+          <Text className="font-figtree-medium text-sm text-navy-mute">{strings.logOut}</Text>
+        </Pressable>
+      ) : null}
     </View>
   );
 }
@@ -104,13 +109,19 @@ function TabBar({ pathname }: { pathname: string }) {
   );
 }
 
-export function MemberShell({ children }: { children: React.ReactNode }) {
+export function MemberShell({
+  children,
+  onSignOut,
+}: {
+  children: React.ReactNode;
+  onSignOut?: () => void;
+}) {
   const { width } = useWindowDimensions();
   const pathname = usePathname();
   const wide = width >= WIDE;
   return (
     <View className={`flex-1 bg-bg ${wide ? "flex-row" : ""}`}>
-      {wide ? <Sidebar pathname={pathname} /> : null}
+      {wide ? <Sidebar pathname={pathname} onSignOut={onSignOut} /> : null}
       <ScrollView className="flex-1" contentContainerClassName={wide ? "p-6" : "p-4"}>
         <View role="main">{children}</View>
       </ScrollView>

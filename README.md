@@ -65,10 +65,10 @@ pnpm db:stop              # stop the stack
 | Role | Email | Username |
 |---|---|---|
 | Applicant (pending) | test.applicant@example.test | test_applicant |
-| Level 1 Member | test.level1@example.test | test_level1 |
+| Level 1 Member, connected to test_level2 | test.level1@example.test | test_level1 |
 | Level 2 Member | test.level2@example.test | test_level2 |
 | Level 3 Member | test.level3@example.test | test_level3 |
-| Member with the investor flag | test.investor@example.test | test_investor |
+| Level 1 Member with the investor flag (never shown to other Members) | test.level1b@example.test | test_level1b |
 | Suspended Member | test.suspended@example.test | test_suspended |
 | Administrator | test.admin@example.test | |
 | Super Administrator | test.superadmin@example.test | |

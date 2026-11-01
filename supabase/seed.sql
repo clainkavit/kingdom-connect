@@ -17,7 +17,7 @@ from (values
   ('5eed0000-0000-4000-8000-000000000002'::uuid, 'test.level1@example.test'),
   ('5eed0000-0000-4000-8000-000000000003'::uuid, 'test.level2@example.test'),
   ('5eed0000-0000-4000-8000-000000000004'::uuid, 'test.level3@example.test'),
-  ('5eed0000-0000-4000-8000-000000000005'::uuid, 'test.investor@example.test'),
+  ('5eed0000-0000-4000-8000-000000000005'::uuid, 'test.level1b@example.test'),
   ('5eed0000-0000-4000-8000-000000000006'::uuid, 'test.suspended@example.test'),
   ('5eed0000-0000-4000-8000-0000000000a1'::uuid, 'test.admin@example.test'),
   ('5eed0000-0000-4000-8000-0000000000a2'::uuid, 'test.superadmin@example.test')
@@ -41,7 +41,7 @@ insert into public.members (id, username, status, category, approved_at) values
   ('5eed0000-0000-4000-8000-000000000002', 'test_level1', 'approved', 'professional', now()),
   ('5eed0000-0000-4000-8000-000000000003', 'test_level2', 'approved', 'businessperson', now()),
   ('5eed0000-0000-4000-8000-000000000004', 'test_level3', 'approved', 'businessperson', now()),
-  ('5eed0000-0000-4000-8000-000000000005', 'test_investor', 'approved', 'entrepreneur', now()),
+  ('5eed0000-0000-4000-8000-000000000005', 'test_level1b', 'approved', 'entrepreneur', now()),
   ('5eed0000-0000-4000-8000-000000000006', 'test_suspended', 'suspended', 'other', now())
 on conflict (id) do nothing;
 
@@ -52,18 +52,20 @@ from (values
   ('5eed0000-0000-4000-8000-000000000002'::uuid, 'Test Level 1 Member', 'Fake professional for testing', 'Accountant', 'Mwanza', 'Nyamagana'),
   ('5eed0000-0000-4000-8000-000000000003'::uuid, 'Test Level 2 Member', 'Fake verified business for testing', 'Shop owner', 'Dar es Salaam', 'Kinondoni'),
   ('5eed0000-0000-4000-8000-000000000004'::uuid, 'Test Level 3 Member', 'Fake opportunity poster for testing', 'Contractor', 'Arusha', 'Arusha'),
-  ('5eed0000-0000-4000-8000-000000000005'::uuid, 'Test Investor Member', 'Fake member with the investor flag', 'Entrepreneur', 'Dodoma', 'Dodoma'),
+  ('5eed0000-0000-4000-8000-000000000005'::uuid, 'Test Level 1 Member B', 'Fake entrepreneur for testing', 'Entrepreneur', 'Dodoma', 'Dodoma'),
   ('5eed0000-0000-4000-8000-000000000006'::uuid, 'Test Suspended Member', 'Fake suspended member for testing', 'Driver', 'Mwanza', 'Magu')
 ) as p (member_id, full_name, headline, profession, region, district)
 join public.regions r on r.name_en = p.region
 join public.districts d on d.region_id = r.id and d.name_en = p.district
 on conflict (member_id) do nothing;
 
-insert into public.member_private (member_id, email, phone, address)
-select m.id, replace(m.username::text, 'test_', 'test.') || '@example.test',
-  '+2557000000' || lpad(right(m.id::text, 2), 2, '0'), 'Fake address for testing'
-from public.members m
-where m.id::text like '5eed0000-%'
+insert into public.member_private (member_id, email, phone, address) values
+  ('5eed0000-0000-4000-8000-000000000001', 'test.applicant@example.test', '+255700000001', 'Fake address for testing'),
+  ('5eed0000-0000-4000-8000-000000000002', 'test.level1@example.test', '+255700000002', 'Fake address for testing'),
+  ('5eed0000-0000-4000-8000-000000000003', 'test.level2@example.test', '+255700000003', 'Fake address for testing'),
+  ('5eed0000-0000-4000-8000-000000000004', 'test.level3@example.test', '+255700000004', 'Fake address for testing'),
+  ('5eed0000-0000-4000-8000-000000000005', 'test.level1b@example.test', '+255700000005', 'Fake address for testing'),
+  ('5eed0000-0000-4000-8000-000000000006', 'test.suspended@example.test', '+255700000006', 'Fake address for testing')
 on conflict (member_id) do nothing;
 
 insert into public.skills (name) values
@@ -98,3 +100,7 @@ on conflict (id) do nothing;
 insert into public.investor_flags (id, member_id, granted_by, route, ticket_band) values
   ('5eed0000-0000-4000-8000-00000000f5f1', '5eed0000-0000-4000-8000-000000000005', '5eed0000-0000-4000-8000-0000000000a1', 'invitation', '10m_to_50m')
 on conflict (id) do nothing;
+
+insert into public.connections (member_a, member_b) values
+  ('5eed0000-0000-4000-8000-000000000002', '5eed0000-0000-4000-8000-000000000003')
+on conflict (member_a, member_b) do nothing;

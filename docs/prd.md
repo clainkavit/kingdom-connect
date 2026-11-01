@@ -606,7 +606,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | End-to-end tests (Playwright, web only) | Registration to approval; login with the email code and lockout; connection to message; idea access with NDA; a milestone plan with its 1-hour withdrawal after stage 1; reporting a post and it disappearing; the member dashboard never showing admin-only counts | On pull requests that change app code (CI) |
 | Manual use by testers | Testers use the web version as ordinary members and report problems as feedback | Before the pilot |
 
-1. **CI blocks merges.** A pull request with a failing check cannot merge. Pull requests that change only documents skip the end-to-end tests to save CI minutes on a private repository.
+1. **Never merge on red.** CI runs on every pull request and marks a failing one red. Nobody merges a pull request with a failing check. GitHub does not enforce it, because branch protection needs GitHub Pro on a private repository (decided 1 Nov 2026, F02 #40). Pull requests that change only documents skip the end-to-end tests to save CI minutes on a private repository.
 2. **Database tests run locally.** Tests use a local copy of Supabase in Docker on each machine and in CI, reset to a clean state each run. Both developers need Docker Desktop. Login-code emails are read from the local test mail catcher.
 3. **Test data.** One seed script creates fake members in every role (applicant, member, Level 2, Level 3, investor-flagged, administrator, super administrator, suspended) with fake ideas, posts and connections. All tests and demos use it. No real person's data enters any test environment.
 4. **Tests first for the costly parts.** Access rules and anything that moves through statuses (registration, idea access request, milestone plan, connection requests) get their tests written before the code. Ordinary screens get tests after.
@@ -734,6 +734,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | 22 Oct 2026 | Community stats on the dashboard are admin-only | 7, 18 |
 | 20 Oct 2026 | Database schema and access rules written in docs/schema.md | 16, 18 |
 | 20 Oct 2026 | Tech stack decided; pilot launches web first, mobile apps follow; push notifications scoped | 4, 14, 15, 16, 18 |
+| 1 Nov 2026 | CI on every pull request; nobody merges a pull request with a failing check (an agreed rule, without branch protection) | 17 |
 
 ## Appendix B: Source documents
 

@@ -5,6 +5,7 @@
   "description": "Kingdom Connect: member app (Expo), admin console (Next.js) and shared code.",
   "scripts": {
     "typecheck": "pnpm -r --if-present run typecheck",
+    "lint": "pnpm -r --if-present run lint",
     "test": "vitest",
     "test:run": "vitest run",
     "format": "prettier --write .",

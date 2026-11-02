@@ -1,6 +1,6 @@
 import { memberNav } from "@kingdom-connect/shared";
 import { Redirect, useLocalSearchParams } from "expo-router";
-import { ComingSoon } from "../src/components/screens";
+import { ComingSoon } from "../../src/components/screens";
 
 export default function SectionScreen() {
   const { section } = useLocalSearchParams<{ section: string }>();

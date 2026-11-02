@@ -40,7 +40,13 @@ function TabLink({ item, current }: { item: NavItem; current: boolean }) {
   );
 }
 
-export function AdminShell({ children }: { children: React.ReactNode }) {
+export function AdminShell({
+  children,
+  onSignOut,
+}: {
+  children: React.ReactNode;
+  onSignOut?: () => void;
+}) {
   const pathname = usePathname();
   return (
     <div className="flex min-h-dvh bg-background">
@@ -62,6 +68,15 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
           ))}
         </nav>
         <p className="mt-auto px-2 text-xs text-navy-mute">{strings.staffNote}</p>
+        {onSignOut ? (
+          <button
+            type="button"
+            onClick={onSignOut}
+            className="px-2 text-left text-sm font-medium text-navy-mute hover:text-white"
+          >
+            {strings.logOut}
+          </button>
+        ) : null}
       </aside>
       <main className="min-w-0 flex-1 p-4 pb-24 min-[881px]:p-6">{children}</main>
       <nav

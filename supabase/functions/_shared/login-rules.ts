@@ -1,3 +1,6 @@
+import { type Email, notificationEmail } from "./emails.ts";
+import { notificationCopy } from "./notifications.ts";
+
 /** Login rules from PRD section 6 (criteria 7 and 8) and docs/screens.md S03 and S04. */
 
 export const LOCK_AFTER_FAILURES = 5;
@@ -48,28 +51,11 @@ export async function hashCode(code: string, sessionId: string, secret: string):
 }
 
 export type Language = "en" | "sw";
-export type Email = { subject: string; text: string };
 
 export function loginCodeEmail(language: Language, platformName: string, code: string): Email {
-  return language === "sw"
-    ? {
-        subject: `Msimbo wako wa ${platformName}`,
-        text: `Msimbo wako ni ${code}. Unatumika kwa dakika ${CODE_MINUTES}. Usimpe mtu yeyote. Kama hukujaribu kuingia, puuza barua pepe hii.`,
-      }
-    : {
-        subject: `Your ${platformName} code`,
-        text: `Your code is ${code}. It works for ${CODE_MINUTES} minutes. Do not share it with anyone. If you did not try to sign in, ignore this email.`,
-      };
+  return notificationEmail(notificationCopy.A5, language, { platform_name: platformName, code });
 }
 
 export function lockedEmail(language: Language): Email {
-  return language === "sw"
-    ? {
-        subject: `Akaunti yako imefungwa kwa dakika ${LOCK_MINUTES}`,
-        text: `Kumekuwa na majaribio ${LOCK_AFTER_FAILURES} ya kuingia yaliyoshindwa. Jaribu tena baada ya dakika ${LOCK_MINUTES}. Kama si wewe, badilisha nenosiri lako baadaye.`,
-      }
-    : {
-        subject: `Your account is locked for ${LOCK_MINUTES} minutes`,
-        text: `There were ${LOCK_AFTER_FAILURES} failed sign-in attempts. Try again after ${LOCK_MINUTES} minutes. If this was not you, change your password afterwards.`,
-      };
+  return notificationEmail(notificationCopy.L1, language, {});
 }

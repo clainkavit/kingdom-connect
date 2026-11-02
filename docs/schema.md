@@ -138,8 +138,8 @@ Reporting an opportunity sets it to `hidden` at once, through `report()` (sectio
 | `news_items` | `staff_id`, `title`, `body`, `image_path`, `pinned`, `status` (draft, published) | Approved members see published ones; staff | Staff |
 | `reports` | `reference_no`, `reporter_id`, `target_type` (profile, opportunity, idea, thread, plan), `target_id`, `reason`, `note`, `screenshot_path`, `status` (open, under_review, action_taken, no_action), `decided_by`, `decided_at` | The reporter sees reference number and outcome only, through `my_reports()`; staff | Members create through `report()`; staff decide |
 | `moderation_actions` | `staff_id`, `target_type`, `target_id`, `action` (restore, edit_request, remove, warn, suspend_posting, suspend_account), `note` (required) | Staff | Staff |
-| `notifications` | `member_id`, `kind`, `payload`, `read_at` | The member (own) | Database functions only, which never put an anonymous investor's identity or contact details in `payload` |
-| `notification_preferences` | `member_id`, `category`, `email`, `push`, `master_push` | The member (own) | The member |
+| `notifications` | `member_id`, `kind` (the docs/notifications.md code, A1 to H2), `payload`, `read_at` | The member (own) | `private.notify()` only, which refuses contact details in `payload` and never names the investor in an anonymous interest (I2). Members can only set `read_at` |
+| `notification_preferences` | `member_id`, `category`, `email`, `push` (one row per category; no row means on). The push master switch comes with the mobile apps (M03) | The member (own) | The member |
 | `push_tokens` | `member_id`, `token`, `platform` (android, ios) | The member (own) | The member's app (PRD section 14, Push notifications) |
 
 ## 10. Private schema
@@ -149,6 +149,7 @@ Reporting an opportunity sets it to `hidden` at once, through `report()` (sectio
 | `private.login_attempts` | Failed password count and `locked_until` (5 failures lock for 15 minutes) | The login Edge Function |
 | `private.login_otps` | Email code **hashes** (never the plain code), `expires_at` (10 minutes), `attempts` (max 3), `consumed_at` | The login and verify Edge Functions |
 | `private.mfa_sessions` | Sessions that passed the email code; feeds the `otp_verified` claim | The verify Edge Function and the access token hook. Rows are deleted on logout and expiry |
+| `private.email_outbox` | One queued email per notification, plus the daily message digest: `kind`, `payload`, `status` (pending, sending, sent, skipped, failed), `attempts`, `last_error` | Written by `private.notify()` and `private.queue_message_digests()`. The `send-notification-emails` Edge Function sends it every minute (pg_cron), skipping categories a member switched off unless they are critical |
 | `private.audit_log` | `actor_member_id` or `actor_staff_id`, `action`, `target_type`, `target_id`, `before`, `after`, `ip_address`, `created_at` | **Append only.** Written by database triggers and functions whenever a logged action happens (PRD section 13, criterion 7). All staff read it through `audit_log_view`. Nobody can update or delete a row, not even a Super Admin. Kept at least 5 years |
 
 ## 11. Functions that guard private data

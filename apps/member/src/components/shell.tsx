@@ -4,6 +4,7 @@ import { Pressable, ScrollView, Text, useWindowDimensions, View } from "react-na
 import { useLanguage } from "../lib/language";
 import { LanguageSwitch } from "./language-switch";
 import { LinkButton } from "./link-button";
+import { NotificationBell } from "./notifications";
 import { NavIcon } from "./nav-icon";
 import { usePalette } from "./palette";
 
@@ -18,8 +19,17 @@ function Wordmark({ phone }: { phone?: boolean }) {
   );
 }
 
-function TopBar({ pathname, onSignOut }: { pathname: string; onSignOut?: () => void }) {
+function TopBar({
+  pathname,
+  onSignOut,
+  unread,
+}: {
+  pathname: string;
+  onSignOut?: () => void;
+  unread: number;
+}) {
   const { t } = useLanguage();
+  const palette = usePalette();
   return (
     <View className="flex-row flex-wrap items-center justify-between gap-4 bg-navy px-7 py-3.5">
       <Wordmark />
@@ -45,6 +55,7 @@ function TopBar({ pathname, onSignOut }: { pathname: string; onSignOut?: () => v
             </LinkButton>
           );
         })}
+        <NotificationBell count={unread} color={palette.navyInk} />
         <LanguageSwitch onNavy />
         {onSignOut ? (
           <Pressable
@@ -91,9 +102,11 @@ function TabBar({ pathname }: { pathname: string }) {
 export function MemberShell({
   children,
   onSignOut,
+  unread = 0,
 }: {
   children: React.ReactNode;
   onSignOut?: () => void;
+  unread?: number;
 }) {
   const { width } = useWindowDimensions();
   const pathname = usePathname();
@@ -101,10 +114,11 @@ export function MemberShell({
   return (
     <View className="flex-1 bg-bg">
       {wide ? (
-        <TopBar pathname={pathname} onSignOut={onSignOut} />
+        <TopBar pathname={pathname} onSignOut={onSignOut} unread={unread} />
       ) : (
-        <View className="bg-navy px-5 py-4">
+        <View className="flex-row items-center justify-between bg-navy px-5 py-2.5">
           <Wordmark phone />
+          <NotificationBell count={unread} color="#ffffff" />
         </View>
       )}
       <ScrollView className="flex-1" contentContainerClassName={wide ? "px-7 py-6" : "px-5 py-4"}>

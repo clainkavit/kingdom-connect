@@ -76,4 +76,23 @@ export const sw: Strings = {
   wrongAppMember: "Hii ni akaunti ya msimamizi. Tumia mfumo wa wasimamizi kuingia.",
   wrongAppStaff:
     "Akaunti hii haiwezi kutumia mfumo wa wasimamizi. Wanachama huingia kupitia programu ya wanachama.",
+
+  notificationsTitle: "Arifa",
+  notificationsUnread: (count: number) => `Arifa, ${count} hazijasomwa`,
+  nothingNew: "Hakuna jipya",
+  nothingNewMessage: "Jambo likitokea, utaliona hapa.",
+  unread: "Haijasomwa",
+  notificationSettingsTitle: "Mipangilio ya arifa",
+  emailSettingsIntro:
+    "Ujumbe wa akaunti na usalama hufika kwa barua pepe kila mara. Mengine unachagua wewe.",
+  categoryBusiness: "Uthibitishaji wa biashara",
+  categoryConnections: "Maombi ya kuunganishwa",
+  categoryMessages: "Ujumbe, kwa muhtasari wa kila siku",
+  categoryOpportunities: "Fursa na majibu",
+  categoryIdeas: "Mawazo",
+  categoryPlans: "Mipango ya hatua",
+  categoryMatches: "Fursa zinazokufaa, kila wiki",
+  categoryLearning: "Mafunzo na matukio",
+  categoryInvestor: "Zana za mwekezaji",
+  emailSwitch: (category: string) => `Barua pepe kwa ${category}`,
 };

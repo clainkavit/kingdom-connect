@@ -104,3 +104,8 @@ on conflict (id) do nothing;
 insert into public.connections (member_a, member_b) values
   ('5eed0000-0000-4000-8000-000000000002', '5eed0000-0000-4000-8000-000000000003')
 on conflict (member_a, member_b) do nothing;
+
+select vault.create_secret('http://kong:8000/functions/v1', 'functions_url')
+where not exists (select 1 from vault.secrets where name = 'functions_url');
+select vault.create_secret('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImV4cCI6MTk4MzgxMjk5Nn0.EGIM96RAZx35lJzdJsyH-qQwv8Hdp7fsn3W0YpN81IU', 'service_role_key')
+where not exists (select 1 from vault.secrets where name = 'service_role_key');

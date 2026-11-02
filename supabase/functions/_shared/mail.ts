@@ -1,5 +1,5 @@
 import { platformName } from "./db.ts";
-import type { Email } from "./login-rules.ts";
+import type { Email } from "./emails.ts";
 
 export async function sendEmail(to: string, email: Email): Promise<void> {
   const res = await fetch(Deno.env.get("MAIL_API_URL")!, {

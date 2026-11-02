@@ -7,7 +7,7 @@
 | Built on | [docs/prd.md](prd.md) section 14 |
 | Status | English is a first draft. **Every Kiswahili line needs native review** before release; Champion reviews it line by line |
 
-The text of every notification in PRD section 14, in English and Kiswahili. Each event has a **Title** (also the email subject and the push title) and a **Message**.
+The text of every notification in PRD section 14, in English and Kiswahili. **The apps and the email sender read this file**: after changing it, run `pnpm notifications` to regenerate the catalogue; a test fails CI if the two differ. Keep each event's `To:`, `Channels:` and `Title: ... Message: ...` lines in the same shape. Each event has a **Title** (also the email subject and the push title) and a **Message**.
 
 ## Rules
 

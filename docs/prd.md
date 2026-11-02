@@ -760,6 +760,8 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 - Skills are tags, lowercased and trimmed. A member can add a new one; typing suggests existing skills and synonyms. Up to 20 skills, 40 characters each. The server applies the synonym list when tags are saved.
 - Any Administrator edits the skill synonym list in Settings. Adding a synonym moves profiles that used the variant onto the skill. Settings is now in every Administrator's menu; the cap and staff sections stay Super Administrator only.
 - A profile is reached by the member's id, not their username, so usernames stay private.
+- A hidden profile reads "Profile not found" to everyone except the owner, staff and existing connections, including through a direct link. Hiding is a safety tool, and a link can be forwarded.
+- When a hidden member contacts someone first (a connection request, R09; an application or expression of interest, O03), that person can see the profile while the request or application is open. Contact details stay masked. Built with those tickets.
 
 **Open.** Every open question is a ticket on the [wayfinder map](https://github.com/clainkavit/kingdom-connect/issues/1) and is linked where it applies above.
 

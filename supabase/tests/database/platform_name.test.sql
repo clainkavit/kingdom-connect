@@ -4,9 +4,9 @@ select plan(4);
 
 set local role anon;
 select results_eq(
-  $$select key, value #>> '{}' from public.platform_settings$$,
-  $$values ('platform_name', 'Kingdom Connect')$$,
-  'signed-out visitors see the platform name and no other setting'
+  $$select key, value #>> '{}' from public.platform_settings order by key$$,
+  $$values ('legal_entity_name', 'Kingdom Connect'), ('platform_name', 'Kingdom Connect')$$,
+  'signed-out visitors see the platform and entity names and no other setting'
 );
 select throws_ok(
   $$update public.platform_settings set value = '"x"' where key = 'platform_name'$$,

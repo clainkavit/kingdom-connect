@@ -12,7 +12,7 @@ This document lists every table, who can read and write it, and the database fun
 
 ## 1. Conventions
 
-- Every table has `id uuid` (random) as its primary key, plus `created_at` and `updated_at` timestamps, except `private.audit_log`, which is never updated and so has only `created_at`. Member and staff IDs equal the Supabase Auth user ID, and one sign-in account is a member or staff, never both.
+- Every table has `id uuid` (random) as its primary key, plus `created_at` and `updated_at` timestamps, except `private.audit_log` and `legal_acceptances`, which are never updated and so have only `created_at`. Member and staff IDs equal the Supabase Auth user ID, and one sign-in account is a member or staff, never both.
 - Statuses are `text` with a `CHECK` list of allowed values, not Postgres enums, so values can be added or removed later.
 - Money is `numeric` in Tanzanian shillings (TZS). Times are `timestamptz`.
 - No table or value hard-codes the community or platform name. Names come from `platform_settings` so the schema survives the national pivot (map ticket #1).
@@ -31,7 +31,7 @@ This follows the login design in [context/memory/supabase-auth-login-flow.md](..
 Decided 1 Nov (F04, #42):
 
 - **Status is read from the tables**, not from a token claim, so a suspension or rejection takes effect on the next request. The email-code step comes from the `otp_verified` claim that the access token hook adds (F09).
-- **The shared lists are the exception.** `regions`, `districts`, `sectors` and `platform_settings` are readable by any signed-in session, applicants included, so the address step works. Writing them still needs the strict rule. Signed-out visitors can read one row only, `platform_settings` key `platform_name`, so the sign-in screens can show the name (F07, decided 2 Nov 2026).
+- **The shared lists are the exception.** `regions`, `districts`, `sectors`, `platform_settings` and `legal_texts` are readable by any signed-in session, applicants included, so the address step works. Writing them still needs the strict rule. Signed-out visitors can read one row only, `platform_settings` key `platform_name`, so the sign-in screens can show the name (F07, decided 2 Nov 2026).
 - **Signed-out visitors get no table privilege** on `public` tables, with explicit exceptions: the `platform_name` row of `platform_settings` (above), and later the terms and privacy in `legal_texts`, granted when it lands.
 
 **Applicants** (pending or rejected) reach only their own application, and only through these functions (section 9): view status, upload documents, edit and resubmit.
@@ -82,7 +82,7 @@ Private data sits in its own tables, so each rule is "this whole table is admin-
 | `skills` | `name` (citext, lowercased and trimmed, unique) | Approved members | Members create through tag entry; staff merge |
 | `skill_synonyms` | `from_name`, `skill_id` | Approved members | Staff (PRD section 10, Matching rules) |
 | `matching_settings` | `feature` (scan, people), `signal`, `points`, `min_score` | Staff | Super Admin, audit logged (PRD section 10, Matching rules) |
-| `platform_settings` | `key`, `value` (`platform_name`, legal entity name, featured slot limit, `daily_application_cap`: off by default) | Everyone signed in; signed-out visitors read the `platform_name` row only. The registration function reads the cap for signed-out visitors | Super Admin, audit logged |
+| `platform_settings` | `key`, `value` (`platform_name`, `legal_entity_name`, `real_registrations_open` (off until all five legal texts are approved at 1.0; the database refuses to switch it on before that), featured slot limit, `daily_application_cap`: off by default) | Everyone signed in; signed-out visitors read the `platform_name` and `legal_entity_name` rows only. The registration function reads the cap for signed-out visitors | Super Admin, audit logged |
 
 Matching scores are worked out when a page opens and are not stored (PRD section 10). The investor flag is never an input to matching.
 
@@ -129,8 +129,8 @@ Reporting an opportunity sets it to `hidden` at once, through `report()` (sectio
 
 | Table | Key columns | Who can read | Who can write |
 |---|---|---|---|
-| `legal_texts` | `kind` (terms, privacy, nda, ip, handoff), `version`, `body_en`, `body_sw`, `approved_at`, `effective_at` | Everyone, including applicants and signed-out visitors for terms and privacy | Super Admin (PRD section 13, Legal texts) |
-| `legal_acceptances` | `member_id`, `legal_text_id`, `accepted_at`, `ip_address`, `context_type`, `context_id` | The member (own); staff | Written by the acceptance functions only; never edited |
+| `legal_texts` | `kind` (terms, privacy, nda, ip, handoff), `version` (major.minor, loaded once per kind), `body_en`, `body_sw` (with `{entity_name}` and `{platform_name}`), `approved_at`, `effective_at` | Everyone, including applicants and signed-out visitors for terms and privacy | Super Admin, or `pnpm legal:load` from the files in `legal/` (PRD section 13, Legal texts) |
+| `legal_acceptances` | `member_id` (defaults to the caller), `legal_text_id`, `accepted_at`, `ip_address` (from the request), `context_type` (registration, reaccept, idea_access, plan), `context_id` | The member (own); staff | A Member inserts their own re-acceptance (S07); registration (R01), NDA and IP (I04) and hand-off (P01) acceptances are written by those tickets' functions. A trigger allows only the current version, and each acceptance is recorded once. **Never updated or deleted**, so it has `created_at` only; a member's row is never hard-deleted (section 14) |
 | `trainings` | `poster_member_id` or `poster_staff_id`, `title`, `provider`, `format`, `starts_at` (empty if self-paced), `seats`, `downloads_allowed`, `status` | Approved members see published ones; the poster; staff | Members create (pending review); staff create and moderate |
 | `training_materials` | `training_id`, `kind` (file, link), `storage_path`, `url` | Members registered for that training; the poster; staff | The poster |
 | `events` | `poster_member_id` or `poster_staff_id`, `title`, `starts_at`, `venue`, `link`, `capacity`, `image_path`, `status` | Approved members see published ones; the poster; staff | Level 2 and up, and staff |

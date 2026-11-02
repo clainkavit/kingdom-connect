@@ -2,7 +2,15 @@ import { Pressable, ScrollView, Text, View } from "react-native";
 import { useLanguage } from "../lib/language";
 import { LanguageSwitch } from "./language-switch";
 
-export function AuthCard({ title, children }: { title: string; children: React.ReactNode }) {
+export function AuthCard({
+  title,
+  children,
+  wide,
+}: {
+  title: string;
+  children: React.ReactNode;
+  wide?: boolean;
+}) {
   const { platformName } = useLanguage();
   return (
     <View className="flex-1 bg-bg">
@@ -16,7 +24,7 @@ export function AuthCard({ title, children }: { title: string; children: React.R
       >
         <View
           role="main"
-          className="w-full max-w-[400px] gap-3 rounded-card border border-line bg-surface p-[18px]"
+          className={`w-full gap-3 rounded-card border border-line bg-surface p-[18px] ${wide ? "max-w-[720px]" : "max-w-[400px]"}`}
         >
           <Text role="heading" aria-level={1} className="font-figtree-extrabold text-lg text-ink">
             {title}

@@ -92,4 +92,17 @@ export const en = {
   categoryLearning: "Training and events",
   categoryInvestor: "Investor tools",
   emailSwitch: (category: string) => `Email for ${category}`,
+  legalTerms: "Terms of use",
+  legalPrivacy: "Privacy notice",
+  legalNda: "Non-disclosure agreement",
+  legalIp: "Intellectual property terms",
+  legalHandoff: "Milestone plan disclaimer",
+  acceptUpdatedTitle: "Please accept the updated texts",
+  acceptUpdatedIntro: (platformName: string) =>
+    `We changed the texts below. Read them and accept them to keep using ${platformName}.`,
+  legalVersion: (version: string) => `Version ${version}`,
+  legalDraft: "Draft. Not yet approved by a lawyer.",
+  englishGoverns: "If the English and Kiswahili differ, the English text governs.",
+  acceptText: (name: string) => `I accept the ${name}`,
+  continueLabel: "Continue",
 };

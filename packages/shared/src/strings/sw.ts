@@ -95,4 +95,18 @@ export const sw: Strings = {
   categoryLearning: "Mafunzo na matukio",
   categoryInvestor: "Zana za mwekezaji",
   emailSwitch: (category: string) => `Barua pepe kwa ${category}`,
+  legalTerms: "Masharti ya matumizi",
+  legalPrivacy: "Taarifa ya faragha",
+  legalNda: "Makubaliano ya kutunza siri",
+  legalIp: "Masharti ya haki miliki",
+  legalHandoff: "Tamko kuhusu mpango wa hatua",
+  acceptUpdatedTitle: "Tafadhali kubali maandishi yaliyosasishwa",
+  acceptUpdatedIntro: (platformName: string) =>
+    `Tumebadilisha maandishi yaliyo hapa chini. Yasome na uyakubali ili uendelee kutumia ${platformName}.`,
+  legalVersion: (version: string) => `Toleo ${version}`,
+  legalDraft: "Rasimu. Bado haijaidhinishwa na mwanasheria.",
+  englishGoverns:
+    "Kama Kiingereza na Kiswahili vinatofautiana, maandishi ya Kiingereza ndiyo yanayotumika.",
+  acceptText: (name: string) => `Nakubali ${name}`,
+  continueLabel: "Endelea",
 };

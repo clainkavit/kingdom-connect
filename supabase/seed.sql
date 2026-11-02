@@ -97,6 +97,10 @@ insert into public.verification_requests (id, member_id, level, status, reviewer
   ('5eed0000-0000-4000-8000-00000000f601', '5eed0000-0000-4000-8000-000000000006', 1, 'approved', '5eed0000-0000-4000-8000-0000000000a1', now(), now())
 on conflict (id) do nothing;
 
+insert into public.registration_drafts (member_id, step, data, submitted_at) values
+  ('5eed0000-0000-4000-8000-000000000001', 6, '{"fullName": "Test Applicant", "category": "professional"}', now())
+on conflict (member_id) do nothing;
+
 insert into public.investor_flags (id, member_id, granted_by, route, ticket_band) values
   ('5eed0000-0000-4000-8000-00000000f5f1', '5eed0000-0000-4000-8000-000000000005', '5eed0000-0000-4000-8000-0000000000a1', 'invitation', '10m_to_50m')
 on conflict (id) do nothing;
@@ -109,3 +113,10 @@ select vault.create_secret('http://kong:8000/functions/v1', 'functions_url')
 where not exists (select 1 from vault.secrets where name = 'functions_url');
 select vault.create_secret('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImV4cCI6MTk4MzgxMjk5Nn0.EGIM96RAZx35lJzdJsyH-qQwv8Hdp7fsn3W0YpN81IU', 'service_role_key')
 where not exists (select 1 from vault.secrets where name = 'service_role_key');
+
+select vault.create_secret('local-development-only-id-encryption-key', 'id_encryption_key')
+where not exists (select 1 from vault.secrets where name = 'id_encryption_key');
+select vault.create_secret('local-development-only-id-fingerprint-key', 'id_fingerprint_key')
+where not exists (select 1 from vault.secrets where name = 'id_fingerprint_key');
+
+update public.platform_settings set value = 'true' where key = 'test_data_only';

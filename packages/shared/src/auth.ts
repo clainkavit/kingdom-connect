@@ -1,3 +1,6 @@
+import type { FieldProblem, IdType, SignUpInput } from "./registration-rules";
+import type { Language } from "./strings";
+
 /** Sign-in flow shared by both apps: PRD section 6 (criteria 7 and 8), docs/screens.md S03 to S06. */
 
 export type App = "member" | "admin";
@@ -26,7 +29,7 @@ export const LOCAL_SUPABASE = {
 export const routePaths: Record<Route, string> = {
   login: "/login",
   verify: "/verify",
-  status: "/status",
+  status: "/registration",
   app: "/",
   wrong_app: "/wrong-app",
 };
@@ -68,8 +71,8 @@ export type ResendResult =
 
 type Options = { url: string; anonKey: string; fetch?: typeof fetch };
 
-export function createLoginClient({ url, anonKey, fetch: fetchImpl = fetch }: Options) {
-  async function call(name: string, body: object, accessToken?: string) {
+function functionCaller({ url, anonKey, fetch: fetchImpl = fetch }: Options) {
+  return async (name: string, body: object, accessToken?: string) => {
     const headers: Record<string, string> = { apikey: anonKey, "Content-Type": "application/json" };
     if (accessToken) headers.Authorization = `Bearer ${accessToken}`;
     try {
@@ -82,7 +85,11 @@ export function createLoginClient({ url, anonKey, fetch: fetchImpl = fetch }: Op
     } catch {
       return null;
     }
-  }
+  };
+}
+
+export function createLoginClient(options: Options) {
+  const call = functionCaller(options);
 
   return {
     async logIn(
@@ -127,6 +134,68 @@ export function createLoginClient({ url, anonKey, fetch: fetchImpl = fetch }: Op
 }
 
 export type LoginClient = ReturnType<typeof createLoginClient>;
+
+export type SignUpResult =
+  | { kind: "created" }
+  | { kind: "invalid"; problems: Partial<Record<keyof SignUpInput, FieldProblem>> }
+  | { kind: "username_taken" }
+  | { kind: "email_taken" }
+  | { kind: "closed" }
+  | { kind: "network" };
+
+export type SaveIdentityResult =
+  | { kind: "saved" }
+  | { kind: "invalid"; problem: FieldProblem }
+  | { kind: "duplicate" }
+  | { kind: "too_many" }
+  | { kind: "network" };
+
+export type SubmitResult =
+  | { kind: "submitted" }
+  | { kind: "incomplete"; step: number }
+  | { kind: "failed" }
+  | { kind: "network" };
+
+/** Sign-up (S02) and the registration wizard's server steps (S05). */
+export function createRegistrationClient(options: Options) {
+  const call = functionCaller(options);
+  return {
+    async signUp(input: SignUpInput & { language: Language }): Promise<SignUpResult> {
+      const r = await call("sign-up", input);
+      if (!r) return { kind: "network" };
+      if (r.ok) return { kind: "created" };
+      if (r.error === "invalid")
+        return { kind: "invalid", problems: (r.problems ?? {}) as Record<string, FieldProblem> };
+      if (r.error === "username_taken") return { kind: "username_taken" };
+      if (r.error === "email_taken") return { kind: "email_taken" };
+      if (r.error === "closed") return { kind: "closed" };
+      return { kind: "network" };
+    },
+
+    async saveIdentity(
+      accessToken: string,
+      identity: { idType: IdType; idNumber: string; idExpiresOn?: string },
+    ): Promise<SaveIdentityResult> {
+      const r = await call("save-identity", identity, accessToken);
+      if (!r) return { kind: "network" };
+      if (r.ok) return { kind: "saved" };
+      if (r.error === "duplicate") return { kind: "duplicate" };
+      if (r.error === "too_many") return { kind: "too_many" };
+      if (r.error === "invalid") return { kind: "invalid", problem: r.problem as FieldProblem };
+      return { kind: "network" };
+    },
+
+    async submit(accessToken: string): Promise<SubmitResult> {
+      const r = await call("submit-registration", {}, accessToken);
+      if (!r) return { kind: "network" };
+      if (r.ok) return { kind: "submitted" };
+      if (r.error === "incomplete") return { kind: "incomplete", step: Number(r.step) };
+      return { kind: "failed" };
+    },
+  };
+}
+
+export type RegistrationClient = ReturnType<typeof createRegistrationClient>;
 
 export type LoginMessages = {
   invalidLogin: string;

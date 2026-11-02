@@ -67,7 +67,7 @@ insert into public.investor_flags (member_id, granted_by, route) values
   ('00000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-0000000000a1', 'invitation');
 select is((select count(*)::int from private.audit_log where action = 'investor_flags.insert' and created_at = now()), 1, 'granting an investor flag is logged');
 update public.platform_settings set value = '3' where key = 'featured_slot_limit';
-select is((select count(*)::int from private.audit_log where action = 'platform_settings.update'), 1, 'changing a platform setting is logged');
+select is((select count(*)::int from private.audit_log where action = 'platform_settings.update' and created_at = now()), 1, 'changing a platform setting is logged');
 select is((select count(*)::int from private.audit_log where target_type = 'member_private'), 0, 'private data changes are never copied into the log');
 
 select throws_ok($$update private.audit_log set action = 'tampered'$$, 'P0001', null, 'the database owner cannot update the audit log');

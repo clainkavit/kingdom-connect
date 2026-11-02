@@ -725,6 +725,14 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 - The texts live as files in `legal/` in the repo; reviewing a text is reviewing a pull request, and `pnpm legal:load` loads a new version.
 - The launch gate is a setting, `real_registrations_open`, off by default. The database refuses to switch it on until all five texts are approved at version 1.0. Development and testing keep working on test data.
 
+**Decided on 2 November 2026 (registration, R01)**
+- Sign-up works when real registrations are open, or when the environment is marked test-data-only (local and staging). Production shows "Registration opens soon" until the launch gate opens.
+- The face photo is for verification only, kept with the ID photo in the admin-only store. A public profile photo is optional and comes with the profile (R06).
+- Category details are a small fixed set for now: a Professional gives a profession and optional certifications and licence numbers; a Businessperson a business name and sector; an Entrepreneur what they are building and a sector; Other a short description. Per-profession fields can follow.
+- A duplicate ID is refused with "This ID is already registered", written to the audit log and flagged for the admin queue (R03).
+- A starter list of 16 sectors in English and Kiswahili is loaded; Champion and the collaborator can rename or add.
+- The ID number is never kept in the saved draft: it is encrypted the moment step 4 is saved.
+
 **Open.** Every open question is a ticket on the [wayfinder map](https://github.com/clainkavit/kingdom-connect/issues/1) and is linked where it applies above.
 
 **Outside this spec**
@@ -761,6 +769,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | 2 Nov 2026 | Both apps bilingual; visitors read the platform name; language switch placement until Settings | 18 |
 | 2 Nov 2026 | Critical notifications always emailed; daily message digest; copy generated from docs/notifications.md; queued email | 14, 18 |
 | 2 Nov 2026 | Legal texts as files in the repo, drafts at 0.1, launch gate as a database-guarded setting | 13, 18 |
+| 2 Nov 2026 | Registration: test-data switch, admin-only face photo, category details, duplicate ID handling, starter sectors | 6, 18 |
 
 ## Appendix B: Source documents
 

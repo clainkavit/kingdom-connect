@@ -5,7 +5,7 @@
   "description": "Kingdom Connect: member app (Expo), admin console (Next.js) and shared code.",
   "scripts": {
     "typecheck": "pnpm -r --if-present run typecheck && tsc -p e2e && pnpm typecheck:functions",
-    "typecheck:functions": "npx -y deno@2.9.6 check --config supabase/functions/deno.json --node-modules-dir=none supabase/functions/login/index.ts supabase/functions/verify-otp/index.ts supabase/functions/resend-otp/index.ts supabase/functions/send-notification-emails/index.ts",
+    "typecheck:functions": "npx -y deno@2.9.6 check --config supabase/functions/deno.json --node-modules-dir=none supabase/functions/login/index.ts supabase/functions/verify-otp/index.ts supabase/functions/resend-otp/index.ts supabase/functions/send-notification-emails/index.ts supabase/functions/sign-up/index.ts supabase/functions/save-identity/index.ts supabase/functions/submit-registration/index.ts",
     "lint": "pnpm -r --if-present run lint",
     "theme": "tsx packages/shared/scripts/write-theme-css.ts",
     "test": "vitest",
@@ -23,7 +23,8 @@
     "db:new": "supabase migration new",
     "prepare": "husky",
     "notifications": "tsx packages/shared/scripts/write-notification-copy.ts",
-    "legal:load": "tsx packages/shared/scripts/load-legal-texts.ts"
+    "legal:load": "tsx packages/shared/scripts/load-legal-texts.ts",
+    "generate": "tsx packages/shared/scripts/write-notification-copy.ts"
   },
   "devDependencies": {
     "@kingdom-connect/shared": "workspace:*",

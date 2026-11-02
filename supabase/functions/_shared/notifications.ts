@@ -70,7 +70,7 @@ export function categoryOfCode(code: string): NotificationCategory {
 const opensByCode: [RegExp, string][] = [
   [/^A5$/, "/verify"],
   [/^(L1|X1)$/, "/login"],
-  [/^A\d+$/, "/status"],
+  [/^A\d+$/, "/registration"],
   [/^B\d+$/, "/settings"],
   [/^C[12]$/, "/connections"],
   [/^C3$/, "/messages"],
@@ -125,7 +125,7 @@ export const notificationCopy = {
     inApp: true,
     email: "yes",
     push: false,
-    opens: "/status",
+    opens: "/registration",
     en: {
       title: "We got your application",
       message:
@@ -142,7 +142,7 @@ export const notificationCopy = {
     inApp: true,
     email: "yes",
     push: true,
-    opens: "/status",
+    opens: "/registration",
     en: {
       title: "Welcome to {platform_name}",
       message: "Your account is approved. Sign in to get started.",
@@ -157,7 +157,7 @@ export const notificationCopy = {
     inApp: true,
     email: "yes",
     push: true,
-    opens: "/status",
+    opens: "/registration",
     en: {
       title: "We could not approve your application",
       message: "Reason: {reason}. You can fix this and send it again once.",
@@ -172,7 +172,7 @@ export const notificationCopy = {
     inApp: true,
     email: "yes",
     push: true,
-    opens: "/status",
+    opens: "/registration",
     en: {
       title: "Your application was not approved",
       message: "Reason: {reason}. This decision is final unless an admin reopens it.",

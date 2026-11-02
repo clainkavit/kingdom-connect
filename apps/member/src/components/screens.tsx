@@ -2,13 +2,15 @@ import { memberNav, memberPhoneTabs, moreItems } from "@kingdom-connect/shared";
 import { Text, View } from "react-native";
 import { strings } from "../strings";
 import { LinkButton } from "./link-button";
-import { NavIcon } from "./nav-icon";
-import { usePalette } from "./palette";
 import { EmptyState } from "./states";
 
 export function ScreenTitle({ children }: { children: string }) {
   return (
-    <Text role="heading" aria-level={1} className="mb-4 font-figtree-bold text-xl text-ink">
+    <Text
+      role="heading"
+      aria-level={1}
+      className="mb-5 font-figtree-extrabold text-[26px] tracking-tight text-ink"
+    >
       {children}
     </Text>
   );
@@ -24,17 +26,23 @@ export function ComingSoon({ title }: { title: string }) {
 }
 
 export function MoreList() {
-  const palette = usePalette();
   return (
     <View className="rounded-card border border-line bg-surface">
-      {moreItems(memberNav, memberPhoneTabs).map((item) => (
+      {moreItems(memberNav, memberPhoneTabs).map((item, i, items) => (
         <LinkButton
           key={item.href}
           href={item.href}
-          className="flex-row items-center gap-3 border-b border-line px-4 py-3"
+          label={item.label}
+          className={`min-h-[52px] flex-row items-center justify-between px-4 ${i < items.length - 1 ? "border-b border-line" : ""}`}
         >
-          <NavIcon name={item.icon} color={palette.ink2} />
-          <Text className="font-figtree-medium text-sm text-ink">{item.label}</Text>
+          <Text
+            className={`text-[15px] ${item.href === "/reports" ? "font-figtree-semibold text-bad-text" : "font-figtree text-ink"}`}
+          >
+            {item.label}
+          </Text>
+          <Text aria-hidden className="font-figtree text-[15px] text-ink-2">
+            ›
+          </Text>
         </LinkButton>
       ))}
     </View>

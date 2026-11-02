@@ -8,11 +8,11 @@ export default function WrongAppPage() {
   const { signOut } = useAuth();
   return (
     <AuthCard title={strings.appName}>
-      <p className="text-sm text-muted-foreground">{strings.wrongApp}</p>
+      <p className="text-sm leading-[1.45] text-ink-2">{strings.wrongApp}</p>
       <button
         type="button"
         onClick={signOut}
-        className="self-start text-sm font-medium text-primary"
+        className="min-h-[44px] self-start text-sm font-semibold text-primary"
       >
         {strings.logOut}
       </button>

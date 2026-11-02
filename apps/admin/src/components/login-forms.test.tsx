@@ -83,6 +83,19 @@ describe("CodeForm (admin)", () => {
     expect(screen.getByRole("alert").textContent).toBe("That code is not right. 1 try left.");
   });
 
+  it("shows each digit in its own box and drops anything that is not a digit", () => {
+    render(
+      <CodeForm
+        client={fakeClient({})}
+        accessToken="tok"
+        resendAfterSeconds={60}
+        onVerified={vi.fn()}
+      />,
+    );
+    type("Email code", "4 8-1");
+    expect(screen.getByTestId("code-boxes").textContent).toBe("481");
+  });
+
   it("verifies and allows a new code only after 60 seconds", async () => {
     const verifyCode = vi.fn().mockResolvedValue({ kind: "verified" });
     const onVerified = vi.fn();

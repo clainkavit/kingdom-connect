@@ -28,7 +28,7 @@ describe("AdminShell", () => {
     render(<AdminShell>content</AdminShell>);
     const sidebar = within(screen.getByRole("navigation", { name: "Admin menu" }));
     expect(
-      sidebar.getByRole("link", { name: "Verification Queue" }).getAttribute("aria-current"),
+      sidebar.getByRole("link", { name: "Verification queue" }).getAttribute("aria-current"),
     ).toBe("page");
     expect(sidebar.getByRole("link", { name: "Reports" }).getAttribute("aria-current")).toBeNull();
   });

@@ -11,14 +11,13 @@ import {
 const labels = (items: readonly { label: string }[]) => items.map((i) => i.label);
 
 describe("member navigation", () => {
-  it("lists the member sidebar from PRD section 5, in order", () => {
+  it("lists the member top bar from PRD section 5, in order", () => {
     expect(labels(memberNav)).toEqual([
       "Dashboard",
-      "Professionals",
-      "Businesses",
+      "People",
       "Opportunities",
       "Ideas",
-      "Training & Courses",
+      "Training",
       "Events",
       "Messages",
       "Connections",
@@ -28,7 +27,7 @@ describe("member navigation", () => {
   });
 
   it("never contains an admin item", () => {
-    const adminOnly = labels(adminNav).filter((l) => l !== "Settings");
+    const adminOnly = labels(adminNav).filter((l) => l !== "Dashboard" && l !== "Reports");
     for (const label of adminOnly) expect(labels(memberNav)).not.toContain(label);
   });
 
@@ -50,17 +49,16 @@ describe("member navigation", () => {
 describe("admin navigation", () => {
   it("lists the admin sidebar from PRD section 5, in order", () => {
     expect(labels(adminNav)).toEqual([
-      "Admin Dashboard",
-      "Verification Queue",
-      "Moderation Queue",
+      "Dashboard",
+      "Verification queue",
+      "Moderation queue",
       "Reports",
       "Re-verification",
-      "Members",
-      "Investors",
-      "News",
-      "Featured",
-      "Audit Log",
-      "Settings",
+      "Members and investors",
+      "News and featured",
+      "Milestone plans",
+      "Post as admin",
+      "Audit log",
     ]);
   });
 
@@ -70,7 +68,7 @@ describe("admin navigation", () => {
 });
 
 describe("phone tabs", () => {
-  it("point at sidebar screens, apart from More", () => {
+  it("point at menu screens, apart from More", () => {
     for (const [tabs, nav] of [
       [memberPhoneTabs, memberNav],
       [adminPhoneTabs, adminNav],
@@ -87,12 +85,8 @@ describe("isCurrent", () => {
   const home = memberPhoneTabs.find((t) => t.label === "Home")!;
 
   it("matches the item's own screen and the screens under it", () => {
-    expect(isCurrent("/professionals", people)).toBe(true);
-    expect(isCurrent("/professionals/123", people)).toBe(true);
-  });
-
-  it("treats People as current on Businesses too", () => {
-    expect(isCurrent("/businesses", people)).toBe(true);
+    expect(isCurrent("/people", people)).toBe(true);
+    expect(isCurrent("/people/123", people)).toBe(true);
   });
 
   it("matches Home only on the home screen", () => {
@@ -102,25 +96,14 @@ describe("isCurrent", () => {
 });
 
 describe("moreItems", () => {
-  it("lists the sidebar items that have no phone tab, People's screens included", () => {
+  it("lists the menu items that have no phone tab", () => {
     expect(moreItems(memberNav, memberPhoneTabs).map((i) => i.label)).toEqual([
-      "Businesses",
       "Ideas",
-      "Training & Courses",
+      "Training",
       "Events",
       "Connections",
       "Reports & Safety",
       "Settings",
     ]);
   });
-});
-
-it("nests Jobs, Partnerships, Investment and Tenders under Opportunities (PRD section 5)", () => {
-  const opportunities = memberNav.find((i) => i.label === "Opportunities")!;
-  expect(labels(opportunities.children ?? [])).toEqual([
-    "Jobs",
-    "Partnerships",
-    "Investment",
-    "Tenders",
-  ]);
 });

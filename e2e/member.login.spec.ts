@@ -11,7 +11,9 @@ test("a Member logs in with the email code and logs out again (REG-4)", async ({
 
   await enterCode(page, await nextCode("test.level1@example.test", sentAfter));
   await expect(page.getByRole("heading", { name: "Dashboard" })).toBeVisible();
-  await expect(page.getByText("Report a Scam / Bad User")).toBeVisible();
+  await expect(
+    page.getByRole("navigation", { name: "Member menu" }).getByText("Reports & Safety"),
+  ).toBeVisible();
 
   await page.getByRole("button", { name: "Log out" }).click();
   await expect(page).toHaveURL(/\/login$/);

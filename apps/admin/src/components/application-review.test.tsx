@@ -86,13 +86,11 @@ describe("ApplicationReview (A03)", () => {
   it("shows both face photos for a suspected duplicate", async () => {
     await show(
       fakeApi({
-        application: vi
-          .fn()
-          .mockResolvedValue(
-            application({
-              duplicate: { username: "test_level1", facePhotoUrl: "https://photos.test/other" },
-            }),
-          ),
+        application: vi.fn().mockResolvedValue(
+          application({
+            duplicate: { username: "test_level1", facePhotoUrl: "https://photos.test/other" },
+          }),
+        ),
       }),
     );
     expect(

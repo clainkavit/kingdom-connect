@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Figtree } from "next/font/google";
 import { AuthProvider } from "@/lib/auth";
+import { LanguageProvider } from "@/lib/language";
 import "./globals.css";
 
 const figtree = Figtree({
@@ -10,7 +11,6 @@ const figtree = Figtree({
 });
 
 export const metadata: Metadata = {
-  title: "Kingdom Connect Admin",
   description: "People, Opportunities, Growth. Administration console.",
 };
 
@@ -18,7 +18,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={figtree.variable}>
       <body>
-        <AuthProvider>{children}</AuthProvider>
+        <LanguageProvider>
+          <AuthProvider>{children}</AuthProvider>
+        </LanguageProvider>
       </body>
     </html>
   );

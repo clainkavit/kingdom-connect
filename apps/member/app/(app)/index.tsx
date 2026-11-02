@@ -1,5 +1,7 @@
 import { ComingSoon } from "../../src/components/screens";
+import { useLanguage } from "../../src/lib/language";
 
 export default function DashboardScreen() {
-  return <ComingSoon title="Dashboard" />;
+  const { t } = useLanguage();
+  return <ComingSoon title={t.navDashboard} />;
 }

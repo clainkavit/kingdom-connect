@@ -1,5 +1,5 @@
 import { Pressable, Text, View } from "react-native";
-import { strings } from "../strings";
+import { useLanguage } from "../lib/language";
 import { LinkButton } from "./link-button";
 
 type Action = { label: string; href: string };
@@ -9,8 +9,9 @@ function Bar({ className }: { className: string }) {
 }
 
 export function LoadingRows({ rows = 3 }: { rows?: number }) {
+  const { t } = useLanguage();
   return (
-    <View role="status" aria-label={strings.loading} aria-busy className="gap-3">
+    <View role="status" aria-label={t.loading} aria-busy className="gap-3">
       {Array.from({ length: rows }, (_, i) => (
         <View key={i} testID="skeleton-row" className="flex-row items-center gap-3">
           <View className="h-10 w-10 rounded-full bg-surface-2" />
@@ -73,6 +74,7 @@ export function EmptyState({
 }
 
 export function ErrorState({ message, onRetry }: { message: string; onRetry: () => void }) {
+  const { t } = useLanguage();
   return (
     <View
       role="alert"
@@ -81,11 +83,11 @@ export function ErrorState({ message, onRetry }: { message: string; onRetry: () 
       <Text className="text-center font-figtree text-sm text-ink">{message}</Text>
       <Pressable
         role="button"
-        aria-label={strings.tryAgain}
+        aria-label={t.tryAgain}
         onPress={onRetry}
         className="rounded-lg border border-line bg-surface px-4 py-2.5"
       >
-        <Text className="font-figtree-semibold text-sm text-ink">{strings.tryAgain}</Text>
+        <Text className="font-figtree-semibold text-sm text-ink">{t.tryAgain}</Text>
       </Pressable>
     </View>
   );
@@ -108,10 +110,11 @@ export function LockedState({
 }
 
 export function SlowConnectionBanner({ slow }: { slow: boolean }) {
+  const { t } = useLanguage();
   if (!slow) return null;
   return (
     <View role="status" className="rounded-md bg-warn-soft px-3 py-1.5">
-      <Text className="font-figtree-medium text-xs text-warn">{strings.slowConnection}</Text>
+      <Text className="font-figtree-medium text-xs text-warn">{t.slowConnection}</Text>
     </View>
   );
 }

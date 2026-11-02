@@ -31,8 +31,8 @@ This follows the login design in [context/memory/supabase-auth-login-flow.md](..
 Decided 1 Nov (F04, #42):
 
 - **Status is read from the tables**, not from a token claim, so a suspension or rejection takes effect on the next request. The email-code step comes from the `otp_verified` claim that the access token hook adds (F09).
-- **The shared lists are the exception.** `regions`, `districts`, `sectors` and `platform_settings` are readable by any signed-in session, applicants included, so the address step works. Writing them still needs the strict rule.
-- **Signed-out visitors get no table privilege at all** on `public` tables. A table they must read (terms and privacy in `legal_texts`) is granted explicitly when it lands.
+- **The shared lists are the exception.** `regions`, `districts`, `sectors` and `platform_settings` are readable by any signed-in session, applicants included, so the address step works. Writing them still needs the strict rule. Signed-out visitors can read one row only, `platform_settings` key `platform_name`, so the sign-in screens can show the name (F07, decided 2 Nov 2026).
+- **Signed-out visitors get no table privilege** on `public` tables, with explicit exceptions: the `platform_name` row of `platform_settings` (above), and later the terms and privacy in `legal_texts`, granted when it lands.
 
 **Applicants** (pending or rejected) reach only their own application, and only through these functions (section 9): view status, upload documents, edit and resubmit.
 
@@ -82,7 +82,7 @@ Private data sits in its own tables, so each rule is "this whole table is admin-
 | `skills` | `name` (citext, lowercased and trimmed, unique) | Approved members | Members create through tag entry; staff merge |
 | `skill_synonyms` | `from_name`, `skill_id` | Approved members | Staff (PRD section 10, Matching rules) |
 | `matching_settings` | `feature` (scan, people), `signal`, `points`, `min_score` | Staff | Super Admin, audit logged (PRD section 10, Matching rules) |
-| `platform_settings` | `key`, `value` (community name, legal entity name, featured slot limit, `daily_application_cap`: off by default) | Everyone signed in. The registration function reads the cap for signed-out visitors | Super Admin, audit logged |
+| `platform_settings` | `key`, `value` (`platform_name`, legal entity name, featured slot limit, `daily_application_cap`: off by default) | Everyone signed in; signed-out visitors read the `platform_name` row only. The registration function reads the cap for signed-out visitors | Super Admin, audit logged |
 
 Matching scores are worked out when a page opens and are not stored (PRD section 10). The investor flag is never an input to matching.
 

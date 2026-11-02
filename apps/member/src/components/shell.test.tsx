@@ -1,9 +1,23 @@
 import { router } from "../test-router";
-import { memberNav, memberPhoneTabs } from "@kingdom-connect/shared";
+import { memberNav, memberPhoneTabs, stringsFor, type Language } from "@kingdom-connect/shared";
 import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import * as RN from "react-native";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { LanguageContext } from "../lib/language";
 import { MemberShell } from "./shell";
+
+const en = stringsFor("en");
+const sw = stringsFor("sw");
+
+function inLanguage(language: Language, ui: React.ReactNode, setLanguage = vi.fn()) {
+  return render(
+    <LanguageContext.Provider
+      value={{ language, t: stringsFor(language), platformName: "Test Platform", setLanguage }}
+    >
+      {ui}
+    </LanguageContext.Provider>,
+  );
+}
 
 const width = (w: number) =>
   vi
@@ -19,12 +33,12 @@ afterEach(() => {
 describe("MemberShell on a wide screen", () => {
   it("shows every member menu item in the top bar", () => {
     width(1280);
-    render(<MemberShell>content</MemberShell>);
+    inLanguage("en", <MemberShell>content</MemberShell>);
     const menu = within(screen.getByLabelText("Member menu"));
     for (const item of memberNav) {
-      expect(menu.getByText(item.label).closest("a")?.getAttribute("href")).toBe(item.href);
+      expect(menu.getByText(en[item.key]).closest("a")?.getAttribute("href")).toBe(item.href);
     }
-    expect(screen.getByText("Kingdom Connect")).toBeTruthy();
+    expect(screen.getByText("Test Platform")).toBeTruthy();
     expect(screen.queryByLabelText("Member tabs")).toBeNull();
   });
 
@@ -51,10 +65,10 @@ describe("MemberShell on a phone", () => {
     width(390);
     render(<MemberShell>content</MemberShell>);
     const tabs = within(screen.getByLabelText("Member tabs"));
-    expect(memberPhoneTabs.map((t) => tabs.getByLabelText(t.label).getAttribute("href"))).toEqual(
+    expect(memberPhoneTabs.map((t) => tabs.getByLabelText(en[t.key]).getAttribute("href"))).toEqual(
       memberPhoneTabs.map((t) => t.href),
     );
-    for (const t of memberPhoneTabs) expect(tabs.queryByText(t.label)).toBeNull();
+    for (const t of memberPhoneTabs) expect(tabs.queryByText(en[t.key])).toBeNull();
     expect(screen.queryByLabelText("Member menu")).toBeNull();
   });
 
@@ -65,6 +79,34 @@ describe("MemberShell on a phone", () => {
     const tabs = within(screen.getByLabelText("Member tabs"));
     expect(tabs.getByLabelText("People").getAttribute("aria-current")).toBe("page");
     expect(tabs.getByLabelText("Home").getAttribute("aria-current")).toBeNull();
+  });
+});
+
+describe("MemberShell in Kiswahili (F07)", () => {
+  it("shows every menu item, tab name and button in Kiswahili", () => {
+    width(1280);
+    inLanguage("sw", <MemberShell onSignOut={vi.fn()}>content</MemberShell>);
+    const menu = within(screen.getByLabelText(sw.memberMenu));
+    for (const item of memberNav) {
+      expect(menu.getByText(sw[item.key])).toBeTruthy();
+      if (sw[item.key] !== en[item.key]) expect(menu.queryByText(en[item.key])).toBeNull();
+    }
+    expect(screen.getByRole("button", { name: sw.logOut })).toBeTruthy();
+  });
+
+  it("names the phone tabs in Kiswahili", () => {
+    width(390);
+    inLanguage("sw", <MemberShell>content</MemberShell>);
+    const tabs = within(screen.getByLabelText(sw.memberTabs));
+    for (const tab of memberPhoneTabs) expect(tabs.getByLabelText(sw[tab.key])).toBeTruthy();
+  });
+
+  it("switches language from the top bar", () => {
+    width(1280);
+    const setLanguage = vi.fn();
+    inLanguage("en", <MemberShell>content</MemberShell>, setLanguage);
+    fireEvent.click(screen.getByRole("button", { name: "Kiswahili" }));
+    expect(setLanguage).toHaveBeenCalledWith("sw");
   });
 });
 

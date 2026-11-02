@@ -1,6 +1,8 @@
-import { adminNav, adminPhoneTabs, moreItems } from "@kingdom-connect/shared";
+"use client";
+
+import { adminNav, adminPhoneTabs, moreItems, type TextKey } from "@kingdom-connect/shared";
 import Link from "next/link";
-import { strings } from "@/strings";
+import { useLanguage } from "@/lib/language";
 import { EmptyState } from "./states";
 
 export function ScreenTitle({ children }: { children: React.ReactNode }) {
@@ -9,26 +11,28 @@ export function ScreenTitle({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function ComingSoon({ title }: { title: string }) {
+export function ComingSoon({ titleKey }: { titleKey: TextKey }) {
+  const { t } = useLanguage();
   return (
     <>
-      <ScreenTitle>{title}</ScreenTitle>
-      <EmptyState title={strings.comingSoonTitle} message={strings.comingSoonMessage} />
+      <ScreenTitle>{t[titleKey]}</ScreenTitle>
+      <EmptyState title={t.comingSoonTitle} message={t.comingSoonMessage} />
     </>
   );
 }
 
 export function MoreList() {
+  const { t } = useLanguage();
   return (
     <ul className="flex flex-col divide-y rounded-lg border bg-card">
       {moreItems(adminNav, adminPhoneTabs).map((item) => (
         <li key={item.href}>
           <Link
             href={item.href}
-            aria-label={item.label}
+            aria-label={t[item.key]}
             className="flex min-h-[52px] items-center justify-between px-4 text-[15px] text-foreground"
           >
-            <span>{item.label}</span>
+            <span>{t[item.key]}</span>
             <span aria-hidden className="text-muted-foreground">
               ›
             </span>

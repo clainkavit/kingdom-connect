@@ -7,7 +7,7 @@ import {
 } from "@kingdom-connect/shared";
 import { useEffect, useState } from "react";
 import { Pressable, Text, TextInput, View } from "react-native";
-import { strings } from "../strings";
+import { useLanguage } from "../lib/language";
 
 function useCountdown(initialSeconds: number) {
   const [endsAt, setEndsAt] = useState(() => Date.now() + initialSeconds * 1000);
@@ -50,6 +50,7 @@ function Field(props: {
 const CODE_LENGTH = 6;
 
 function CodeBoxes({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  const { t } = useLanguage();
   const [focused, setFocused] = useState(false);
   const active = Math.min(value.length, CODE_LENGTH - 1);
   return (
@@ -65,7 +66,7 @@ function CodeBoxes({ value, onChange }: { value: string; onChange: (v: string) =
         ))}
       </View>
       <TextInput
-        aria-label={strings.emailCode}
+        aria-label={t.emailCode}
         value={value}
         onChangeText={(v) => onChange(v.replace(/\D/g, "").slice(0, CODE_LENGTH))}
         onFocus={() => setFocused(true)}
@@ -131,6 +132,7 @@ export function LoginForm({
   client: LoginClient;
   onCodeSent: (session: Session, resendAfterSeconds: number) => void;
 }) {
+  const { t } = useLanguage();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState<string | null>(null);
@@ -143,21 +145,21 @@ export function LoginForm({
     setBusy(false);
     if (result.kind === "code_sent") return onCodeSent(result.session, result.resendAfterSeconds);
     if (result.kind === "locked") return lock.restart(result.retryAfterSeconds);
-    setMessage(loginMessage(result, strings));
+    setMessage(loginMessage(result, t));
   };
 
   const locked = lock.secondsLeft > 0;
   return (
     <View className="gap-3">
-      <Field label={strings.username} value={username} onChange={setUsername} />
-      <Field label={strings.password} value={password} onChange={setPassword} secure />
+      <Field label={t.username} value={username} onChange={setUsername} />
+      <Field label={t.password} value={password} onChange={setPassword} secure />
       {locked ? (
-        <Message tone="info" text={strings.locked(minutesAndSeconds(lock.secondsLeft))} />
+        <Message tone="info" text={t.locked(minutesAndSeconds(lock.secondsLeft))} />
       ) : (
         <Message text={message} />
       )}
       <Button
-        label={strings.logIn}
+        label={t.logIn}
         onPress={submit}
         disabled={busy || locked || !username || !password}
       />
@@ -176,6 +178,7 @@ export function CodeForm({
   resendAfterSeconds: number;
   onVerified: () => void;
 }) {
+  const { t } = useLanguage();
   const [code, setCode] = useState("");
   const [message, setMessage] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -186,7 +189,7 @@ export function CodeForm({
     const result = await client.verifyCode(accessToken, code);
     setBusy(false);
     if (result.kind === "verified") return onVerified();
-    setMessage(codeMessage(result, strings));
+    setMessage(codeMessage(result, t));
   };
 
   const sendNew = async () => {
@@ -198,21 +201,21 @@ export function CodeForm({
     } else if (result.kind === "too_soon") {
       resend.restart(result.retryAfterSeconds);
     } else if (result.kind === "too_many_codes") {
-      setMessage(strings.tooManyCodes);
+      setMessage(t.tooManyCodes);
     } else {
-      setMessage(strings.network);
+      setMessage(t.network);
     }
   };
 
   return (
     <View className="gap-3">
-      <Text className="font-figtree text-sm leading-5 text-ink-2">{strings.codeSent}</Text>
+      <Text className="font-figtree text-sm leading-5 text-ink-2">{t.codeSent}</Text>
       <CodeBoxes value={code} onChange={setCode} />
       <Message text={message} />
-      <Button label={strings.verify} onPress={submit} disabled={busy || code.length !== 6} />
+      <Button label={t.verify} onPress={submit} disabled={busy || code.length !== 6} />
       <Button
         secondary
-        label={resend.secondsLeft > 0 ? strings.resendIn(resend.secondsLeft) : strings.resend}
+        label={resend.secondsLeft > 0 ? t.resendIn(resend.secondsLeft) : t.resend}
         onPress={sendNew}
         disabled={resend.secondsLeft > 0}
       />

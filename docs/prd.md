@@ -709,6 +709,11 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 - The member phone tab bar shows icons only, each with a screen-reader name.
 - The admin sidebar takes the canvas's items: Members and investors, and News and featured, are one item each; Milestone plans and Post as admin are added; Settings moves to the Super Administrator's pages.
 
+**Decided on 2 November 2026 (languages, F07)**
+- Both apps, the member app and the admin console, are in English and Kiswahili. The Kiswahili is drafted with the code and reviewed by Champion before merge.
+- Signed-out visitors can read one setting, the platform name, so the sign-in screens can show it. Every other setting stays signed-in only.
+- Until Settings is built, the language switch is in the sign-in header and the menus. A Member's choice is saved to their account; a choice made before sign-in carries into the account.
+
 **Open.** Every open question is a ticket on the [wayfinder map](https://github.com/clainkavit/kingdom-connect/issues/1) and is linked where it applies above.
 
 **Outside this spec**
@@ -742,6 +747,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | 20 Oct 2026 | Tech stack decided; pilot launches web first, mobile apps follow; push notifications scoped | 4, 14, 15, 16, 18 |
 | 1 Nov 2026 | CI on every pull request; nobody merges a pull request with a failing check (an agreed rule, without branch protection) | 17 |
 | 2 Nov 2026 | The design canvas becomes the visual direction; member menu across the top, new member and admin menu items, icon-only member phone tabs | 5, 18 |
+| 2 Nov 2026 | Both apps bilingual; visitors read the platform name; language switch placement until Settings | 18 |
 
 ## Appendix B: Source documents
 

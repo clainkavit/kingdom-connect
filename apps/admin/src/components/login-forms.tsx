@@ -9,7 +9,7 @@ import {
 } from "@kingdom-connect/shared";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
-import { strings } from "@/strings";
+import { useLanguage } from "@/lib/language";
 
 function useCountdown(initialSeconds: number) {
   const [endsAt, setEndsAt] = useState(() => Date.now() + initialSeconds * 1000);
@@ -52,6 +52,7 @@ function Field(props: {
 const CODE_LENGTH = 6;
 
 function CodeBoxes({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  const { t } = useLanguage();
   const [focused, setFocused] = useState(false);
   const active = Math.min(value.length, CODE_LENGTH - 1);
   return (
@@ -70,7 +71,7 @@ function CodeBoxes({ value, onChange }: { value: string; onChange: (v: string) =
         ))}
       </div>
       <label htmlFor="code" className="sr-only">
-        {strings.emailCode}
+        {t.emailCode}
       </label>
       <input
         id="code"
@@ -114,6 +115,7 @@ export function LoginForm({
   client: LoginClient;
   onCodeSent: (session: Session, resendAfterSeconds: number) => void;
 }) {
+  const { t } = useLanguage();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState<string | null>(null);
@@ -127,22 +129,22 @@ export function LoginForm({
     setBusy(false);
     if (result.kind === "code_sent") return onCodeSent(result.session, result.resendAfterSeconds);
     if (result.kind === "locked") return lock.restart(result.retryAfterSeconds);
-    setMessage(loginMessage(result, strings));
+    setMessage(loginMessage(result, { ...t, invalidLogin: t.invalidStaffLogin }));
   };
 
   const locked = lock.secondsLeft > 0;
   return (
     <form onSubmit={submit} className="flex flex-col gap-3">
-      <Field id="email" label={strings.email} value={email} onChange={setEmail} type="email" />
+      <Field id="email" label={t.email} value={email} onChange={setEmail} type="email" />
       <Field
         id="password"
-        label={strings.password}
+        label={t.password}
         value={password}
         onChange={setPassword}
         type="password"
       />
       {locked ? (
-        <Message tone="info" text={strings.locked(minutesAndSeconds(lock.secondsLeft))} />
+        <Message tone="info" text={t.locked(minutesAndSeconds(lock.secondsLeft))} />
       ) : (
         <Message text={message} />
       )}
@@ -151,7 +153,7 @@ export function LoginForm({
         disabled={busy || locked || !email || !password}
         className={primaryButton}
       >
-        {strings.logIn}
+        {t.logIn}
       </button>
     </form>
   );
@@ -168,6 +170,7 @@ export function CodeForm({
   resendAfterSeconds: number;
   onVerified: () => void;
 }) {
+  const { t } = useLanguage();
   const [code, setCode] = useState("");
   const [message, setMessage] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -179,7 +182,7 @@ export function CodeForm({
     const result = await client.verifyCode(accessToken, code);
     setBusy(false);
     if (result.kind === "verified") return onVerified();
-    setMessage(codeMessage(result, strings));
+    setMessage(codeMessage(result, t));
   };
 
   const sendNew = async () => {
@@ -191,19 +194,19 @@ export function CodeForm({
     } else if (result.kind === "too_soon") {
       resend.restart(result.retryAfterSeconds);
     } else if (result.kind === "too_many_codes") {
-      setMessage(strings.tooManyCodes);
+      setMessage(t.tooManyCodes);
     } else {
-      setMessage(strings.network);
+      setMessage(t.network);
     }
   };
 
   return (
     <form onSubmit={submit} className="flex flex-col gap-3">
-      <p className="text-sm leading-[1.45] text-ink-2">{strings.codeSent}</p>
+      <p className="text-sm leading-[1.45] text-ink-2">{t.codeSent}</p>
       <CodeBoxes value={code} onChange={setCode} />
       <Message text={message} />
       <button type="submit" disabled={busy || code.length !== 6} className={primaryButton}>
-        {strings.verify}
+        {t.verify}
       </button>
       <button
         type="button"
@@ -211,7 +214,7 @@ export function CodeForm({
         disabled={resend.secondsLeft > 0}
         className={secondaryButton}
       >
-        {resend.secondsLeft > 0 ? strings.resendIn(resend.secondsLeft) : strings.resend}
+        {resend.secondsLeft > 0 ? t.resendIn(resend.secondsLeft) : t.resend}
       </button>
     </form>
   );

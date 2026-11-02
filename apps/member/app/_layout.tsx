@@ -11,6 +11,7 @@ import { Slot } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { AuthProvider } from "../src/lib/auth";
+import { LanguageProvider } from "../src/lib/language";
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
@@ -26,7 +27,9 @@ export default function RootLayout() {
       <SafeAreaView className="flex-1 bg-bg">
         <StatusBar style="auto" />
         <AuthProvider>
-          <Slot />
+          <LanguageProvider>
+            <Slot />
+          </LanguageProvider>
         </AuthProvider>
       </SafeAreaView>
     </SafeAreaProvider>

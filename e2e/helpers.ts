@@ -230,3 +230,19 @@ export async function signUpsToday(): Promise<number> {
   const [row] = await db`select private.sign_ups_today() as count`;
   return Number(row!.count);
 }
+
+export async function addProfile(memberId: string, fullName: string) {
+  await db`insert into public.profiles (member_id, full_name) values (${memberId}, ${fullName})`;
+}
+
+export async function connect(a: string, b: string) {
+  const [first, second] = [a, b].sort();
+  await db`insert into public.connections (member_a, member_b) values (${first!}, ${second!})`;
+}
+
+export async function addSynonym(variant: string, skill: string) {
+  await db`insert into public.skills (name) values (${skill}) on conflict (name) do nothing`;
+  await db`insert into public.skill_synonyms (from_name, skill_id)
+    select ${variant}, id from public.skills where name = ${skill}
+    on conflict (from_name) do nothing`;
+}

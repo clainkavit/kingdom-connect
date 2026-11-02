@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
   adminNav,
-  adminNavFor,
   adminPhoneTabs,
   isCurrent,
   memberNav,
@@ -30,7 +29,8 @@ describe("member navigation", () => {
   });
 
   it("never contains an admin item", () => {
-    const adminOnly = labels(adminNav).filter((l) => l !== "Dashboard" && l !== "Reports");
+    const shared = ["Dashboard", "Reports", "Settings"];
+    const adminOnly = labels(adminNav).filter((l) => !shared.includes(l));
     for (const label of adminOnly) expect(labels(memberNav)).not.toContain(label);
   });
 
@@ -62,12 +62,8 @@ describe("admin navigation", () => {
       "Milestone plans",
       "Post as admin",
       "Audit log",
+      "Settings",
     ]);
-  });
-
-  it("adds Settings only for a Super Administrator (A16)", () => {
-    expect(labels(adminNavFor(false))).not.toContain("Settings");
-    expect(labels(adminNavFor(true)).at(-1)).toBe("Settings");
   });
 
   it("uses the phone tabs Home, Verify, Moderate, Reports, More", () => {

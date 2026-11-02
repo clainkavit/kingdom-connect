@@ -1,6 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   createLoginClient,
+  createProfileClient,
   createRegistrationClient,
   LOCAL_SUPABASE,
 } from "@kingdom-connect/shared";
@@ -21,3 +22,5 @@ export const supabase = createClient(url, anonKey, {
 export const loginClient = createLoginClient({ url, anonKey });
 
 export const registrationClient = createRegistrationClient({ url, anonKey });
+
+export const profileClient = createProfileClient({ url, anonKey });

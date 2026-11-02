@@ -14,6 +14,9 @@ const fakeApi = (over: Partial<SettingsApi> = {}): SettingsApi => ({
   ]),
   invite: vi.fn().mockResolvedValue("done"),
   setActive: vi.fn().mockResolvedValue("done"),
+  synonyms: vi.fn().mockResolvedValue([{ id: "y1", fromName: "js", skillName: "javascript" }]),
+  addSynonym: vi.fn().mockResolvedValue("done"),
+  removeSynonym: vi.fn().mockResolvedValue(true),
   ...over,
 });
 
@@ -27,11 +30,34 @@ const click = (name: string) =>
   act(async () => fireEvent.click(screen.getByRole("button", { name })));
 
 describe("SettingsScreen (A16)", () => {
-  it("is for Super Administrators only", async () => {
+  it("shows an Administrator the skill synonyms, and keeps the cap and staff for Super Administrators", async () => {
     const api = fakeApi();
     await show(api, false);
     expect(screen.getByText("Only Super Administrators can change these settings.")).toBeTruthy();
     expect(api.cap).not.toHaveBeenCalled();
+    expect(api.staff).not.toHaveBeenCalled();
+    expect(screen.getByRole("heading", { name: "Skill synonyms" })).toBeTruthy();
+    expect(screen.getByText("js → javascript")).toBeTruthy();
+  });
+
+  it("adds and removes a skill synonym", async () => {
+    const api = fakeApi();
+    await show(api, false);
+    fireEvent.change(screen.getByLabelText("Variant"), { target: { value: "JS " } });
+    fireEvent.change(screen.getByLabelText("Skill it means"), { target: { value: "JavaScript" } });
+    await click("Add synonym");
+    expect(api.addSynonym).toHaveBeenCalledWith("JS ", "JavaScript");
+    expect(screen.getByText("Synonym added.")).toBeTruthy();
+    await act(async () => fireEvent.click(screen.getByRole("button", { name: "Remove js" })));
+    expect(api.removeSynonym).toHaveBeenCalledWith("y1");
+  });
+
+  it("says when a synonym already exists", async () => {
+    await show(fakeApi({ addSynonym: vi.fn().mockResolvedValue("exists") }), false);
+    fireEvent.change(screen.getByLabelText("Variant"), { target: { value: "js" } });
+    fireEvent.change(screen.getByLabelText("Skill it means"), { target: { value: "x" } });
+    await click("Add synonym");
+    expect(screen.getByText("That variant already has a synonym.")).toBeTruthy();
   });
 
   it("shows the cap off by default and saves a limit", async () => {

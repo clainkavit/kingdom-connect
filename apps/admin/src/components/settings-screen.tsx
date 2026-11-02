@@ -1,10 +1,10 @@
 "use client";
 
-import { staffRoles, type StaffRole } from "@kingdom-connect/shared";
+import { MAX_SKILL_LENGTH, staffRoles, type StaffRole } from "@kingdom-connect/shared";
 import { useEffect, useState } from "react";
 import { buttonVariants } from "@/components/ui/button";
 import { useLanguage } from "@/lib/language";
-import type { SettingsApi, StaffMember } from "@/lib/settings";
+import type { SettingsApi, StaffMember, Synonym } from "@/lib/settings";
 import { Field } from "./field";
 import { ScreenTitle } from "./screens";
 import { EmptyState, ErrorState, LoadingRows } from "./states";
@@ -166,6 +166,92 @@ function StaffCard({
   );
 }
 
+function SynonymsCard({ api }: { api: SettingsApi }) {
+  const { t } = useLanguage();
+  const [list, setList] = useState<Synonym[] | null>(null);
+  const [variant, setVariant] = useState("");
+  const [skill, setSkill] = useState("");
+  const [result, setResult] = useState<Outcome>(null);
+  const [attempt, setAttempt] = useState(0);
+
+  useEffect(() => {
+    let live = true;
+    api.synonyms().then(
+      (loaded) => live && setList(loaded),
+      () => live && setResult({ tone: "bad", text: t.saveFailed }),
+    );
+    return () => {
+      live = false;
+    };
+  }, [api, attempt, t]);
+
+  const add = async () => {
+    const outcome = await api.addSynonym(variant, skill);
+    if (outcome === "done") {
+      setVariant("");
+      setSkill("");
+      setAttempt((a) => a + 1);
+    }
+    setResult({
+      tone: outcome === "done" ? "good" : "bad",
+      text: {
+        done: t.synonymAdded,
+        same: t.synonymSame,
+        exists: t.synonymExists,
+        invalid: t.synonymInvalid(MAX_SKILL_LENGTH),
+        failed: t.saveFailed,
+      }[outcome],
+    });
+  };
+
+  const remove = async (synonym: Synonym) => {
+    if (await api.removeSynonym(synonym.id)) setAttempt((a) => a + 1);
+    else setResult({ tone: "bad", text: t.saveFailed });
+  };
+
+  return (
+    <Card title={t.synonymsTitle}>
+      <p className="text-sm text-ink-2">{t.synonymsHint}</p>
+      {list && list.length ? (
+        <ul className="flex flex-col divide-y rounded-lg border">
+          {list.map((synonym) => (
+            <li key={synonym.id} className="flex items-center gap-3 px-4 py-2.5">
+              <span className="flex-1 text-sm text-foreground">
+                {synonym.fromName} → {synonym.skillName}
+              </span>
+              <button
+                type="button"
+                aria-label={t.removeSynonym(synonym.fromName)}
+                onClick={() => remove(synonym)}
+                className={buttonVariants({ variant: "ghost", size: "sm" })}
+              >
+                ×
+              </button>
+            </li>
+          ))}
+        </ul>
+      ) : list ? (
+        <p className="text-sm text-ink-2">{t.noSynonyms}</p>
+      ) : null}
+      <div className="grid gap-3 sm:grid-cols-2">
+        <Field
+          id="synonym-variant"
+          label={t.synonymVariant}
+          value={variant}
+          onChange={setVariant}
+        />
+        <Field id="synonym-skill" label={t.synonymSkill} value={skill} onChange={setSkill} />
+      </div>
+      <Notice outcome={result} />
+      <div>
+        <button type="button" onClick={add} className={buttonVariants({ variant: "default" })}>
+          {t.addSynonym}
+        </button>
+      </div>
+    </Card>
+  );
+}
+
 type Loaded = { cap: number | null; staff: StaffMember[] };
 
 export function SettingsScreen({ api, superAdmin }: { api: SettingsApi; superAdmin: boolean }) {
@@ -194,18 +280,21 @@ export function SettingsScreen({ api, superAdmin }: { api: SettingsApi; superAdm
   return (
     <>
       <ScreenTitle>{t.adminNavSettings}</ScreenTitle>
-      {!superAdmin ? (
-        <EmptyState title={t.adminNavSettings} message={t.settingsSuperAdminOnly} />
-      ) : failed ? (
-        <ErrorState message={t.saveFailed} onRetry={reload} />
-      ) : !loaded ? (
-        <LoadingRows />
-      ) : (
-        <div className="grid items-start gap-4 lg:grid-cols-2">
-          <CapCard key={String(loaded.cap)} api={api} initial={loaded.cap} />
-          <StaffCard api={api} staff={loaded.staff} onChanged={reload} />
-        </div>
-      )}
+      <div className="grid items-start gap-4 lg:grid-cols-2">
+        {!superAdmin ? (
+          <EmptyState title={t.adminNavSettings} message={t.settingsSuperAdminOnly} />
+        ) : failed ? (
+          <ErrorState message={t.saveFailed} onRetry={reload} />
+        ) : !loaded ? (
+          <LoadingRows />
+        ) : (
+          <>
+            <CapCard key={String(loaded.cap)} api={api} initial={loaded.cap} />
+            <StaffCard api={api} staff={loaded.staff} onChanged={reload} />
+          </>
+        )}
+        <SynonymsCard api={api} />
+      </div>
     </>
   );
 }

@@ -752,7 +752,16 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 - The daily application cap counts sign-ups: new accounts created that day, midnight to midnight Tanzania time. It is checked at sign-up, so nobody completes the wizard and is then turned away. Two sign-ups at the same moment can each pass the check, so the cap can be passed by one or two.
 - A Super Administrator invites a staff member by name, email and role. The invite email links to a set-password page that works for 24 hours; after that the staff member logs in with their email and the email code like any staff account. Nobody else ever knows the password.
 - A Super Administrator cannot deactivate or demote their own account, and the last active Super Administrator cannot be removed.
-- Settings (A16) appears in the admin menu only for Super Administrators.
+- Settings (A16) appears in the admin menu only for Super Administrators. (Superseded on 3 November by R06: Settings is in every Administrator's menu, and only the cap and staff sections are limited to Super Administrators.)
+
+**Decided on 3 November 2026 (profiles and skill tags, R06)**
+- The full name stays as verified at approval; only an Administrator changes it. Region and district, headline, bio, profession, experience, certifications and study are the member's to edit.
+- A public profile photo is optional, up to 2 MB, and shows without review. It is opened only by members who can see the profile, and is never the verification face photo.
+- Skills are tags, lowercased and trimmed. A member can add a new one; typing suggests existing skills and synonyms. Up to 20 skills, 40 characters each. The server applies the synonym list when tags are saved.
+- Any Administrator edits the skill synonym list in Settings. Adding a synonym moves profiles that used the variant onto the skill. Settings is now in every Administrator's menu; the cap and staff sections stay Super Administrator only.
+- A profile is reached by the member's id, not their username, so usernames stay private.
+- A hidden profile reads "Profile not found" to everyone except the owner, staff and existing connections, including through a direct link. Hiding is a safety tool, and a link can be forwarded.
+- When a hidden member contacts someone first (a connection request, R09; an application or expression of interest, O03), that person can see the profile while the request or application is open. Contact details stay masked. Built with those tickets.
 
 **Open.** Every open question is a ticket on the [wayfinder map](https://github.com/clainkavit/kingdom-connect/issues/1) and is linked where it applies above.
 
@@ -794,6 +803,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | 2 Nov 2026 | Verification queue: members first, preset bilingual rejection reasons, duplicate marked by username, overdue banner on Monday-to-Friday days | 6, 18 |
 | 2 Nov 2026 | Registration status: expected time from the queue, resubmission reopens the whole wizard, Administrators reopen a final rejection (new notification A6) | 6, 14, 18 |
 | 3 Nov 2026 | Daily cap counts sign-ups; staff invited by email with a set-password link; Super Administrator safeguards | 6, 18 |
+| 3 Nov 2026 | Profiles: verified name locked, photo without review, free skill tags with suggestions, synonyms edited by any Administrator | 8, 18 |
 
 ## Appendix B: Source documents
 

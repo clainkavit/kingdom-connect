@@ -1,6 +1,6 @@
 "use client";
 
-import { adminNavFor, adminPhoneTabs, isCurrent, type NavItem } from "@kingdom-connect/shared";
+import { adminNav, adminPhoneTabs, isCurrent, type NavItem } from "@kingdom-connect/shared";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -50,11 +50,9 @@ function TabLink({ item, current }: { item: NavItem; current: boolean }) {
 export function AdminShell({
   children,
   onSignOut,
-  superAdmin = false,
 }: {
   children: React.ReactNode;
   onSignOut?: () => void;
-  superAdmin?: boolean;
 }) {
   const pathname = usePathname();
   const { t } = useLanguage();
@@ -72,7 +70,7 @@ export function AdminShell({
           {t.adminLabel}
         </div>
         <nav aria-label={t.adminMenu} className="flex flex-col gap-1">
-          {adminNavFor(superAdmin).map((item) => (
+          {adminNav.map((item) => (
             <SidebarLink key={item.href} item={item} current={isCurrent(pathname, item)} />
           ))}
         </nav>

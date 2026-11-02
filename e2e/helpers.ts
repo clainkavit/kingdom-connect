@@ -246,3 +246,12 @@ export async function addSynonym(variant: string, skill: string) {
     select ${variant}, id from public.skills where name = ${skill}
     on conflict (from_name) do nothing`;
 }
+
+export async function setSkills(memberId: string, skills: string[]) {
+  const [row] = await db`select private.set_skills(${memberId}, ${skills}::text[]) as result`;
+  expect(row!.result).toBe("ok");
+}
+
+export async function hideProfile(memberId: string) {
+  await db`update public.profiles set hidden_from_directory = true where member_id = ${memberId}`;
+}

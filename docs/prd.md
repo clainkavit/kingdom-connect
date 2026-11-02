@@ -763,6 +763,12 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 - A hidden profile reads "Profile not found" to everyone except the owner, staff and existing connections, including through a direct link. Hiding is a safety tool, and a link can be forwarded.
 - When a hidden member contacts someone first (a connection request, R09; an application or expression of interest, O03), that person can see the profile while the request or application is open. Contact details stay masked. Built with those tickets.
 
+**Decided on 3 November 2026 (directory, R07)**
+- With no search typed, the directory is shuffled once a day (Tanzania time), so everyone takes a turn near the top and the order holds while paging. With a search, the best matches come first: name, then profession, then skill.
+- A hidden profile is not listed for anyone, connections included; connections can still open it. Applicants, staff and members who blocked you are not listed, nor are you.
+- Cards show a disabled Connect button ("Connecting comes soon") until connection requests arrive (R09).
+- Search and filters return in under 2 seconds with 10,000 members; a database test seeds 10,000 members and checks it on every pull request.
+
 **Open.** Every open question is a ticket on the [wayfinder map](https://github.com/clainkavit/kingdom-connect/issues/1) and is linked where it applies above.
 
 **Outside this spec**
@@ -804,6 +810,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | 2 Nov 2026 | Registration status: expected time from the queue, resubmission reopens the whole wizard, Administrators reopen a final rejection (new notification A6) | 6, 14, 18 |
 | 3 Nov 2026 | Daily cap counts sign-ups; staff invited by email with a set-password link; Super Administrator safeguards | 6, 18 |
 | 3 Nov 2026 | Profiles: verified name locked, photo without review, free skill tags with suggestions, synonyms edited by any Administrator | 8, 18 |
+| 3 Nov 2026 | Directory: daily shuffle with no search, hidden profiles never listed, disabled Connect until R09, 2-second target tested at 10,000 members | 8, 18 |
 
 ## Appendix B: Source documents
 

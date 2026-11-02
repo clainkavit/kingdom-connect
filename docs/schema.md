@@ -55,21 +55,22 @@ Private data sits in its own tables, so each rule is "this whole table is admin-
 |---|---|---|---|
 | `members` | `id` (= auth user), `username` (citext, unique), `status` (pending, approved, rejected, suspended, deactivated, deleted), `category`, `resubmissions_used`, `posting_suspended_until`, `approved_at` | The member; staff | Staff change `status`; the member changes nothing here directly |
 | `staff` | `id` (= auth user), `full_name`, `role` (admin, super_admin), `active` | Staff | Super Admin only |
-| `profiles` | `member_id`, `full_name`, `headline`, `bio`, `photo_path`, `region_id`, `district_id`, `profession`, `experience`, `certifications`, `study_institution`, `study_course`, `study_year`, `hidden_from_directory`, `last_active_at` | Approved members, unless hidden or blocked; a hidden profile stays visible to the owner and existing connections; staff | The owner |
+| `profiles` | `member_id`, `full_name`, `headline`, `bio`, `photo_path` (optional public photo, never the verification face photo), `region_id`, `district_id`, `profession`, `experience`, `certifications`, `category_details` (business name and sector, what an entrepreneur is building, or a description), `study_institution`, `study_course`, `study_year`, `hidden_from_directory`, `last_active_at` | Approved members, unless hidden or blocked; a hidden profile stays visible to the owner and existing connections; staff | The owner |
 | `profile_skills` | `member_id`, `skill_id` | Same as `profiles` | The owner |
 | `member_private` | `member_id`, `email`, `phone` (must start with +255), `address`, `id_type` (nida, passport, driving_licence, voters_id), `id_encrypted` (bytea), `id_fingerprint` (unique), `id_expires_on` (date, optional), `share_phone`, `share_email`, `share_address` (all false by default), `language` (en, sw) | The owner; staff. **Never** other members: they use `get_contact_details()` | The owner, except `id_*`, which only the registration function writes |
 | `investor_flags` | `member_id`, `granted_by` (staff), `route` (invitation, application), `sector_focus`, `ticket_band` (under_10m, 10m_to_50m, over_50m), `granted_at`, `revoked_at` | The investor themselves (so the app shows investor tools); staff. **No other member, ever** | Staff |
 
 **Admin accounts are separate.** A staff account has no member profile and cannot connect, message, apply or post ideas. A staff person who also wants to network uses a separate member account.
 
-**ID number.** Whichever accepted ID the member registers with (NIDA, passport, driving licence or voter's ID) is encrypted in the database with `pgcrypto`, using a key held in Supabase Vault. `id_fingerprint` is a keyed one-way hash (HMAC) of the ID type plus the number, so the same ID cannot register twice, without decrypting anything. A NIDA number must be 20 digits (checked by the registration function). Staff compare face photos to catch one person using two different IDs, and mark the suspected duplicate on the verification request. Only staff can decrypt a number, through `reveal_id_number(member_id)`, which writes an audit log entry.
+**ID number.** Whichever accepted ID the member registers with (NIDA, passport, driving licence or voter's ID) is encrypted in the database with `pgcrypto`, using a key held in Supabase Vault. `id_fingerprint` is a keyed one-way hash (HMAC) of the ID type plus the number, so the same ID cannot register twice, without decrypting anything. A NIDA number must be 20 digits (checked by the registration function). The number is never stored in the wizard draft: step 4 sends it to the `save-identity` Edge Function, which calls `private.set_identity()` to encrypt it (Vault key `id_encryption_key`) and fingerprint it (Vault key `id_fingerprint_key`) at once. A duplicate is refused and written to the audit log as `registration.duplicate_id` for admins. Staff compare face photos to catch one person using two different IDs, and mark the suspected duplicate on the verification request. Only staff can decrypt a number, through `reveal_id_number(member_id)`, which writes an audit log entry.
 
 ## 4. Verification
 
 | Table | Key columns | Who can read | Who can write |
 |---|---|---|---|
 | `verification_requests` | `member_id`, `level` (1, 2, 3), `status` (pending, approved, rejected, expired), `reviewer_id` (staff), `reason`, `duplicate_suspected_of` (member, optional), `submitted_at`, `decided_at` | The member (own, without reviewer notes, via `my_application_status()`); staff | The applicant functions create it; staff decide it |
-| `verification_documents` | `request_id`, `kind` (id_photo, brela, tin, licence, directorship, authorisation_letter), `storage_path`, `delete_after` (set once the request is decided; the retention period is open for the lawyer) | The owner; staff | The owner uploads while the request is pending; staff |
+| `verification_documents` | `request_id`, `kind` (face_photo, id_photo, brela, tin, licence, directorship, authorisation_letter), `storage_path`, `delete_after` (set once the request is decided; the retention period is open for the lawyer) | Staff | Written by `private.submit_registration()` from the files in Storage; staff |
+| `registration_drafts` | `member_id`, `step` (1 to 6), `data` (the wizard answers, never the ID number), `submitted_at` | The Applicant (own). **Never staff**: a draft is not an application | The Applicant, until they submit |
 | `businesses` | `member_id`, `name`, `sector_id`, `size`, `description`, `logo_path`, `level` (2, 3), `status` (pending, approved, rejected, expired) | Approved members see approved businesses; the owner; staff | The owner edits while not approved; staff approve |
 | `business_private` | `business_id`, `brela_no`, `tin`, `licence_no`, `licence_expires_on`, `address` | The owner; staff | The owner while pending; staff |
 
@@ -82,7 +83,7 @@ Private data sits in its own tables, so each rule is "this whole table is admin-
 | `skills` | `name` (citext, lowercased and trimmed, unique) | Approved members | Members create through tag entry; staff merge |
 | `skill_synonyms` | `from_name`, `skill_id` | Approved members | Staff (PRD section 10, Matching rules) |
 | `matching_settings` | `feature` (scan, people), `signal`, `points`, `min_score` | Staff | Super Admin, audit logged (PRD section 10, Matching rules) |
-| `platform_settings` | `key`, `value` (`platform_name`, `legal_entity_name`, `real_registrations_open` (off until all five legal texts are approved at 1.0; the database refuses to switch it on before that), featured slot limit, `daily_application_cap`: off by default) | Everyone signed in; signed-out visitors read the `platform_name` and `legal_entity_name` rows only. The registration function reads the cap for signed-out visitors | Super Admin, audit logged |
+| `platform_settings` | `key`, `value` (`platform_name`, `legal_entity_name`, `real_registrations_open` (off until all five legal texts are approved at 1.0; the database refuses to switch it on before that), `test_data_only` (on in local and test environments, off in production; sign-up works when either this or `real_registrations_open` is on), featured slot limit, `daily_application_cap`: off by default) | Everyone signed in; signed-out visitors read the `platform_name` and `legal_entity_name` rows only. The registration function reads the cap for signed-out visitors | Super Admin, audit logged |
 
 Matching scores are worked out when a page opens and are not stored (PRD section 10). The investor flag is never an input to matching.
 
@@ -177,7 +178,7 @@ All buckets are private. No file is ever at a public web address. Files are open
 | Bucket | Who can open a file |
 |---|---|
 | `avatars` | Approved members, and the owner |
-| `identity-documents` (ID photos) | The owner and staff |
+| `identity-documents` (face photo and ID photo, at `<member_id>/face` and `<member_id>/id`; JPEG, PNG or WebP up to 5 MB) | The owner, who can add or replace them only until the application is submitted; staff |
 | `business-documents` | The owner and staff |
 | `response-files` (CVs and attachments) | The member who sent it, the opportunity's poster, staff |
 | `idea-files` | Through `get_idea_file_link()` only: the owner and NDA-accepted members, watermarked |

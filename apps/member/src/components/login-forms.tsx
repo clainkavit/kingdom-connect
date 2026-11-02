@@ -6,8 +6,9 @@ import {
   type Session,
 } from "@kingdom-connect/shared";
 import { useEffect, useState } from "react";
-import { Pressable, Text, TextInput, View } from "react-native";
+import { Text, TextInput, View } from "react-native";
 import { useLanguage } from "../lib/language";
+import { Button, Field, Message } from "./form";
 
 function useCountdown(initialSeconds: number) {
   const [endsAt, setEndsAt] = useState(() => Date.now() + initialSeconds * 1000);
@@ -23,28 +24,6 @@ function useCountdown(initialSeconds: number) {
     setEndsAt(t + seconds * 1000);
   };
   return { secondsLeft, restart };
-}
-
-function Field(props: {
-  label: string;
-  value: string;
-  onChange: (v: string) => void;
-  secure?: boolean;
-}) {
-  return (
-    <View className="gap-1.5">
-      <Text className="font-figtree-semibold text-sm text-ink">{props.label}</Text>
-      <TextInput
-        aria-label={props.label}
-        value={props.value}
-        onChangeText={props.onChange}
-        secureTextEntry={props.secure}
-        autoCapitalize="none"
-        autoCorrect={false}
-        className="min-h-[44px] rounded-[9px] border border-field bg-surface px-3 font-figtree text-[15px] text-ink"
-      />
-    </View>
-  );
 }
 
 const CODE_LENGTH = 6;
@@ -77,50 +56,6 @@ function CodeBoxes({ value, onChange }: { value: string; onChange: (v: string) =
         caretHidden
         className="absolute inset-0 opacity-0"
       />
-    </View>
-  );
-}
-
-function Button(props: {
-  label: string;
-  onPress: () => void;
-  disabled?: boolean;
-  secondary?: boolean;
-}) {
-  return (
-    <Pressable
-      role="button"
-      aria-label={props.label}
-      aria-disabled={props.disabled}
-      disabled={props.disabled}
-      onPress={props.onPress}
-      className={`items-center justify-center px-4 ${props.secondary ? "min-h-[44px] rounded-[9px] border border-line bg-surface" : "min-h-[48px] rounded-[10px] bg-blue"} ${props.disabled ? "opacity-50" : ""}`}
-    >
-      <Text
-        className={
-          props.secondary
-            ? "font-figtree-semibold text-sm text-ink-2"
-            : "font-figtree-bold text-[15px] text-blue-ink"
-        }
-      >
-        {props.label}
-      </Text>
-    </Pressable>
-  );
-}
-
-function Message({ text, tone = "bad" }: { text: string | null; tone?: "bad" | "info" }) {
-  if (!text) return null;
-  return (
-    <View
-      role="alert"
-      className={`rounded-[10px] px-3 py-2.5 ${tone === "info" ? "bg-blue-soft" : "bg-bad-soft"}`}
-    >
-      <Text
-        className={`font-figtree text-[13px] leading-[19px] ${tone === "info" ? "text-info-text" : "text-bad-text"}`}
-      >
-        {text}
-      </Text>
     </View>
   );
 }

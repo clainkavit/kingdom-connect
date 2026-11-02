@@ -9,6 +9,7 @@ import { useState } from "react";
 import { Pressable, ScrollView, Text, View } from "react-native";
 import { useLanguage } from "../lib/language";
 import type { PendingText } from "../lib/legal";
+import { Checkbox } from "./form";
 
 export const legalTitleKeys: Record<LegalKind, TextKey> = {
   terms: "legalTerms",
@@ -49,33 +50,6 @@ export function LegalTextView({ body, entityName }: { body: string; entityName: 
         ),
       )}
     </View>
-  );
-}
-
-function Checkbox({
-  label,
-  checked,
-  onChange,
-}: {
-  label: string;
-  checked: boolean;
-  onChange: (next: boolean) => void;
-}) {
-  return (
-    <Pressable
-      role="checkbox"
-      aria-checked={checked}
-      aria-label={label}
-      onPress={() => onChange(!checked)}
-      className="min-h-[44px] flex-row items-center gap-3"
-    >
-      <View
-        className={`h-5 w-5 items-center justify-center rounded border ${checked ? "border-blue bg-blue" : "border-field bg-surface"}`}
-      >
-        {checked ? <Text className="font-figtree-bold text-xs text-white">✓</Text> : null}
-      </View>
-      <Text className="flex-1 font-figtree-semibold text-sm text-ink">{label}</Text>
-    </Pressable>
   );
 }
 

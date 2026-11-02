@@ -422,5 +422,8 @@ enabled = true
 [functions.login]
 verify_jwt = false
 
+[functions.sign-up]
+verify_jwt = false
+
 [functions.send-notification-emails]
 verify_jwt = true

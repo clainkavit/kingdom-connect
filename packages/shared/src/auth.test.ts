@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import {
   codeMessage,
   createLoginClient,
+  createRegistrationClient,
   loginMessage,
   minutesAndSeconds,
   routeFor,
@@ -190,5 +191,60 @@ describe("messages for the sign-in screens", () => {
   it("formats a countdown as minutes and seconds", () => {
     expect(minutesAndSeconds(900)).toBe("15:00");
     expect(minutesAndSeconds(61)).toBe("1:01");
+  });
+});
+
+describe("createRegistrationClient (S02, S05)", () => {
+  const respond = (status: number, body: object) =>
+    vi.fn().mockResolvedValue(new Response(JSON.stringify(body), { status }));
+  const client = (fetchImpl: typeof fetch) =>
+    createRegistrationClient({ url: "http://api.test", anonKey: "anon", fetch: fetchImpl });
+  const signUp = {
+    username: "test_user",
+    email: "t@example.test",
+    phone: "0712345678",
+    password: "secret123",
+    language: "en" as const,
+  };
+
+  it("creates an account through the sign-up function", async () => {
+    const fetchImpl = respond(201, { ok: true });
+    expect(await client(fetchImpl).signUp(signUp)).toEqual({ kind: "created" });
+    expect(fetchImpl.mock.calls[0]![0]).toBe("http://api.test/functions/v1/sign-up");
+  });
+
+  it("maps each sign-up refusal", async () => {
+    expect(await client(respond(409, { error: "username_taken" })).signUp(signUp)).toEqual({
+      kind: "username_taken",
+    });
+    expect(await client(respond(409, { error: "email_taken" })).signUp(signUp)).toEqual({
+      kind: "email_taken",
+    });
+    expect(await client(respond(403, { error: "closed" })).signUp(signUp)).toEqual({
+      kind: "closed",
+    });
+    expect(
+      await client(respond(400, { error: "invalid", problems: { phone: "phone" } })).signUp(signUp),
+    ).toEqual({ kind: "invalid", problems: { phone: "phone" } });
+  });
+
+  it("sends the ID with the Applicant's token and reports a duplicate", async () => {
+    const fetchImpl = respond(409, { error: "duplicate" });
+    expect(
+      await client(fetchImpl).saveIdentity("tok", { idType: "nida", idNumber: "1".repeat(20) }),
+    ).toEqual({ kind: "duplicate" });
+    expect(fetchImpl.mock.calls[0]![1].headers.Authorization).toBe("Bearer tok");
+  });
+
+  it("points back to the unfinished step when submitting too early", async () => {
+    expect(await client(respond(400, { error: "incomplete", step: 4 })).submit("tok")).toEqual({
+      kind: "incomplete",
+      step: 4,
+    });
+  });
+
+  it("says when the server cannot be reached", async () => {
+    const offline = vi.fn().mockRejectedValue(new Error("offline"));
+    expect(await client(offline).submit("tok")).toEqual({ kind: "network" });
   });
 });

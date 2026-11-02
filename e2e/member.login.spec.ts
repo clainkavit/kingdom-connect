@@ -74,5 +74,5 @@ test("an Applicant reaches Registration status only", async ({ page }) => {
   ).toBeVisible();
 
   await page.goto("/messages");
-  await expect(page).toHaveURL(/\/status$/);
+  await expect(page).toHaveURL(/\/registration$/);
 });

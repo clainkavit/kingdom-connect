@@ -1,17 +1,10 @@
-import { LOCAL_SUPABASE } from "@kingdom-connect/shared";
 import { expect, type Page, test } from "@playwright/test";
-import { enterCode, LOCAL_SERVICE_ROLE_KEY, nextCode } from "./helpers";
+import { enterCode, nextCode, openApplication } from "./helpers";
 
 const PNG = Buffer.from(
   "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=",
   "base64",
 );
-
-const service = {
-  apikey: LOCAL_SERVICE_ROLE_KEY,
-  Authorization: `Bearer ${LOCAL_SERVICE_ROLE_KEY}`,
-  "Content-Type": "application/json",
-};
 
 async function signUp(page: Page, username: string) {
   const email = `${username.replace(/_/g, ".")}@example.test`;
@@ -95,20 +88,13 @@ test("a person signs up, completes the six steps and is approved (REG-1, S02, S0
   await expect(page.getByRole("heading", { name: "Registration status" })).toBeVisible();
   await expect(page.getByText("Under review")).toBeVisible();
 
-  const [member] = await fetch(
-    `${LOCAL_SUPABASE.url}/rest/v1/members?username=eq.${username}&select=id`,
-    { headers: service },
-  ).then((r) => r.json());
-  await fetch(`${LOCAL_SUPABASE.url}/rest/v1/verification_requests?member_id=eq.${member.id}`, {
-    method: "PATCH",
-    headers: service,
-    body: JSON.stringify({ status: "approved", decided_at: new Date().toISOString() }),
-  });
-  await fetch(`${LOCAL_SUPABASE.url}/rest/v1/members?id=eq.${member.id}`, {
-    method: "PATCH",
-    headers: service,
-    body: JSON.stringify({ status: "approved", approved_at: new Date().toISOString() }),
-  });
+  const admin = await page.context().browser()!.newPage();
+  await openApplication(admin, username);
+  await expect(admin.getByRole("img", { name: "Face photo" })).toBeVisible();
+  await expect(admin.getByRole("img", { name: "ID photo" })).toBeVisible();
+  await admin.getByRole("button", { name: "Approve" }).click();
+  await expect(admin.getByText("Approved. The applicant has been told.")).toBeVisible();
+  await admin.close();
 
   await page.getByRole("button", { name: "Log out" }).click();
   await expect(page).toHaveURL(/\/login$/);

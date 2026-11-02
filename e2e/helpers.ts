@@ -151,3 +151,54 @@ export async function acceptCurrentTexts(memberIds: string[]) {
     }
   }
 }
+
+/** A fresh Applicant with a submitted application (ID saved, both photo files recorded), ready for the queue. */
+export async function createApplication(username: string, idNumber: string) {
+  const { id, email } = await createMember(username, { acceptTexts: false });
+  await db`update public.members set status = 'pending' where id = ${id}`;
+  await db`select private.set_identity(${id}, 'passport', ${idNumber})`;
+  await db`insert into storage.objects (bucket_id, name) values
+    ('identity-documents', ${`${id}/face`}), ('identity-documents', ${`${id}/id`})`;
+  const [place] = await db`select id, region_id from public.districts limit 1`;
+  const draft = {
+    fullName: "Queue Applicant",
+    category: "other",
+    address: "Plot 9, Test Street",
+    regionId: place!.region_id,
+    districtId: place!.id,
+    categoryDetails: { description: "Tailor" },
+    acceptTerms: true,
+    acceptPrivacy: true,
+  };
+  await db`insert into public.registration_drafts (member_id, step, data)
+    values (${id}, 6, ${db.json(draft)})`;
+  const [result] = await db`select private.submit_registration(${id}) as result`;
+  expect(result!.result).toBe("ok");
+  return { id, email };
+}
+
+export async function auditActions(targetId: string): Promise<string[]> {
+  const rows =
+    await db`select action from private.audit_log where target_id = ${targetId} order by created_at`;
+  return rows.map((r) => r.action as string);
+}
+
+export async function notificationKinds(memberId: string): Promise<string[]> {
+  const rows =
+    await db`select kind from public.notifications where member_id = ${memberId} order by created_at`;
+  return rows.map((r) => r.kind as string);
+}
+
+export const ADMIN_URL = process.env.ADMIN_URL ?? "http://localhost:3000";
+
+/** Signs the test Administrator in to the admin console and opens one Applicant's application from the queue. */
+export async function openApplication(page: Page, username: string) {
+  await page.goto(`${ADMIN_URL}/login`);
+  const sentAfter = new Date();
+  await logIn(page, "Email", "test.admin@example.test");
+  await enterCode(page, await nextCode("test.admin@example.test", sentAfter));
+  await expect(page.getByRole("heading", { name: "Admin dashboard" })).toBeVisible();
+  await page.goto(`${ADMIN_URL}/verification`);
+  await page.getByRole("link", { name: `@${username} ·` }).click();
+  await expect(page.getByRole("button", { name: "Approve" })).toBeVisible();
+}

@@ -69,9 +69,9 @@ export type ResendResult =
   | { kind: "too_many_codes" }
   | { kind: "network" };
 
-type Options = { url: string; anonKey: string; fetch?: typeof fetch };
+export type FunctionOptions = { url: string; anonKey: string; fetch?: typeof fetch };
 
-function functionCaller({ url, anonKey, fetch: fetchImpl = fetch }: Options) {
+export function functionCaller({ url, anonKey, fetch: fetchImpl = fetch }: FunctionOptions) {
   return async (name: string, body: object, accessToken?: string) => {
     const headers: Record<string, string> = { apikey: anonKey, "Content-Type": "application/json" };
     if (accessToken) headers.Authorization = `Bearer ${accessToken}`;
@@ -88,7 +88,7 @@ function functionCaller({ url, anonKey, fetch: fetchImpl = fetch }: Options) {
   };
 }
 
-export function createLoginClient(options: Options) {
+export function createLoginClient(options: FunctionOptions) {
   const call = functionCaller(options);
 
   return {
@@ -157,7 +157,7 @@ export type SubmitResult =
   | { kind: "network" };
 
 /** Sign-up (S02) and the registration wizard's server steps (S05). */
-export function createRegistrationClient(options: Options) {
+export function createRegistrationClient(options: FunctionOptions) {
   const call = functionCaller(options);
   return {
     async signUp(input: SignUpInput & { language: Language }): Promise<SignUpResult> {

@@ -41,3 +41,26 @@ export function roleOf(req: Request): string | null {
     return null;
   }
 }
+
+/** The last x-forwarded-for hop, the one the platform's proxy added, as access.request_ip() reads it. */
+export function clientIp(req: Request): string | null {
+  const hops = (req.headers.get("x-forwarded-for") ?? "").split(",");
+  const last = hops[hops.length - 1]?.trim();
+  return last && /^[0-9a-fA-F.:]+$/.test(last) ? last : null;
+}
+
+export const isUuid = (value: unknown): value is string =>
+  typeof value === "string" &&
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value);
+
+/** The HTTP status for each refusal the staff functions return. */
+export const refusalStatus: Record<string, number> = {
+  not_staff: 403,
+  not_found: 404,
+  unknown_member: 404,
+  already_decided: 409,
+  member_not_pending: 409,
+  reason_required: 400,
+  note_has_contact_details: 400,
+  invalid: 400,
+};

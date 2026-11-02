@@ -733,6 +733,14 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 - A starter list of 16 sectors in English and Kiswahili is loaded; Champion and the collaborator can rename or add.
 - The ID number is never kept in the saved draft: it is encrypted the moment step 4 is saved.
 
+**Decided on 2 November 2026 (verification queue, R03)**
+- The R03 queue holds Level 1 member applications. Businesses (Levels 2 and 3) and investor applications join the same queue when their tickets are built.
+- A rejection uses a reason from a short preset list, written in English and Kiswahili, plus an optional note. The Applicant receives the reason in their own language and the note as the admin typed it. "Another reason" needs a note. A note cannot carry a phone number or email address.
+- Staff mark a suspected duplicate by typing the other member's username. Both face photos then show side by side, and the mark is written to the audit log.
+- The overdue alert is a banner on the queue and a mark on each row once an application has waited 2 working days. Working days are Monday to Friday in Tanzania time; public holidays are added later. The admin dashboard (A01) shows it when that screen is built.
+- An expired ID is shown as a warning. The admin still decides.
+- Staff decide only through the audited decision function, never by editing the application directly. Approving, rejecting, marking a duplicate and revealing an ID number are each written to the audit log with the admin and their IP address.
+
 **Open.** Every open question is a ticket on the [wayfinder map](https://github.com/clainkavit/kingdom-connect/issues/1) and is linked where it applies above.
 
 **Outside this spec**
@@ -770,6 +778,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | 2 Nov 2026 | Critical notifications always emailed; daily message digest; copy generated from docs/notifications.md; queued email | 14, 18 |
 | 2 Nov 2026 | Legal texts as files in the repo, drafts at 0.1, launch gate as a database-guarded setting | 13, 18 |
 | 2 Nov 2026 | Registration: test-data switch, admin-only face photo, category details, duplicate ID handling, starter sectors | 6, 18 |
+| 2 Nov 2026 | Verification queue: members first, preset bilingual rejection reasons, duplicate marked by username, overdue banner on Monday-to-Friday days | 6, 18 |
 
 ## Appendix B: Source documents
 

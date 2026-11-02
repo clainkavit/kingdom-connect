@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Figtree } from "next/font/google";
+import { Suspense } from "react";
 import { AuthProvider } from "@/lib/auth";
 import { LanguageProvider } from "@/lib/language";
 import "./globals.css";
@@ -19,7 +20,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html lang="en" className={figtree.variable}>
       <body>
         <LanguageProvider>
-          <AuthProvider>{children}</AuthProvider>
+          <Suspense>
+            <AuthProvider>{children}</AuthProvider>
+          </Suspense>
         </LanguageProvider>
       </body>
     </html>

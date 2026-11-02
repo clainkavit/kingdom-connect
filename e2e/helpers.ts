@@ -1,5 +1,6 @@
 import { LOCAL_SUPABASE } from "@kingdom-connect/shared";
 import { expect, type Page } from "@playwright/test";
+import postgres from "postgres";
 
 export const TEST_PASSWORD = "kingdom-test-only";
 const MAILPIT = "http://localhost:54324";
@@ -29,7 +30,7 @@ export async function nextCode(to: string, after: Date): Promise<string> {
   return email.Snippet.match(/\b(\d{6})\b/)![1]!;
 }
 
-export async function createMember(username: string): Promise<{ email: string }> {
+export async function createMember(username: string): Promise<{ email: string; id: string }> {
   const email = `${username.replace(/_/g, ".")}@example.test`;
   const headers = {
     apikey: LOCAL_SERVICE_ROLE_KEY,
@@ -53,7 +54,7 @@ export async function createMember(username: string): Promise<{ email: string }>
     body: JSON.stringify({ member_id: user.id, email, phone: "+255700000000" }),
   });
   expect(contact.ok).toBe(true);
-  return { email };
+  return { email, id: user.id };
 }
 
 export async function logIn(
@@ -70,4 +71,41 @@ export async function logIn(
 export async function enterCode(page: Page, code: string) {
   await page.getByLabel("Email code").fill(code);
   await page.getByRole("button", { name: "Verify" }).click();
+}
+
+const db = postgres(
+  process.env.DB_URL ?? "postgresql://postgres:postgres@127.0.0.1:54322/postgres",
+  {
+    max: 1,
+  },
+);
+
+export async function notify(memberId: string, kind: string, payload: Record<string, unknown>) {
+  await db`select private.notify(${memberId}, ${kind}, ${db.json(payload as never)})`;
+}
+
+export async function sendQueuedEmails() {
+  const res = await fetch(`${LOCAL_SUPABASE.url}/functions/v1/send-notification-emails`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${LOCAL_SERVICE_ROLE_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: "{}",
+  });
+  expect(res.ok).toBe(true);
+}
+
+export async function emailsTo(to: string, after: Date): Promise<{ Subject: string }[]> {
+  const res = await fetch(`${MAILPIT}/api/v1/search?query=${encodeURIComponent(`to:${to}`)}`);
+  const { messages } = (await res.json()) as { messages: (MailpitMessage & { Subject: string })[] };
+  return messages.filter((m) => new Date(m.Created) >= after);
+}
+
+export async function signInAs(page: Page, username: string, email: string) {
+  await page.goto("/login");
+  const sentAfter = new Date();
+  await logIn(page, "Username", username);
+  await enterCode(page, await nextCode(email, sentAfter));
+  await expect(page.getByRole("navigation", { name: /Member menu|Member tabs/ })).toBeVisible();
 }

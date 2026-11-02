@@ -30,3 +30,14 @@ export async function requireUser(req: Request): Promise<SignedIn | null> {
   if (!data.user) return null;
   return { userId: data.user.id, sessionId: sessionIdOf(token) };
 }
+
+/** The role claim of a token the gateway has already verified (verify_jwt). */
+export function roleOf(req: Request): string | null {
+  const token = (req.headers.get("Authorization") ?? "").replace(/^Bearer /, "");
+  const part = (token.split(".")[1] ?? "").replace(/-/g, "+").replace(/_/g, "/");
+  try {
+    return JSON.parse(atob(part + "=".repeat((4 - (part.length % 4)) % 4))).role ?? null;
+  } catch {
+    return null;
+  }
+}

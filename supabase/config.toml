@@ -421,3 +421,6 @@ enabled = true
 
 [functions.login]
 verify_jwt = false
+
+[functions.send-notification-emails]
+verify_jwt = true

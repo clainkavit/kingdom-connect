@@ -3,3 +3,4 @@ export * from "./design";
 export * from "./navigation";
 export * from "./auth";
 export * from "./strings";
+export * from "./notifications";

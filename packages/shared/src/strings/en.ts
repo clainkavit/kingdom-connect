@@ -74,4 +74,22 @@ export const en = {
   wrongAppMember: "This is an administrator account. Use the admin console to sign in.",
   wrongAppStaff:
     "This account cannot use the admin console. Members sign in through the member app.",
+
+  notificationsTitle: "Notifications",
+  notificationsUnread: (count: number) => `Notifications, ${count} unread`,
+  nothingNew: "Nothing new",
+  nothingNewMessage: "When something happens, you will see it here.",
+  unread: "Unread",
+  notificationSettingsTitle: "Notification settings",
+  emailSettingsIntro: "Account and security messages always arrive by email. You choose the rest.",
+  categoryBusiness: "Business verification",
+  categoryConnections: "Connection requests",
+  categoryMessages: "Messages, as a daily summary",
+  categoryOpportunities: "Opportunities and responses",
+  categoryIdeas: "Ideas",
+  categoryPlans: "Milestone plans",
+  categoryMatches: "Opportunity matches, weekly",
+  categoryLearning: "Training and events",
+  categoryInvestor: "Investor tools",
+  emailSwitch: (category: string) => `Email for ${category}`,
 };

@@ -714,6 +714,12 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 - Signed-out visitors can read one setting, the platform name, so the sign-in screens can show it. Every other setting stays signed-in only.
 - Until Settings is built, the language switch is in the sign-in header and the menus. A Member's choice is saved to their account; a choice made before sign-in carries into the account.
 
+**Decided on 2 November 2026 (notifications, F10)**
+- Always emailed, with no switch: registration, login code, account locked, account suspended, posting paused, idea hidden or removed. Every other category that sends email has an email switch.
+- The new-message email is a daily digest of messages still unread, sent only when there is at least one.
+- The notification copy in docs/notifications.md is the single source; the apps and the email sender are generated from it.
+- Emails are queued and sent within a minute, with retries. The login code is still sent at once.
+
 **Open.** Every open question is a ticket on the [wayfinder map](https://github.com/clainkavit/kingdom-connect/issues/1) and is linked where it applies above.
 
 **Outside this spec**
@@ -748,6 +754,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | 1 Nov 2026 | CI on every pull request; nobody merges a pull request with a failing check (an agreed rule, without branch protection) | 17 |
 | 2 Nov 2026 | The design canvas becomes the visual direction; member menu across the top, new member and admin menu items, icon-only member phone tabs | 5, 18 |
 | 2 Nov 2026 | Both apps bilingual; visitors read the platform name; language switch placement until Settings | 18 |
+| 2 Nov 2026 | Critical notifications always emailed; daily message digest; copy generated from docs/notifications.md; queued email | 14, 18 |
 
 ## Appendix B: Source documents
 

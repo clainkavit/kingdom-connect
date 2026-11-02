@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 import {
   afterPasswordAccepted,
+  CODE_MINUTES,
+  LOCK_AFTER_FAILURES,
+  LOCK_MINUTES,
   generateCode,
   hashCode,
   lockedEmail,
@@ -68,6 +71,12 @@ describe("emails (docs/notifications.md A5 and L1)", () => {
     expect(loginCodeEmail("sw", "Kingdom Connect", "123456").subject).toBe(
       "Msimbo wako wa Kingdom Connect",
     );
+  });
+
+  it("say the same numbers the rules use", () => {
+    expect(loginCodeEmail("en", "P", "1").text).toContain(`${CODE_MINUTES} minutes`);
+    expect(lockedEmail("en").subject).toContain(`${LOCK_MINUTES} minutes`);
+    expect(lockedEmail("en").text).toContain(`${LOCK_AFTER_FAILURES} failed`);
   });
 
   it("tells the person their account is locked", () => {

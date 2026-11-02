@@ -77,6 +77,8 @@ pnpm db:stop              # stop the stack
 
 **Signing in locally.** Members sign in with their username and Administrators with their email, then type the 6-digit code from the email catcher. Five wrong passwords lock an account for 15 minutes; `pnpm db:reset` clears every lock.
 
+**Notifications.** `private.notify(member, kind, payload)` stores a notification and queues its email; `send-notification-emails` sends the queue every minute (pg_cron, through pg_net), and a daily job queues the message digest. The copy comes from [docs/notifications.md](docs/notifications.md): after editing it, run `pnpm notifications`. Locally the seed stores the function URL and key in Vault. Production needs two Vault secrets set by hand: `functions_url` (the project's `https://<ref>.supabase.co/functions/v1`) and `service_role_key`.
+
 **Login functions.** `supabase/functions/` holds the `login`, `verify-otp` and `resend-otp` Edge Functions. Their local settings (`MAIL_API_URL`, `DB_URL`, `OTP_SECRET`) sit under `[edge_runtime.secrets]` in `supabase/config.toml` and work only on this machine. Production needs its own long random `OTP_SECRET` and the access token hook switched on in the Supabase dashboard. `pnpm typecheck` also checks the functions with Deno.
 
 **End-to-end tests.** `pnpm e2e` runs the Playwright browser tests in `e2e/` against the local stack. It starts the member app on port 8081 and the admin console on port 3000, or reuses them if they are already running (set `MEMBER_URL` and `ADMIN_URL` to use other ports). Run `pnpm db:start` first, and once `pnpm exec playwright install chromium`.

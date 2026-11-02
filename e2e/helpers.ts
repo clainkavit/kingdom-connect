@@ -1,11 +1,12 @@
-import { LOCAL_SUPABASE } from "@kingdom-connect/shared";
+import { compareVersions, LOCAL_SUPABASE, reacceptKinds } from "@kingdom-connect/shared";
+import { LOCAL_SERVICE_ROLE_KEY } from "@kingdom-connect/shared/src/local-dev";
+
+export { LOCAL_SERVICE_ROLE_KEY };
 import { expect, type Page } from "@playwright/test";
 import postgres from "postgres";
 
 export const TEST_PASSWORD = "kingdom-test-only";
 const MAILPIT = "http://localhost:54324";
-const LOCAL_SERVICE_ROLE_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImV4cCI6MTk4MzgxMjk5Nn0.EGIM96RAZx35lJzdJsyH-qQwv8Hdp7fsn3W0YpN81IU";
 
 type MailpitMessage = { Created: string; Subject: string; Snippet: string };
 
@@ -30,7 +31,10 @@ export async function nextCode(to: string, after: Date): Promise<string> {
   return email.Snippet.match(/\b(\d{6})\b/)![1]!;
 }
 
-export async function createMember(username: string): Promise<{ email: string; id: string }> {
+export async function createMember(
+  username: string,
+  { acceptTexts = true } = {},
+): Promise<{ email: string; id: string }> {
   const email = `${username.replace(/_/g, ".")}@example.test`;
   const headers = {
     apikey: LOCAL_SERVICE_ROLE_KEY,
@@ -54,6 +58,7 @@ export async function createMember(username: string): Promise<{ email: string; i
     body: JSON.stringify({ member_id: user.id, email, phone: "+255700000000" }),
   });
   expect(contact.ok).toBe(true);
+  if (acceptTexts) await acceptCurrentTexts([user.id]);
   return { email, id: user.id };
 }
 
@@ -108,4 +113,41 @@ export async function signInAs(page: Page, username: string, email: string) {
   await logIn(page, "Username", username);
   await enterCode(page, await nextCode(email, sentAfter));
   await expect(page.getByRole("navigation", { name: /Member menu|Member tabs/ })).toBeVisible();
+}
+
+const serviceHeaders = {
+  apikey: LOCAL_SERVICE_ROLE_KEY,
+  Authorization: `Bearer ${LOCAL_SERVICE_ROLE_KEY}`,
+  "Content-Type": "application/json",
+};
+
+/** Records that test members accepted the current terms and privacy notice, so S07 stays out of the way. */
+export async function acceptCurrentTexts(memberIds: string[]) {
+  const texts: { id: string; kind: string; version: string }[] = await fetch(
+    `${LOCAL_SUPABASE.url}/rest/v1/legal_texts?kind=in.(${reacceptKinds.join(",")})&effective_at=lte.${new Date().toISOString()}&select=id,kind,version`,
+    { headers: serviceHeaders },
+  ).then((r) => r.json());
+  const current = reacceptKinds
+    .map(
+      (kind) =>
+        texts
+          .filter((t) => t.kind === kind)
+          .sort((a, b) => compareVersions(a.version, b.version))[0],
+    )
+    .filter((t): t is { id: string; kind: string; version: string } => Boolean(t));
+  for (const memberId of memberIds) {
+    for (const text of current) {
+      const res = await fetch(`${LOCAL_SUPABASE.url}/rest/v1/legal_acceptances`, {
+        method: "POST",
+        headers: serviceHeaders,
+        body: JSON.stringify({
+          member_id: memberId,
+          legal_text_id: text.id,
+          context_type: "reaccept",
+        }),
+      });
+      if (!res.ok && res.status !== 409)
+        throw new Error(`accepting ${text.kind} failed: ${res.status} ${await res.text()}`);
+    }
+  }
 }

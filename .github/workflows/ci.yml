@@ -89,6 +89,7 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm exec supabase start -x studio,imgproxy,vector,logflare,supavisor,postgres-meta,realtime,storage-api
+      - run: pnpm legal:load
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm exec playwright test
       - if: failure()

@@ -15,7 +15,8 @@ select is(
 select is(
   (select array_agg(c.relname::text order by c.relname) from pg_class c join pg_namespace n on n.oid = c.relnamespace
    where n.nspname = 'public' and c.relkind = 'r' and has_table_privilege('anon', c.oid, 'select')),
-  array['platform_settings'], 'signed-out visitors can select only from platform_settings, the platform name row');
+  array['legal_texts', 'platform_settings'],
+  'signed-out visitors can select only from legal_texts (terms and privacy) and platform_settings (the names)');
 
 select ok(not has_schema_privilege('anon', 'access', 'usage'), 'signed-out visitors cannot use the helper functions');
 select ok(has_function_privilege('authenticated', 'access.is_connected(uuid, uuid)', 'execute'), 'policies run as signed-in users can call the helpers');

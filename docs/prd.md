@@ -720,6 +720,11 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 - The notification copy in docs/notifications.md is the single source; the apps and the email sender are generated from it.
 - Emails are queued and sent within a minute, with retries. The login code is still sent at once.
 
+**Decided on 2 November 2026 (legal texts, R05)**
+- Claude drafts all five texts in English and Kiswahili as version 0.1, marked as drafts and not legal advice; Champion and the collaborator rework them under L03. Facts not yet decided are marked "[TO CONFIRM: ...]" in the text.
+- The texts live as files in `legal/` in the repo; reviewing a text is reviewing a pull request, and `pnpm legal:load` loads a new version.
+- The launch gate is a setting, `real_registrations_open`, off by default. The database refuses to switch it on until all five texts are approved at version 1.0. Development and testing keep working on test data.
+
 **Open.** Every open question is a ticket on the [wayfinder map](https://github.com/clainkavit/kingdom-connect/issues/1) and is linked where it applies above.
 
 **Outside this spec**
@@ -755,6 +760,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | 2 Nov 2026 | The design canvas becomes the visual direction; member menu across the top, new member and admin menu items, icon-only member phone tabs | 5, 18 |
 | 2 Nov 2026 | Both apps bilingual; visitors read the platform name; language switch placement until Settings | 18 |
 | 2 Nov 2026 | Critical notifications always emailed; daily message digest; copy generated from docs/notifications.md; queued email | 14, 18 |
+| 2 Nov 2026 | Legal texts as files in the repo, drafts at 0.1, launch gate as a database-guarded setting | 13, 18 |
 
 ## Appendix B: Source documents
 

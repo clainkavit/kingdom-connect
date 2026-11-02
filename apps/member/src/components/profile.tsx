@@ -33,7 +33,15 @@ function Muted({ text }: { text: string }) {
   return <Text className="font-figtree text-sm text-ink-2">{text}</Text>;
 }
 
-function Avatar({ name, url, size = 72 }: { name: string; url: string | null; size?: number }) {
+export function Avatar({
+  name,
+  url,
+  size = 72,
+}: {
+  name: string;
+  url: string | null;
+  size?: number;
+}) {
   const initials = name
     .split(/\s+/)
     .filter(Boolean)

@@ -87,6 +87,42 @@ export function Button(props: {
   );
 }
 
+export function Switch({
+  label,
+  hint,
+  checked,
+  onChange,
+  disabled,
+}: {
+  label: string;
+  hint?: string;
+  checked: boolean;
+  onChange: (next: boolean) => void;
+  disabled?: boolean;
+}) {
+  return (
+    <Pressable
+      role="switch"
+      aria-checked={checked}
+      aria-label={label}
+      aria-disabled={disabled}
+      disabled={disabled}
+      onPress={() => onChange(!checked)}
+      className="min-h-[52px] flex-row items-center gap-3"
+    >
+      <View className="flex-1 gap-0.5">
+        <Text className="font-figtree-semibold text-[15px] text-ink">{label}</Text>
+        {hint ? <Text className="font-figtree text-[13px] text-ink-2">{hint}</Text> : null}
+      </View>
+      <View
+        className={`h-7 w-12 justify-center rounded-full px-0.5 ${checked ? "items-end bg-blue" : "items-start bg-line"}`}
+      >
+        <View className="h-6 w-6 rounded-full bg-surface" />
+      </View>
+    </Pressable>
+  );
+}
+
 export function Message({ text, tone = "bad" }: { text: string | null; tone?: "bad" | "info" }) {
   if (!text) return null;
   return (

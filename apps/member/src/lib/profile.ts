@@ -2,6 +2,8 @@ import type { Language, SetSkillsResult } from "@kingdom-connect/shared";
 import { regionOptions, districtOptions, type Option } from "./registration";
 import { profileClient, supabase } from "./supabase";
 
+export type ContactDetails = { phone: string | null; email: string | null; address: string | null };
+
 export type Profile = {
   memberId: string;
   own: boolean;
@@ -18,18 +20,12 @@ export type Profile = {
   skills: string[];
   photoUrl: string | null;
   hidden: boolean;
+  contact: ContactDetails | null;
 };
 
 export type ProfileChanges = Pick<
   Profile,
-  | "headline"
-  | "bio"
-  | "profession"
-  | "experience"
-  | "certifications"
-  | "regionId"
-  | "districtId"
-  | "hidden"
+  "headline" | "bio" | "profession" | "experience" | "certifications" | "regionId" | "districtId"
 > & { study: Profile["study"] };
 
 export type ProfileApi = {
@@ -55,6 +51,13 @@ async function photoUrl(path: string | null): Promise<string | null> {
   if (!path) return null;
   const { data } = await supabase.storage.from("avatars").createSignedUrl(path, 300);
   return data?.signedUrl ?? null;
+}
+
+/** What a connection shares with you; null when nothing is shared, you may not see it, or it failed to load. */
+async function contactDetails(memberId: string): Promise<ContactDetails | null> {
+  const { data, error } = await supabase.rpc("get_contact_details", { member_id: memberId });
+  const row = error ? undefined : (data as ContactDetails[] | null)?.[0];
+  return row && (row.phone || row.email || row.address) ? row : null;
 }
 
 export function profileApi(pickImage: () => Promise<string | null>): ProfileApi {
@@ -99,6 +102,7 @@ export function profileApi(pickImage: () => Promise<string | null>): ProfileApi 
         skills,
         photoUrl: await photoUrl(data.photo_path),
         hidden: data.hidden_from_directory,
+        contact: data.member_id === userId ? null : await contactDetails(data.member_id),
       };
     },
 
@@ -118,7 +122,6 @@ export function profileApi(pickImage: () => Promise<string | null>): ProfileApi 
           study_institution: blank(changes.study.institution),
           study_course: blank(changes.study.course),
           study_year: changes.study.year,
-          hidden_from_directory: changes.hidden,
         })
         .eq("member_id", userId);
       return !error;

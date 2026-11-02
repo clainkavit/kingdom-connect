@@ -255,3 +255,7 @@ export async function setSkills(memberId: string, skills: string[]) {
 export async function hideProfile(memberId: string) {
   await db`update public.profiles set hidden_from_directory = true where member_id = ${memberId}`;
 }
+
+export async function block(blocker: string, blocked: string) {
+  await db`insert into public.blocks (blocker_id, blocked_id) values (${blocker}, ${blocked})`;
+}

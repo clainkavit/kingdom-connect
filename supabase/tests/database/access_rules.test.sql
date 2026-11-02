@@ -156,12 +156,12 @@ select ok(not exists(select 1 from public.member_private where member_id = '0000
   'member: does not see a connection''s private row (contact details go through get_contact_details)');
 select is(pg_temp.touched($$update public.member_private set share_phone = true where member_id = '00000000-0000-0000-0000-000000000001'$$), 1,
   'member: can change their own sharing switches');
-select is(pg_temp.touched($$update public.member_private set phone = '+255711111111' where member_id = '00000000-0000-0000-0000-000000000002'$$), 0,
-  'member: cannot change another member''s phone');
+select is(pg_temp.touched($$update public.member_private set share_phone = true where member_id = '00000000-0000-0000-0000-000000000002'$$), 0,
+  'member: cannot change another member''s sharing switches');
 select throws_ok($$update public.member_private set id_fingerprint = '\x00' where member_id = '00000000-0000-0000-0000-000000000001'$$, '42501', null,
   'member: cannot write their own ID fields (registration function only)');
-select throws_ok($$update public.member_private set phone = '0711111111' where member_id = '00000000-0000-0000-0000-000000000001'$$, '23514', null,
-  'a phone number must start with +255');
+select throws_ok($$update public.member_private set phone = '+255711111111' where member_id = '00000000-0000-0000-0000-000000000001'$$, '42501', null,
+  'member: cannot change their own phone (contact values are locked)');
 select pg_temp.login('a1');
 select is((select count(*)::int from public.member_private where member_id::text like '00000000-%'), 7, 'staff: see every private row');
 

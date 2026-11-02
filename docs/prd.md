@@ -769,6 +769,12 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 - Cards show a disabled Connect button ("Connecting comes soon") until connection requests arrive (R09).
 - Search and filters return in under 2 seconds with 10,000 members; a database test seeds 10,000 members and checks it on every pull request.
 
+**Decided on 3 November 2026 (contact sharing, R08)**
+- Each sharing switch (phone, email, address) applies to every accepted connection; there is no per-person choice. All three are off by default.
+- A connection sees a shared value only while neither side has blocked the other and the owner is still an approved member. A hidden profile still shares with its connections.
+- In Phase 1 a Member cannot change their own phone, email or address; changing them, with a code to the new email, is its own ticket. Only the sharing switches and the language can be changed.
+- The hide switch moves from Edit profile to Profile privacy and contact sharing (S45), so each setting has one place.
+
 **Open.** Every open question is a ticket on the [wayfinder map](https://github.com/clainkavit/kingdom-connect/issues/1) and is linked where it applies above.
 
 **Outside this spec**
@@ -811,6 +817,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | 3 Nov 2026 | Daily cap counts sign-ups; staff invited by email with a set-password link; Super Administrator safeguards | 6, 18 |
 | 3 Nov 2026 | Profiles: verified name locked, photo without review, free skill tags with suggestions, synonyms edited by any Administrator | 8, 18 |
 | 3 Nov 2026 | Directory: daily shuffle with no search, hidden profiles never listed, disabled Connect until R09, 2-second target tested at 10,000 members | 8, 18 |
+| 3 Nov 2026 | Contact sharing: one switch per field for all connections, contact values locked in Phase 1, hide switch moved to privacy settings | 8, 18 |
 
 ## Appendix B: Source documents
 

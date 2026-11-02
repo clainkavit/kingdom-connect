@@ -370,4 +370,20 @@ export const sw: Strings = {
   badgeBusiness: "Biashara iliyothibitishwa",
   connect: "Unganisha",
   connectSoon: "Kuunganisha kunakuja hivi karibuni.",
+  privacyTitle: "Faragha ya wasifu na kushiriki mawasiliano",
+  privacyIntro:
+    "Ni watu uliounganishwa nao tu wanaoweza kuona taarifa unazowasha hapa. Hakuna mtu mwingine anayeziona.",
+  hideFromDirectoryHint: "Watu uliounganishwa nao bado wanaweza kuona wasifu wako.",
+  sharingTitle: "Shiriki na watu niliounganishwa nao",
+  sharePhone: "Shiriki namba yangu ya simu",
+  shareEmail: "Shiriki barua pepe yangu",
+  shareAddress: "Shiriki anwani yangu",
+  contactLocked: "Bado huwezi kubadilisha hizi hapa.",
+  privacySaveFailed:
+    "Hatukuweza kuhifadhi mabadiliko hayo. Angalia mtandao wako, kisha ujaribu tena.",
+  privacyLoadFailed:
+    "Hatukuweza kupakia mipangilio yako ya faragha. Angalia mtandao wako, kisha ujaribu tena.",
+  privacyLink: "Faragha na kushiriki mawasiliano",
+  contactTitle: "Mawasiliano",
+  address: "Anwani",
 };

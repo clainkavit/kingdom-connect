@@ -1,13 +1,16 @@
+"use client";
+
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { strings } from "@/strings";
+import { useLanguage } from "@/lib/language";
 
 type Action = { label: string; href: string };
 
 export function LoadingRows({ rows = 3 }: { rows?: number }) {
+  const { t } = useLanguage();
   return (
-    <div role="status" aria-label={strings.loading} className="flex flex-col gap-3">
+    <div role="status" aria-label={t.loading} className="flex flex-col gap-3">
       {Array.from({ length: rows }, (_, i) => (
         <div key={i} data-testid="skeleton-row" className="flex items-center gap-3">
           <Skeleton className="size-10 rounded-full" />
@@ -64,6 +67,7 @@ export function EmptyState({
 }
 
 export function ErrorState({ message, onRetry }: { message: string; onRetry: () => void }) {
+  const { t } = useLanguage();
   return (
     <section
       role="alert"
@@ -71,7 +75,7 @@ export function ErrorState({ message, onRetry }: { message: string; onRetry: () 
     >
       <p className="text-sm text-foreground">{message}</p>
       <button type="button" onClick={onRetry} className={buttonVariants({ variant: "outline" })}>
-        {strings.tryAgain}
+        {t.tryAgain}
       </button>
     </section>
   );
@@ -94,13 +98,14 @@ export function LockedState({
 }
 
 export function SlowConnectionBanner({ slow }: { slow: boolean }) {
+  const { t } = useLanguage();
   if (!slow) return null;
   return (
     <div
       role="status"
       className="rounded-md bg-warn-soft px-3 py-1.5 text-xs font-medium text-warn"
     >
-      {strings.slowConnection}
+      {t.slowConnection}
     </div>
   );
 }

@@ -1,8 +1,10 @@
 import "../test-router";
-import { memberNav, memberPhoneTabs } from "@kingdom-connect/shared";
+import { memberNav, memberPhoneTabs, stringsFor } from "@kingdom-connect/shared";
 import { cleanup, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 import { ComingSoon, MoreList } from "./screens";
+
+const en = stringsFor("en");
 
 afterEach(cleanup);
 
@@ -18,7 +20,7 @@ describe("MoreList", () => {
   it("lists every menu item that has no phone tab", () => {
     render(<MoreList />);
     const tabHrefs = new Set(memberPhoneTabs.map((t) => t.href));
-    const expected = memberNav.filter((i) => !tabHrefs.has(i.href)).map((i) => i.label);
+    const expected = memberNav.filter((i) => !tabHrefs.has(i.href)).map((i) => en[i.key]);
     expect(screen.getAllByRole("link").map((l) => l.getAttribute("aria-label"))).toEqual(expected);
   });
 });

@@ -25,7 +25,7 @@ export async function nextEmail(to: string, after: Date, subject: RegExp): Promi
 }
 
 export async function nextCode(to: string, after: Date): Promise<string> {
-  const email = await nextEmail(to, after, /code/i);
+  const email = await nextEmail(to, after, /code|msimbo/i);
   return email.Snippet.match(/\b(\d{6})\b/)![1]!;
 }
 
@@ -47,18 +47,24 @@ export async function createMember(username: string): Promise<{ email: string }>
     body: JSON.stringify({ id: user.id, username, status: "approved" }),
   });
   expect(res.ok).toBe(true);
+  const contact = await fetch(`${LOCAL_SUPABASE.url}/rest/v1/member_private`, {
+    method: "POST",
+    headers,
+    body: JSON.stringify({ member_id: user.id, email, phone: "+255700000000" }),
+  });
+  expect(contact.ok).toBe(true);
   return { email };
 }
 
 export async function logIn(
   page: Page,
-  field: "Username" | "Email",
+  field: "Username" | "Email" | "Jina la mtumiaji",
   value: string,
   password = TEST_PASSWORD,
 ) {
   await page.getByLabel(field, { exact: true }).fill(value);
-  await page.getByLabel("Password", { exact: true }).fill(password);
-  await page.getByRole("button", { name: "Log in" }).click();
+  await page.getByLabel(/^(Password|Nenosiri)$/).fill(password);
+  await page.getByRole("button", { name: /^(Log in|Ingia)$/ }).click();
 }
 
 export async function enterCode(page: Page, code: string) {

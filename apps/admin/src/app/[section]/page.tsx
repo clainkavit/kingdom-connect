@@ -12,5 +12,5 @@ export default async function SectionPage({ params }: PageProps<"/[section]">) {
   const { section } = await params;
   const item = sections.find((i) => i.href === `/${section}`);
   if (!item) notFound();
-  return <ComingSoon title={item.label} />;
+  return <ComingSoon titleKey={item.key} />;
 }

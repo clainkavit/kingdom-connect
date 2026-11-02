@@ -1,11 +1,14 @@
 import { Pressable, ScrollView, Text, View } from "react-native";
-import { strings } from "../strings";
+import { useLanguage } from "../lib/language";
+import { LanguageSwitch } from "./language-switch";
 
 export function AuthCard({ title, children }: { title: string; children: React.ReactNode }) {
+  const { platformName } = useLanguage();
   return (
     <View className="flex-1 bg-bg">
-      <View className="bg-navy px-7 py-3.5">
-        <Text className="font-figtree-extrabold text-[19px] text-white">{strings.appName}</Text>
+      <View className="flex-row flex-wrap items-center justify-between gap-3 bg-navy px-7 py-1.5">
+        <Text className="font-figtree-extrabold text-[19px] text-white">{platformName}</Text>
+        <LanguageSwitch onNavy />
       </View>
       <ScrollView
         className="flex-1"

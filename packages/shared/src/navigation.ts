@@ -1,3 +1,5 @@
+import type { TextKey } from "./strings";
+
 /** Menus and phone tab bars, PRD section 5 and docs/screens.md (Everywhere). */
 
 export const navIcons = [
@@ -25,51 +27,51 @@ export const navIcons = [
 export type NavIcon = (typeof navIcons)[number];
 
 export type NavItem = {
-  label: string;
+  key: TextKey;
   href: string;
   icon: NavIcon;
 };
 
 export const memberNav: readonly NavItem[] = [
-  { label: "Dashboard", href: "/", icon: "home" },
-  { label: "People", href: "/people", icon: "users" },
-  { label: "Opportunities", href: "/opportunities", icon: "briefcase" },
-  { label: "Ideas", href: "/ideas", icon: "lightbulb" },
-  { label: "Training", href: "/training", icon: "book-open" },
-  { label: "Events", href: "/events", icon: "calendar" },
-  { label: "Messages", href: "/messages", icon: "message-square" },
-  { label: "Connections", href: "/connections", icon: "link" },
-  { label: "Reports & Safety", href: "/reports", icon: "shield" },
-  { label: "Settings", href: "/settings", icon: "sliders-horizontal" },
+  { key: "navDashboard", href: "/", icon: "home" },
+  { key: "navPeople", href: "/people", icon: "users" },
+  { key: "navOpportunities", href: "/opportunities", icon: "briefcase" },
+  { key: "navIdeas", href: "/ideas", icon: "lightbulb" },
+  { key: "navTraining", href: "/training", icon: "book-open" },
+  { key: "navEvents", href: "/events", icon: "calendar" },
+  { key: "navMessages", href: "/messages", icon: "message-square" },
+  { key: "navConnections", href: "/connections", icon: "link" },
+  { key: "navReports", href: "/reports", icon: "shield" },
+  { key: "navSettings", href: "/settings", icon: "sliders-horizontal" },
 ];
 
 export const memberPhoneTabs: readonly NavItem[] = [
-  { label: "Home", href: "/", icon: "home" },
-  { label: "People", href: "/people", icon: "users" },
-  { label: "Opportunities", href: "/opportunities", icon: "briefcase" },
-  { label: "Messages", href: "/messages", icon: "message-square" },
-  { label: "More", href: "/more", icon: "ellipsis" },
+  { key: "tabHome", href: "/", icon: "home" },
+  { key: "navPeople", href: "/people", icon: "users" },
+  { key: "navOpportunities", href: "/opportunities", icon: "briefcase" },
+  { key: "navMessages", href: "/messages", icon: "message-square" },
+  { key: "tabMore", href: "/more", icon: "ellipsis" },
 ];
 
 export const adminNav: readonly NavItem[] = [
-  { label: "Dashboard", href: "/", icon: "home" },
-  { label: "Verification queue", href: "/verification", icon: "check-check" },
-  { label: "Moderation queue", href: "/moderation", icon: "list-checks" },
-  { label: "Reports", href: "/reports", icon: "flag" },
-  { label: "Re-verification", href: "/re-verification", icon: "refresh-cw" },
-  { label: "Members and investors", href: "/members", icon: "users" },
-  { label: "News and featured", href: "/news", icon: "newspaper" },
-  { label: "Milestone plans", href: "/milestone-plans", icon: "milestone" },
-  { label: "Post as admin", href: "/post", icon: "megaphone" },
-  { label: "Audit log", href: "/audit-log", icon: "history" },
+  { key: "adminNavDashboard", href: "/", icon: "home" },
+  { key: "adminNavVerification", href: "/verification", icon: "check-check" },
+  { key: "adminNavModeration", href: "/moderation", icon: "list-checks" },
+  { key: "adminNavReports", href: "/reports", icon: "flag" },
+  { key: "adminNavReverification", href: "/re-verification", icon: "refresh-cw" },
+  { key: "adminNavMembers", href: "/members", icon: "users" },
+  { key: "adminNavNews", href: "/news", icon: "newspaper" },
+  { key: "adminNavPlans", href: "/milestone-plans", icon: "milestone" },
+  { key: "adminNavPost", href: "/post", icon: "megaphone" },
+  { key: "adminNavAudit", href: "/audit-log", icon: "history" },
 ];
 
 export const adminPhoneTabs: readonly NavItem[] = [
-  { label: "Home", href: "/", icon: "home" },
-  { label: "Verify", href: "/verification", icon: "check-check" },
-  { label: "Moderate", href: "/moderation", icon: "list-checks" },
-  { label: "Reports", href: "/reports", icon: "flag" },
-  { label: "More", href: "/more", icon: "ellipsis" },
+  { key: "tabHome", href: "/", icon: "home" },
+  { key: "adminTabVerify", href: "/verification", icon: "check-check" },
+  { key: "adminTabModerate", href: "/moderation", icon: "list-checks" },
+  { key: "adminNavReports", href: "/reports", icon: "flag" },
+  { key: "tabMore", href: "/more", icon: "ellipsis" },
 ];
 
 const under = (pathname: string, href: string) =>

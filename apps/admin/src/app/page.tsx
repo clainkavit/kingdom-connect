@@ -1,5 +1,5 @@
 import { ComingSoon } from "@/components/screens";
 
 export default function AdminDashboardPage() {
-  return <ComingSoon title="Admin dashboard" />;
+  return <ComingSoon titleKey="adminDashboardTitle" />;
 }

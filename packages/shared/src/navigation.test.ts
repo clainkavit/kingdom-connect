@@ -6,9 +6,11 @@ import {
   memberNav,
   memberPhoneTabs,
   moreItems,
+  type NavItem,
 } from "./navigation";
+import { en } from "./strings/en";
 
-const labels = (items: readonly { label: string }[]) => items.map((i) => i.label);
+const labels = (items: readonly NavItem[]) => items.map((i) => en[i.key]);
 
 describe("member navigation", () => {
   it("lists the member top bar from PRD section 5, in order", () => {
@@ -32,7 +34,7 @@ describe("member navigation", () => {
   });
 
   it("has no investor item: investor tools live inside Ideas only", () => {
-    expect(memberNav.some((i) => /investor/i.test(i.label))).toBe(false);
+    expect(labels(memberNav).some((l) => /investor/i.test(l))).toBe(false);
   });
 
   it("uses the phone tabs Home, People, Opportunities, Messages, More", () => {
@@ -74,15 +76,15 @@ describe("phone tabs", () => {
       [adminPhoneTabs, adminNav],
     ] as const) {
       const hrefs = new Set(nav.map((i) => i.href));
-      for (const tab of tabs.filter((t) => t.label !== "More"))
+      for (const tab of tabs.filter((t) => t.key !== "tabMore"))
         expect(hrefs.has(tab.href)).toBe(true);
     }
   });
 });
 
 describe("isCurrent", () => {
-  const people = memberPhoneTabs.find((t) => t.label === "People")!;
-  const home = memberPhoneTabs.find((t) => t.label === "Home")!;
+  const people = memberPhoneTabs.find((t) => t.key === "navPeople")!;
+  const home = memberPhoneTabs.find((t) => t.key === "tabHome")!;
 
   it("matches the item's own screen and the screens under it", () => {
     expect(isCurrent("/people", people)).toBe(true);
@@ -97,7 +99,7 @@ describe("isCurrent", () => {
 
 describe("moreItems", () => {
   it("lists the menu items that have no phone tab", () => {
-    expect(moreItems(memberNav, memberPhoneTabs).map((i) => i.label)).toEqual([
+    expect(labels(moreItems(memberNav, memberPhoneTabs))).toEqual([
       "Ideas",
       "Training",
       "Events",

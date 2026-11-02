@@ -36,6 +36,8 @@ pnpm test                 # Vitest in watch mode (pnpm test:run runs once)
 
 Every commit runs Prettier on the staged files, then the typecheck, then the tests. A failing step blocks the commit.
 
+**Screen text.** Every string either app shows lives in [packages/shared/src/strings](packages/shared/src/strings): `en.ts` and `sw.ts`. Add a key to both. A key missing from `sw.ts` fails the typecheck. The platform name is never typed in; it comes from `platform_settings`.
+
 ### Checks on pull requests
 
 GitHub Actions runs on every pull request to `main` and every push to `main` ([.github/workflows/ci.yml](.github/workflows/ci.yml)): format, lint, typecheck and unit tests; the database access-rule tests; and the end-to-end tests when app code changes. A failing check marks the pull request red. **Never merge on red** (PRD section 17).

@@ -1,7 +1,8 @@
 import { isCurrent, memberNav, memberPhoneTabs } from "@kingdom-connect/shared";
 import { usePathname } from "expo-router";
 import { Pressable, ScrollView, Text, useWindowDimensions, View } from "react-native";
-import { strings } from "../strings";
+import { useLanguage } from "../lib/language";
+import { LanguageSwitch } from "./language-switch";
 import { LinkButton } from "./link-button";
 import { NavIcon } from "./nav-icon";
 import { usePalette } from "./palette";
@@ -9,20 +10,22 @@ import { usePalette } from "./palette";
 const WIDE = 881;
 
 function Wordmark({ phone }: { phone?: boolean }) {
+  const { platformName } = useLanguage();
   return (
     <Text className={`font-figtree-extrabold text-white ${phone ? "text-[21px]" : "text-[19px]"}`}>
-      {strings.appName}
+      {platformName}
     </Text>
   );
 }
 
 function TopBar({ pathname, onSignOut }: { pathname: string; onSignOut?: () => void }) {
+  const { t } = useLanguage();
   return (
     <View className="flex-row flex-wrap items-center justify-between gap-4 bg-navy px-7 py-3.5">
       <Wordmark />
       <View
         role="navigation"
-        aria-label={strings.memberMenu}
+        aria-label={t.memberMenu}
         className="flex-row flex-wrap items-center gap-1.5"
       >
         {memberNav.map((item) => {
@@ -37,19 +40,20 @@ function TopBar({ pathname, onSignOut }: { pathname: string; onSignOut?: () => v
               <Text
                 className={`text-sm ${current ? "font-figtree-bold text-white" : "font-figtree text-navy-ink"}`}
               >
-                {item.label}
+                {t[item.key]}
               </Text>
             </LinkButton>
           );
         })}
+        <LanguageSwitch onNavy />
         {onSignOut ? (
           <Pressable
             role="button"
-            aria-label={strings.logOut}
+            aria-label={t.logOut}
             onPress={onSignOut}
             className="rounded-[9px] px-3 py-2.5"
           >
-            <Text className="font-figtree text-sm text-navy-ink">{strings.logOut}</Text>
+            <Text className="font-figtree text-sm text-navy-ink">{t.logOut}</Text>
           </Pressable>
         ) : null}
       </View>
@@ -59,10 +63,11 @@ function TopBar({ pathname, onSignOut }: { pathname: string; onSignOut?: () => v
 
 function TabBar({ pathname }: { pathname: string }) {
   const palette = usePalette();
+  const { t } = useLanguage();
   return (
     <View
       role="navigation"
-      aria-label={strings.memberTabs}
+      aria-label={t.memberTabs}
       className="flex-row border-t border-line bg-surface px-1.5 pb-3.5 pt-1.5"
     >
       {memberPhoneTabs.map((item) => {
@@ -72,7 +77,7 @@ function TabBar({ pathname }: { pathname: string }) {
             key={item.href}
             href={item.href}
             current={current}
-            label={item.label}
+            label={t[item.key]}
             className="min-h-[52px] flex-1 items-center justify-center"
           >
             <NavIcon name={item.icon} size={26} color={current ? palette.blue : palette.ink2} />

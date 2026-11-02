@@ -13,6 +13,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { buttonVariants } from "@/components/ui/button";
 import { useLanguage } from "@/lib/language";
+import type { ReopenResult } from "@kingdom-connect/shared";
 import type { Application, RejectionReason, VerificationApi } from "@/lib/verification";
 import { Field } from "./field";
 import { ScreenTitle } from "./screens";
@@ -389,10 +390,56 @@ function DecisionCard({
   );
 }
 
-function outcomeText(t: Strings, outcome: Outcome, pending: boolean): string | null {
+function outcomeText(t: Strings, outcome: Outcome, app: Application): string | null {
   if (outcome === "approved") return t.decidedApproved;
   if (outcome === "rejected") return t.decidedRejected;
-  return pending ? null : t.applicationDecided;
+  if (app.decision?.status === "approved") return t.decisionApproved;
+  if (app.decision?.status === "rejected") return t.decisionRejected(app.decision.reason);
+  return app.pending ? null : t.applicationDecided;
+}
+
+function ReopenCard({ app, api }: { app: Application; api: VerificationApi }) {
+  const { t } = useLanguage();
+  const [note, setNote] = useState("");
+  const [result, setResult] = useState<ReopenResult | null>(null);
+  const [busy, setBusy] = useState(false);
+
+  const reopen = async () => {
+    if (!note.trim()) return setResult("note_required");
+    setBusy(true);
+    setResult(await api.reopen(app.id, note.trim()));
+    setBusy(false);
+  };
+
+  if (result === "done") return <Notice tone="good" text={t.reopened} />;
+  return (
+    <section className="flex flex-col gap-3 rounded-lg border bg-card p-4 shadow-card">
+      <p className="text-sm text-ink-2">{t.decisionFinal}</p>
+      <Field id="reopen-note" label={t.reopenNote} value={note} onChange={setNote} multiline />
+      <Notice
+        tone="bad"
+        text={
+          result === "note_required"
+            ? t.reopenNoteRequired
+            : result === "not_final"
+              ? t.reopenNotFinal
+              : result === "failed"
+                ? t.reopenFailed
+                : null
+        }
+      />
+      <div>
+        <button
+          type="button"
+          disabled={busy}
+          onClick={reopen}
+          className={buttonVariants({ variant: "outline" })}
+        >
+          {t.reopen}
+        </button>
+      </div>
+    </section>
+  );
 }
 
 export function ApplicationReview({
@@ -442,7 +489,7 @@ export function ApplicationReview({
       </div>
     );
 
-  const done = outcomeText(t, outcome, app.pending);
+  const done = outcomeText(t, outcome, app);
   const open = app.pending && !outcome;
 
   return (
@@ -454,7 +501,7 @@ export function ApplicationReview({
           {t.reviewSubmittedOn(formatDate(app.submittedAt, language))}
         </p>
       </div>
-      <Notice tone={outcome ? "good" : "warn"} text={done} />
+      <Notice tone={outcome || app.decision?.status === "approved" ? "good" : "warn"} text={done} />
       <div className="grid gap-4 sm:grid-cols-2">
         <Photo label={t.reviewFacePhoto} url={app.facePhotoUrl} />
         <Photo label={t.reviewIdPhoto} url={app.idPhotoUrl} />
@@ -465,6 +512,9 @@ export function ApplicationReview({
       </div>
       <DuplicateCard app={{ ...app, pending: open }} api={api} onChanged={reload} />
       {open ? <DecisionCard app={app} api={api} onDecided={setOutcome} /> : null}
+      {app.decision?.status === "rejected" && app.decision.final ? (
+        <ReopenCard app={app} api={api} />
+      ) : null}
     </div>
   );
 }

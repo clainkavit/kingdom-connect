@@ -73,6 +73,17 @@ export const sw: Strings = {
   pendingStatus: "Maombi yako yanakaguliwa. Tutakutumia barua pepe uamuzi ukishafanywa.",
   rejectedStatusTitle: "Hayajaidhinishwa",
   rejectedStatus: "Maombi yako hayakuidhinishwa.",
+  expectedDecision: (days: number) =>
+    days === 1
+      ? "Tunatarajia uamuzi ndani ya takriban siku 1 ya kazi."
+      : `Tunatarajia uamuzi ndani ya takriban siku ${days} za kazi.`,
+  usualDecision: "Kwa kawaida tunaamua ndani ya siku 2 za kazi.",
+  statusReason: (reason: string) => `Sababu: ${reason}`,
+  resubmitOnce: "Unaweza kurekebisha na kutuma tena mara moja.",
+  fixAndResubmit: "Rekebisha na utume tena",
+  rejectedFinal: "Uamuzi huu ni wa mwisho, isipokuwa msimamizi aufungue tena.",
+  resubmitFailed: "Hatukuweza kufungua tena ombi lako. Angalia mtandao wako, kisha ujaribu tena.",
+  statusLoadFailed: "Hatukuweza kuangalia ombi lako. Angalia mtandao wako, kisha ujaribu tena.",
   wrongAppMember: "Hii ni akaunti ya msimamizi. Tumia mfumo wa wasimamizi kuingia.",
   wrongAppStaff:
     "Akaunti hii haiwezi kutumia mfumo wa wasimamizi. Wanachama huingia kupitia programu ya wanachama.",
@@ -248,6 +259,16 @@ export const sw: Strings = {
   decidedApproved: "Limeidhinishwa. Mwombaji amejulishwa.",
   decidedRejected: "Limekataliwa. Mwombaji amejulishwa sababu.",
   applicationDecided: "Ombi hili limeshaamuliwa.",
+  decisionApproved: "Limeidhinishwa",
+  decisionRejected: (reason: string) => `Limekataliwa. Sababu iliyotumwa: ${reason}`,
+  decisionFinal:
+    "Kukataliwa huku ni kwa mwisho. Lifungue tena tu kama mwombaji sasa anaweza kukaguliwa.",
+  reopenNote: "Kwa nini linafunguliwa tena (kwa kumbukumbu za ukaguzi)",
+  reopen: "Fungua ombi tena",
+  reopenNoteRequired: "Andika kwa nini linafunguliwa tena.",
+  reopenNotFinal: "Ombi hili haliwezi kufunguliwa tena.",
+  reopenFailed: "Hatukuweza kufungua tena ombi. Angalia mtandao wako, kisha ujaribu tena.",
+  reopened: "Limefunguliwa tena. Mwombaji amejulishwa kwamba anaweza kulituma tena.",
   applicationNotFound: "Ombi hili halikupatikana.",
   applicationLoadFailed: "Hatukuweza kupakia ombi hili. Angalia mtandao wako, kisha ujaribu tena.",
 };

@@ -6,6 +6,7 @@ import {
   type IdType,
   type Language,
   type MarkDuplicateResult,
+  type ReopenResult,
   type MemberCategory,
 } from "@kingdom-connect/shared";
 import { anonKey, supabase, url } from "./supabase";
@@ -22,6 +23,7 @@ export type Application = {
   id: string;
   memberId: string;
   pending: boolean;
+  decision: { status: "approved" } | { status: "rejected"; reason: string; final: boolean } | null;
   submittedAt: Date;
   username: string;
   fullName: string;
@@ -50,6 +52,7 @@ export type VerificationApi = {
   decide: (decision: Decision) => Promise<DecideResult>;
   markDuplicate: (requestId: string, username: string) => Promise<MarkDuplicateResult>;
   revealIdNumber: (memberId: string) => Promise<string | null>;
+  reopen: (requestId: string, note: string) => Promise<ReopenResult>;
 };
 
 type Named = { name_en: string; name_sw: string } | null;
@@ -104,8 +107,9 @@ export const verificationApi: VerificationApi = {
     const { data, error } = await supabase
       .from("verification_requests")
       .select(
-        `id, member_id, status, submitted_at, duplicate_suspected_of,
-         member:members!verification_requests_member_id_fkey(username, category,
+        `id, member_id, status, reason, submitted_at, duplicate_suspected_of,
+         member:members!verification_requests_member_id_fkey(username, category, status, resubmissions_used,
+           requests:verification_requests!verification_requests_member_id_fkey(submitted_at),
            profile:profiles(full_name, category_details, study_institution, study_course, study_year,
              region:regions(name_en, name_sw), district:districts(name_en, name_sw)),
            private:member_private(phone, email, address, id_type, id_expires_on)),
@@ -119,6 +123,9 @@ export const verificationApi: VerificationApi = {
     const member = data.member as unknown as {
       username: string;
       category: MemberCategory | null;
+      status: string;
+      resubmissions_used: number;
+      requests: { submitted_at: string }[];
       profile: {
         full_name: string;
         category_details: CategoryDetails;
@@ -177,6 +184,19 @@ export const verificationApi: VerificationApi = {
       id: data.id,
       memberId: data.member_id,
       pending: data.status === "pending",
+      decision:
+        data.status === "approved"
+          ? { status: "approved" }
+          : data.status === "rejected"
+            ? {
+                status: "rejected",
+                reason: data.reason ?? "",
+                final:
+                  member.status === "rejected" &&
+                  member.resubmissions_used > 0 &&
+                  member.requests.every((r) => r.submitted_at <= data.submitted_at),
+              }
+            : null,
       submittedAt: new Date(data.submitted_at),
       username: member.username,
       fullName: member.profile?.full_name ?? "",
@@ -218,4 +238,5 @@ export const verificationApi: VerificationApi = {
   markDuplicate: async (requestId, username) =>
     staffActions.markDuplicate(await accessToken(), requestId, username),
   revealIdNumber: async (memberId) => staffActions.revealIdNumber(await accessToken(), memberId),
+  reopen: async (requestId, note) => staffActions.reopen(await accessToken(), requestId, note),
 };

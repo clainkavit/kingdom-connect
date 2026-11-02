@@ -1,5 +1,11 @@
 import { expect, test } from "@playwright/test";
-import { auditActions, createApplication, notificationKinds, openApplication } from "./helpers";
+import {
+  auditActions,
+  createApplication,
+  notificationKinds,
+  openApplication,
+  signInToAdmin,
+} from "./helpers";
 
 const passportFor = (seed: number) => `QA${String(seed).slice(-8)}`;
 
@@ -10,6 +16,7 @@ test("an Administrator reveals the ID number and rejects with a reason (REG-3, A
   const passport = passportFor(Date.now());
   const applicant = await createApplication(username, passport);
 
+  await signInToAdmin(page);
   await openApplication(page, username);
   await expect(page.getByText(passport)).toHaveCount(0);
   await page.getByRole("button", { name: "Reveal ID number" }).click();
@@ -35,6 +42,7 @@ test("an Administrator marks a suspected duplicate and compares face photos (PRD
   const username = `e2e_dup_${Date.now()}`;
   await createApplication(username, passportFor(Date.now() + 7));
 
+  await signInToAdmin(page);
   await openApplication(page, username);
   await page.getByLabel("Suspected duplicate of (username)").fill("nobody_has_this_name");
   await page.getByRole("button", { name: "Mark as duplicate" }).click();

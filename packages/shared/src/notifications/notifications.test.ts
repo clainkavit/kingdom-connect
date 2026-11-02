@@ -25,7 +25,7 @@ describe("the catalogue", () => {
   it("holds every event in the doc", () => {
     const codes = [...doc.matchAll(/^### (\w+) /gm)].map((m) => m[1]);
     expect(Object.keys(notificationCopy)).toEqual(codes);
-    expect(codes).toHaveLength(48);
+    expect(codes).toHaveLength(49);
   });
 
   it("reads the channels from each event", () => {

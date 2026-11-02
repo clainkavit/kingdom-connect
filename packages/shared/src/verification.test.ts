@@ -87,4 +87,11 @@ describe("createVerificationClient", () => {
     expect(await client({ idNumber: "AB12345" }).revealIdNumber("t", "m")).toBe("AB12345");
     expect(await client({ error: "not_found" }).revealIdNumber("t", "m")).toBeNull();
   });
+
+  it("reopens a final rejection with a note", async () => {
+    expect(await client({ ok: true }).reopen("t", "r", "New photo")).toBe("done");
+    expect(await client({ error: "note_required" }).reopen("t", "r", "")).toBe("note_required");
+    expect(await client({ error: "not_final" }).reopen("t", "r", "x")).toBe("not_final");
+    expect(await client({ error: "boom" }).reopen("t", "r", "x")).toBe("failed");
+  });
 });

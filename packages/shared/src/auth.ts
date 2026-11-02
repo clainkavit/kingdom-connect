@@ -192,8 +192,42 @@ export function createRegistrationClient(options: FunctionOptions) {
       if (r.error === "incomplete") return { kind: "incomplete", step: Number(r.step) };
       return { kind: "failed" };
     },
+
+    async status(accessToken: string): Promise<ApplicationStatus> {
+      const r = await call("application-status", {}, accessToken);
+      if (r?.state === "under_review")
+        return {
+          kind: "under_review",
+          expectedWorkingDays:
+            typeof r.expectedWorkingDays === "number" ? r.expectedWorkingDays : null,
+        };
+      if (r?.state === "rejected" || r?.state === "rejected_final")
+        return {
+          kind: "rejected",
+          reason: String(r.reason ?? ""),
+          final: r.state === "rejected_final",
+        };
+      if (r?.state === "drafting") return { kind: "drafting" };
+      if (r?.state === "approved") return { kind: "approved" };
+      if (r?.error === "not_signed_in") return { kind: "signed_out" };
+      return { kind: "network" };
+    },
+
+    async startResubmission(accessToken: string): Promise<boolean> {
+      const r = await call("start-resubmission", {}, accessToken);
+      return Boolean(r?.ok);
+    },
   };
 }
+
+/** Where an application stands (S06). Never carries reviewer details or queue numbers. */
+export type ApplicationStatus =
+  | { kind: "drafting" }
+  | { kind: "under_review"; expectedWorkingDays: number | null }
+  | { kind: "rejected"; reason: string; final: boolean }
+  | { kind: "approved" }
+  | { kind: "signed_out" }
+  | { kind: "network" };
 
 export type RegistrationClient = ReturnType<typeof createRegistrationClient>;
 

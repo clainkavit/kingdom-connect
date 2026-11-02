@@ -247,4 +247,60 @@ describe("createRegistrationClient (S02, S05)", () => {
     const offline = vi.fn().mockRejectedValue(new Error("offline"));
     expect(await client(offline).submit("tok")).toEqual({ kind: "network" });
   });
+
+  it("reads the Applicant's status (S06)", async () => {
+    expect(
+      await client(
+        respond(200, {
+          state: "under_review",
+          expectedWorkingDays: 3,
+        }),
+      ).status("tok"),
+    ).toEqual({
+      kind: "under_review",
+      expectedWorkingDays: 3,
+    });
+    expect(
+      await client(
+        respond(200, {
+          state: "under_review",
+          expectedWorkingDays: null,
+        }),
+      ).status("tok"),
+    ).toEqual({
+      kind: "under_review",
+      expectedWorkingDays: null,
+    });
+    expect(
+      await client(respond(200, { state: "rejected", reason: "The ID has expired" })).status("tok"),
+    ).toEqual({
+      kind: "rejected",
+      reason: "The ID has expired",
+      final: false,
+    });
+    expect(
+      await client(respond(200, { state: "rejected_final", reason: "R" })).status("tok"),
+    ).toEqual({
+      kind: "rejected",
+      reason: "R",
+      final: true,
+    });
+    expect(await client(respond(200, { state: "drafting" })).status("tok")).toEqual({
+      kind: "drafting",
+    });
+    expect(await client(respond(200, { state: "approved" })).status("tok")).toEqual({
+      kind: "approved",
+    });
+    expect(await client(respond(401, { error: "not_signed_in" })).status("tok")).toEqual({
+      kind: "signed_out",
+    });
+    expect(await client(respond(403, { error: "not_an_applicant" })).status("tok")).toEqual({
+      kind: "network",
+    });
+  });
+
+  it("starts a resubmission", async () => {
+    expect(await client(respond(200, { ok: true })).startResubmission("tok")).toBe(true);
+    expect(await client(respond(409, { error: "final" })).startResubmission("tok")).toBe(false);
+  });
 });

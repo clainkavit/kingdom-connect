@@ -45,6 +45,8 @@ export type DecideResult =
 export type MarkDuplicateResult =
   { kind: "done" } | { kind: "unknown_member" } | { kind: "already_decided" } | { kind: "failed" };
 
+export type ReopenResult = "done" | "note_required" | "not_final" | "failed";
+
 const decideErrors = [
   "already_decided",
   "reason_required",
@@ -73,6 +75,13 @@ export function createVerificationClient(options: FunctionOptions) {
       if (r?.error === "unknown_member") return { kind: "unknown_member" };
       if (r?.error === "already_decided") return { kind: "already_decided" };
       return { kind: "failed" };
+    },
+
+    async reopen(accessToken: string, requestId: string, note: string): Promise<ReopenResult> {
+      const r = await call("reopen-application", { requestId, note }, accessToken);
+      if (r?.ok) return "done";
+      if (r?.error === "note_required" || r?.error === "not_final") return r.error;
+      return "failed";
     },
 
     async revealIdNumber(accessToken: string, memberId: string): Promise<string | null> {

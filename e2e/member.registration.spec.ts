@@ -1,5 +1,5 @@
 import { expect, type Page, test } from "@playwright/test";
-import { enterCode, nextCode, openApplication } from "./helpers";
+import { enterCode, nextCode, openApplication, signInToAdmin } from "./helpers";
 
 const PNG = Buffer.from(
   "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=",
@@ -89,6 +89,7 @@ test("a person signs up, completes the six steps and is approved (REG-1, S02, S0
   await expect(page.getByText("Under review")).toBeVisible();
 
   const admin = await page.context().browser()!.newPage();
+  await signInToAdmin(admin);
   await openApplication(admin, username);
   await expect(admin.getByRole("img", { name: "Face photo" })).toBeVisible();
   await expect(admin.getByRole("img", { name: "ID photo" })).toBeVisible();

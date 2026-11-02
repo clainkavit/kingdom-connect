@@ -223,6 +223,9 @@ describe("createRegistrationClient (S02, S05)", () => {
     expect(await client(respond(403, { error: "closed" })).signUp(signUp)).toEqual({
       kind: "closed",
     });
+    expect(await client(respond(429, { error: "cap_reached" })).signUp(signUp)).toEqual({
+      kind: "cap_reached",
+    });
     expect(
       await client(respond(400, { error: "invalid", problems: { phone: "phone" } })).signUp(signUp),
     ).toEqual({ kind: "invalid", problems: { phone: "phone" } });

@@ -748,6 +748,12 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 - A rejection still ends the Applicant's sessions (decided with F09). They sign in again to read the reason.
 - The Administrator's optional rejection note is written for the Applicant and sent with the reason (R03). There are no private reviewer notes on an application; the Applicant never sees the reviewer, the reason code or the queue.
 
+**Decided on 3 November 2026 (application cap and staff accounts, R04)**
+- The daily application cap counts sign-ups: new accounts created that day, midnight to midnight Tanzania time. It is checked at sign-up, so nobody completes the wizard and is then turned away. Two sign-ups at the same moment can each pass the check, so the cap can be passed by one or two.
+- A Super Administrator invites a staff member by name, email and role. The invite email links to a set-password page that works for 24 hours; after that the staff member logs in with their email and the email code like any staff account. Nobody else ever knows the password.
+- A Super Administrator cannot deactivate or demote their own account, and the last active Super Administrator cannot be removed.
+- Settings (A16) appears in the admin menu only for Super Administrators.
+
 **Open.** Every open question is a ticket on the [wayfinder map](https://github.com/clainkavit/kingdom-connect/issues/1) and is linked where it applies above.
 
 **Outside this spec**
@@ -787,6 +793,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | 2 Nov 2026 | Registration: test-data switch, admin-only face photo, category details, duplicate ID handling, starter sectors | 6, 18 |
 | 2 Nov 2026 | Verification queue: members first, preset bilingual rejection reasons, duplicate marked by username, overdue banner on Monday-to-Friday days | 6, 18 |
 | 2 Nov 2026 | Registration status: expected time from the queue, resubmission reopens the whole wizard, Administrators reopen a final rejection (new notification A6) | 6, 14, 18 |
+| 3 Nov 2026 | Daily cap counts sign-ups; staff invited by email with a set-password link; Super Administrator safeguards | 6, 18 |
 
 ## Appendix B: Source documents
 

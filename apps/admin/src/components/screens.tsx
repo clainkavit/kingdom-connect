@@ -1,6 +1,6 @@
 "use client";
 
-import { adminNav, adminPhoneTabs, moreItems, type TextKey } from "@kingdom-connect/shared";
+import { adminNavFor, adminPhoneTabs, moreItems, type TextKey } from "@kingdom-connect/shared";
 import Link from "next/link";
 import { useLanguage } from "@/lib/language";
 import { EmptyState } from "./states";
@@ -21,11 +21,11 @@ export function ComingSoon({ titleKey }: { titleKey: TextKey }) {
   );
 }
 
-export function MoreList() {
+export function MoreList({ superAdmin = false }: { superAdmin?: boolean }) {
   const { t } = useLanguage();
   return (
     <ul className="flex flex-col divide-y rounded-lg border bg-card">
-      {moreItems(adminNav, adminPhoneTabs).map((item) => (
+      {moreItems(adminNavFor(superAdmin), adminPhoneTabs).map((item) => (
         <li key={item.href}>
           <Link
             href={item.href}

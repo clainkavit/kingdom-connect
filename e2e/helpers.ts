@@ -8,7 +8,7 @@ import postgres from "postgres";
 export const TEST_PASSWORD = "kingdom-test-only";
 const MAILPIT = "http://localhost:54324";
 
-type MailpitMessage = { Created: string; Subject: string; Snippet: string };
+type MailpitMessage = { ID: string; Created: string; Subject: string; Snippet: string };
 
 export async function nextEmail(to: string, after: Date, subject: RegExp): Promise<MailpitMessage> {
   let found: MailpitMessage | undefined;
@@ -24,6 +24,14 @@ export async function nextEmail(to: string, after: Date, subject: RegExp): Promi
     )
     .toBe(true);
   return found!;
+}
+
+/** The first link in an email, read from its HTML. */
+export async function linkInEmail(to: string, after: Date, subject: RegExp): Promise<string> {
+  const email = await nextEmail(to, after, subject);
+  const res = await fetch(`${MAILPIT}/api/v1/message/${email.ID}`);
+  const { HTML } = (await res.json()) as { HTML: string };
+  return HTML.match(/href="([^"]+)"/)![1]!.replace(/&amp;/g, "&");
 }
 
 export async function nextCode(to: string, after: Date): Promise<string> {
@@ -195,11 +203,15 @@ export async function notificationKinds(memberId: string): Promise<string[]> {
 
 export const ADMIN_URL = process.env.ADMIN_URL ?? "http://localhost:3000";
 
-export async function signInToAdmin(page: Page) {
+export async function signInToAdmin(
+  page: Page,
+  email = "test.admin@example.test",
+  password?: string,
+) {
   await page.goto(`${ADMIN_URL}/login`);
   const sentAfter = new Date();
-  await logIn(page, "Email", "test.admin@example.test");
-  await enterCode(page, await nextCode("test.admin@example.test", sentAfter));
+  await logIn(page, "Email", email, password);
+  await enterCode(page, await nextCode(email, sentAfter));
   await expect(page.getByRole("heading", { name: "Admin dashboard" })).toBeVisible();
 }
 
@@ -208,4 +220,13 @@ export async function openApplication(page: Page, username: string) {
   await page.goto(`${ADMIN_URL}/verification`);
   await page.getByRole("link", { name: `@${username} ·` }).click();
   await expect(page.getByRole("button", { name: "Approve" })).toBeVisible();
+}
+
+export async function setApplicationCap(cap: number | null) {
+  await db`update public.platform_settings set value = ${db.json(cap as never)} where key = 'daily_application_cap'`;
+}
+
+export async function signUpsToday(): Promise<number> {
+  const [row] = await db`select private.sign_ups_today() as count`;
+  return Number(row!.count);
 }

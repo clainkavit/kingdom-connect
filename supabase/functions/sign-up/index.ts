@@ -30,6 +30,8 @@ Deno.serve(async (req) => {
   const problems = signUpProblems(input);
   if (Object.keys(problems).length) return json({ error: "invalid", problems }, 400);
   if (!(await registrationsOpen())) return json({ error: "closed" }, 403);
+  const [cap] = await sql`select private.application_cap_reached() as reached`;
+  if (cap?.reached) return json({ error: "cap_reached" }, 429);
 
   const username = normalizeUsername(input.username);
   const [taken] =

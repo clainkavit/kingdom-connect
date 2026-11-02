@@ -10,7 +10,13 @@ const fill = (label: string, value: string) =>
   fireEvent.change(screen.getByLabelText(label), { target: { value } });
 
 const clients = (signUp: RegistrationClient["signUp"]) => ({
-  registration: { signUp, saveIdentity: vi.fn(), submit: vi.fn() } as RegistrationClient,
+  registration: {
+    signUp,
+    saveIdentity: vi.fn(),
+    submit: vi.fn(),
+    status: vi.fn(),
+    startResubmission: vi.fn(),
+  } as RegistrationClient,
   login: {
     logIn: vi.fn().mockResolvedValue({
       kind: "code_sent",

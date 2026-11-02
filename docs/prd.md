@@ -480,7 +480,7 @@ Every event below shows in the in-app bell; during the pilot, OTPs and account m
 
 | Event | Who is told | In-app | Email | SMS |
 |---|---|---|---|---|
-| Registration received, approved or rejected | Applicant | ✓ | ✓ | Later |
+| Registration received, approved, rejected or reopened | Applicant | ✓ | ✓ | Later |
 | Login OTP | Member | ✗ | ✓ | Later |
 | Business level approved, rejected or expiring | Business member | ✓ | ✓ | Later |
 | Connection request received or accepted | Member | ✓ | ✓ | ✗ |
@@ -741,6 +741,13 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 - An expired ID is shown as a warning. The admin still decides.
 - Staff decide only through the audited decision function, never by editing the application directly. Approving, rejecting, marking a duplicate and revealing an ID number are each written to the audit log with the admin and their IP address.
 
+**Decided on 2 November 2026 (registration status, R02)**
+- Under review, the Applicant sees an expected time worked out from the queue: their place in it, divided by the decisions staff made per working day over the last 14 days, rounded up, at least 1 working day. With no decisions in that window it says "We usually decide within 2 working days". The Applicant sees only the days, never their place or the queue size (section 7, criterion 1).
+- Fix and resubmit reopens the whole wizard on the review step with the earlier answers, so any detail, the ID or either photo can be changed. Starting it uses the one resubmission. Each submitted application keeps its own copy of the photos, so a replaced photo never changes what an earlier decision was based on.
+- An Administrator can reopen a final rejection on A03, with a note for the audit log. The Applicant is told by the new notification A6 and can send the application once more; a rejection after that is final again.
+- A rejection still ends the Applicant's sessions (decided with F09). They sign in again to read the reason.
+- The Administrator's optional rejection note is written for the Applicant and sent with the reason (R03). There are no private reviewer notes on an application; the Applicant never sees the reviewer, the reason code or the queue.
+
 **Open.** Every open question is a ticket on the [wayfinder map](https://github.com/clainkavit/kingdom-connect/issues/1) and is linked where it applies above.
 
 **Outside this spec**
@@ -779,6 +786,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | 2 Nov 2026 | Legal texts as files in the repo, drafts at 0.1, launch gate as a database-guarded setting | 13, 18 |
 | 2 Nov 2026 | Registration: test-data switch, admin-only face photo, category details, duplicate ID handling, starter sectors | 6, 18 |
 | 2 Nov 2026 | Verification queue: members first, preset bilingual rejection reasons, duplicate marked by username, overdue banner on Monday-to-Friday days | 6, 18 |
+| 2 Nov 2026 | Registration status: expected time from the queue, resubmission reopens the whole wizard, Administrators reopen a final rejection (new notification A6) | 6, 14, 18 |
 
 ## Appendix B: Source documents
 

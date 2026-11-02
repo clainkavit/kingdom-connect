@@ -71,6 +71,17 @@ export const en = {
   pendingStatus: "Your application is being reviewed. We'll email you when there is a decision.",
   rejectedStatusTitle: "Not approved",
   rejectedStatus: "Your application was not approved.",
+  expectedDecision: (days: number) =>
+    days === 1
+      ? "We expect a decision in about 1 working day."
+      : `We expect a decision in about ${days} working days.`,
+  usualDecision: "We usually decide within 2 working days.",
+  statusReason: (reason: string) => `Reason: ${reason}`,
+  resubmitOnce: "You can fix this and send it again once.",
+  fixAndResubmit: "Fix and resubmit",
+  rejectedFinal: "This decision is final unless an administrator reopens it.",
+  resubmitFailed: "We couldn't reopen your application. Check your connection and try again.",
+  statusLoadFailed: "We couldn't check your application. Check your connection and try again.",
   wrongAppMember: "This is an administrator account. Use the admin console to sign in.",
   wrongAppStaff:
     "This account cannot use the admin console. Members sign in through the member app.",
@@ -243,6 +254,15 @@ export const en = {
   decidedApproved: "Approved. The applicant has been told.",
   decidedRejected: "Rejected. The applicant has been told the reason.",
   applicationDecided: "This application has already been decided.",
+  decisionApproved: "Approved",
+  decisionRejected: (reason: string) => `Rejected. Reason sent: ${reason}`,
+  decisionFinal: "This rejection is final. Reopen it only if the applicant can now be checked.",
+  reopenNote: "Why it is being reopened (for the audit log)",
+  reopen: "Reopen application",
+  reopenNoteRequired: "Write why it is being reopened.",
+  reopenNotFinal: "This application can no longer be reopened.",
+  reopenFailed: "We couldn't reopen the application. Check your connection and try again.",
+  reopened: "Reopened. The applicant has been told they can send it again.",
   applicationNotFound: "This application was not found.",
   applicationLoadFailed: "We couldn't load this application. Check your connection and try again.",
 };

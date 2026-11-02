@@ -9,6 +9,7 @@ const application = (over: Partial<Application> = {}): Application => ({
   id: "r1",
   memberId: "m1",
   pending: true,
+  decision: null,
   submittedAt: new Date("2026-11-09T09:00:00+03:00"),
   username: "test_applicant",
   fullName: "Test Applicant",
@@ -39,6 +40,7 @@ const fakeApi = (over: Partial<VerificationApi> = {}): VerificationApi => ({
   decide: vi.fn().mockResolvedValue({ kind: "done" }),
   markDuplicate: vi.fn().mockResolvedValue({ kind: "done" }),
   revealIdNumber: vi.fn().mockResolvedValue("19900101123456789012"),
+  reopen: vi.fn().mockResolvedValue("done"),
   ...over,
 });
 
@@ -160,6 +162,44 @@ describe("ApplicationReview (A03)", () => {
     );
     expect(screen.getByText("This application has already been decided.")).toBeTruthy();
     expect(screen.queryByRole("button", { name: "Approve" })).toBeNull();
+  });
+
+  it("shows the reason sent on a first rejection, with no Reopen", async () => {
+    await show(
+      fakeApi({
+        application: vi.fn().mockResolvedValue(
+          application({
+            pending: false,
+            decision: { status: "rejected", reason: "The ID has expired", final: false },
+          }),
+        ),
+      }),
+    );
+    expect(screen.getByText("Rejected. Reason sent: The ID has expired")).toBeTruthy();
+    expect(screen.queryByRole("button", { name: "Reopen application" })).toBeNull();
+  });
+
+  it("reopens a final rejection only with a note", async () => {
+    const api = fakeApi({
+      application: vi.fn().mockResolvedValue(
+        application({
+          pending: false,
+          decision: { status: "rejected", reason: "R", final: true },
+        }),
+      ),
+    });
+    await show(api);
+    await click("Reopen application");
+    expect(api.reopen).not.toHaveBeenCalled();
+    expect(screen.getByText("Write why it is being reopened.")).toBeTruthy();
+    fireEvent.change(screen.getByLabelText("Why it is being reopened (for the audit log)"), {
+      target: { value: "New ID photo sent" },
+    });
+    await click("Reopen application");
+    expect(api.reopen).toHaveBeenCalledWith("r1", "New ID photo sent");
+    expect(
+      screen.getByText("Reopened. The applicant has been told they can send it again."),
+    ).toBeTruthy();
   });
 
   it("says when the application does not exist", async () => {

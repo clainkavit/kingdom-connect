@@ -43,7 +43,7 @@ The tables below list only a screen's **special states**: the ones beyond these 
 | S03 | Log in | Visitor | Username and password | **Locked:** 5 failed attempts lock the account for 15 minutes, with a countdown. A wrong username or password gets the same message, so nobody can test who exists. **Pending or rejected:** after the right password and email code, an Applicant reaches S06 Registration status and nothing else (decided 2 Nov 2026, F09 #47). An unknown username and a wrong password still get the same message. **Suspended:** after the password is right, "Your account is suspended. An admin will review it" |
 | S04 | Email code | Visitor | 6-digit code, valid 10 minutes | Wrong code (3 attempts), expired code, resend available after 60 seconds, too many attempts |
 | S05 | Registration wizard | Applicant | Steps: personal details (with a Tanzanian address from the region and district lists), category, category details, photos (face photo and one accepted ID with its type and number), legal acceptance, review | **Legal acceptance:** terms of use and privacy notice are two separate tick boxes, each with the text in English and Kiswahili. **Validation:** a NIDA number must be 20 digits, phone must start with +255. **Duplicate ID:** blocked. **Interrupted:** each step is saved when it is completed, so the applicant signs in again and continues where they stopped, on any device. A draft is not an application until Submit; the admin queue never shows drafts |
-| S06 | Registration status | Applicant | Where the application is | **Under review:** "Your application is being reviewed", with the expected time. **Rejected first time:** the reason and Fix and resubmit (once). **Rejected final:** the reason and "This decision is final unless an admin reopens it". **Approved:** moves on to the dashboard |
+| S06 | Registration status | Applicant | Where the application is | **Under review:** "Your application is being reviewed", with the expected time. **Rejected first time:** the reason and Fix and resubmit (once). **Rejected final:** the reason and "This decision is final unless an administrator reopens it". **Approved:** moves on to the dashboard. The expected time comes from the queue (PRD section 18, R02); Fix and resubmit opens S05 on the review step |
 | S07 | Accept updated text | Member | A changed terms of use or privacy notice, in both languages | Blocks the app until accepted at next login. An NDA already accepted never prompts again |
 
 ## 2. Home and notifications
@@ -129,7 +129,7 @@ The tables below list only a screen's **special states**: the ones beyond these 
 |---|---|---|---|---|
 | A01 | Admin dashboard | Admin | The community counts (verified members, registered businesses, open opportunities, ideas in the pool), queue counts and the age of the oldest item, alerts, featured slots, investor activity, re-verifications due in 30 days | **Alert:** an application waiting 2 working days. Each count links to its filtered queue. The daily-cap switch is shown to Super Admins |
 | A02 | Verification queue | Admin | Members, businesses and investors waiting, oldest first, with the queue size and the age of the oldest. Members only until the business and investor tickets | Empty: "Nothing waiting". **Overdue:** a banner and a row mark at 2 working days (Monday to Friday). A suspected duplicate is marked on its row |
-| A03 | Verification detail | Admin | The profile, face photo and ID photo side by side, name and ID number check (the number hidden until revealed), ID expiry, a duplicate flag from the ID fingerprint, Approve, Reject (a preset reason, plus a note) | **Suspected duplicate:** staff mark it by the other member's username and compare both face photos. Decrypting an ID number is logged. **Expired ID:** a warning. **Decided elsewhere:** "Another admin has already decided this application" |
+| A03 | Verification detail | Admin | The profile, face photo and ID photo side by side, name and ID number check (the number hidden until revealed), ID expiry, a duplicate flag from the ID fingerprint, Approve, Reject (a preset reason, plus a note) | **Suspected duplicate:** staff mark it by the other member's username and compare both face photos. Decrypting an ID number is logged. **Expired ID:** a warning. **Decided elsewhere:** "Another Administrator has already decided this application". **Decided:** the decision and the reason sent. **Rejected final:** Reopen, with a note for the audit log |
 | A04 | Moderation queue | Admin | Pending and hidden items: opportunities, ideas, training, events, tenders | Empty: "Nothing to review" |
 | A05 | Moderation item | Admin | The item and its history; Restore, Edit request, Remove, Warn, Suspend posting, Suspend account | **A note is required** for each action |
 | A06 | Reports queue | Admin | Open and under-review reports, with the reference number | Empty: "No open reports" |
@@ -150,7 +150,7 @@ Each notification in [docs/notifications.md](notifications.md) opens the screen 
 
 | Notification | Opens |
 |---|---|
-| A1 to A4 Registration | S06 |
+| A1 to A4, A6 Registration | S06 |
 | A5 Login code | S04 |
 | B1 to B4 Business levels | S40 or S41 |
 | C1, C2 Connection | S13 |

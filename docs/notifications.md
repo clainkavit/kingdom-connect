@@ -62,6 +62,11 @@ To: member. Channels: email only.
 - **EN** Title: Your {platform_name} code. Message: Your code is {code}. It works for 10 minutes. Do not share it with anyone. If you did not try to sign in, ignore this email.
 - **SW** Title: Msimbo wako wa {platform_name}. Message: Msimbo wako ni {code}. Unatumika kwa dakika 10. Usimpe mtu yeyote. Kama hukujaribu kuingia, puuza barua pepe hii.
 
+### A6 Application reopened
+To: applicant. Channels: in-app, email, push.
+- **EN** Title: Your application is open again. Message: An administrator reopened your application. Sign in, fix what is needed and send it again.
+- **SW** Title: Ombi lako limefunguliwa tena. Message: Msimamizi amefungua tena ombi lako. Ingia, rekebisha kinachohitajika na ulitume tena.
+
 ## 2. Business levels
 
 ### B1 Business level approved

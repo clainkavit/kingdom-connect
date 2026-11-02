@@ -80,6 +80,23 @@ export const notificationCopy = {
         "Msimbo wako ni {code}. Unatumika kwa dakika 10. Usimpe mtu yeyote. Kama hukujaribu kuingia, puuza barua pepe hii.",
     },
   },
+  A6: {
+    category: "account",
+    inApp: true,
+    email: "yes",
+    push: true,
+    opens: "/registration",
+    en: {
+      title: "Your application is open again",
+      message:
+        "An administrator reopened your application. Sign in, fix what is needed and send it again.",
+    },
+    sw: {
+      title: "Ombi lako limefunguliwa tena",
+      message:
+        "Msimamizi amefungua tena ombi lako. Ingia, rekebisha kinachohitajika na ulitume tena.",
+    },
+  },
   B1: {
     category: "business",
     inApp: true,

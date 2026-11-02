@@ -62,5 +62,9 @@ export const refusalStatus: Record<string, number> = {
   member_not_pending: 409,
   reason_required: 400,
   note_has_contact_details: 400,
+  note_required: 400,
+  not_rejected: 409,
+  not_final: 409,
+  final: 409,
   invalid: 400,
 };

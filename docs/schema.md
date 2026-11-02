@@ -68,7 +68,7 @@ Private data sits in its own tables, so each rule is "this whole table is admin-
 
 | Table | Key columns | Who can read | Who can write |
 |---|---|---|---|
-| `verification_requests` | `member_id`, `level` (1, 2, 3), `status` (pending, approved, rejected, expired), `reviewer_id` (staff), `reason_code` (from `rejection_reasons`), `reason_note` (up to 500 characters, no contact details), `reason` (the text sent to the applicant, in their language), `duplicate_suspected_of` (member, optional), `submitted_at`, `decided_at` | The member (own, without reviewer notes, via `my_application_status()`); staff | The applicant functions create it. Staff decide it only through the `decide-application` Edge Function (`private.decide_application()`) and mark a duplicate through `mark-duplicate` (`private.mark_duplicate()`); both write the audit log. No one updates the table directly |
+| `verification_requests` | `member_id`, `level` (1, 2, 3), `status` (pending, approved, rejected, expired), `reviewer_id` (staff), `reason_code` (from `rejection_reasons`), `reason_note` (up to 500 characters, no contact details), `reason` (the text sent to the applicant, in their language), `duplicate_suspected_of` (member, optional), `submitted_at`, `decided_at` | The member (own, without reviewer notes, via the `application-status` Edge Function); staff | The applicant functions create it. Staff decide it only through the `decide-application` Edge Function (`private.decide_application()`) and mark a duplicate through `mark-duplicate` (`private.mark_duplicate()`); both write the audit log. No one updates the table directly |
 | `rejection_reasons` | `code`, `label_en`, `label_sw`, `sort`, `needs_note` | Staff | Migrations only |
 | `verification_documents` | `request_id`, `kind` (face_photo, id_photo, brela, tin, licence, directorship, authorisation_letter), `storage_path`, `delete_after` (set once the request is decided; the retention period is open for the lawyer) | Staff | Written by `private.submit_registration()` from the files in Storage; staff |
 | `registration_drafts` | `member_id`, `step` (1 to 6), `data` (the wizard answers, never the ID number), `submitted_at` | The Applicant (own). **Never staff**: a draft is not an application | The Applicant, until they submit |
@@ -161,7 +161,9 @@ These run as `security definer`: they check who is calling, then return only wha
 | Function | What it returns |
 |---|---|
 | `get_contact_details(member_id)` | Phone, email and address, each only if the caller is an accepted connection, not blocked, and the owner's matching share switch is on |
-| `my_application_status()` | The applicant's own status ("Your application is being reviewed" while pending) and the rejection reason |
+| `application_status()` | The applicant's own state (drafting, under review with the expected working days, rejected, rejected final, approved) and the reason sent. No reviewer, reason code, queue place or queue size. Through the `application-status` Edge Function (`private.application_status()`) |
+| `start_resubmission()` | After a first rejection: uses the one resubmission and reopens the draft on step 6. Through the `start-resubmission` Edge Function (`private.start_resubmission()`); logged |
+| `reopen_application(request_id, note)` | Staff only, for the latest final rejection: reopens the draft without giving back the resubmission, sends A6. Through the `reopen-application` Edge Function (`private.reopen_application()`); logged with the note |
 | `my_sent_requests()` | The caller's sent connection requests, with declined ones shown as "sent" until they expire |
 | `requests_for_my_idea(idea_id)` | Access requests for the owner's idea, with anonymous requesters masked until the NDA is accepted |
 | `investor_view_count(idea_id)` | "Viewed by N investors" as a number only |

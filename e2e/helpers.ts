@@ -167,6 +167,10 @@ export async function createApplication(username: string, idNumber: string) {
     regionId: place!.region_id,
     districtId: place!.id,
     categoryDetails: { description: "Tailor" },
+    idType: "passport",
+    identitySaved: true,
+    facePhoto: true,
+    idPhoto: true,
     acceptTerms: true,
     acceptPrivacy: true,
   };
@@ -191,13 +195,16 @@ export async function notificationKinds(memberId: string): Promise<string[]> {
 
 export const ADMIN_URL = process.env.ADMIN_URL ?? "http://localhost:3000";
 
-/** Signs the test Administrator in to the admin console and opens one Applicant's application from the queue. */
-export async function openApplication(page: Page, username: string) {
+export async function signInToAdmin(page: Page) {
   await page.goto(`${ADMIN_URL}/login`);
   const sentAfter = new Date();
   await logIn(page, "Email", "test.admin@example.test");
   await enterCode(page, await nextCode("test.admin@example.test", sentAfter));
   await expect(page.getByRole("heading", { name: "Admin dashboard" })).toBeVisible();
+}
+
+/** Opens one Applicant's application from the verification queue, as a signed-in Administrator. */
+export async function openApplication(page: Page, username: string) {
   await page.goto(`${ADMIN_URL}/verification`);
   await page.getByRole("link", { name: `@${username} ·` }).click();
   await expect(page.getByRole("button", { name: "Approve" })).toBeVisible();

@@ -54,6 +54,7 @@ export function SignUpForm({
     if (result.kind === "username_taken") return setMessage(t.usernameTaken);
     if (result.kind === "email_taken") return setMessage(t.emailTaken);
     if (result.kind === "closed") return setMessage(t.registrationClosed);
+    if (result.kind === "cap_reached") return setMessage(t.applicationCapReached);
     setMessage(t.network);
   };
 

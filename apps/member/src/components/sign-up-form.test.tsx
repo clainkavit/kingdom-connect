@@ -88,4 +88,18 @@ describe("SignUpForm (S02)", () => {
     await create();
     expect(screen.getByRole("alert").textContent).toBe("Registration opens soon.");
   });
+
+  it("asks people over the daily cap to come back tomorrow (PRD section 6, criterion 15)", async () => {
+    render(
+      <SignUpForm
+        {...clients(vi.fn().mockResolvedValue({ kind: "cap_reached" }))}
+        onCodeSent={vi.fn()}
+      />,
+    );
+    fillAll();
+    await create();
+    expect(screen.getByRole("alert").textContent).toBe(
+      "We're reviewing a high number of applications, please try again tomorrow.",
+    );
+  });
 });

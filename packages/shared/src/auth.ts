@@ -6,7 +6,7 @@ import type { Language } from "./strings";
 export type App = "member" | "admin";
 export type Route = "login" | "verify" | "status" | "app" | "wrong_app";
 
-type Claims = { otp_verified?: boolean; user_status?: string };
+type Claims = { sub?: string; otp_verified?: boolean; user_status?: string };
 
 function claimsOf(accessToken: string): Claims {
   const part = accessToken.split(".")[1] ?? "";
@@ -17,6 +17,10 @@ function claimsOf(accessToken: string): Claims {
 
 export function userStatusOf(accessToken: string): string | undefined {
   return claimsOf(accessToken).user_status;
+}
+
+export function userIdOf(accessToken: string): string {
+  return claimsOf(accessToken).sub ?? "";
 }
 
 /** The standard local Supabase address and public anon key, the same on every machine and in CI. */
@@ -141,6 +145,7 @@ export type SignUpResult =
   | { kind: "username_taken" }
   | { kind: "email_taken" }
   | { kind: "closed" }
+  | { kind: "cap_reached" }
   | { kind: "network" };
 
 export type SaveIdentityResult =
@@ -169,6 +174,7 @@ export function createRegistrationClient(options: FunctionOptions) {
       if (r.error === "username_taken") return { kind: "username_taken" };
       if (r.error === "email_taken") return { kind: "email_taken" };
       if (r.error === "closed") return { kind: "closed" };
+      if (r.error === "cap_reached") return { kind: "cap_reached" };
       return { kind: "network" };
     },
 

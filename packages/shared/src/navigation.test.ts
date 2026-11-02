@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   adminNav,
+  adminNavFor,
   adminPhoneTabs,
   isCurrent,
   memberNav,
@@ -62,6 +63,11 @@ describe("admin navigation", () => {
       "Post as admin",
       "Audit log",
     ]);
+  });
+
+  it("adds Settings only for a Super Administrator (A16)", () => {
+    expect(labels(adminNavFor(false))).not.toContain("Settings");
+    expect(labels(adminNavFor(true)).at(-1)).toBe("Settings");
   });
 
   it("uses the phone tabs Home, Verify, Moderate, Reports, More", () => {

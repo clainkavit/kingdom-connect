@@ -142,7 +142,7 @@ The tables below list only a screen's **special states**: the ones beyond these 
 | A13 | Audit log | Admin | Read-only list of actions with before and after values | Cannot be edited by anyone. Filterable by actor, action and date |
 | A14 | Milestone plans (admin view) | Admin | Names, the idea or opportunity, stage statuses, dates, notes; add an annotation | Never shows contact details or the investor flag. Annotations cannot be deleted |
 | A15 | Post as admin | Admin | Post an opportunity, tender or news | Publishes at once; no no-fee tick; marked as an admin post |
-| A16 | Settings | Super Admin | Matching weights and minimum scores, the daily application cap, platform settings (name, entity name, featured slots), staff accounts, legal text versions | **Super Admin only.** The skill synonym list can also be edited by any Admin. Every change is written to the audit log |
+| A16 | Settings (`/settings`) | Super Admin | Matching weights and minimum scores, the daily application cap, platform settings (name, entity name, featured slots), staff accounts, legal text versions | **Super Administrators only:** in the menu only for Super Administrators; an Administrator who opens it sees "Only Super Administrators can change these settings". Built so far (R04): the daily application cap and staff accounts (invite, deactivate, reactivate). The skill synonym list can also be edited by any Admin. Every change is written to the audit log |
 
 ## Notification to screen
 

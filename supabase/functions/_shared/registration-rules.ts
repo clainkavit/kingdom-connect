@@ -34,13 +34,24 @@ export function signUpProblems(
   const username = normalizeUsername(input.username);
   if (!username) problems.username = "required";
   else if (!/^[a-z0-9][a-z0-9._]{2,29}$/.test(username)) problems.username = "username";
-  if (!input.email.trim()) problems.email = "required";
-  else if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(input.email.trim())) problems.email = "email";
+  const email = emailProblem(input.email);
+  if (email) problems.email = email;
   if (!input.phone.trim()) problems.phone = "required";
   else if (!normalizePhone(input.phone)) problems.phone = "phone";
-  if (!input.password) problems.password = "required";
-  else if (input.password.length < 8 || !/\d/.test(input.password)) problems.password = "password";
+  const password = passwordProblem(input.password);
+  if (password) problems.password = password;
   return problems;
+}
+
+export function emailProblem(email: string): FieldProblem | null {
+  if (!email.trim()) return "required";
+  return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.trim()) ? null : "email";
+}
+
+/** At least 8 characters with a digit, for members and staff alike. */
+export function passwordProblem(password: string): FieldProblem | null {
+  if (!password) return "required";
+  return password.length < 8 || !/\d/.test(password) ? "password" : null;
 }
 
 export const normalizeIdNumber = (number: string) => number.replace(/[\s-]/g, "").toUpperCase();

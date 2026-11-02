@@ -19,7 +19,7 @@ export default function VerifyPage() {
       <button
         type="button"
         onClick={signOut}
-        className="self-start text-sm font-medium text-primary"
+        className="min-h-[44px] self-start text-sm font-semibold text-primary"
       >
         {strings.logOut}
       </button>

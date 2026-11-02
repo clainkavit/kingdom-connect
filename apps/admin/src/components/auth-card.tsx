@@ -1,21 +1,20 @@
 import { strings } from "@/strings";
-import { NavIcon } from "./nav-icon";
 
 export function AuthCard({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="flex min-h-dvh items-center justify-center bg-background p-4">
-      <div className="flex w-full max-w-sm flex-col gap-6 rounded-lg border bg-card p-6 shadow-card">
-        <div className="flex items-center gap-2.5">
-          <span className="grid size-9 place-items-center rounded-[10px] bg-primary text-primary-foreground">
-            <NavIcon name="users" size={20} />
-          </span>
-          <span className="text-lg font-extrabold tracking-tight text-foreground">
-            {strings.appName} {strings.adminLabel}
-          </span>
+    <div className="flex min-h-dvh flex-col bg-background">
+      <header className="flex flex-wrap items-center justify-between gap-3 bg-sidebar px-7 py-3.5">
+        <span className="text-[19px] font-extrabold text-white">{strings.appName}</span>
+        <span className="text-xs tracking-[0.08em] text-navy-mute uppercase">
+          {strings.adminLabel}
+        </span>
+      </header>
+      <main className="flex flex-1 items-center justify-center px-4 py-7">
+        <div className="flex w-full max-w-[400px] flex-col gap-3 rounded-lg border bg-card p-[18px]">
+          <h1 className="text-lg font-extrabold text-foreground">{title}</h1>
+          {children}
         </div>
-        <h1 className="text-xl font-bold text-foreground">{title}</h1>
-        {children}
-      </div>
+      </main>
     </div>
   );
 }

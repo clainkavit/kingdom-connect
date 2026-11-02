@@ -11,9 +11,17 @@
   --color-navy-mute: var(--kc-navy-mute);
   --color-good: var(--kc-good);
   --color-good-soft: var(--kc-good-soft);
+  --color-good-text: var(--kc-good-text);
   --color-warn: var(--kc-warn);
   --color-warn-soft: var(--kc-warn-soft);
+  --color-warn-text: var(--kc-warn-text);
   --color-bad-soft: var(--kc-bad-soft);
+  --color-bad-text: var(--kc-bad-text);
+  --color-info-text: var(--kc-info-text);
+  --color-field: var(--kc-field);
+  --color-navy-ink: var(--kc-navy-ink);
+  --color-blue-soft: var(--kc-blue-soft);
+  --color-ink-2: var(--kc-ink-2);
   --shadow-card: var(--kc-shadow);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
@@ -67,7 +75,7 @@
   --secondary: var(--kc-surface-2);
   --secondary-foreground: var(--kc-ink);
   --muted: var(--kc-surface-2);
-  --muted-foreground: var(--kc-ink-3);
+  --muted-foreground: var(--kc-ink-2);
   --accent: var(--kc-blue-soft);
   --accent-foreground: var(--kc-blue);
   --destructive: var(--kc-bad);

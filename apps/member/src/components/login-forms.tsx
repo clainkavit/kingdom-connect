@@ -30,7 +30,6 @@ function Field(props: {
   value: string;
   onChange: (v: string) => void;
   secure?: boolean;
-  numeric?: boolean;
 }) {
   return (
     <View className="gap-1.5">
@@ -42,9 +41,40 @@ function Field(props: {
         secureTextEntry={props.secure}
         autoCapitalize="none"
         autoCorrect={false}
-        keyboardType={props.numeric ? "number-pad" : "default"}
-        maxLength={props.numeric ? 6 : undefined}
-        className="rounded-lg border border-line bg-surface px-3 py-2.5 font-figtree text-base text-ink"
+        className="min-h-[44px] rounded-[9px] border border-field bg-surface px-3 font-figtree text-[15px] text-ink"
+      />
+    </View>
+  );
+}
+
+const CODE_LENGTH = 6;
+
+function CodeBoxes({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  const [focused, setFocused] = useState(false);
+  const active = Math.min(value.length, CODE_LENGTH - 1);
+  return (
+    <View className="relative">
+      <View testID="code-boxes" className="flex-row gap-1.5">
+        {Array.from({ length: CODE_LENGTH }, (_, i) => (
+          <View
+            key={i}
+            className={`min-h-[48px] flex-1 items-center justify-center rounded-[9px] border ${focused && i === active ? "border-blue" : "border-field"}`}
+          >
+            <Text className="font-figtree-extrabold text-xl text-ink">{value[i] ?? ""}</Text>
+          </View>
+        ))}
+      </View>
+      <TextInput
+        aria-label={strings.emailCode}
+        value={value}
+        onChangeText={(v) => onChange(v.replace(/\D/g, "").slice(0, CODE_LENGTH))}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
+        keyboardType="number-pad"
+        autoComplete="one-time-code"
+        maxLength={CODE_LENGTH}
+        caretHidden
+        className="absolute inset-0 opacity-0"
       />
     </View>
   );
@@ -63,10 +93,14 @@ function Button(props: {
       aria-disabled={props.disabled}
       disabled={props.disabled}
       onPress={props.onPress}
-      className={`items-center rounded-lg px-4 py-3 ${props.secondary ? "border border-line bg-surface" : "bg-blue"} ${props.disabled ? "opacity-50" : ""}`}
+      className={`items-center justify-center px-4 ${props.secondary ? "min-h-[44px] rounded-[9px] border border-line bg-surface" : "min-h-[48px] rounded-[10px] bg-blue"} ${props.disabled ? "opacity-50" : ""}`}
     >
       <Text
-        className={`font-figtree-semibold text-sm ${props.secondary ? "text-ink" : "text-blue-ink"}`}
+        className={
+          props.secondary
+            ? "font-figtree-semibold text-sm text-ink-2"
+            : "font-figtree-bold text-[15px] text-blue-ink"
+        }
       >
         {props.label}
       </Text>
@@ -74,11 +108,18 @@ function Button(props: {
   );
 }
 
-function Message({ text }: { text: string | null }) {
+function Message({ text, tone = "bad" }: { text: string | null; tone?: "bad" | "info" }) {
   if (!text) return null;
   return (
-    <View role="alert" className="rounded-md bg-bad-soft px-3 py-2">
-      <Text className="font-figtree-medium text-sm text-ink">{text}</Text>
+    <View
+      role="alert"
+      className={`rounded-[10px] px-3 py-2.5 ${tone === "info" ? "bg-blue-soft" : "bg-bad-soft"}`}
+    >
+      <Text
+        className={`font-figtree text-[13px] leading-[19px] ${tone === "info" ? "text-info-text" : "text-bad-text"}`}
+      >
+        {text}
+      </Text>
     </View>
   );
 }
@@ -107,10 +148,14 @@ export function LoginForm({
 
   const locked = lock.secondsLeft > 0;
   return (
-    <View className="gap-4">
+    <View className="gap-3">
       <Field label={strings.username} value={username} onChange={setUsername} />
       <Field label={strings.password} value={password} onChange={setPassword} secure />
-      <Message text={locked ? strings.locked(minutesAndSeconds(lock.secondsLeft)) : message} />
+      {locked ? (
+        <Message tone="info" text={strings.locked(minutesAndSeconds(lock.secondsLeft))} />
+      ) : (
+        <Message text={message} />
+      )}
       <Button
         label={strings.logIn}
         onPress={submit}
@@ -160,9 +205,9 @@ export function CodeForm({
   };
 
   return (
-    <View className="gap-4">
-      <Text className="font-figtree text-sm text-ink-2">{strings.codeSent}</Text>
-      <Field label={strings.emailCode} value={code} onChange={setCode} numeric />
+    <View className="gap-3">
+      <Text className="font-figtree text-sm leading-5 text-ink-2">{strings.codeSent}</Text>
+      <CodeBoxes value={code} onChange={setCode} />
       <Message text={message} />
       <Button label={strings.verify} onPress={submit} disabled={busy || code.length !== 6} />
       <Button

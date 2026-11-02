@@ -8,7 +8,6 @@ import {
   type Session,
 } from "@kingdom-connect/shared";
 import { useEffect, useState } from "react";
-import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { strings } from "@/strings";
 
@@ -33,7 +32,6 @@ function Field(props: {
   value: string;
   onChange: (v: string) => void;
   type?: string;
-  numeric?: boolean;
 }) {
   return (
     <div className="flex flex-col gap-1.5">
@@ -45,19 +43,65 @@ function Field(props: {
         type={props.type ?? "text"}
         value={props.value}
         onChange={(e) => props.onChange(e.target.value)}
-        inputMode={props.numeric ? "numeric" : undefined}
-        maxLength={props.numeric ? 6 : undefined}
-        autoComplete={props.numeric ? "one-time-code" : undefined}
-        className="rounded-lg border bg-card px-3 py-2.5 text-base text-foreground outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+        className="min-h-[44px] rounded-[9px] border border-field bg-card px-3 text-[15px] text-foreground outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
       />
     </div>
   );
 }
 
-function Message({ text }: { text: string | null }) {
+const CODE_LENGTH = 6;
+
+function CodeBoxes({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  const [focused, setFocused] = useState(false);
+  const active = Math.min(value.length, CODE_LENGTH - 1);
+  return (
+    <div className="relative">
+      <div data-testid="code-boxes" aria-hidden className="flex gap-1.5">
+        {Array.from({ length: CODE_LENGTH }, (_, i) => (
+          <span
+            key={i}
+            className={cn(
+              "flex min-h-[48px] flex-1 items-center justify-center rounded-[9px] border border-field text-xl font-extrabold text-foreground",
+              focused && i === active && "border-primary ring-3 ring-ring/30",
+            )}
+          >
+            {value[i] ?? ""}
+          </span>
+        ))}
+      </div>
+      <label htmlFor="code" className="sr-only">
+        {strings.emailCode}
+      </label>
+      <input
+        id="code"
+        value={value}
+        onChange={(e) => onChange(e.target.value.replace(/\D/g, "").slice(0, CODE_LENGTH))}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
+        inputMode="numeric"
+        autoComplete="one-time-code"
+        maxLength={CODE_LENGTH}
+        className="absolute inset-0 h-full w-full cursor-text opacity-0"
+      />
+    </div>
+  );
+}
+
+const primaryButton =
+  "min-h-[48px] rounded-[10px] bg-primary px-4 text-[15px] font-bold text-primary-foreground disabled:opacity-50";
+const secondaryButton =
+  "min-h-[44px] rounded-[9px] border bg-card px-4 text-sm font-semibold text-ink-2 disabled:opacity-50";
+
+function Message({ text, tone = "bad" }: { text: string | null; tone?: "bad" | "info" }) {
   if (!text) return null;
   return (
-    <p role="alert" className="rounded-md bg-bad-soft px-3 py-2 text-sm text-foreground">
+    <p
+      role="alert"
+      className={cn(
+        "rounded-[10px] px-3 py-2.5 text-[13px] leading-[1.45]",
+        tone === "info" ? "bg-blue-soft text-info-text" : "bg-bad-soft text-bad-text",
+      )}
+    >
       {text}
     </p>
   );
@@ -88,7 +132,7 @@ export function LoginForm({
 
   const locked = lock.secondsLeft > 0;
   return (
-    <form onSubmit={submit} className="flex flex-col gap-4">
+    <form onSubmit={submit} className="flex flex-col gap-3">
       <Field id="email" label={strings.email} value={email} onChange={setEmail} type="email" />
       <Field
         id="password"
@@ -97,11 +141,15 @@ export function LoginForm({
         onChange={setPassword}
         type="password"
       />
-      <Message text={locked ? strings.locked(minutesAndSeconds(lock.secondsLeft)) : message} />
+      {locked ? (
+        <Message tone="info" text={strings.locked(minutesAndSeconds(lock.secondsLeft))} />
+      ) : (
+        <Message text={message} />
+      )}
       <button
         type="submit"
         disabled={busy || locked || !email || !password}
-        className={cn(buttonVariants(), "h-10")}
+        className={primaryButton}
       >
         {strings.logIn}
       </button>
@@ -150,22 +198,18 @@ export function CodeForm({
   };
 
   return (
-    <form onSubmit={submit} className="flex flex-col gap-4">
-      <p className="text-sm text-muted-foreground">{strings.codeSent}</p>
-      <Field id="code" label={strings.emailCode} value={code} onChange={setCode} numeric />
+    <form onSubmit={submit} className="flex flex-col gap-3">
+      <p className="text-sm leading-[1.45] text-ink-2">{strings.codeSent}</p>
+      <CodeBoxes value={code} onChange={setCode} />
       <Message text={message} />
-      <button
-        type="submit"
-        disabled={busy || code.length !== 6}
-        className={cn(buttonVariants(), "h-10")}
-      >
+      <button type="submit" disabled={busy || code.length !== 6} className={primaryButton}>
         {strings.verify}
       </button>
       <button
         type="button"
         onClick={sendNew}
         disabled={resend.secondsLeft > 0}
-        className={cn(buttonVariants({ variant: "outline" }), "h-10")}
+        className={secondaryButton}
       >
         {resend.secondsLeft > 0 ? strings.resendIn(resend.secondsLeft) : strings.resend}
       </button>

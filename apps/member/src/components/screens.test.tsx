@@ -15,10 +15,10 @@ describe("ComingSoon", () => {
 });
 
 describe("MoreList", () => {
-  it("lists every sidebar item that has no phone tab", () => {
+  it("lists every menu item that has no phone tab", () => {
     render(<MoreList />);
     const tabHrefs = new Set(memberPhoneTabs.map((t) => t.href));
     const expected = memberNav.filter((i) => !tabHrefs.has(i.href)).map((i) => i.label);
-    expect(screen.getAllByRole("link").map((l) => l.textContent)).toEqual(expected);
+    expect(screen.getAllByRole("link").map((l) => l.getAttribute("aria-label"))).toEqual(expected);
   });
 });

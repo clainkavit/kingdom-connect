@@ -100,17 +100,17 @@ Phase 1 ships in two releases inside the 12-month plan: Release 1 builds trust a
 
 ## 5. Information architecture and navigation
 
-Members and administrators get different sidebars; a member never sees admin items, and an investor's sidebar looks the same as any member's.
+Members and administrators get different menus; a member never sees admin items, and an investor's menu looks the same as any member's.
 
-**Member sidebar:** Dashboard · Professionals · Businesses · Opportunities (Jobs, Partnerships, Investment, Tenders) · Ideas · Training & Courses · Events · Messages · Connections · Reports & Safety · Settings. Persistent "Report a Scam / Bad User" card at the foot.
+**Member menu (a bar across the top):** Dashboard · People (the directory, with Professionals and Businesses tabs) · Opportunities (filtered by type on the page) · Ideas · Training · Events · Messages · Connections · Reports & Safety · Settings. Notifications and My profile open from the dashboard.
 
 **Investor additions (inside Ideas only):** investor filters, Saved ideas, anonymous "Express interest" option. No separate menu item.
 
-**Admin sidebar:** Admin Dashboard · Verification Queue (members, businesses, investors) · Moderation Queue (opportunities, ideas, training, events, tenders) · Reports · Re-verification · Members · Investors · News · Featured · Audit Log · Settings.
+**Admin sidebar:** Dashboard · Verification queue (members, businesses, investors) · Moderation queue (opportunities, ideas, training, events, tenders) · Reports · Re-verification · Members and investors · News and featured · Milestone plans · Post as admin · Audit log. Platform settings are on the Super Administrator's pages.
 
-**On phones** the sidebar becomes a bottom tab bar: Home, People, Opportunities, Messages, More for members; Home, Verify, Moderate, Reports, More for admins.
+**On phones** the menu becomes a bottom tab bar: Home, People, Opportunities, Messages, More for members, shown as icons with their names read out by screen readers; Home, Verify, Moderate, Reports, More for admins. More lists the remaining menu items.
 
-**Visual direction.** The team's mockup ([context/design/dashboard-mockup.jpg](../context/design/dashboard-mockup.jpg)) sets the look. The clickable prototype ([context/design/dashboard-prototype.html](../context/design/dashboard-prototype.html)) applies this PRD to it. Where the mockup conflicts with this PRD, the PRD wins.
+**Visual direction.** The [Kingdom Connect Screens canvas](https://claude.ai/artifact/7pbedM5rqr67UUbxncHx8X) sets the look and the layout of every screen. It replaces the earlier mockup ([context/design/dashboard-mockup.jpg](../context/design/dashboard-mockup.jpg)) and prototype ([context/design/dashboard-prototype.html](../context/design/dashboard-prototype.html)). Where the canvas conflicts with this PRD, the PRD wins.
 
 **Key screens**
 
@@ -703,6 +703,12 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 **Decided on 22 October 2026 (dashboard counts)**
 - The community counts (verified members, registered businesses, open opportunities, ideas in the pool) are shown to administrators only. Members see no platform-wide figures (section 7).
 
+**Decided on 2 November 2026 (design canvas)**
+- The Kingdom Connect Screens canvas is the visual direction (section 5). The member menu moves from a sidebar to a bar across the top; the "Report a Scam / Bad User" card becomes the Reports & Safety menu item.
+- The member menu is Dashboard, People, Opportunities, Ideas, Training, Events, Messages, Connections, Reports & Safety, Settings. Professionals and Businesses become tabs inside People.
+- The member phone tab bar shows icons only, each with a screen-reader name.
+- The admin sidebar takes the canvas's items: Members and investors, and News and featured, are one item each; Milestone plans and Post as admin are added; Settings moves to the Super Administrator's pages.
+
 **Open.** Every open question is a ticket on the [wayfinder map](https://github.com/clainkavit/kingdom-connect/issues/1) and is linked where it applies above.
 
 **Outside this spec**
@@ -735,6 +741,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | 20 Oct 2026 | Database schema and access rules written in docs/schema.md | 16, 18 |
 | 20 Oct 2026 | Tech stack decided; pilot launches web first, mobile apps follow; push notifications scoped | 4, 14, 15, 16, 18 |
 | 1 Nov 2026 | CI on every pull request; nobody merges a pull request with a failing check (an agreed rule, without branch protection) | 17 |
+| 2 Nov 2026 | The design canvas becomes the visual direction; member menu across the top, new member and admin menu items, icon-only member phone tabs | 5, 18 |
 
 ## Appendix B: Source documents
 

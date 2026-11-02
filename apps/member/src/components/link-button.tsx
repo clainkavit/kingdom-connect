@@ -5,12 +5,19 @@ type LinkButtonProps = {
   href: string;
   className?: string;
   current?: boolean;
+  label?: string;
   children: React.ReactNode;
 };
 
-export function LinkButton({ href, className, current, children }: LinkButtonProps) {
+export function LinkButton({ href, className, current, label, children }: LinkButtonProps) {
   return (
-    <Link href={href} aria-current={current ? "page" : undefined} role="link" asChild>
+    <Link
+      href={href}
+      aria-current={current ? "page" : undefined}
+      aria-label={label}
+      role="link"
+      asChild
+    >
       <Pressable className={className}>{children}</Pressable>
     </Link>
   );

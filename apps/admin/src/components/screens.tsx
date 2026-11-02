@@ -1,11 +1,12 @@
 import { adminNav, adminPhoneTabs, moreItems } from "@kingdom-connect/shared";
 import Link from "next/link";
 import { strings } from "@/strings";
-import { NavIcon } from "./nav-icon";
 import { EmptyState } from "./states";
 
 export function ScreenTitle({ children }: { children: React.ReactNode }) {
-  return <h1 className="mb-4 text-xl font-bold tracking-tight text-foreground">{children}</h1>;
+  return (
+    <h1 className="mb-5 text-[26px] font-extrabold tracking-tight text-foreground">{children}</h1>
+  );
 }
 
 export function ComingSoon({ title }: { title: string }) {
@@ -24,10 +25,13 @@ export function MoreList() {
         <li key={item.href}>
           <Link
             href={item.href}
-            className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-foreground"
+            aria-label={item.label}
+            className="flex min-h-[52px] items-center justify-between px-4 text-[15px] text-foreground"
           >
-            <NavIcon name={item.icon} />
             <span>{item.label}</span>
+            <span aria-hidden className="text-muted-foreground">
+              ›
+            </span>
           </Link>
         </li>
       ))}

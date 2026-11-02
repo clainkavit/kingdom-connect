@@ -8,3 +8,4 @@ export * from "./legal";
 export * from "./registration-rules";
 export * from "./verification";
 export * from "./staff";
+export * from "./profile";

@@ -48,10 +48,10 @@ test("a Super Administrator turns on the daily application cap and sign-up stops
   expect(await signUp(`e2e_cap_${Date.now()}`)).toEqual({ ok: true });
 });
 
-test("an Administrator does not see Settings and cannot create staff", async ({ page }) => {
+test("an Administrator cannot change the cap or create staff", async ({ page }) => {
   await signInToAdmin(page);
-  await expect(page.getByRole("link", { name: "Settings" })).toHaveCount(0);
   await page.goto(`${ADMIN_URL}/settings`);
+  await expect(page.getByRole("checkbox", { name: "Limit sign-ups each day" })).toHaveCount(0);
   await expect(
     page.getByText("Only Super Administrators can change these settings."),
   ).toBeVisible();
@@ -112,4 +112,17 @@ test("a Super Administrator invites an Administrator, who sets a password and lo
   await again.goto(`${ADMIN_URL}/login`);
   await logIn(again, "Email", email, "staff-pass-1");
   await expect(again.getByText("Wrong email or password.")).toBeVisible();
+});
+
+test("an Administrator adds and removes a skill synonym (R06)", async ({ page }) => {
+  const stamp = Date.now();
+  await signInToAdmin(page);
+  await page.goto(`${ADMIN_URL}/settings`);
+  await page.getByLabel("Variant").fill(`e2e variant ${stamp}`);
+  await page.getByLabel("Skill it means").fill(`e2e skill ${stamp}`);
+  await page.getByRole("button", { name: "Add synonym" }).click();
+  await expect(page.getByText("Synonym added.")).toBeVisible();
+  await expect(page.getByText(`e2e variant ${stamp} → e2e skill ${stamp}`)).toBeVisible();
+  await page.getByRole("button", { name: `Remove e2e variant ${stamp}` }).click();
+  await expect(page.getByText(`e2e variant ${stamp} → e2e skill ${stamp}`)).toHaveCount(0);
 });

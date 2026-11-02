@@ -64,13 +64,8 @@ export const adminNav: readonly NavItem[] = [
   { key: "adminNavPlans", href: "/milestone-plans", icon: "milestone" },
   { key: "adminNavPost", href: "/post", icon: "megaphone" },
   { key: "adminNavAudit", href: "/audit-log", icon: "history" },
+  { key: "adminNavSettings", href: "/settings", icon: "sliders-horizontal" },
 ];
-
-/** A16 Settings is in the menu only for Super Administrators. */
-export const adminNavFor = (superAdmin: boolean): readonly NavItem[] =>
-  superAdmin
-    ? [...adminNav, { key: "adminNavSettings", href: "/settings", icon: "sliders-horizontal" }]
-    : adminNav;
 
 export const adminPhoneTabs: readonly NavItem[] = [
   { key: "tabHome", href: "/", icon: "home" },

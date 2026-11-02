@@ -66,5 +66,8 @@ export const refusalStatus: Record<string, number> = {
   not_rejected: 409,
   not_final: 409,
   final: 409,
+  not_a_member: 403,
+  too_many: 400,
+  too_long: 400,
   invalid: 400,
 };

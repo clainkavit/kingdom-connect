@@ -134,8 +134,8 @@ select is(pg_temp.touched($$update public.profiles set headline = 'Nurse in Mwan
   'member: can edit their own profile');
 select throws_ok($$insert into public.profile_skills (member_id, skill_id) select '00000000-0000-0000-0000-000000000002', id from public.skills limit 1$$, '42501', null,
   'member: cannot add a skill to another member''s profile');
-select lives_ok($$insert into public.profile_skills (member_id, skill_id) select '00000000-0000-0000-0000-000000000001', id from public.skills where name = 'fixture nursing'$$,
-  'member: can add a skill to their own profile');
+select throws_ok($$insert into public.profile_skills (member_id, skill_id) select '00000000-0000-0000-0000-000000000001', id from public.skills where name = 'fixture nursing'$$,
+  '42501', null, 'member: adds skills only through set_skills(), which applies the synonym list (R06)');
 
 select pg_temp.login('02');
 select ok(not exists(select 1 from public.profiles where member_id = '00000000-0000-0000-0000-000000000003'), 'member: does not see a hidden profile when not connected');
@@ -198,8 +198,11 @@ select is(pg_temp.touched($$update public.platform_settings set value = '4' wher
 select pg_temp.login('01');
 select is((select count(*)::int from public.skills where name like 'fixture %'), 2, 'member: reads the skill list');
 select is((select count(*)::int from public.skill_synonyms), 1, 'member: reads the synonym list');
-select lives_ok($$insert into public.skills (name) values ('welding')$$, 'member: can create a new skill tag');
+select throws_ok($$insert into public.skills (name) values ('welding')$$, '42501', null,
+  'member: creates new skill tags only through set_skills() (R06)');
+reset role;
 select throws_ok($$insert into public.skills (name) values ('Welding ')$$, '23514', null, 'a skill name must be lowercased and trimmed');
+set local role authenticated;
 select is(pg_temp.touched($$update public.skills set name = 'nurse' where name = 'fixture nursing'$$), 0, 'member: cannot rename a skill');
 select throws_ok($$insert into public.skill_synonyms (from_name, skill_id) select 'nurse', id from public.skills where name = 'fixture nursing'$$, '42501', null,
   'member: cannot add a synonym');

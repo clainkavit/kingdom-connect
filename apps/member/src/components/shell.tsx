@@ -6,6 +6,7 @@ import { LanguageSwitch } from "./language-switch";
 import { LinkButton } from "./link-button";
 import { NotificationBell } from "./notifications";
 import { NavIcon } from "./nav-icon";
+import { ProfileLink } from "./profile-link";
 import { usePalette } from "./palette";
 
 const WIDE = 881;
@@ -56,6 +57,7 @@ function TopBar({
           );
         })}
         <NotificationBell count={unread} color={palette.navyInk} />
+        <ProfileLink color={palette.navyInk} />
         <LanguageSwitch onNavy />
         {onSignOut ? (
           <Pressable
@@ -118,7 +120,10 @@ export function MemberShell({
       ) : (
         <View className="flex-row items-center justify-between bg-navy px-5 py-2.5">
           <Wordmark phone />
-          <NotificationBell count={unread} color="#ffffff" />
+          <View className="flex-row items-center">
+            <NotificationBell count={unread} color="#ffffff" />
+            <ProfileLink color="#ffffff" />
+          </View>
         </View>
       )}
       <ScrollView className="flex-1" contentContainerClassName={wide ? "px-7 py-6" : "px-5 py-4"}>

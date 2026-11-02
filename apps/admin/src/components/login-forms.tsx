@@ -10,6 +10,7 @@ import {
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/lib/language";
+import { Field } from "./field";
 
 function useCountdown(initialSeconds: number) {
   const [endsAt, setEndsAt] = useState(() => Date.now() + initialSeconds * 1000);
@@ -24,29 +25,6 @@ function useCountdown(initialSeconds: number) {
     setEndsAt(t + seconds * 1000);
   };
   return { secondsLeft: Math.max(0, Math.ceil((endsAt - now) / 1000)), restart };
-}
-
-function Field(props: {
-  id: string;
-  label: string;
-  value: string;
-  onChange: (v: string) => void;
-  type?: string;
-}) {
-  return (
-    <div className="flex flex-col gap-1.5">
-      <label htmlFor={props.id} className="text-sm font-semibold text-foreground">
-        {props.label}
-      </label>
-      <input
-        id={props.id}
-        type={props.type ?? "text"}
-        value={props.value}
-        onChange={(e) => props.onChange(e.target.value)}
-        className="min-h-[44px] rounded-[9px] border border-field bg-card px-3 text-[15px] text-foreground outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
-      />
-    </div>
-  );
 }
 
 const CODE_LENGTH = 6;

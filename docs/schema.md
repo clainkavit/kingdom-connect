@@ -68,7 +68,8 @@ Private data sits in its own tables, so each rule is "this whole table is admin-
 
 | Table | Key columns | Who can read | Who can write |
 |---|---|---|---|
-| `verification_requests` | `member_id`, `level` (1, 2, 3), `status` (pending, approved, rejected, expired), `reviewer_id` (staff), `reason`, `duplicate_suspected_of` (member, optional), `submitted_at`, `decided_at` | The member (own, without reviewer notes, via `my_application_status()`); staff | The applicant functions create it; staff decide it |
+| `verification_requests` | `member_id`, `level` (1, 2, 3), `status` (pending, approved, rejected, expired), `reviewer_id` (staff), `reason_code` (from `rejection_reasons`), `reason_note` (up to 500 characters, no contact details), `reason` (the text sent to the applicant, in their language), `duplicate_suspected_of` (member, optional), `submitted_at`, `decided_at` | The member (own, without reviewer notes, via `my_application_status()`); staff | The applicant functions create it. Staff decide it only through the `decide-application` Edge Function (`private.decide_application()`) and mark a duplicate through `mark-duplicate` (`private.mark_duplicate()`); both write the audit log. No one updates the table directly |
+| `rejection_reasons` | `code`, `label_en`, `label_sw`, `sort`, `needs_note` | Staff | Migrations only |
 | `verification_documents` | `request_id`, `kind` (face_photo, id_photo, brela, tin, licence, directorship, authorisation_letter), `storage_path`, `delete_after` (set once the request is decided; the retention period is open for the lawyer) | Staff | Written by `private.submit_registration()` from the files in Storage; staff |
 | `registration_drafts` | `member_id`, `step` (1 to 6), `data` (the wizard answers, never the ID number), `submitted_at` | The Applicant (own). **Never staff**: a draft is not an application | The Applicant, until they submit |
 | `businesses` | `member_id`, `name`, `sector_id`, `size`, `description`, `logo_path`, `level` (2, 3), `status` (pending, approved, rejected, expired) | Approved members see approved businesses; the owner; staff | The owner edits while not approved; staff approve |
@@ -167,7 +168,7 @@ These run as `security definer`: they check who is calling, then return only wha
 | `get_idea_file_link(file_id)` | A short-lived, watermarked file link, through an Edge Function. Logs the view |
 | `registrants(training_or_event_id)` | Names and profiles of registrants, for the poster. No contact details |
 | `report(target_type, target_id, ...)` | Creates the report; hides an opportunity at once |
-| `reveal_id_number(member_id)` | The decrypted ID number, for staff only; logged |
+| `reveal_id_number(member_id)` | The decrypted ID number, for staff only; logged as `id.revealed`. Called through the `reveal-id-number` Edge Function, as `private.reveal_id_number()` |
 | `propose_plan()`, `accept_plan()`, `mark_milestone_done()`, `confirm_milestone()`, `withdraw_plan()`, `end_plan(plan_id, reason)`, `upload_plan_document()` | The milestone plan steps. They check the caller is one of the two members, enforce the 14-day lapse, the 1-hour withdrawal window after both accept stage 1, that ending a plan after the first hour needs a reason, and that a confirmed milestone is never changed. A scheduled job sends the day-7 reminder and lapses expired plans |
 | `admin_dashboard_stats()` | The community counts (verified members, registered businesses, open opportunities, ideas in the pool), for staff only. A member's dashboard has no platform-wide counts (PRD section 7, criterion 1) |
 

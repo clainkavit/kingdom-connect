@@ -22,6 +22,7 @@ export type ThreadSummary = {
   otherId: string;
   fullName: string;
   photoUrl: string | null;
+  otherDeleted: boolean;
   lastBody: string;
   lastDeleted: boolean;
   lastAt: string;
@@ -43,6 +44,7 @@ export type Thread = {
   id: string;
   otherId: string;
   otherName: string;
+  otherDeleted: boolean;
   reported: boolean;
   canSend: boolean;
   messages: Message[];
@@ -81,6 +83,13 @@ async function fileLinks(paths: string[]): Promise<Map<string, string>> {
   );
 }
 
+/** Which of these members deleted their data, so the app can say "Deleted member" (schema section 14). */
+async function deletedAmong(ids: string[]): Promise<Set<string>> {
+  if (ids.length === 0) return new Set();
+  const { data } = await supabase.rpc("deleted_members", { ids });
+  return new Set((data ?? []) as string[]);
+}
+
 export function messagesApi(pick: () => Promise<PickedFile | null>): MessagesApi {
   return {
     async threads() {
@@ -96,12 +105,16 @@ export function messagesApi(pick: () => Promise<PickedFile | null>): MessagesApi
         last_message_at: string;
         unread: boolean;
       }[];
-      const urls = await photoLinks(rows.map((r) => r.photo_path));
+      const [urls, deleted] = await Promise.all([
+        photoLinks(rows.map((r) => r.photo_path)),
+        deletedAmong(rows.filter((r) => !r.full_name).map((r) => r.other_id)),
+      ]);
       return rows.map((r) => ({
         threadId: r.thread_id,
         otherId: r.other_id,
         fullName: r.full_name ?? "",
         photoUrl: (r.photo_path && urls.get(r.photo_path)) || null,
+        otherDeleted: deleted.has(r.other_id),
         lastBody: r.last_body ?? "",
         lastDeleted: r.last_deleted,
         lastAt: r.last_message_at,
@@ -142,7 +155,7 @@ export function messagesApi(pick: () => Promise<PickedFile | null>): MessagesApi
       if (thread.error) throw thread.error;
       if (!thread.data) return null;
       const otherId = thread.data.member_a === me ? thread.data.member_b : thread.data.member_a;
-      const [messages, other, relation] = await Promise.all([
+      const [messages, other, relation, deleted] = await Promise.all([
         supabase
           .from("messages")
           .select(
@@ -152,6 +165,7 @@ export function messagesApi(pick: () => Promise<PickedFile | null>): MessagesApi
           .order("created_at"),
         supabase.from("profiles").select("full_name").eq("member_id", otherId).maybeSingle(),
         connectionsApi.relation(otherId).catch(() => "none" as const),
+        deletedAmong([otherId]),
       ]);
       if (messages.error) throw messages.error;
       const rows = (messages.data ?? []) as MessageRow[];
@@ -160,6 +174,7 @@ export function messagesApi(pick: () => Promise<PickedFile | null>): MessagesApi
         id: threadId,
         otherId,
         otherName: other.data?.full_name ?? "",
+        otherDeleted: deleted.has(otherId),
         reported: thread.data.status === "reported",
         canSend: relation === "connected" && thread.data.status !== "closed",
         messages: rows.map((r) => ({

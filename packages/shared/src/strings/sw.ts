@@ -581,4 +581,33 @@ export const sw: Strings = {
   adminCapNone: "Hakuna kikomo cha kila siku",
   adminCapChange: "Badilisha kwenye Mipangilio",
   adminStatsStale: "Hatukuweza kusasisha idadi. Huenda zimepitwa na wakati.",
+  dataTitle: "Pakua au futa data yangu",
+  dataDownloadTitle: "Pakua data yangu",
+  dataDownloadHint:
+    "Faili lenye akaunti yako, wasifu, mawasiliano, miunganisho, ujumbe uliotuma na ripoti zako.",
+  dataDownload: "Pakua data yangu",
+  dataDownloaded: "Data yako imepakuliwa.",
+  dataDownloadFailed: "Hatukuweza kuandaa data yako. Angalia mtandao wako, kisha ujaribu tena.",
+  dataDeleteTitle: "Futa data yangu",
+  dataDeleteHint:
+    "Hii inaondoa akaunti yako na data yako kabisa. Unaweza kupakua data yako kwanza.",
+  dataDelete: "Futa data yangu",
+  dataRemovedTitle: "Kinachoondolewa",
+  dataRemoved1:
+    "Wasifu wako, mawasiliano na nyaraka za utambulisho, pamoja na picha na faili zako.",
+  dataRemoved2: "Miunganisho yako, maombi, waliozuiwa na arifa.",
+  dataRemoved3: "Uwezo wa kuingia. Huwezi kuingia tena kwa akaunti hii.",
+  dataKeptTitle: "Kinachobaki",
+  dataKept1:
+    "Ujumbe uliotuma unabaki kwenye mazungumzo ya mwanachama mwingine, ukionyeshwa kutoka kwa Mwanachama aliyefutwa. Faili ulizotuma zinaondolewa.",
+  dataKept2:
+    "Ripoti na maamuzi yaliyofanywa juu yake, na kumbukumbu ya maandiko ya kisheria uliyokubali.",
+  dataKept3:
+    "Kumbukumbu za ukaguzi zinahifadhi rekodi ya akaunti yako kwa miaka 5, kama sheria inavyotaka.",
+  dataUnderstand: "Ninaelewa kuwa hili haliwezi kutenduliwa",
+  dataConfirmTick: "Weka alama kwenye kisanduku ili kuthibitisha.",
+  dataDeleteForGood: "Futa data yangu kabisa",
+  dataKeepAccount: "Baki na akaunti yangu",
+  dataDeleteFailed: "Hatukuweza kufuta data yako. Angalia mtandao wako, kisha ujaribu tena.",
+  deletedMember: "Mwanachama aliyefutwa",
 };

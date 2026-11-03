@@ -10,6 +10,7 @@ const thread = (over: Partial<Thread> = {}): Thread => ({
   id: "t1",
   otherId: "m2",
   otherName: "Reader Person",
+  otherDeleted: false,
   reported: false,
   canSend: true,
   messages: [
@@ -59,6 +60,7 @@ describe("InboxScreen (S14)", () => {
           otherId: "m2",
           fullName: "Reader Person",
           photoUrl: null,
+          otherDeleted: false,
           lastBody: "See you Sunday",
           lastDeleted: false,
           lastAt: "",
@@ -73,6 +75,28 @@ describe("InboxScreen (S14)", () => {
       "/messages/t1",
     );
     expect(screen.getByText("See you Sunday")).toBeTruthy();
+  });
+
+  it("names a member who deleted their data", async () => {
+    const api = fakeApi({
+      threads: vi.fn().mockResolvedValue([
+        {
+          threadId: "t1",
+          otherId: "m2",
+          fullName: "",
+          photoUrl: null,
+          otherDeleted: true,
+          lastBody: "Bye",
+          lastDeleted: false,
+          lastAt: "",
+          unread: false,
+        },
+      ]),
+    });
+    await act(async () => {
+      render(<InboxScreen api={api} />);
+    });
+    expect(screen.getByRole("link", { name: "Deleted member" })).toBeTruthy();
   });
 
   it("says when there are no messages", async () => {

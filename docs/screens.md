@@ -121,7 +121,7 @@ The tables below list only a screen's **special states**: the ones beyond these 
 | S46 | Notification settings | Member | Email for non-critical notifications; push master switch and one per category | **Push not yet permitted by the phone:** shows how to allow it. Web pilot: push section hidden |
 | S47 | Password and sign-in | Member | Change password; the email code is always required | Errors never reveal whether an account exists |
 | S48 | Language | All | English or Kiswahili | |
-| S49 | Download or delete my data | Member | Download my data; request deletion | **Deletion confirmation** is a full screen with what is removed and what is kept (audit entries are kept, PRD section 13) |
+| S49 | Download or delete my data | Member | Download my data; request deletion | **Deletion confirmation** is a full screen with what is removed and what is kept (audit entries are kept, PRD section 13). Built in R16 at `/settings/data`, linked from S44: Download my data saves `my-data.json`; Delete my data opens the confirmation, needs the tick "I understand this cannot be undone", then signs the member out. **Failed:** "We couldn't delete your data" and the member stays signed in |
 
 ## 9. Admin
 

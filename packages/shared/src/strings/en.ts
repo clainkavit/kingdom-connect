@@ -569,4 +569,31 @@ export const en = {
   adminCapNone: "No daily limit",
   adminCapChange: "Change in Settings",
   adminStatsStale: "We couldn't refresh the counts. They may be out of date.",
+  dataTitle: "Download or delete my data",
+  dataDownloadTitle: "Download my data",
+  dataDownloadHint:
+    "A file with your account, profile, contact details, connections, the messages you sent and your reports.",
+  dataDownload: "Download my data",
+  dataDownloaded: "Your data was downloaded.",
+  dataDownloadFailed: "We couldn't prepare your data. Check your connection and try again.",
+  dataDeleteTitle: "Delete my data",
+  dataDeleteHint:
+    "This removes your account and your data for good. You can download your data first.",
+  dataDelete: "Delete my data",
+  dataRemovedTitle: "What is removed",
+  dataRemoved1: "Your profile, contact details and ID documents, and your photos and files.",
+  dataRemoved2: "Your connections, requests, blocks and notifications.",
+  dataRemoved3: "Your sign-in. You can't sign in again with this account.",
+  dataKeptTitle: "What is kept",
+  dataKept1:
+    "Messages you sent stay in the other member's conversation, shown as from a Deleted member. Files you sent are removed.",
+  dataKept2:
+    "Reports and the decisions made on them, and the record of the legal texts you accepted.",
+  dataKept3: "The audit log keeps a record of your account for 5 years, as the law requires.",
+  dataUnderstand: "I understand this cannot be undone",
+  dataConfirmTick: "Tick the box to confirm.",
+  dataDeleteForGood: "Delete my data for good",
+  dataKeepAccount: "Keep my account",
+  dataDeleteFailed: "We couldn't delete your data. Check your connection and try again.",
+  deletedMember: "Deleted member",
 };

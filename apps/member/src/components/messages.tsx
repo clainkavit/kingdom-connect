@@ -83,8 +83,8 @@ export function InboxScreen({ api }: { api: MessagesApi }) {
               href={`/messages/${item.threadId}`}
               label={
                 item.unread
-                  ? `${item.fullName || t.memberUnavailable}, ${t.unread}`
-                  : item.fullName || t.memberUnavailable
+                  ? `${item.fullName || (item.otherDeleted ? t.deletedMember : t.memberUnavailable)}, ${t.unread}`
+                  : item.fullName || (item.otherDeleted ? t.deletedMember : t.memberUnavailable)
               }
               className={`min-h-[64px] flex-row items-center gap-3 px-4 py-3 ${i < threads.length - 1 ? "border-b border-line" : ""}`}
             >
@@ -93,7 +93,7 @@ export function InboxScreen({ api }: { api: MessagesApi }) {
                 <Text
                   className={`text-[15px] text-ink ${item.unread ? "font-figtree-bold" : "font-figtree-semibold"}`}
                 >
-                  {item.fullName || t.memberUnavailable}
+                  {item.fullName || (item.otherDeleted ? t.deletedMember : t.memberUnavailable)}
                 </Text>
                 <Text numberOfLines={1} className="font-figtree text-sm text-ink-2">
                   {item.lastDeleted ? t.messageDeleted : item.lastBody || t.attachmentPreview}
@@ -212,9 +212,11 @@ export function ThreadScreen({ api, threadId }: { api: MessagesApi; threadId: st
       <View className="flex-row flex-wrap items-center justify-between gap-3">
         <LinkButton
           href={`/profile/${thread.otherId}`}
-          label={thread.otherName || t.memberUnavailable}
+          label={thread.otherName || (thread.otherDeleted ? t.deletedMember : t.memberUnavailable)}
         >
-          <ScreenTitle>{thread.otherName || t.memberUnavailable}</ScreenTitle>
+          <ScreenTitle>
+            {thread.otherName || (thread.otherDeleted ? t.deletedMember : t.memberUnavailable)}
+          </ScreenTitle>
         </LinkButton>
         <ReportLink target={{ type: "thread", id: thread.id }} memberId={thread.otherId} />
       </View>

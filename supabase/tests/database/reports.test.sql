@@ -1,15 +1,16 @@
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(27);
+select plan(29);
 
 insert into auth.users (id, email)
 select ('00000000-0000-0000-0000-0000000005' || k)::uuid, 'rp' || k || '@test.invalid'
-from unnest(array['01', '02', '03', '04', 'a1']) k;
+from unnest(array['01', '02', '03', '04', '05', 'a1']) k;
 insert into public.members (id, username, status) values
   ('00000000-0000-0000-0000-000000000501', 'rp_reporter', 'approved'),
   ('00000000-0000-0000-0000-000000000502', 'rp_reported', 'approved'),
   ('00000000-0000-0000-0000-000000000503', 'rp_other', 'approved'),
-  ('00000000-0000-0000-0000-000000000504', 'rp_applicant', 'pending');
+  ('00000000-0000-0000-0000-000000000504', 'rp_applicant', 'pending'),
+  ('00000000-0000-0000-0000-000000000505', 'rp_fifth', 'approved');
 insert into public.staff (id, full_name, role, active)
   values ('00000000-0000-0000-0000-0000000005a1', 'Reports Admin', 'admin', true);
 insert into public.connections (member_a, member_b)
@@ -70,6 +71,15 @@ select is(access.report_file_removable('00000000-0000-0000-0000-000000000501/sho
 select is(access.report_file_removable('00000000-0000-0000-0000-000000000502/x.png'), false,
   'nor anyone else''s');
 
+reset role;
+insert into public.reports (reporter_id, target_type, target_id, reason)
+select '00000000-0000-0000-0000-000000000501', 'thread', gen_random_uuid(), 'spam' from generate_series(1, 7);
+set local role authenticated;
+select throws_ok($$select public.report('profile', '00000000-0000-0000-0000-000000000505', 'harassment')$$,
+  'P0001', 'daily_limit', 'a Member can send 10 reports a day');
+select is((select already_reported from public.report('profile', '00000000-0000-0000-0000-000000000502', 'spam')), true,
+  'a repeat still returns the open report after the limit');
+
 select pg_temp.login('02');
 select is((select count(*)::int from public.reports), 0, 'the reported member cannot read reports about them');
 select is((select count(*)::int from storage.objects where bucket_id = 'report-files'), 0,
@@ -81,7 +91,7 @@ select throws_ok($$select public.report('thread', '00000000-0000-0000-0003-00000
   'P0001', 'not_available', 'only a member of the thread can report it');
 
 select pg_temp.login('a1');
-select is((select count(*)::int from public.reports where reporter_id = '00000000-0000-0000-0000-000000000501'), 3,
+select is((select count(*)::int from public.reports where reporter_id = '00000000-0000-0000-0000-000000000501'), 10,
   'staff read every report');
 
 reset role;

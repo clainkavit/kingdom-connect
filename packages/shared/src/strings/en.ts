@@ -457,6 +457,7 @@ export const en = {
   reportSent: "Thank you. We received your report.",
   reportReference: (ref: string) => `Your reference: ${ref}`,
   alreadyReported: "You already reported this. It is being reviewed.",
+  reportDailyLimit: (max: number) => `You have sent ${max} reports today. Try again tomorrow.`,
   reportFailed: "We couldn't send your report. Check your connection and try again.",
   blockAfterReport: "Block this member",
   confirmBlockAfterReport:

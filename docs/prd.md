@@ -796,6 +796,9 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 - A reference number reads KC-2026-000123: a prefix, the year and a running number.
 - One open report per reporter per item. A repeat shows "You already reported this" with the open reference. After reporting a profile or a thread, the success screen offers to block that member.
 - One optional screenshot, JPEG, PNG or WebP up to 5 MB, that only staff can open. The reporter sees only the reference, the date and the outcome.
+- The running number does not restart each year; the year in the reference already dates it.
+- Only an approved member's profile can be reported. A thread with a suspended member can still be reported.
+- A member can send 10 reports a day (Tanzania time). A repeat of an open report does not count.
 
 **Open.** Every open question is a ticket on the [wayfinder map](https://github.com/clainkavit/kingdom-connect/issues/1) and is linked where it applies above.
 
@@ -842,7 +845,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | 3 Nov 2026 | Contact sharing: one switch per field for all connections, contact values locked in Phase 1, hide switch moved to privacy settings | 8, 18 |
 | 3 Nov 2026 | Connections: one open request per pair, free-text note, block ends everything silently with unblock on S45, removal sends no notice | 9, 18 |
 | 3 Nov 2026 | Messaging: TLS plus host disk encryption, one C3 per thread until it is opened, no read receipts, delete until reported, Report wired in R11 | 9, 18 |
-| 3 Nov 2026 | Reports: profiles and threads now, KC-year-number references, one open report per item with a Block offer, one staff-only screenshot | 13, 18 |
+| 3 Nov 2026 | Reports: profiles and threads now, KC-year-number references that run on across years, one open report per item with a Block offer, one staff-only screenshot, 10 reports a day | 13, 18 |
 
 ## Appendix B: Source documents
 

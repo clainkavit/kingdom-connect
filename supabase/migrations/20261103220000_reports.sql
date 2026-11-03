@@ -51,13 +51,19 @@ begin
   if not (select access.is_member()) then
     raise exception 'not_allowed';
   end if;
-  perform pg_advisory_xact_lock(hashtext('report:' || me::text || ':' || target_id::text));
+  perform pg_advisory_xact_lock(hashtext('report:' || me::text));
   select r.reference_no into existing from public.reports r
   where r.reporter_id = me and r.target_type = report.target_type and r.target_id = report.target_id
     and r.status in ('open', 'under_review');
   if existing is not null then
     return query select existing, true;
     return;
+  end if;
+  if (select count(*) from public.reports r
+      where r.reporter_id = me
+        and r.created_at >= ((now() at time zone 'Africa/Dar_es_Salaam')::date::timestamp
+                             at time zone 'Africa/Dar_es_Salaam')) >= 10 then
+    raise exception 'daily_limit';
   end if;
   if report.target_type = 'profile' then
     if report.target_id = me

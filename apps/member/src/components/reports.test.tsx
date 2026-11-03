@@ -89,6 +89,18 @@ describe("ReportForm (S42)", () => {
     expect(connections.block).toHaveBeenCalledWith("m2");
     expect(screen.getByText("You blocked this member.")).toBeTruthy();
   });
+
+  it("says when the daily limit is reached", async () => {
+    await showForm(fakeApi({ send: vi.fn().mockResolvedValue({ kind: "daily_limit" }) }));
+    await act(async () =>
+      fireEvent.click(screen.getByRole("button", { name: /Why are you reporting\?/ })),
+    );
+    await pick("Spam");
+    await click("Send report");
+    expect(screen.getByRole("alert").textContent).toBe(
+      "You have sent 10 reports today. Try again tomorrow.",
+    );
+  });
 });
 
 describe("MyReports (S43)", () => {

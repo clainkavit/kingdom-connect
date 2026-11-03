@@ -11,6 +11,7 @@ export const REPORT_REASONS = [
 export type ReportReason = (typeof REPORT_REASONS)[number];
 
 export const MAX_REPORT_NOTE = 1000;
+export const MAX_REPORTS_PER_DAY = 10;
 export const MAX_SCREENSHOT_BYTES = 5 * 1024 * 1024;
 export const SCREENSHOT_TYPES = ["image/jpeg", "image/png", "image/webp"] as const;
 
@@ -24,7 +25,7 @@ export const reportHref = (target: ReportTarget, memberId: string) =>
 
 export type ReportResult =
   | { kind: "sent" | "already_reported"; reference: string }
-  | { kind: "screenshot_too_large" | "screenshot_wrong_type" | "failed" };
+  | { kind: "screenshot_too_large" | "screenshot_wrong_type" | "daily_limit" | "failed" };
 
 export type MyReport = {
   reference: string;
@@ -76,6 +77,7 @@ export function reportsApi(pick: () => Promise<Screenshot | null>): ReportsApi {
       const row = (data as { reference_no: string; already_reported: boolean }[] | null)?.[0];
       if (path && (error || !row || row.already_reported))
         await supabase.storage.from("report-files").remove([path]);
+      if (error?.message === "daily_limit") return { kind: "daily_limit" };
       if (error || !row) return { kind: "failed" };
       return {
         kind: row.already_reported ? "already_reported" : "sent",

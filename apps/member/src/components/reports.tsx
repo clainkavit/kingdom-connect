@@ -5,6 +5,7 @@ import type { ConnectionsApi } from "../lib/connections";
 import { useLanguage } from "../lib/language";
 import {
   MAX_REPORT_NOTE,
+  MAX_REPORTS_PER_DAY,
   MAX_SCREENSHOT_BYTES,
   REPORT_REASONS,
   screenshotProblem,
@@ -104,7 +105,13 @@ export function ReportForm({
       .catch(() => ({ kind: "failed" as const }));
     setBusy(false);
     if ("reference" in sent) return setResult(sent);
-    setProblem(sent.kind === "failed" ? t.reportFailed : screenshotMessage(sent.kind));
+    setProblem(
+      sent.kind === "failed"
+        ? t.reportFailed
+        : sent.kind === "daily_limit"
+          ? t.reportDailyLimit(MAX_REPORTS_PER_DAY)
+          : screenshotMessage(sent.kind),
+    );
   };
 
   return (

@@ -466,6 +466,7 @@ export const sw: Strings = {
   reportSent: "Asante. Tumepokea ripoti yako.",
   reportReference: (ref: string) => `Namba yako ya kumbukumbu: ${ref}`,
   alreadyReported: "Umeshaliripoti hili. Linapitiwa.",
+  reportDailyLimit: (max: number) => `Umetuma ripoti ${max} leo. Jaribu tena kesho.`,
   reportFailed: "Hatukuweza kutuma ripoti yako. Angalia mtandao wako, kisha ujaribu tena.",
   blockAfterReport: "Mzuie mwanachama huyu",
   confirmBlockAfterReport:

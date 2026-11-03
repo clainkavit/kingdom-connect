@@ -1,0 +1,130 @@
+import "../test-router";
+import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import type { ConnectionsApi } from "../lib/connections";
+import type { DashboardApi, Welcome } from "../lib/dashboard";
+import { DashboardScreen } from "./dashboard";
+
+afterEach(cleanup);
+
+const welcome = (over: Partial<Welcome> = {}): Welcome => ({
+  fullName: "Dash Member",
+  region: { en: "Mwanza", sw: "Mwanza" },
+  district: { en: "Ilemela", sw: "Ilemela" },
+  level: 1,
+  postingPaused: false,
+  ...over,
+});
+
+const fakeConnections = (over: Partial<ConnectionsApi> = {}) =>
+  ({
+    received: vi.fn().mockResolvedValue([]),
+    sent: vi.fn().mockResolvedValue([]),
+    answer: vi.fn().mockResolvedValue(true),
+    ...over,
+  }) as unknown as ConnectionsApi;
+
+const fakeApi = (w: Welcome | null = welcome()): DashboardApi => ({
+  welcome: vi.fn().mockResolvedValue(w),
+});
+
+async function show(api: DashboardApi, connections: ConnectionsApi) {
+  await act(async () => {
+    render(
+      <DashboardScreen
+        api={api}
+        connections={connections}
+        today={new Date("2026-11-04T09:00:00+03:00")}
+      />,
+    );
+  });
+}
+
+describe("DashboardScreen (S08)", () => {
+  it("welcomes the member with the date and their location", async () => {
+    await show(fakeApi(), fakeConnections());
+    expect(screen.getByText("Hello, Dash Member")).toBeTruthy();
+    expect(screen.getByText("4 November 2026 · Ilemela, Mwanza")).toBeTruthy();
+  });
+
+  it("answers connection requests inline", async () => {
+    const connections = fakeConnections({
+      received: vi.fn().mockResolvedValue([
+        {
+          requestId: "q1",
+          memberId: "m2",
+          fullName: "Asking Person",
+          headline: "Teacher",
+          photoUrl: null,
+          note: "We met on Sunday",
+        },
+      ]),
+    });
+    await show(fakeApi(), connections);
+    expect(screen.getByText("We met on Sunday")).toBeTruthy();
+    await act(async () => fireEvent.click(screen.getByRole("button", { name: "Accept" })));
+    expect(connections.answer).toHaveBeenCalledWith("q1", true);
+  });
+
+  it("gives each widget its own empty state", async () => {
+    await show(fakeApi(), fakeConnections());
+    expect(screen.getByText("No requests waiting")).toBeTruthy();
+    expect(screen.getByText("Nothing here yet")).toBeTruthy();
+  });
+
+  it("lists requests you sent under my activity", async () => {
+    await show(
+      fakeApi(),
+      fakeConnections({
+        sent: vi.fn().mockResolvedValue([
+          {
+            requestId: "s1",
+            memberId: "m3",
+            fullName: "Waiting Person",
+            headline: "",
+            photoUrl: null,
+          },
+        ]),
+      }),
+    );
+    expect(screen.getByText("Waiting Person")).toBeTruthy();
+  });
+
+  it("hides Post an opportunity below Level 3, with the path to upgrade", async () => {
+    await show(fakeApi(), fakeConnections());
+    expect(screen.getByRole("link", { name: "Share an idea" }).getAttribute("href")).toBe("/ideas");
+    expect(screen.getByRole("link", { name: "Scan for opportunities" })).toBeTruthy();
+    expect(screen.getByRole("link", { name: "Post training" })).toBeTruthy();
+    expect(screen.queryByRole("link", { name: "Post an opportunity" })).toBeNull();
+    expect(screen.getByText("Verify your business to post opportunities.")).toBeTruthy();
+  });
+
+  it("asks a Level 2 business to verify further before posting opportunities", async () => {
+    await show(fakeApi(welcome({ level: 2 })), fakeConnections());
+    expect(screen.queryByRole("link", { name: "Post an opportunity" })).toBeNull();
+    expect(screen.getByText("Verify your business to post opportunities.")).toBeTruthy();
+  });
+
+  it("hides every posting action while posting is paused", async () => {
+    await show(fakeApi(welcome({ level: 3, postingPaused: true })), fakeConnections());
+    for (const name of ["Share an idea", "Post training", "Post an opportunity"])
+      expect(screen.queryByRole("link", { name })).toBeNull();
+    expect(screen.getByRole("link", { name: "Scan for opportunities" })).toBeTruthy();
+    expect(
+      screen.getByText("Your posting is paused until an Administrator lifts it."),
+    ).toBeTruthy();
+  });
+
+  it("offers Post an opportunity to a Level 3 poster", async () => {
+    await show(fakeApi(welcome({ level: 3 })), fakeConnections());
+    expect(screen.getByRole("link", { name: "Post an opportunity" })).toBeTruthy();
+    expect(screen.queryByText("Verify your business to post opportunities.")).toBeNull();
+  });
+
+  it("shows no community counts at all", async () => {
+    await show(fakeApi(), fakeConnections());
+    expect(
+      screen.queryByText(/verified members|registered businesses|ideas in the pool/i),
+    ).toBeNull();
+  });
+});

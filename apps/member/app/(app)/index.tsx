@@ -1,7 +1,7 @@
-import { ComingSoon } from "../../src/components/screens";
-import { useLanguage } from "../../src/lib/language";
+import { DashboardScreen } from "../../src/components/dashboard";
+import { connectionsApi } from "../../src/lib/connections";
+import { dashboardApi } from "../../src/lib/dashboard";
 
-export default function DashboardScreen() {
-  const { t } = useLanguage();
-  return <ComingSoon title={t.navDashboard} />;
+export default function DashboardPage() {
+  return <DashboardScreen api={dashboardApi} connections={connectionsApi} />;
 }

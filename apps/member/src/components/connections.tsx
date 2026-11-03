@@ -22,7 +22,7 @@ import { Avatar, Section } from "./profile";
 import { ScreenTitle } from "./screens";
 import { EmptyState, ErrorState, LoadingRows } from "./states";
 
-function PersonRow({ person, children }: { person: Person; children?: React.ReactNode }) {
+export function PersonRow({ person, children }: { person: Person; children?: React.ReactNode }) {
   return (
     <View className="gap-3 border-b border-line py-3">
       <LinkButton
@@ -40,6 +40,26 @@ function PersonRow({ person, children }: { person: Person; children?: React.Reac
       </LinkButton>
       {children}
     </View>
+  );
+}
+
+/** A received request with its note and Accept and Decline, as on S13 and S08. */
+export function ReceivedRequestRow({
+  request,
+  onAnswer,
+}: {
+  request: ReceivedRequest;
+  onAnswer: (accept: boolean) => void;
+}) {
+  const { t } = useLanguage();
+  return (
+    <PersonRow person={request}>
+      {request.note ? <Text className="font-figtree text-sm text-ink">{request.note}</Text> : null}
+      <View className="flex-row flex-wrap gap-2">
+        <Button label={t.accept} onPress={() => onAnswer(true)} />
+        <Button secondary label={t.decline} onPress={() => onAnswer(false)} />
+      </View>
+    </PersonRow>
   );
 }
 
@@ -95,17 +115,11 @@ export function ConnectionsScreen({
       <Section title={t.requestsReceived}>
         {lists.received.length ? (
           lists.received.map((r) => (
-            <PersonRow key={r.requestId} person={r}>
-              {r.note ? <Text className="font-figtree text-sm text-ink">{r.note}</Text> : null}
-              <View className="flex-row flex-wrap gap-2">
-                <Button label={t.accept} onPress={() => act(() => api.answer(r.requestId, true))} />
-                <Button
-                  secondary
-                  label={t.decline}
-                  onPress={() => act(() => api.answer(r.requestId, false))}
-                />
-              </View>
-            </PersonRow>
+            <ReceivedRequestRow
+              key={r.requestId}
+              request={r}
+              onAnswer={(accept) => act(() => api.answer(r.requestId, accept))}
+            />
           ))
         ) : (
           <EmptyState

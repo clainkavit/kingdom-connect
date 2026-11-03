@@ -10,3 +10,4 @@ export * from "./verification";
 export * from "./staff";
 export * from "./profile";
 export * from "./reports";
+export * from "./levels";

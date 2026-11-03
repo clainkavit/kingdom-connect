@@ -1,5 +1,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
+-- Members here have accepted the current legal texts; that rule is tested in legal_on_server.test.sql.
+create or replace function access.accepted_terms_and_privacy() returns boolean language sql stable as 'select true';
 select plan(23);
 
 insert into auth.users (id, email)

@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { LOCAL_SUPABASE } from "../src/auth";
-import { legalKinds, parseLegalFile } from "../src/legal";
+import { compareVersions, legalKinds, parseLegalFile, reacceptKinds } from "../src/legal";
 import { LOCAL_SERVICE_ROLE_KEY } from "../src/local-dev";
 
 const url = process.env.SUPABASE_URL ?? LOCAL_SUPABASE.url;
@@ -56,4 +56,40 @@ for (const kind of legalKinds) {
   });
   if (!res.ok) throw new Error(`${kind} ${en.version}: ${res.status} ${await res.text()}`);
   console.log(`${kind} ${en.version}: loaded`);
+}
+
+const SEED_ID_PREFIX = "5eed";
+
+if (!process.env.SUPABASE_URL) {
+  const members: { id: string }[] = await fetch(
+    `${url}/rest/v1/members?select=id&status=eq.approved`,
+    {
+      headers,
+    },
+  ).then((r) => r.json());
+  const seedMembers = members.filter((m) => m.id.startsWith(SEED_ID_PREFIX));
+  const texts: { id: string; kind: string; version: string }[] = await fetch(
+    `${url}/rest/v1/legal_texts?kind=in.(${reacceptKinds.join(",")})&effective_at=lte.${new Date().toISOString()}&select=id,kind,version`,
+    { headers },
+  ).then((r) => r.json());
+  for (const kind of reacceptKinds) {
+    const current = texts
+      .filter((t) => t.kind === kind)
+      .sort((a, b) => compareVersions(a.version, b.version))[0];
+    if (!current) continue;
+    for (const member of seedMembers) {
+      const res = await fetch(`${url}/rest/v1/legal_acceptances`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify({
+          member_id: member.id,
+          legal_text_id: current.id,
+          context_type: "reaccept",
+        }),
+      });
+      if (!res.ok && res.status !== 409)
+        throw new Error(`accepting ${kind} for ${member.id}: ${res.status} ${await res.text()}`);
+    }
+  }
+  console.log(`seed members accepted the current terms and privacy notice: ${seedMembers.length}`);
 }

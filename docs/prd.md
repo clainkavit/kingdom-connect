@@ -829,6 +829,11 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 - Verified and rejected members link to A09 with a status filter (`/members?status=...`); A09 is built later and applies the filter.
 - The daily-cap switch stays in Settings (A16), its one home. The dashboard shows the cap status and, for Super Admins, a link to change it there.
 
+**Decided on 4 November 2026 (legal acceptance on the server, R05b)**
+- `is_member()` now also requires acceptance of the current terms of use and privacy notice, so every base rule refuses a Member who has not accepted. `legal_acceptances` uses the new `is_approved_member()` so they can still accept, and `legal_texts` stays readable to anyone signed in.
+- Until they accept, the Member reads nothing else, not even their own member row. Their saved language is the one exception: `my_language()` and `set_my_language()` work before acceptance, so the language chosen on S03 or S07 is kept.
+- Locally, `pnpm legal:load` records acceptances for the seed members; e2e members accept through `createMember`. Database tests other than the legal ones treat their members as having accepted.
+
 **Open.** Every open question is a ticket on the [wayfinder map](https://github.com/clainkavit/kingdom-connect/issues/1) and is linked where it applies above.
 
 **Outside this spec**
@@ -879,6 +884,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | 3 Nov 2026 | Audit log: Super Admins only, changed fields with the full record on demand, staff, username or system actor filter | 13, 18 |
 | 4 Nov 2026 | Member dashboard: Release 1 widgets, My activity as requests sent, quick actions by level | 7, 18 |
 | 4 Nov 2026 | Admin dashboard: Release 1 counts only, live counts reloaded every 15 minutes | 7, 18 |
+| 4 Nov 2026 | Legal acceptance enforced on the server: no member data until the current terms and privacy notice are accepted | 13, 18 |
 
 ## Appendix B: Source documents
 

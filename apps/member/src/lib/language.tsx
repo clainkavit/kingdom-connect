@@ -74,20 +74,13 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
       const chosen = chosenBeforeSignIn.current;
       chosenBeforeSignIn.current = null;
       if (chosen) {
-        await supabase
-          .from("member_private")
-          .update({ language: chosen })
-          .eq("member_id", memberId);
+        await supabase.rpc("set_my_language", { chosen });
         return;
       }
-      const { data } = await supabase
-        .from("member_private")
-        .select("language")
-        .eq("member_id", memberId)
-        .maybeSingle();
-      if (!isLanguage(data?.language)) return;
-      setLanguageState(data.language);
-      AsyncStorage.setItem(LANGUAGE_KEY, data.language);
+      const { data } = await supabase.rpc("my_language");
+      if (!isLanguage(data)) return;
+      setLanguageState(data);
+      AsyncStorage.setItem(LANGUAGE_KEY, data);
     });
   }, [accessToken]);
 
@@ -100,8 +93,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     AsyncStorage.setItem(LANGUAGE_KEY, next);
     if (routeFor(accessToken, "member") !== "app") chosenBeforeSignIn.current = next;
     signedInMemberId().then(async (memberId) => {
-      if (memberId)
-        await supabase.from("member_private").update({ language: next }).eq("member_id", memberId);
+      if (memberId) await supabase.rpc("set_my_language", { chosen: next });
     });
   };
 

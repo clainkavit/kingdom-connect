@@ -8,6 +8,7 @@ import {
   fillTemplate,
   notificationCopy,
   notificationText,
+  opensForCode,
 } from "./index";
 import { parseNotificationDoc } from "./parse";
 
@@ -25,7 +26,7 @@ describe("the catalogue", () => {
   it("holds every event in the doc", () => {
     const codes = [...doc.matchAll(/^### (\w+) /gm)].map((m) => m[1]);
     expect(Object.keys(notificationCopy)).toEqual(codes);
-    expect(codes).toHaveLength(49);
+    expect(codes).toHaveLength(50);
   });
 
   it("reads the channels from each event", () => {
@@ -58,8 +59,13 @@ describe("categories", () => {
   it("always email account, security and admin actions", () => {
     expect(criticalCategories).toEqual(["account", "security", "admin_actions"]);
     expect(notificationCopy.X2.category).toBe("admin_actions");
+    expect(notificationCopy.X3.category).toBe("admin_actions");
     expect(notificationCopy.H1.category).toBe("admin_actions");
     expect(notificationCopy.L1.category).toBe("security");
+  });
+
+  it("open the dashboard for a warning", () => {
+    expect(opensForCode("X3")).toBe("/");
   });
 
   it("give a switch to every other category that sends email", () => {

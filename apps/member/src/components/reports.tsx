@@ -1,4 +1,4 @@
-import type { TextKey } from "@kingdom-connect/shared";
+import { reportReasonLabel, type TextKey } from "@kingdom-connect/shared";
 import { useEffect, useState } from "react";
 import { Text, View } from "react-native";
 import type { ConnectionsApi } from "../lib/connections";
@@ -20,15 +20,6 @@ import { Button, ChoiceList, ConfirmButton, Field, Message } from "./form";
 import { Section } from "./profile";
 import { ScreenTitle } from "./screens";
 import { EmptyState, ErrorState, LoadingRows } from "./states";
-
-const reasonLabel: Record<ReportReason, TextKey> = {
-  asked_for_money: "reasonAskedForMoney",
-  fake_job_or_business: "reasonFakeJobOrBusiness",
-  harassment: "reasonHarassment",
-  impersonation: "reasonImpersonation",
-  spam: "reasonSpam",
-  other: "reasonOther",
-};
 
 const outcomeLabel: Record<MyReport["outcome"], TextKey> = {
   open: "outcomeOpen",
@@ -120,7 +111,10 @@ export function ReportForm({
       <Section title={t.reportReasonLabel}>
         <ChoiceList
           label={t.reportReasonLabel}
-          options={REPORT_REASONS.map((r) => ({ value: r, label: t[reasonLabel[r]] as string }))}
+          options={REPORT_REASONS.map((r) => ({
+            value: r,
+            label: t[reportReasonLabel[r]] as string,
+          }))}
           value={reason ?? undefined}
           onChange={(value) => setReason(value as ReportReason)}
         />

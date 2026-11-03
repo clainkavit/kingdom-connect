@@ -130,10 +130,10 @@ The tables below list only a screen's **special states**: the ones beyond these 
 | A01 | Admin dashboard | Admin | The community counts (verified members, registered businesses, open opportunities, ideas in the pool), queue counts and the age of the oldest item, alerts, featured slots, investor activity, re-verifications due in 30 days | **Alert:** an application waiting 2 working days. Each count links to its filtered queue. The daily-cap switch is shown to Super Admins |
 | A02 | Verification queue | Admin | Members, businesses and investors waiting, oldest first, with the queue size and the age of the oldest. Members only until the business and investor tickets | Empty: "Nothing waiting". **Overdue:** a banner and a row mark at 2 working days (Monday to Friday). A suspected duplicate is marked on its row |
 | A03 | Verification detail | Admin | The profile, face photo and ID photo side by side, name and ID number check (the number hidden until revealed), ID expiry, a duplicate flag from the ID fingerprint, Approve, Reject (a preset reason, plus a note) | **Suspected duplicate:** staff mark it by the other member's username and compare both face photos. Decrypting an ID number is logged. **Expired ID:** a warning. **Decided elsewhere:** "Another Administrator has already decided this application". **Decided:** the decision and the reason sent. **Rejected final:** Reopen, with a note for the audit log |
-| A04 | Moderation queue | Admin | Pending and hidden items: opportunities, ideas, training, events, tenders | Empty: "Nothing to review" |
+| A04 | Moderation queue | Admin | Pending and hidden items: opportunities, ideas, training, events, tenders | Empty: "Nothing to review". Built in R12 at `/moderation` as the empty shell; the items arrive with Release 2 |
 | A05 | Moderation item | Admin | The item and its history; Restore, Edit request, Remove, Warn, Suspend posting, Suspend account | **A note is required** for each action |
-| A06 | Reports queue | Admin | Open and under-review reports, with the reference number | Empty: "No open reports" |
-| A07 | Report detail | Admin | The report, the target and its thread (readable only because it was reported), decision and note | The signed document of a reported plan becomes visible to staff here |
+| A06 | Reports queue | Admin | Open and under-review reports, with the reference number | Empty: "No open reports". Built in R12 at `/reports`: one row per case (an item and the reported member), oldest first, with the first reference, the target, the reasons, the report count and "Under review" |
+| A07 | Report detail | Admin | The report, the target and its thread (readable only because it was reported), decision and note | The signed document of a reported plan becomes visible to staff here. Built in R12 at `/reports/<report id>`: opening it starts the review; every report in the case with reporter, note and screenshot; the reported member, their state and the upheld decisions the repeat rule counts; a warning before a decision that will also pause posting or suspend the account; the conversation with attachments; No action, Warn, Suspend posting or Suspend account with a staff note, and a message to the member for all but No action; Lift posting pause and Reinstate account, each with a note. **Closed:** "This report is closed" |
 | A08 | Re-verification | Admin | Licences expiring soon and expired | |
 | A09 | Members | Admin | Search and open a member; suspend; invite for the investor flag | Staff cannot connect or message, and have no member profile |
 | A10 | Investors | Admin | Flag holders, invitations and applications (staff only) | The investor list is never visible outside staff |
@@ -163,6 +163,7 @@ Each notification in [docs/notifications.md](notifications.md) opens the screen 
 | L1 Account locked | S03 |
 | X1 Account suspended | S03 |
 | X2 Posting rights paused | S20 or S21 |
+| X3 Warning | S08 |
 | H1, H2 Idea hidden or removed | S27 |
 | P1 to P10 Milestone plans | S32, S33 or S34 |
 | S1 Scan matches | S16 |

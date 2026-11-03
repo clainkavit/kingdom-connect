@@ -57,7 +57,7 @@ const categoryByCode: [RegExp, NotificationCategory][] = [
   [/^R\d+$/, "reports"],
   [/^V\d+$/, "investor"],
   [/^(L1|X1)$/, "security"],
-  [/^(X2|H\d+)$/, "admin_actions"],
+  [/^(X[23]|H\d+)$/, "admin_actions"],
 ];
 
 export function categoryOfCode(code: string): NotificationCategory {
@@ -74,6 +74,7 @@ const opensByCode: [RegExp, string][] = [
   [/^B\d+$/, "/settings"],
   [/^C[12]$/, "/connections"],
   [/^C3$/, "/messages"],
+  [/^X3$/, "/"],
   [/^[OX]\d+$/, "/opportunities"],
   [/^[IH]\d+$/, "/ideas"],
   [/^P\d+$/, "/ideas"],

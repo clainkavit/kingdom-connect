@@ -4,6 +4,7 @@ import { ConnectPanel } from "../../../src/components/connections";
 import { ProfileView } from "../../../src/components/profile";
 import { ProfileLoader } from "../../../src/components/profile-screen";
 import { connectionsApi } from "../../../src/lib/connections";
+import { memberMessagesApi } from "../../../src/lib/messages-api";
 import { memberProfileApi } from "../../../src/lib/profile-api";
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -26,6 +27,7 @@ export default function MemberProfileScreen() {
               memberId={profile.memberId}
               name={profile.fullName}
               api={connectionsApi}
+              messagesApi={memberMessagesApi}
               startWriting={connect === "1"}
               onBlocked={() => setReloads((r) => r + 1)}
             />

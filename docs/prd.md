@@ -782,6 +782,15 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 - Removing a connection sends no notice. Either member can send a new request later.
 - The 30-a-day limit counts by the Tanzania calendar day.
 
+**Decided on 3 November 2026 (messaging, R10)**
+- "Encrypted in transit and at rest" means TLS for all traffic and the host's disk encryption for the database and file storage. Message text is not encrypted again inside the database, so staff can read a reported thread. Checked again when production hosting is chosen (section 15).
+- The inbox shows an unread dot. C3 is sent once per thread until the member opens it, not for every message. There are no read receipts.
+- A sender can delete their own message until the thread is reported; both see "This message was deleted". After a report nothing can be deleted.
+- R10 builds the reported state and the rule that staff read a thread only once it is reported. The Report button is shown disabled until the report form arrives in R11.
+- A thread is one per pair, opened the first time either member taps Message. After a block or a removed connection it stays readable, but no one can send.
+- A reported thread stays open: both members can keep sending, nothing can be deleted, and Administrators read all of it. A member who wants it to stop blocks the other.
+- In Release 2, each idea or opportunity gets its own labelled thread, separate from the pair's plain thread.
+
 **Open.** Every open question is a ticket on the [wayfinder map](https://github.com/clainkavit/kingdom-connect/issues/1) and is linked where it applies above.
 
 **Outside this spec**
@@ -826,6 +835,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | 3 Nov 2026 | Directory: daily shuffle with no search, hidden profiles never listed, disabled Connect until R09, 2-second target tested at 10,000 members | 8, 18 |
 | 3 Nov 2026 | Contact sharing: one switch per field for all connections, contact values locked in Phase 1, hide switch moved to privacy settings | 8, 18 |
 | 3 Nov 2026 | Connections: one open request per pair, free-text note, block ends everything silently with unblock on S45, removal sends no notice | 9, 18 |
+| 3 Nov 2026 | Messaging: TLS plus host disk encryption, one C3 per thread until it is opened, no read receipts, delete until reported, Report wired in R11 | 9, 18 |
 
 ## Appendix B: Source documents
 

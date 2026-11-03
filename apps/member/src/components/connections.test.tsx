@@ -2,6 +2,7 @@ import "../test-router";
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { ConnectionsApi } from "../lib/connections";
+import type { MessagesApi } from "../lib/messages";
 import { BlockedList, ConnectionsScreen, ConnectPanel } from "./connections";
 
 afterEach(cleanup);
@@ -28,6 +29,8 @@ const fakeApi = (over: Partial<ConnectionsApi> = {}): ConnectionsApi => ({
   ...over,
 });
 
+const messages = { openThread: vi.fn().mockResolvedValue("t1") } as unknown as MessagesApi;
+
 const click = (name: string) =>
   act(async () => fireEvent.click(screen.getByRole("button", { name })));
 
@@ -41,7 +44,7 @@ describe("ConnectionsScreen (S13)", () => {
       connections: vi.fn().mockResolvedValue([person("c", "Friend Person")]),
     });
     await act(async () => {
-      render(<ConnectionsScreen api={api} />);
+      render(<ConnectionsScreen api={api} messagesApi={messages} />);
     });
     expect(screen.getByText("Hello")).toBeTruthy();
     expect(screen.getByText("Waiting Person")).toBeTruthy();
@@ -62,7 +65,7 @@ describe("ConnectionsScreen (S13)", () => {
 
   it("points to the directory when there are no requests", async () => {
     await act(async () => {
-      render(<ConnectionsScreen api={fakeApi()} />);
+      render(<ConnectionsScreen api={fakeApi()} messagesApi={messages} />);
     });
     expect(screen.getByText("No requests yet")).toBeTruthy();
     expect(screen.getByRole("link", { name: "Find people" }).getAttribute("href")).toBe("/people");
@@ -77,6 +80,7 @@ describe("ConnectPanel (S11)", () => {
           memberId="m1"
           name="Other Person"
           api={api}
+          messagesApi={messages}
           startWriting={startWriting}
           onBlocked={onBlocked}
         />,

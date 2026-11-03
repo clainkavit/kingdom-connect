@@ -288,6 +288,11 @@ To: poster. Channels: in-app, email.
 - **EN** Title: Your posting is paused. Message: Reason: {reason}. You cannot post new items until an admin lifts this.
 - **SW** Title: Kuchapisha kumesitishwa. Message: Sababu: {reason}. Huwezi kuchapisha mapya hadi msimamizi atakapoliondoa.
 
+### X3 Warning from an admin
+To: member. Channels: in-app, email.
+- **EN** Title: You received a warning. Message: Reason: {reason}. Repeated problems can pause your posting or suspend your account.
+- **SW** Title: Umepewa onyo. Message: Sababu: {reason}. Matatizo yakijirudia, kuchapisha kwako kunaweza kusitishwa au akaunti yako kusimamishwa.
+
 ### H1 Idea hidden by an admin
 To: idea owner. Channels: in-app, email.
 - **EN** Title: Your idea is hidden for now. Message: An admin hid {idea_title} while a report is reviewed.
@@ -300,4 +305,4 @@ To: idea owner. Channels: in-app, email.
 
 ## Not covered
 
-A profile has no separate "hidden" or "removed" state in the PRD: an admin's actions on a profile are a warning or an account suspension, and the suspension is X1. Two admin actions still have no notification: **Warn** and **Edit request to poster** (PRD section 13, criterion 4). Each needs a decision before copy is written.
+A profile has no separate "hidden" or "removed" state in the PRD: an admin's actions on a profile are a warning or an account suspension, and the suspension is X1. **Edit request to poster** (PRD section 13, criterion 4) still has no notification. It needs a decision before copy is written, with posts in Release 2. A warning is X3 (decided 3 Nov). Lifting a posting pause or reinstating an account sends nothing yet.

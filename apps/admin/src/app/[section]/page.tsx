@@ -2,7 +2,7 @@ import { adminNav } from "@kingdom-connect/shared";
 import { notFound } from "next/navigation";
 import { ComingSoon } from "@/components/screens";
 
-const builtScreens = new Set(["/", "/verification", "/settings"]);
+const builtScreens = new Set(["/", "/verification", "/settings", "/reports", "/moderation"]);
 const sections = adminNav.filter((item) => !builtScreens.has(item.href));
 
 export function generateStaticParams() {

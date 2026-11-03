@@ -727,6 +727,23 @@ export const notificationCopy = {
       message: "Sababu: {reason}. Huwezi kuchapisha mapya hadi msimamizi atakapoliondoa.",
     },
   },
+  X3: {
+    category: "admin_actions",
+    inApp: true,
+    email: "yes",
+    push: false,
+    opens: "/",
+    en: {
+      title: "You received a warning",
+      message:
+        "Reason: {reason}. Repeated problems can pause your posting or suspend your account.",
+    },
+    sw: {
+      title: "Umepewa onyo",
+      message:
+        "Sababu: {reason}. Matatizo yakijirudia, kuchapisha kwako kunaweza kusitishwa au akaunti yako kusimamishwa.",
+    },
+  },
   H1: {
     category: "admin_actions",
     inApp: true,

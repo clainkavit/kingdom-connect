@@ -1,14 +1,7 @@
+import type { ReportReason } from "@kingdom-connect/shared";
 import { supabase } from "./supabase";
 
-export const REPORT_REASONS = [
-  "asked_for_money",
-  "fake_job_or_business",
-  "harassment",
-  "impersonation",
-  "spam",
-  "other",
-] as const;
-export type ReportReason = (typeof REPORT_REASONS)[number];
+export { REPORT_REASONS, type ReportReason } from "@kingdom-connect/shared";
 
 export const MAX_REPORT_NOTE = 1000;
 export const MAX_REPORTS_PER_DAY = 10;

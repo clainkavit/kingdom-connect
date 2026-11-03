@@ -268,3 +268,28 @@ export async function startThread(a: string, b: string, firstMessageFrom: string
     values (${thread!.id}, ${firstMessageFrom}, ${body})`;
   return thread!.id as string;
 }
+
+export async function fileThreadReport(reporter: string, thread: string, subject: string) {
+  const [report] =
+    await db`insert into public.reports (reporter_id, target_type, target_id, subject_id, reason, note)
+    values (${reporter}, 'thread', ${thread}, ${subject}, 'asked_for_money', 'Wants a fee first')
+    returning id, reference_no`;
+  await db`update public.message_threads set status = 'reported', reported_at = now() where id = ${thread}`;
+  return { id: report!.id as string, reference: report!.reference_no as string };
+}
+
+export async function giveSession(memberId: string) {
+  await db`insert into auth.sessions (id, user_id) values (gen_random_uuid(), ${memberId})`;
+}
+
+export async function memberState(memberId: string) {
+  const [row] = await db`select m.status,
+      (select count(*)::int from auth.sessions s where s.user_id = m.id) as sessions
+    from public.members m where m.id = ${memberId}`;
+  return row as unknown as { status: string; sessions: number };
+}
+
+export async function reportStatus(reportId: string) {
+  const [row] = await db`select status from public.reports where id = ${reportId}`;
+  return row!.status as string;
+}

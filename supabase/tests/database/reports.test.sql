@@ -72,8 +72,9 @@ select is(access.report_file_removable('00000000-0000-0000-0000-000000000502/x.p
   'nor anyone else''s');
 
 reset role;
-insert into public.reports (reporter_id, target_type, target_id, reason)
-select '00000000-0000-0000-0000-000000000501', 'thread', gen_random_uuid(), 'spam' from generate_series(1, 7);
+insert into public.reports (reporter_id, target_type, target_id, subject_id, reason)
+select '00000000-0000-0000-0000-000000000501', 'thread', gen_random_uuid(), '00000000-0000-0000-0000-000000000502', 'spam'
+from generate_series(1, 7);
 set local role authenticated;
 select throws_ok($$select public.report('profile', '00000000-0000-0000-0000-000000000505', 'harassment')$$,
   'P0001', 'daily_limit', 'a Member can send 10 reports a day');

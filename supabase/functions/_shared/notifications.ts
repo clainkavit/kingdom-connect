@@ -57,7 +57,7 @@ const categoryByCode: [RegExp, NotificationCategory][] = [
   [/^R\d+$/, "reports"],
   [/^V\d+$/, "investor"],
   [/^(L1|X1)$/, "security"],
-  [/^(X2|H\d+)$/, "admin_actions"],
+  [/^(X[23]|H\d+)$/, "admin_actions"],
 ];
 
 export function categoryOfCode(code: string): NotificationCategory {
@@ -74,6 +74,7 @@ const opensByCode: [RegExp, string][] = [
   [/^B\d+$/, "/settings"],
   [/^C[12]$/, "/connections"],
   [/^C3$/, "/messages"],
+  [/^X3$/, "/"],
   [/^[OX]\d+$/, "/opportunities"],
   [/^[IH]\d+$/, "/ideas"],
   [/^P\d+$/, "/ideas"],
@@ -844,6 +845,23 @@ export const notificationCopy = {
     sw: {
       title: "Kuchapisha kumesitishwa",
       message: "Sababu: {reason}. Huwezi kuchapisha mapya hadi msimamizi atakapoliondoa.",
+    },
+  },
+  X3: {
+    category: "admin_actions",
+    inApp: true,
+    email: "yes",
+    push: false,
+    opens: "/",
+    en: {
+      title: "You received a warning",
+      message:
+        "Reason: {reason}. Repeated problems can pause your posting or suspend your account.",
+    },
+    sw: {
+      title: "Umepewa onyo",
+      message:
+        "Sababu: {reason}. Matatizo yakijirudia, kuchapisha kwako kunaweza kusitishwa au akaunti yako kusimamishwa.",
     },
   },
   H1: {

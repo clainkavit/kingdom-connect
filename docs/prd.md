@@ -715,7 +715,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 - Until Settings is built, the language switch is in the sign-in header and the menus. A Member's choice is saved to their account; a choice made before sign-in carries into the account.
 
 **Decided on 2 November 2026 (notifications, F10)**
-- Always emailed, with no switch: registration, login code, account locked, account suspended, posting paused, idea hidden or removed. Every other category that sends email has an email switch.
+- Always emailed, with no switch: registration, login code, account locked, account suspended, posting paused, warning (added 3 Nov), idea hidden or removed. Every other category that sends email has an email switch.
 - The new-message email is a daily digest of messages still unread, sent only when there is at least one.
 - The notification copy in docs/notifications.md is the single source; the apps and the email sender are generated from it.
 - Emails are queued and sent within a minute, with retries. The login code is still sent at once.
@@ -800,6 +800,17 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 - Only an approved member's profile can be reported. A thread with a suspended member can still be reported.
 - A member can send 10 reports a day (Tanzania time). A repeat of an open report does not count.
 
+**Decided on 3 November 2026 (reports queue, R12)**
+- R12 builds No action, Warn, Suspend posting and Suspend account for profiles and threads. Restore, Edit request and Remove arrive with posts in Release 2. A04 Moderation queue is an empty shell until then.
+- Until businesses arrive, the repeat rule (section 13, criterion 5) counts per member and per decision: 2 upheld decisions in 12 months pause posting, 3 suspend the account. Several reports decided together count once.
+- Reports on the same item about the same member form one case. One decision closes them all and each reporter gets R1 or R2.
+- Every action needs a staff note. Warn and both suspensions also need a message to the member, which is the {reason} in X3, X2 and X1. The note stays with staff.
+- A warning sends X3, in-app and always emailed.
+- A posting pause lasts until an Administrator lifts it. Administrators lift a pause or reinstate an account from A07, each with a note.
+- Before a decision that the repeat rule turns into a pause or a suspension, A07 tells the Administrator, so the message to the member covers it. The automatic X2 or X1 uses that message.
+- Lifting a pause or reinstating an account resets the count: only upheld decisions after the latest lift or reinstatement count toward the rule.
+- An account that is already suspended or paused is not told again.
+
 **Open.** Every open question is a ticket on the [wayfinder map](https://github.com/clainkavit/kingdom-connect/issues/1) and is linked where it applies above.
 
 **Outside this spec**
@@ -846,6 +857,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | 3 Nov 2026 | Connections: one open request per pair, free-text note, block ends everything silently with unblock on S45, removal sends no notice | 9, 18 |
 | 3 Nov 2026 | Messaging: TLS plus host disk encryption, one C3 per thread until it is opened, no read receipts, delete until reported, Report wired in R11 | 9, 18 |
 | 3 Nov 2026 | Reports: profiles and threads now, KC-year-number references that run on across years, one open report per item with a Block offer, one staff-only screenshot, 10 reports a day | 13, 18 |
+| 3 Nov 2026 | Reports queue: Release 1 actions, cases decided together, repeat rule per member and decision, a message to the member separate from the staff note, X3 warning, pauses until lifted | 13, 14, 18 |
 
 ## Appendix B: Source documents
 

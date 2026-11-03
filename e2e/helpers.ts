@@ -298,3 +298,8 @@ export async function addAuditEntry(action: string, before: object, after: objec
   await db`insert into private.audit_log (action, target_type, before, after)
     values (${action}, 'e2e', ${db.json(before as never)}, ${db.json(after as never)})`;
 }
+
+export async function requestConnection(from: string, to: string, note: string) {
+  await db`insert into public.connection_requests (requester_id, receiver_id, note)
+    values (${from}, ${to}, ${note})`;
+}

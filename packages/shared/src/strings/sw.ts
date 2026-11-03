@@ -556,4 +556,19 @@ export const sw: Strings = {
   auditListsFailed:
     "Hatukuweza kupakia orodha za wafanyakazi na vitendo. Vichujio vingine bado vinafanya kazi.",
   auditMoreFailed: "Hatukuweza kupakia kumbukumbu zaidi. Angalia mtandao wako, kisha ujaribu tena.",
+  dashboardHello: (name: string) => `Habari, ${name}`,
+  dashboardLoadFailed:
+    "Hatukuweza kupakia dashibodi yako. Angalia mtandao wako, kisha ujaribu tena.",
+  dashboardRequests: "Maombi ya kuunganishwa",
+  noRequestsWaiting: "Hakuna maombi yanayosubiri",
+  myActivity: "Shughuli zangu",
+  activityEmptyTitle: "Bado hakuna kitu hapa",
+  activityEmptyMessage: "Maombi ya kuunganishwa unayotuma yanaonekana hapa hadi yajibiwe.",
+  quickActions: "Vitendo vya haraka",
+  actionShareIdea: "Shiriki wazo",
+  actionScan: "Tafuta fursa",
+  actionPostTraining: "Chapisha mafunzo",
+  actionPostOpportunity: "Chapisha fursa",
+  upgradeToPost: "Thibitisha biashara yako ili kuchapisha fursa.",
+  postingPausedNote: "Kuchapisha kwako kumesitishwa hadi Msimamizi atakapokuondolea.",
 };

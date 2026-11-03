@@ -95,9 +95,10 @@ Matching scores are worked out when a page opens and are not stored (PRD section
 | `connection_requests` | `requester_id`, `receiver_id`, `note` (max 300), `status` (sent, accepted, declined, withdrawn), `responded_at`, `expires_at` (30 days after sending; a request past it counts as expired) | The two members, but never `status`, `responded_at` or `updated_at`, so the sender cannot tell a decline. Lists come from `my_received_requests()` and `my_sent_requests()` | The requester sends (max 30 a Tanzania day, in the insert policy and the insert trigger; one open request per pair; not to a connection, a block either way, a non-member or when the other already asked) and withdraws; the receiver accepts or declines an open request. Accepting creates the connection, closes any other open request between the two, and sends C2; sending sends C1. Asking someone you declined accepts their request instead of creating a new one |
 | `connections` | `member_a`, `member_b` (stored with a < b), `connected_at` | The two members | Created when a request is accepted; either member removes it |
 | `blocks` | `blocker_id`, `blocked_id` | The blocker only, with names through `my_blocks()` | The blocker. A block removes the connection and closes open requests both ways; neither side's list then shows the other |
-| `message_threads` | `member_a`, `member_b`, `idea_id`, `opportunity_id`, `status` (active, reported, closed), `reported_at` | The two members; staff only when `status` is reported | Created by a connection, an approved idea request or a response |
-| `messages` | `thread_id`, `sender_id`, `body`, `deleted_at` | Same as the thread | The sender, only while connected and not blocked |
-| `message_attachments` | `message_id`, `storage_path`, `mime`, `size` (max 10 MB) | Same as the thread | The sender |
+| `message_threads` | `member_a`, `member_b` (stored with a < b), `idea_id`, `opportunity_id`, `status` (active, reported, closed), `reported_at`, `last_message_at` | The two members; staff only when `status` is reported | One per pair without a label, opened by either member of a connection (R10); each idea or opportunity gets its own labelled thread (Release 2), opened by an approved idea request or a response. Members can keep sending after a report. `status` is set to reported by `report()` (R11) |
+| `messages` | `thread_id`, `sender_id`, `body` (up to 4000 characters), `deleted_at` | Same as the thread | The sender, only while connected and not blocked. The sender deletes their own message until the thread is reported; deleting clears `body` and removes its attachments. A new message sends C3 to the other member unless one was already sent since they last opened the thread. In the Realtime publication, so open threads update live |
+| `message_attachments` | `message_id`, `storage_path` (`<thread>/<message>/<file>`), `file_name`, `mime` (PDF, JPEG, PNG, WebP), `size` (max 10 MB) | Same as the thread | The sender, while they can send |
+| `thread_reads` | `thread_id`, `member_id`, `last_read_at` (set by the server) | The member (own) | The member, for a thread they can read. Drives the unread dot; never shown to the other member |
 
 ## 7. Opportunities
 
@@ -164,6 +165,7 @@ These run as `security definer`: they check who is calling, then return only wha
 | `application_status()` | The applicant's own state (drafting, under review with the expected working days, rejected, rejected final, approved) and the reason sent. No reviewer, reason code, queue place or queue size. Through the `application-status` Edge Function (`private.application_status()`) |
 | `start_resubmission()` | After a first rejection: uses the one resubmission and reopens the draft on step 6. Through the `start-resubmission` Edge Function (`private.start_resubmission()`); logged |
 | `reopen_application(request_id, note)` | Staff only, for the latest final rejection: reopens the draft without giving back the resubmission, sends A6. Through the `reopen-application` Edge Function (`private.reopen_application()`); logged with the note |
+| `my_threads()` | The caller's threads that have messages, newest first: the other member's name and photo path, the last message (or that it was deleted), and whether it is unread. The name and photo follow the profile rules, so they are empty for a member who blocked you, whom you blocked, or who is hidden and no longer connected. Runs as the caller over `access.my_threads()` |
 | `my_sent_requests()` | The caller's sent connection requests, with declined ones shown as "sent" until they expire. Runs as the caller over `access.my_sent_requests()` |
 | `my_received_requests()` | The caller's open received requests with the sender's name, headline, photo path and note. Runs as the caller over `access.my_received_requests()` |
 | `connection_state(member_id)` | none, sent, received or connected, between the caller and that member. Runs as the caller over `access.relation()` |
@@ -189,7 +191,7 @@ All buckets are private. No file is ever at a public web address. Files are open
 | `business-documents` | The owner and staff |
 | `response-files` (CVs and attachments) | The member who sent it, the opportunity's poster, staff |
 | `idea-files` | Through `get_idea_file_link()` only: the owner and NDA-accepted members, watermarked |
-| `message-files` | The two members in the thread; staff only if it is reported |
+| `message-files` | The two members in the thread; staff only if it is reported. Private, 10 MB, PDF and images only. A file is readable only while its attachment row exists, so a deleted message's file cannot be opened; the sender's app also removes the file when deleting, until the thread is reported |
 | `learning-materials` | Members registered for that training, the poster, staff |
 | `public-media` (tender documents, event and news images) | Approved members |
 | `plan-documents` (signed agreements) | The two members in the plan; staff only while a report is open on that plan |

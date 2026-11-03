@@ -26,7 +26,9 @@ export default defineConfig({
       env: { CI: "1" },
     },
     {
-      command: `pnpm --filter @kingdom-connect/admin dev --port ${new URL(adminUrl).port}`,
+      command: process.env.CI
+        ? `pnpm --filter @kingdom-connect/admin build && pnpm --filter @kingdom-connect/admin start --port ${new URL(adminUrl).port}`
+        : `pnpm --filter @kingdom-connect/admin dev --port ${new URL(adminUrl).port}`,
       url: adminUrl,
       reuseExistingServer: !process.env.CI,
       timeout: 180_000,

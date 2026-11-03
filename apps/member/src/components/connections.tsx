@@ -13,8 +13,10 @@ import {
   type SentRequest,
 } from "../lib/connections";
 import { useLanguage } from "../lib/language";
+import type { MessagesApi } from "../lib/messages";
 import { Button, ConfirmButton, Field, Message } from "./form";
 import { LinkButton } from "./link-button";
+import { MessageButton } from "./messages";
 import { Avatar, Section } from "./profile";
 import { ScreenTitle } from "./screens";
 import { EmptyState, ErrorState, LoadingRows } from "./states";
@@ -43,7 +45,13 @@ function PersonRow({ person, children }: { person: Person; children?: React.Reac
 type Lists = { received: ReceivedRequest[]; sent: SentRequest[]; connections: Person[] };
 
 /** S13: requests received, requests sent and my connections. */
-export function ConnectionsScreen({ api }: { api: ConnectionsApi }) {
+export function ConnectionsScreen({
+  api,
+  messagesApi,
+}: {
+  api: ConnectionsApi;
+  messagesApi: MessagesApi;
+}) {
   const { t } = useLanguage();
   const [lists, setLists] = useState<Lists | null>(null);
   const [failed, setFailed] = useState(false);
@@ -128,6 +136,7 @@ export function ConnectionsScreen({ api }: { api: ConnectionsApi }) {
         {lists.connections.length ? (
           lists.connections.map((p) => (
             <PersonRow key={p.memberId} person={p}>
+              <MessageButton memberId={p.memberId} api={messagesApi} />
               <ConfirmButton
                 label={t.removeConnection}
                 question={t.confirmRemove(p.fullName)}
@@ -149,12 +158,14 @@ export function ConnectPanel({
   memberId,
   name,
   api,
+  messagesApi,
   startWriting = false,
   onBlocked,
 }: {
   memberId: string;
   name: string;
   api: ConnectionsApi;
+  messagesApi: MessagesApi;
   startWriting?: boolean;
   onBlocked: () => void;
 }) {
@@ -233,6 +244,7 @@ export function ConnectPanel({
       {relation === "connected" ? (
         <View className="gap-2">
           <Text className="font-figtree-semibold text-sm text-good-text">{t.connected}</Text>
+          <MessageButton memberId={memberId} api={messagesApi} />
           <ConfirmButton
             label={t.removeConnection}
             question={t.confirmRemove(name)}

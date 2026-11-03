@@ -1,6 +1,6 @@
 import { vi } from "vitest";
 
-export const router = { pathname: "/" };
+export const router = { pathname: "/", pushed: [] as string[] };
 
 vi.mock("expo-router", () => ({
   Link: ({
@@ -18,4 +18,5 @@ vi.mock("expo-router", () => ({
     </a>
   ),
   usePathname: () => router.pathname,
+  useRouter: () => ({ push: (href: string) => router.pushed.push(href) }),
 }));

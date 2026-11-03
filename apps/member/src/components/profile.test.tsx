@@ -22,6 +22,7 @@ const profile = (over: Partial<Profile> = {}): Profile => ({
   skills: ["bookkeeping", "excel"],
   photoUrl: null,
   hidden: false,
+  contact: null,
   ...over,
 });
 
@@ -49,6 +50,19 @@ describe("ProfileView (S11)", () => {
     expect(screen.getByText("Ideas will appear here once the Ideas pool opens.")).toBeTruthy();
     expect(screen.queryByText(/@|\+255/)).toBeNull();
     expect(screen.queryByRole("link", { name: "Edit profile" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Contact" })).toBeNull();
+  });
+
+  it("shows a connection only the contact details they share", () => {
+    render(
+      <ProfileView
+        profile={profile({ contact: { phone: "+255700000001", email: null, address: null } })}
+      />,
+    );
+    expect(screen.getByRole("heading", { name: "Contact" })).toBeTruthy();
+    expect(screen.getByText("+255700000001")).toBeTruthy();
+    expect(screen.queryByText("Email")).toBeNull();
+    expect(screen.queryByText("Address")).toBeNull();
   });
 
   it("offers Edit, the skills nudge and the hidden note on your own profile", () => {
@@ -115,14 +129,14 @@ describe("ProfileEditor (S12)", () => {
     expect(screen.getByText("This can be up to 120 characters.")).toBeTruthy();
   });
 
-  it("hides the profile from the directory", async () => {
-    const api = fakeApi();
-    await show(api);
-    await act(async () =>
-      fireEvent.click(screen.getByRole("checkbox", { name: "Hide my profile from the directory" })),
-    );
-    await click("Save profile");
-    expect(api.save).toHaveBeenCalledWith(expect.objectContaining({ hidden: true }));
+  it("links to privacy settings instead of holding the hide switch", async () => {
+    await show(fakeApi());
+    expect(
+      screen.getByRole("link", { name: "Privacy and contact sharing" }).getAttribute("href"),
+    ).toBe("/settings/privacy");
+    expect(
+      screen.queryByRole("checkbox", { name: "Hide my profile from the directory" }),
+    ).toBeNull();
   });
 
   it("says when saving failed", async () => {

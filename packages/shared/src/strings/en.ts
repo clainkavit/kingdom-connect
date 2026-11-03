@@ -365,4 +365,18 @@ export const en = {
   badgeBusiness: "Verified business",
   connect: "Connect",
   connectSoon: "Connecting comes soon.",
+  privacyTitle: "Profile privacy and contact sharing",
+  privacyIntro:
+    "Only your connections can see the details you switch on here. No one else ever sees them.",
+  hideFromDirectoryHint: "Your connections can still see your profile.",
+  sharingTitle: "Share with my connections",
+  sharePhone: "Share my phone number",
+  shareEmail: "Share my email",
+  shareAddress: "Share my address",
+  contactLocked: "You can't change these here yet.",
+  privacySaveFailed: "We couldn't save that change. Check your connection and try again.",
+  privacyLoadFailed: "We couldn't load your privacy settings. Check your connection and try again.",
+  privacyLink: "Privacy and contact sharing",
+  contactTitle: "Contact",
+  address: "Address",
 };

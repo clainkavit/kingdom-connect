@@ -28,12 +28,18 @@ test("a Member edits their profile, hides it, and only a connection still sees i
   await page.getByRole("button", { name: "javascript", exact: true }).click();
   await page.getByLabel("Add a skill", { exact: true }).fill("  Book Keeping ");
   await page.getByRole("button", { name: "Add", exact: true }).click();
-  await page.getByRole("checkbox", { name: "Hide my profile from the directory" }).click();
   await page.getByRole("button", { name: "Save profile" }).click();
 
   await expect(page.getByText("Accountant in Mwanza")).toBeVisible();
   await expect(page.getByText("javascript", { exact: true })).toBeVisible();
   await expect(page.getByText("book keeping", { exact: true })).toBeVisible();
+
+  await page.getByRole("link", { name: "Edit profile" }).click();
+  await page.getByRole("link", { name: "Privacy and contact sharing" }).click();
+  const hide = page.getByRole("switch", { name: "Hide my profile from the directory" });
+  await hide.click();
+  await expect(hide).toHaveAttribute("aria-checked", "true");
+  await page.goto("/profile");
   await expect(page.getByText(/Your profile is hidden from the directory/)).toBeVisible();
 
   const asStranger = await browser.newPage();

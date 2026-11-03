@@ -10,7 +10,7 @@ import { Image, Pressable, Text, View } from "react-native";
 import { useLanguage } from "../lib/language";
 import type { Option } from "../lib/registration";
 import type { Profile, ProfileApi, ProfileChanges } from "../lib/profile";
-import { Button, Checkbox, ChoiceList, Field, Message } from "./form";
+import { Button, ChoiceList, Field, Message } from "./form";
 import { LinkButton } from "./link-button";
 import { ScreenTitle } from "./screens";
 
@@ -92,7 +92,7 @@ function SkillChips({ skills, onRemove }: { skills: string[]; onRemove?: (s: str
   );
 }
 
-/** S11: a member's profile. Contact details are never part of it. */
+/** S11: a member's profile. Contact details show only when the server returns them for a connection. */
 export function ProfileView({ profile }: { profile: Profile }) {
   const { t } = useLanguage();
   const study = [profile.study.institution, profile.study.course, profile.study.year?.toString()]
@@ -143,6 +143,24 @@ export function ProfileView({ profile }: { profile: Profile }) {
           <Muted text={t.notGiven} />
         ) : null}
       </Section>
+      {profile.contact ? (
+        <Section title={t.contactTitle}>
+          {(
+            [
+              [t.phone, profile.contact.phone],
+              [t.email, profile.contact.email],
+              [t.address, profile.contact.address],
+            ] as const
+          ).map(([label, value]) =>
+            value ? (
+              <View key={label} className="gap-0.5">
+                <Muted text={label} />
+                <Body text={value} />
+              </View>
+            ) : null,
+          )}
+        </Section>
+      ) : null}
       <Section title={t.skillsTitle}>
         {profile.skills.length ? (
           <SkillChips skills={profile.skills} />
@@ -184,7 +202,6 @@ export function ProfileEditor({
     certifications: initial.certifications,
     regionId: initial.regionId,
     districtId: initial.districtId,
-    hidden: initial.hidden,
     study: initial.study,
   });
   const [skills, setSkills] = useState(initial.skills);
@@ -346,11 +363,16 @@ export function ProfileEditor({
           }
         />
       </Section>
-      <Checkbox
-        label={t.hideFromDirectory}
-        checked={changes.hidden}
-        onChange={(hidden) => update({ hidden })}
-      />
+      <LinkButton
+        href="/settings/privacy"
+        label={t.privacyLink}
+        className="min-h-[44px] flex-row items-center justify-between rounded-card border border-line bg-surface px-4"
+      >
+        <Text className="font-figtree-semibold text-sm text-ink">{t.privacyLink}</Text>
+        <Text aria-hidden className="font-figtree text-[15px] text-ink-2">
+          ›
+        </Text>
+      </LinkButton>
       <Message text={failed ? t.profileSaveFailed : null} />
       <Button label={t.saveProfile} onPress={save} disabled={busy} />
     </View>

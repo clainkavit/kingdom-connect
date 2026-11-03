@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { en } from "./en";
-import { formatDate, formatNumber, languages, stringsFor } from "./index";
+import { formatDate, formatDateTime, formatNumber, languages, stringsFor } from "./index";
 import { sw } from "./sw";
 
 describe("string files", () => {
@@ -57,6 +57,11 @@ describe("formatting", () => {
   it("writes dates in each language, in Tanzanian time", () => {
     expect(formatDate(date, "en")).toBe("2 November 2026");
     expect(formatDate(date, "sw")).toBe("2 Novemba 2026");
+  });
+
+  it("writes a date and a 24-hour time, in Tanzanian time", () => {
+    expect(formatDateTime(date, "en")).toBe("2 November 2026 at 12:00");
+    expect(formatDateTime(date, "sw")).toBe("2 Novemba 2026, 12:00");
   });
 
   it("groups numbers", () => {

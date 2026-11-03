@@ -811,6 +811,12 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 - Lifting a pause or reinstating an account resets the count: only upheld decisions after the latest lift or reinstatement count toward the rule.
 - An account that is already suspended or paused is not told again.
 
+**Decided on 3 November 2026 (audit log, R13)**
+- Only Super Admins open the audit log (SAFE-4). Administrators don't see it in the menu and the database refuses them.
+- Each entry shows only the fields that changed. "Show full record" opens the whole before and after.
+- The actor filter is a list of staff accounts, a member username, or system entries.
+- Idea-detail views are logged when ideas arrive in Release 2.
+
 **Open.** Every open question is a ticket on the [wayfinder map](https://github.com/clainkavit/kingdom-connect/issues/1) and is linked where it applies above.
 
 **Outside this spec**
@@ -858,6 +864,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | 3 Nov 2026 | Messaging: TLS plus host disk encryption, one C3 per thread until it is opened, no read receipts, delete until reported, Report wired in R11 | 9, 18 |
 | 3 Nov 2026 | Reports: profiles and threads now, KC-year-number references that run on across years, one open report per item with a Block offer, one staff-only screenshot, 10 reports a day | 13, 18 |
 | 3 Nov 2026 | Reports queue: Release 1 actions, cases decided together, repeat rule per member and decision, a message to the member separate from the staff note, X3 warning, pauses until lifted | 13, 14, 18 |
+| 3 Nov 2026 | Audit log: Super Admins only, changed fields with the full record on demand, staff, username or system actor filter | 13, 18 |
 
 ## Appendix B: Source documents
 

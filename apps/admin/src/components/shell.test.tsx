@@ -12,8 +12,14 @@ vi.mock("next/navigation", () => ({ usePathname: () => "/verification" }));
 afterEach(cleanup);
 
 describe("AdminShell", () => {
-  it("shows every admin sidebar item", () => {
+  it("hides the audit log from an Administrator", () => {
     render(<AdminShell>content</AdminShell>);
+    const sidebar = within(screen.getByRole("navigation", { name: "Admin menu" }));
+    expect(sidebar.queryByRole("link", { name: "Audit log" })).toBeNull();
+  });
+
+  it("shows every admin sidebar item to a Super Admin", () => {
+    render(<AdminShell superAdmin>content</AdminShell>);
     const sidebar = within(screen.getByRole("navigation", { name: "Admin menu" }));
     for (const item of adminNav) {
       expect(sidebar.getByRole("link", { name: en[item.key] }).getAttribute("href")).toBe(
@@ -44,7 +50,9 @@ describe("AdminShell", () => {
       <LanguageContext.Provider
         value={{ language: "sw", t: sw, platformName: "Test Platform", setLanguage: vi.fn() }}
       >
-        <AdminShell onSignOut={vi.fn()}>content</AdminShell>
+        <AdminShell onSignOut={vi.fn()} superAdmin>
+          content
+        </AdminShell>
       </LanguageContext.Provider>,
     );
     const sidebar = within(screen.getByRole("navigation", { name: sw.adminMenu }));

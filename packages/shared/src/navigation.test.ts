@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   adminNav,
+  adminNavFor,
   adminPhoneTabs,
   isCurrent,
   memberNav,
@@ -11,6 +12,14 @@ import {
 import { en } from "./strings/en";
 
 const labels = (items: readonly NavItem[]) => items.map((i) => en[i.key]);
+
+describe("admin navigation by role", () => {
+  it("shows the audit log to Super Admins only (SAFE-4)", () => {
+    expect(adminNavFor(true)).toEqual(adminNav);
+    expect(adminNavFor(false).map((i) => i.href)).not.toContain("/audit-log");
+    expect(adminNavFor(false)).toHaveLength(adminNav.length - 1);
+  });
+});
 
 describe("member navigation", () => {
   it("lists the member top bar from PRD section 5, in order", () => {

@@ -293,3 +293,8 @@ export async function reportStatus(reportId: string) {
   const [row] = await db`select status from public.reports where id = ${reportId}`;
   return row!.status as string;
 }
+
+export async function addAuditEntry(action: string, before: object, after: object) {
+  await db`insert into private.audit_log (action, target_type, before, after)
+    values (${action}, 'e2e', ${db.json(before as never)}, ${db.json(after as never)})`;
+}

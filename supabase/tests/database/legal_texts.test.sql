@@ -5,6 +5,9 @@ select plan(30);
 select has_table('public', 'legal_texts', 'legal_texts exists');
 select has_table('public', 'legal_acceptances', 'legal_acceptances exists');
 
+alter table public.legal_acceptances disable trigger never_changed;
+delete from public.legal_acceptances;
+alter table public.legal_acceptances enable trigger never_changed;
 delete from public.legal_texts;
 insert into public.legal_texts (kind, version, body_en, body_sw, effective_at) values
   ('terms', '0.1', 'Terms 0.1', 'Masharti 0.1', now() - interval '2 days'),

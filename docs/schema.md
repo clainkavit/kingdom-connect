@@ -40,7 +40,10 @@ Decided 1 Nov (F04, #42):
 
 | Function | Returns true when |
 |---|---|
-| `is_member()` | The caller is an approved member with a verified session |
+| `is_member()` | The caller is an approved member with a verified session who has accepted the current terms of use and privacy notice (R05b). Until they accept, every member table refuses them |
+| `is_approved_member()` | An approved member with a verified session, accepted or not. Only `legal_acceptances` uses it, so a member can accept |
+| `my_language()`, `set_my_language(chosen)` | The caller's saved language, read and changed by an approved member even before accepting, so a choice on S03 or S07 is kept |
+| `accepted_terms_and_privacy()` | The caller has accepted the current version of the terms and the privacy notice (true while none is in effect) |
 | `is_staff()` | The caller is an active Administrator or Super Administrator |
 | `is_super_admin()` | The caller is an active Super Administrator |
 | `is_connected(a, b)` | Members `a` and `b` have an accepted connection |

@@ -13,6 +13,7 @@ import {
 } from "../lib/messages";
 import { Button, ConfirmButton, Field, Message } from "./form";
 import { LinkButton } from "./link-button";
+import { ReportLink } from "./report-link";
 import { Avatar } from "./profile";
 import { ScreenTitle } from "./screens";
 import { EmptyState, ErrorState, LoadingRows } from "./states";
@@ -215,18 +216,7 @@ export function ThreadScreen({ api, threadId }: { api: MessagesApi; threadId: st
         >
           <ScreenTitle>{thread.otherName || t.memberUnavailable}</ScreenTitle>
         </LinkButton>
-        <View className="items-end gap-1">
-          <Pressable
-            role="button"
-            aria-label={t.reportThread}
-            aria-disabled
-            disabled
-            className="min-h-[40px] justify-center rounded-[9px] border border-line px-4 opacity-50"
-          >
-            <Text className="font-figtree-semibold text-sm text-bad-text">{t.reportThread}</Text>
-          </Pressable>
-          <Text className="font-figtree text-[13px] text-ink-2">{t.reportComingSoon}</Text>
-        </View>
+        <ReportLink target={{ type: "thread", id: thread.id }} memberId={thread.otherId} />
       </View>
       {thread.reported ? <Message tone="info" text={t.threadReported} /> : null}
       <View className="gap-3">

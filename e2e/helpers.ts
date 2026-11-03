@@ -259,3 +259,12 @@ export async function hideProfile(memberId: string) {
 export async function block(blocker: string, blocked: string) {
   await db`insert into public.blocks (blocker_id, blocked_id) values (${blocker}, ${blocked})`;
 }
+
+export async function startThread(a: string, b: string, firstMessageFrom: string, body: string) {
+  const [first, second] = [a, b].sort();
+  const [thread] = await db`insert into public.message_threads (member_a, member_b)
+    values (${first!}, ${second!}) returning id`;
+  await db`insert into public.messages (thread_id, sender_id, body)
+    values (${thread!.id}, ${firstMessageFrom}, ${body})`;
+  return thread!.id as string;
+}

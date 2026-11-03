@@ -1,6 +1,7 @@
 import "../test-router";
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import type { ConnectionsApi } from "../lib/connections";
 import type { PrivacyApi, PrivacySettings } from "../lib/privacy";
 import { PrivacyScreen, SettingsMenu } from "./privacy";
 
@@ -23,9 +24,14 @@ const fakeApi = (over: Partial<PrivacyApi> = {}): PrivacyApi => ({
   ...over,
 });
 
+const connections = {
+  blocked: vi.fn().mockResolvedValue([]),
+  unblock: vi.fn().mockResolvedValue(true),
+} as unknown as ConnectionsApi;
+
 async function show(api: PrivacyApi) {
   await act(async () => {
-    render(<PrivacyScreen api={api} />);
+    render(<PrivacyScreen api={api} connections={connections} />);
   });
 }
 

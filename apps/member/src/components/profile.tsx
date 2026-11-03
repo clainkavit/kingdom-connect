@@ -14,7 +14,7 @@ import { Button, ChoiceList, Field, Message } from "./form";
 import { LinkButton } from "./link-button";
 import { ScreenTitle } from "./screens";
 
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
+export function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <View className="gap-2 rounded-card border border-line bg-surface p-4">
       <Text role="heading" aria-level={2} className="font-figtree-bold text-base text-ink">
@@ -93,7 +93,7 @@ function SkillChips({ skills, onRemove }: { skills: string[]; onRemove?: (s: str
 }
 
 /** S11: a member's profile. Contact details show only when the server returns them for a connection. */
-export function ProfileView({ profile }: { profile: Profile }) {
+export function ProfileView({ profile, actions }: { profile: Profile; actions?: React.ReactNode }) {
   const { t } = useLanguage();
   const study = [profile.study.institution, profile.study.course, profile.study.year?.toString()]
     .filter(Boolean)
@@ -123,6 +123,7 @@ export function ProfileView({ profile }: { profile: Profile }) {
           </LinkButton>
         ) : null}
       </View>
+      {!profile.own && actions ? actions : null}
       {profile.own && profile.hidden ? <Message tone="info" text={t.hiddenProfileNote} /> : null}
       <Section title={t.aboutTitle}>
         {profile.profession ? <Body text={profile.profession} /> : null}

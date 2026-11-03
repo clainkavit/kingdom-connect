@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { Text, View } from "react-native";
 import { useLanguage } from "../lib/language";
+import type { ConnectionsApi } from "../lib/connections";
 import type { PrivacyApi, PrivacySettings, PrivacySwitch } from "../lib/privacy";
+import { BlockedList } from "./connections";
 import { Message, Switch } from "./form";
 import { LinkButton } from "./link-button";
 import { ScreenTitle } from "./screens";
@@ -43,7 +45,13 @@ export function SettingsMenu() {
 }
 
 /** S45: hide from the directory, and choose what connections may see. Each switch saves at once. */
-export function PrivacyScreen({ api }: { api: PrivacyApi }) {
+export function PrivacyScreen({
+  api,
+  connections,
+}: {
+  api: PrivacyApi;
+  connections: ConnectionsApi;
+}) {
   const { t } = useLanguage();
   const [settings, setSettings] = useState<PrivacySettings | null>(null);
   const [loadFailed, setLoadFailed] = useState(false);
@@ -108,6 +116,7 @@ export function PrivacyScreen({ api }: { api: PrivacyApi }) {
         {switchFor("shareAddress", t.shareAddress, settings.address || t.notGiven)}
         <Text className="pb-2 font-figtree text-[13px] text-ink-2">{t.contactLocked}</Text>
       </Card>
+      <BlockedList api={connections} />
     </View>
   );
 }

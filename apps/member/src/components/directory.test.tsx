@@ -14,6 +14,7 @@ const card = (over: Partial<DirectoryCard> = {}): DirectoryCard => ({
   topSkills: ["bookkeeping", "excel", "tax"],
   business: false,
   photoUrl: null,
+  relation: "none",
   ...over,
 });
 
@@ -35,7 +36,7 @@ const click = (name: string) =>
   act(async () => fireEvent.click(screen.getByRole("button", { name })));
 
 describe("DirectoryScreen (S10)", () => {
-  it("lists cards with name, headline, location, top 3 skills, badge and a disabled Connect", async () => {
+  it("lists cards with name, headline, location, top 3 skills, badge and Connect", async () => {
     const api = fakeApi();
     await show(api);
     expect(api.search).toHaveBeenCalledWith(noFilters, 0, "en");
@@ -45,9 +46,30 @@ describe("DirectoryScreen (S10)", () => {
     expect(screen.getByText("Nyamagana, Mwanza")).toBeTruthy();
     expect(screen.getByText("tax")).toBeTruthy();
     expect(screen.getByText("Verified member")).toBeTruthy();
-    const connect = screen.getByRole("button", { name: "Connect" });
-    expect(connect.getAttribute("aria-disabled")).toBe("true");
-    expect(screen.getByText("Connecting comes soon.")).toBeTruthy();
+    expect(screen.getByRole("link", { name: "Connect" }).getAttribute("href")).toBe(
+      "/profile/m1?connect=1",
+    );
+  });
+
+  it("shows where each card stands: sent, connected, or asked you", async () => {
+    await show(
+      fakeApi({
+        search: vi.fn().mockResolvedValue({
+          cards: [
+            card({ memberId: "a", fullName: "Sent To", relation: "sent" }),
+            card({ memberId: "b", fullName: "Already Friend", relation: "connected" }),
+            card({ memberId: "c", fullName: "Asked Me", relation: "received" }),
+          ],
+          more: false,
+        }),
+      }),
+    );
+    expect(screen.getByText("Request sent")).toBeTruthy();
+    expect(screen.getByText("Connected")).toBeTruthy();
+    expect(screen.getByRole("link", { name: "Answer their request" }).getAttribute("href")).toBe(
+      "/connections",
+    );
+    expect(screen.queryByRole("link", { name: "Connect" })).toBeNull();
   });
 
   it("searches with the typed words and filters", async () => {

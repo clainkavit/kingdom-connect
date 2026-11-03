@@ -1,5 +1,10 @@
-import { ComingSoon } from "@/components/screens";
+"use client";
+
+import { AdminDashboard } from "@/components/admin-dashboard";
+import { adminStatsApi } from "@/lib/admin-dashboard";
+import { useAuth } from "@/lib/auth";
 
 export default function AdminDashboardPage() {
-  return <ComingSoon titleKey="adminDashboardTitle" />;
+  const { superAdmin } = useAuth();
+  return <AdminDashboard api={adminStatsApi} superAdmin={superAdmin} />;
 }

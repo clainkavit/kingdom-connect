@@ -1,18 +1,13 @@
 "use client";
 
-import { formatDate, isOverdue, waitingAge, type Strings } from "@kingdom-connect/shared";
+import { formatDate, isOverdue } from "@kingdom-connect/shared";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { ageText } from "@/lib/age";
 import { useLanguage } from "@/lib/language";
 import type { QueueItem, VerificationApi } from "@/lib/verification";
 import { ScreenTitle } from "./screens";
 import { EmptyState, ErrorState, LoadingRows } from "./states";
-
-export function ageText(t: Strings, submittedAt: Date, now: Date): string {
-  const age = waitingAge(submittedAt, now);
-  if (age.unit === "days") return t.ageDays(age.value);
-  return age.value === 0 ? t.ageUnderHour : t.ageHours(age.value);
-}
 
 function Tag({ tone, children }: { tone: "warn" | "bad"; children: React.ReactNode }) {
   return (

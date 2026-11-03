@@ -823,6 +823,12 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 - Quick actions follow the permission matrix: Share an idea, Scan for opportunities and Post training for every member; Post an opportunity at Level 3 only, otherwise "Verify your business to post opportunities". The link to business verification comes with B01.
 - While a member's posting is paused, Share an idea, Post training and Post an opportunity are hidden and the widget says so; Scan for opportunities stays (X2: "You cannot post new items").
 
+**Decided on 4 November 2026 (admin dashboard, R15)**
+- R15 shows the counts that have data in Release 1: verified members, waiting for verification with the age of the oldest, rejected members, open report cases and the daily-cap status. Registered businesses, open opportunities, ideas in the pool, re-verifications, featured slots and investor activity arrive with their tickets rather than showing 0.
+- Counts are worked out when the page loads and reload every 15 minutes while it is open (section 7, criterion 4).
+- Verified and rejected members link to A09 with a status filter (`/members?status=...`); A09 is built later and applies the filter.
+- The daily-cap switch stays in Settings (A16), its one home. The dashboard shows the cap status and, for Super Admins, a link to change it there.
+
 **Open.** Every open question is a ticket on the [wayfinder map](https://github.com/clainkavit/kingdom-connect/issues/1) and is linked where it applies above.
 
 **Outside this spec**
@@ -872,6 +878,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | 3 Nov 2026 | Reports queue: Release 1 actions, cases decided together, repeat rule per member and decision, a message to the member separate from the staff note, X3 warning, pauses until lifted | 13, 14, 18 |
 | 3 Nov 2026 | Audit log: Super Admins only, changed fields with the full record on demand, staff, username or system actor filter | 13, 18 |
 | 4 Nov 2026 | Member dashboard: Release 1 widgets, My activity as requests sent, quick actions by level | 7, 18 |
+| 4 Nov 2026 | Admin dashboard: Release 1 counts only, live counts reloaded every 15 minutes | 7, 18 |
 
 ## Appendix B: Source documents
 

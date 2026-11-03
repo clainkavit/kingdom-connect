@@ -23,7 +23,7 @@ test("connected Members message each other live, with a file, and a block stops 
   await a.getByLabel("Write a message").fill("Hello from the writer");
   await a.getByRole("button", { name: "Send", exact: true }).click();
   await expect(a.getByText("Hello from the writer")).toBeVisible();
-  expect(await notificationKinds(reader.id)).toContain("C3");
+  await expect.poll(() => notificationKinds(reader.id)).toContain("C3");
 
   await b.goto("/messages");
   await b.getByRole("link", { name: `Writing Member ${stamp}, Unread` }).click();

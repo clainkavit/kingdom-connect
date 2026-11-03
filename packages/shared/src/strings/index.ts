@@ -37,6 +37,18 @@ export function formatDate(date: Date, language: Language): string {
   }).format(date);
 }
 
+export function formatDateTime(date: Date, language: Language): string {
+  return new Intl.DateTimeFormat(locale(language), {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+    timeZone: "Africa/Dar_es_Salaam",
+  }).format(date);
+}
+
 export function formatNumber(value: number, language: Language): string {
   return new Intl.NumberFormat(locale(language)).format(value);
 }

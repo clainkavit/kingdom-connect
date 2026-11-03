@@ -95,7 +95,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   if (!ready || !allowed) return <AuthContext.Provider value={value}>{null}</AuthContext.Provider>;
   return (
     <AuthContext.Provider value={value}>
-      {pageRoute || open ? children : <AdminShell onSignOut={value.signOut}>{children}</AdminShell>}
+      {pageRoute || open ? (
+        children
+      ) : (
+        <AdminShell onSignOut={value.signOut} superAdmin={value.superAdmin}>
+          {children}
+        </AdminShell>
+      )}
     </AuthContext.Provider>
   );
 }

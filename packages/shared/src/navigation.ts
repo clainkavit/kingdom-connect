@@ -82,6 +82,13 @@ export function isCurrent(pathname: string, item: NavItem): boolean {
   return under(pathname, item.href);
 }
 
+const superAdminOnly = new Set(["/audit-log"]);
+
+/** The admin menu for a staff role: the audit log is for Super Admins only (SAFE-4). */
+export function adminNavFor(superAdmin: boolean): readonly NavItem[] {
+  return superAdmin ? adminNav : adminNav.filter((item) => !superAdminOnly.has(item.href));
+}
+
 /** The menu items a phone reaches through More: those without a tab of their own. */
 export function moreItems(nav: readonly NavItem[], tabs: readonly NavItem[]): NavItem[] {
   const tabHrefs = new Set(tabs.map((t) => t.href));

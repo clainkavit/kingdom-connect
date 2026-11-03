@@ -17,9 +17,14 @@ describe("ComingSoon", () => {
 
 describe("MoreList", () => {
   it("lists every menu item that has no phone tab", () => {
-    render(<MoreList />);
+    render(<MoreList superAdmin />);
     const tabHrefs = new Set(adminPhoneTabs.map((t) => t.href));
     const expected = adminNav.filter((i) => !tabHrefs.has(i.href)).map((i) => en[i.key]);
     expect(screen.getAllByRole("link").map((l) => l.getAttribute("aria-label"))).toEqual(expected);
+  });
+
+  it("leaves out the audit log for an Administrator", () => {
+    render(<MoreList />);
+    expect(screen.queryByRole("link", { name: "Audit log" })).toBeNull();
   });
 });

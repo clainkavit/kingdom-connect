@@ -11,8 +11,12 @@ export default defineConfig({
   retries: process.env.CI ? 1 : 0,
   timeout: 60_000,
   expect: { timeout: 15_000 },
-  reporter: process.env.CI ? [["github"], ["list"]] : "list",
-  use: { trace: "retain-on-failure", ...devices["Desktop Chrome"] },
+  reporter: process.env.CI ? [["github"], ["list"], ["html", { open: "never" }]] : "list",
+  use: {
+    trace: "retain-on-failure",
+    screenshot: "only-on-failure",
+    ...devices["Desktop Chrome"],
+  },
   projects: [
     { name: "member", testMatch: /member\..*spec\.ts/, use: { baseURL: memberUrl } },
     { name: "admin", testMatch: /admin\..*spec\.ts/, use: { baseURL: adminUrl } },

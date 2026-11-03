@@ -766,7 +766,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 **Decided on 3 November 2026 (directory, R07)**
 - With no search typed, the directory is shuffled once a day (Tanzania time), so everyone takes a turn near the top and the order holds while paging. With a search, the best matches come first: name, then profession, then skill.
 - A hidden profile is not listed for anyone, connections included; connections can still open it. Applicants, staff and members who blocked you are not listed, nor are you.
-- Cards show a disabled Connect button ("Connecting comes soon") until connection requests arrive (R09).
+- Cards showed a disabled Connect button until connection requests arrived (R09); since R09 they show Connect, Request sent, Answer their request or Connected.
 - Search and filters return in under 2 seconds with 10,000 members; a database test seeds 10,000 members and checks it on every pull request.
 
 **Decided on 3 November 2026 (contact sharing, R08)**
@@ -774,6 +774,13 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 - A connection sees a shared value only while neither side has blocked the other and the owner is still an approved member. A hidden profile still shares with its connections.
 - In Phase 1 a Member cannot change their own phone, email or address; changing them, with a code to the new email, is its own ticket. Only the sharing switches and the language can be changed.
 - The hide switch moves from Edit profile to Profile privacy and contact sharing (S45), so each setting has one place.
+
+**Decided on 3 November 2026 (connections, R09)**
+- One open request per pair. The sender may ask again once the request ends: it expires after 30 days, is withdrawn, or the connection is removed. A declined request still counts as open for the sender until it expires, so they cannot tell it was declined. If the other member already asked you, you answer their request instead of sending a second one. If you declined someone and later ask them yourself, your request accepts theirs and you are connected, so the decline never shows. Accepting closes any other open request between the two.
+- The note is optional and up to 300 characters, with no check for phone numbers or emails.
+- Blocking asks to confirm, then removes any connection and closes open requests both ways, without notice. The blocked member's own request leaves their list, so nothing of the blocker (name, headline, photo) reaches them. Unblocking is on S45 and does not restore the connection. Blocking also stops messages; that part is built with messaging (R10).
+- Removing a connection sends no notice. Either member can send a new request later.
+- The 30-a-day limit counts by the Tanzania calendar day.
 
 **Open.** Every open question is a ticket on the [wayfinder map](https://github.com/clainkavit/kingdom-connect/issues/1) and is linked where it applies above.
 
@@ -818,6 +825,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | 3 Nov 2026 | Profiles: verified name locked, photo without review, free skill tags with suggestions, synonyms edited by any Administrator | 8, 18 |
 | 3 Nov 2026 | Directory: daily shuffle with no search, hidden profiles never listed, disabled Connect until R09, 2-second target tested at 10,000 members | 8, 18 |
 | 3 Nov 2026 | Contact sharing: one switch per field for all connections, contact values locked in Phase 1, hide switch moved to privacy settings | 8, 18 |
+| 3 Nov 2026 | Connections: one open request per pair, free-text note, block ends everything silently with unblock on S45, removal sends no notice | 9, 18 |
 
 ## Appendix B: Source documents
 

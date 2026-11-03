@@ -1,5 +1,7 @@
 import type { Language } from "@kingdom-connect/shared";
 import { districtOptions, regionOptions, sectorOptions, type Option } from "./registration";
+import { photoLinks } from "./avatars";
+import type { Relation } from "./connections";
 import { supabase } from "./supabase";
 
 export const PAGE_SIZE = 20;
@@ -32,6 +34,7 @@ export type DirectoryCard = {
   topSkills: string[];
   business: boolean;
   photoUrl: string | null;
+  relation: Relation;
 };
 
 export type DirectoryPage = { cards: DirectoryCard[]; more: boolean };
@@ -54,6 +57,7 @@ type Row = {
   top_skills: string[];
   verified_business: boolean;
   photo_path: string | null;
+  relation: Relation;
 };
 
 export const directoryApi: DirectoryApi = {
@@ -72,11 +76,7 @@ export const directoryApi: DirectoryApi = {
     });
     if (error) throw error;
     const rows = (data ?? []) as Row[];
-    const paths = rows.flatMap((r) => (r.photo_path ? [r.photo_path] : []));
-    const { data: links } = paths.length
-      ? await supabase.storage.from("avatars").createSignedUrls(paths, 300)
-      : { data: [] };
-    const urlFor = new Map((links ?? []).map((l) => [l.path, l.signedUrl]));
+    const urlFor = await photoLinks(rows.map((r) => r.photo_path));
     return {
       more: rows.length > PAGE_SIZE,
       cards: rows.slice(0, PAGE_SIZE).map((r) => ({
@@ -92,6 +92,7 @@ export const directoryApi: DirectoryApi = {
         topSkills: r.top_skills,
         business: r.verified_business,
         photoUrl: (r.photo_path && urlFor.get(r.photo_path)) || null,
+        relation: r.relation,
       })),
     };
   },

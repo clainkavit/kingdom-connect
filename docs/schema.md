@@ -92,9 +92,9 @@ Matching scores are worked out when a page opens and are not stored (PRD section
 
 | Table | Key columns | Who can read | Who can write |
 |---|---|---|---|
-| `connection_requests` | `requester_id`, `receiver_id`, `note` (max 300), `status` (sent, accepted, declined, withdrawn, expired), `responded_at`, `expires_at` | The receiver; the requester through `my_sent_requests()`, which shows a declined request as "sent" until it expires | The requester sends or withdraws (max 30 a day, enforced in the insert policy); the receiver answers |
+| `connection_requests` | `requester_id`, `receiver_id`, `note` (max 300), `status` (sent, accepted, declined, withdrawn), `responded_at`, `expires_at` (30 days after sending; a request past it counts as expired) | The two members, but never `status`, `responded_at` or `updated_at`, so the sender cannot tell a decline. Lists come from `my_received_requests()` and `my_sent_requests()` | The requester sends (max 30 a Tanzania day, in the insert policy and the insert trigger; one open request per pair; not to a connection, a block either way, a non-member or when the other already asked) and withdraws; the receiver accepts or declines an open request. Accepting creates the connection, closes any other open request between the two, and sends C2; sending sends C1. Asking someone you declined accepts their request instead of creating a new one |
 | `connections` | `member_a`, `member_b` (stored with a < b), `connected_at` | The two members | Created when a request is accepted; either member removes it |
-| `blocks` | `blocker_id`, `blocked_id` | The blocker only | The blocker |
+| `blocks` | `blocker_id`, `blocked_id` | The blocker only, with names through `my_blocks()` | The blocker. A block removes the connection and closes open requests both ways; neither side's list then shows the other |
 | `message_threads` | `member_a`, `member_b`, `idea_id`, `opportunity_id`, `status` (active, reported, closed), `reported_at` | The two members; staff only when `status` is reported | Created by a connection, an approved idea request or a response |
 | `messages` | `thread_id`, `sender_id`, `body`, `deleted_at` | Same as the thread | The sender, only while connected and not blocked |
 | `message_attachments` | `message_id`, `storage_path`, `mime`, `size` (max 10 MB) | Same as the thread | The sender |
@@ -164,7 +164,10 @@ These run as `security definer`: they check who is calling, then return only wha
 | `application_status()` | The applicant's own state (drafting, under review with the expected working days, rejected, rejected final, approved) and the reason sent. No reviewer, reason code, queue place or queue size. Through the `application-status` Edge Function (`private.application_status()`) |
 | `start_resubmission()` | After a first rejection: uses the one resubmission and reopens the draft on step 6. Through the `start-resubmission` Edge Function (`private.start_resubmission()`); logged |
 | `reopen_application(request_id, note)` | Staff only, for the latest final rejection: reopens the draft without giving back the resubmission, sends A6. Through the `reopen-application` Edge Function (`private.reopen_application()`); logged with the note |
-| `my_sent_requests()` | The caller's sent connection requests, with declined ones shown as "sent" until they expire |
+| `my_sent_requests()` | The caller's sent connection requests, with declined ones shown as "sent" until they expire. Runs as the caller over `access.my_sent_requests()` |
+| `my_received_requests()` | The caller's open received requests with the sender's name, headline, photo path and note. Runs as the caller over `access.my_received_requests()` |
+| `connection_state(member_id)` | none, sent, received or connected, between the caller and that member. Runs as the caller over `access.relation()` |
+| `my_blocks()` | The members the caller blocked, with names, for S45. Runs as the caller over `access.my_blocks()` |
 | `requests_for_my_idea(idea_id)` | Access requests for the owner's idea, with anonymous requesters masked until the NDA is accepted |
 | `investor_view_count(idea_id)` | "Viewed by N investors" as a number only |
 | `get_idea_file_link(file_id)` | A short-lived, watermarked file link, through an Edge Function. Logs the view |

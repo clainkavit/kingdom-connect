@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Pressable, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import {
   noFilters,
   type DirectoryApi,
@@ -47,16 +47,21 @@ function Card({ card }: { card: DirectoryCard }) {
         ))}
       </View>
       <View className="flex-row flex-wrap items-center gap-3">
-        <Pressable
-          role="button"
-          aria-label={t.connect}
-          aria-disabled
-          disabled
-          className="min-h-[40px] justify-center rounded-[9px] bg-blue px-4 opacity-50"
-        >
-          <Text className="font-figtree-bold text-sm text-blue-ink">{t.connect}</Text>
-        </Pressable>
-        <Text className="font-figtree text-[13px] text-ink-2">{t.connectSoon}</Text>
+        {card.relation === "none" || card.relation === "received" ? (
+          <LinkButton
+            href={card.relation === "none" ? `/profile/${card.memberId}?connect=1` : "/connections"}
+            label={card.relation === "none" ? t.connect : t.respondInConnections}
+            className="min-h-[40px] justify-center rounded-[9px] bg-blue px-4"
+          >
+            <Text className="font-figtree-bold text-sm text-blue-ink">
+              {card.relation === "none" ? t.connect : t.respondInConnections}
+            </Text>
+          </LinkButton>
+        ) : (
+          <Text className="font-figtree-semibold text-[13px] text-ink-2">
+            {card.relation === "sent" ? t.requestSent : t.connected}
+          </Text>
+        )}
       </View>
     </View>
   );

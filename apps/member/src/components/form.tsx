@@ -282,3 +282,39 @@ export function ChoiceList({
     </View>
   );
 }
+
+/** A button that asks before it acts. */
+export function ConfirmButton({
+  label,
+  question,
+  confirmLabel,
+  onConfirm,
+}: {
+  label: string;
+  question: string;
+  confirmLabel: string;
+  onConfirm: () => Promise<void>;
+}) {
+  const { t } = useLanguage();
+  const [asking, setAsking] = useState(false);
+  const [busy, setBusy] = useState(false);
+  if (!asking) return <Button secondary label={label} onPress={() => setAsking(true)} />;
+  return (
+    <View className="gap-2">
+      <Text className="font-figtree text-sm text-ink">{question}</Text>
+      <View className="flex-row flex-wrap gap-2">
+        <Button
+          label={confirmLabel}
+          disabled={busy}
+          onPress={async () => {
+            setBusy(true);
+            await onConfirm();
+            setBusy(false);
+            setAsking(false);
+          }}
+        />
+        <Button secondary label={t.cancel} onPress={() => setAsking(false)} />
+      </View>
+    </View>
+  );
+}

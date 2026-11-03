@@ -248,7 +248,9 @@ export function messagesApi(pick: () => Promise<PickedFile | null>): MessagesApi
           { event: "*", schema: "public", table: "messages", filter: `thread_id=eq.${threadId}` },
           onChange,
         )
-        .subscribe();
+        .subscribe((status) => {
+          if (status === "SUBSCRIBED") onChange();
+        });
       return () => {
         supabase.removeChannel(channel);
       };

@@ -225,6 +225,8 @@ Under the Personal Data Protection Act a member can ask for their data to be del
 3. `private.audit_log` entries are kept for 5 years (PRD section 13).
 4. The lawyer review (PRD section 13) confirms exactly what must be kept. This list is adjusted to match.
 
+Built in R16 (pending the lawyer review): the `delete-my-data` Edge Function (approved, pending or rejected accounts only) lists the member's files with `private.member_file_paths()` (avatar, ID documents including unsubmitted ones, report screenshots, attachments they sent, and anything else in their own folders), then `private.delete_member_data()` deletes in one transaction their profile and skills, `member_private`, investor flag, verification documents, registration draft, connections, requests both ways, their blocks, thread read marks, notifications, preferences, push tokens, queued emails and login records. The `members` row becomes `deleted` with the username `deleted_<id>`. Their messages stay in the other member's thread (text only), and their reports, moderation actions, verification decisions and legal acceptances stay. After the transaction it removes the files through Storage, then the sign-in account's email becomes `deleted-<id>@deleted.invalid`, its phone is cleared and it is banned, so the email can register again. A file or sign-in step that fails is written to the audit log as `member.deletion_unfinished` for staff to finish. The apps show the member as "Deleted member" (`deleted_members(ids)` tells the member app which names are missing because of deletion). `my_data_export()` gives an approved member their own data as JSON; the ID number stays encrypted and is not exported.
+
 ## 15. Diagram of the main records
 
 ```mermaid

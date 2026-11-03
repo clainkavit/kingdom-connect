@@ -90,7 +90,7 @@ export function ReportsQueue({ api }: { api: ReportsApi }) {
               >
                 <span className="flex min-w-0 flex-1 flex-col">
                   <span className="truncate text-[15px] font-semibold text-foreground">
-                    {c.reference} · {c.subjectName}
+                    {c.reference} · {c.subjectName || t.deletedMember}
                   </span>
                   <span className="text-[13px] text-ink-2">
                     {c.targetType === "profile" ? t.targetProfile : t.targetThread} ·{" "}
@@ -231,7 +231,7 @@ function MemberCard({ subject, api }: { subject: Subject; api: ReportsApi }) {
   return (
     <Card title={t.reportedMember}>
       <dl className="flex flex-col gap-2">
-        <Row label={subject.name} value={`@${subject.username}`} />
+        <Row label={subject.name || t.deletedMember} value={`@${subject.username}`} />
         {subject.headline ? <Row label="" value={subject.headline} /> : null}
         <Row label={t.memberStateLabel} value={states.join(" · ") || t.stateActive} />
       </dl>

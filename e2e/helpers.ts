@@ -303,3 +303,14 @@ export async function requestConnection(from: string, to: string, note: string) 
   await db`insert into public.connection_requests (requester_id, receiver_id, note)
     values (${from}, ${to}, ${note})`;
 }
+
+export async function signInEmail(memberId: string) {
+  const [row] = await db`select email from auth.users where id = ${memberId}`;
+  return row!.email as string;
+}
+
+export async function profileCount(memberId: string) {
+  const [row] =
+    await db`select count(*)::int as n from public.profiles where member_id = ${memberId}`;
+  return row!.n as number;
+}

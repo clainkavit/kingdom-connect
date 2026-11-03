@@ -32,6 +32,8 @@ export function addSkill(
 
 export type SetSkillsResult = "done" | SkillProblem | "failed";
 
+export type DeleteMyDataResult = "done" | "failed";
+
 export function createProfileClient(options: FunctionOptions) {
   const call = functionCaller(options);
   return {
@@ -40,6 +42,10 @@ export function createProfileClient(options: FunctionOptions) {
       if (r?.ok) return "done";
       if (r?.error === "too_many" || r?.error === "too_long") return r.error;
       return "failed";
+    },
+    async deleteMyData(accessToken: string): Promise<DeleteMyDataResult> {
+      const r = await call("delete-my-data", { confirm: true }, accessToken);
+      return r?.ok ? "done" : "failed";
     },
   };
 }

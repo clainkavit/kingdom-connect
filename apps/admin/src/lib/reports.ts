@@ -242,7 +242,7 @@ export const reportsApi: ReportsApi = {
       open,
       subject: {
         id: member.id,
-        name: member.profile?.full_name || member.username,
+        name: member.profile?.full_name || (member.status === "deleted" ? "" : member.username),
         username: member.username,
         headline: member.profile?.headline ?? "",
         suspended: member.status === "suspended",

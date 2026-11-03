@@ -834,6 +834,13 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 - Until they accept, the Member reads nothing else, not even their own member row. Their saved language is the one exception: `my_language()` and `set_my_language()` work before acceptance, so the language chosen on S03 or S07 is kept.
 - Locally, `pnpm legal:load` records acceptances for the seed members; e2e members accept through `createMember`. Database tests other than the legal ones treat their members as having accepted.
 
+**Decided on 4 November 2026 (download or delete my data, R16)**
+- Deletion happens straight after the full-screen confirmation and the tick; there is no waiting period. The member is signed out.
+- The username becomes `deleted_<id>` and the sign-in email is replaced and banned, so neither identifies the person and both can be used again.
+- Messages the member sent stay in the other member's thread as text from a Deleted member; the files they sent are removed. Reports, moderation actions, verification decisions and legal acceptances stay as records.
+- The download is a JSON file of the member's own data. Other members' messages and the encrypted ID number are not in it.
+- **Open:** the lawyer review confirms the keep-and-delete list (#64 stays open for it).
+
 **Open.** Every open question is a ticket on the [wayfinder map](https://github.com/clainkavit/kingdom-connect/issues/1) and is linked where it applies above.
 
 **Outside this spec**
@@ -885,6 +892,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | 4 Nov 2026 | Member dashboard: Release 1 widgets, My activity as requests sent, quick actions by level | 7, 18 |
 | 4 Nov 2026 | Admin dashboard: Release 1 counts only, live counts reloaded every 15 minutes | 7, 18 |
 | 4 Nov 2026 | Legal acceptance enforced on the server: no member data until the current terms and privacy notice are accepted | 13, 18 |
+| 4 Nov 2026 | Download or delete my data: immediate deletion after confirmation, placeholder username, scrubbed sign-in, JSON export of own data | 13, 15, 18 |
 
 ## Appendix B: Source documents
 

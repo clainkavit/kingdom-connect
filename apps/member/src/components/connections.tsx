@@ -17,6 +17,7 @@ import type { MessagesApi } from "../lib/messages";
 import { Button, ConfirmButton, Field, Message } from "./form";
 import { LinkButton } from "./link-button";
 import { MessageButton } from "./messages";
+import { ReportLink } from "./report-link";
 import { Avatar, Section } from "./profile";
 import { ScreenTitle } from "./screens";
 import { EmptyState, ErrorState, LoadingRows } from "./states";
@@ -261,6 +262,7 @@ export function ConnectPanel({
         <Message text={refusalMessage[result]} />
       ) : null}
       <Message text={actionFailed ? t.actionFailed : null} />
+      <ReportLink target={{ type: "profile", id: memberId }} memberId={memberId} />
       <ConfirmButton
         label={t.blockMember}
         question={t.confirmBlock(name)}

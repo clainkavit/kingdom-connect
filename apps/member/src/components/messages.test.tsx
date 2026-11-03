@@ -92,8 +92,8 @@ describe("ThreadScreen (S15)", () => {
     expect(screen.getByText("This message was deleted")).toBeTruthy();
     expect(api.markRead).toHaveBeenCalledWith("t1");
     expect(api.subscribe).toHaveBeenCalledWith("t1", expect.any(Function));
-    expect(screen.getByRole("button", { name: "Report" }).getAttribute("aria-disabled")).toBe(
-      "true",
+    expect(screen.getByRole("link", { name: "Report" }).getAttribute("href")).toBe(
+      "/report?type=thread&id=t1&member=m2",
     );
   });
 

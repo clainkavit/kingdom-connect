@@ -29,6 +29,8 @@ const contact = {
   setAddress: vi.fn(),
   startEmailChange: vi.fn(),
   confirmEmailChange: vi.fn(),
+  pendingRecovery: vi.fn().mockResolvedValue(null),
+  cancelRecovery: vi.fn(),
 };
 
 const connections = {

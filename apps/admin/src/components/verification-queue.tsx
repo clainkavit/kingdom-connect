@@ -54,6 +54,11 @@ export function VerificationQueue({
   return (
     <>
       <ScreenTitle>{t.adminNavVerification}</ScreenTitle>
+      <p className="mb-4 text-sm">
+        <Link href="/recoveries" className="font-semibold text-primary underline">
+          {t.adminNavRecoveries}
+        </Link>
+      </p>
       {failed ? (
         <ErrorState message={t.queueLoadFailed} onRetry={retry} />
       ) : !items ? (

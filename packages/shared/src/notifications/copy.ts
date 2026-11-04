@@ -808,6 +808,55 @@ export const notificationCopy = {
         "Msimbo wako ni {code}. Unatumika kwa dakika 10. Usimpe mtu yeyote. Kama hukuomba kubadilisha barua pepe yako, puuza barua pepe hii.",
     },
   },
+  E4: {
+    category: "security",
+    inApp: true,
+    email: "yes",
+    push: false,
+    opens: "/settings/privacy",
+    en: {
+      title: "A request to change your email",
+      message:
+        "Someone asked to move your {platform_name} account to a new email. An Administrator checks every request. If this was not you, sign in and tell us, or reply to this email.",
+    },
+    sw: {
+      title: "Ombi la kubadilisha barua pepe yako",
+      message:
+        "Mtu ameomba kuhamisha akaunti yako ya {platform_name} kwenda barua pepe mpya. Msimamizi hukagua kila ombi. Kama si wewe, ingia na utuambie, au jibu barua pepe hii.",
+    },
+  },
+  E5: {
+    category: "security",
+    inApp: true,
+    email: "yes",
+    push: false,
+    opens: "/settings/privacy",
+    en: {
+      title: "Your email will change in 48 hours",
+      message:
+        "An Administrator approved moving your {platform_name} account to the new email. It takes effect in 48 hours. If this was not you, sign in and cancel it in Privacy settings.",
+    },
+    sw: {
+      title: "Barua pepe yako itabadilika baada ya saa 48",
+      message:
+        "Msimamizi ameidhinisha kuhamisha akaunti yako ya {platform_name} kwenda barua pepe mpya. Itaanza kutumika baada ya saa 48. Kama si wewe, ingia na uifute kwenye Mipangilio ya faragha.",
+    },
+  },
+  E6: {
+    category: "security",
+    inApp: false,
+    email: "yes",
+    push: false,
+    opens: "/settings/privacy",
+    en: {
+      title: "We could not move your account",
+      message: "Reason: {reason}. You can send a new request.",
+    },
+    sw: {
+      title: "Hatukuweza kuhamisha akaunti yako",
+      message: "Sababu: {reason}. Unaweza kutuma ombi jipya.",
+    },
+  },
   E2: {
     category: "security",
     inApp: true,

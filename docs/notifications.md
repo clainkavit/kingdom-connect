@@ -315,6 +315,21 @@ To: the new address. Channels: email only.
 - **EN** Title: Confirm your new {platform_name} email. Message: Your code is {code}. It works for 10 minutes. Do not share it with anyone. If you did not ask to change your email, ignore this email.
 - **SW** Title: Thibitisha barua pepe yako mpya ya {platform_name}. Message: Msimbo wako ni {code}. Unatumika kwa dakika 10. Usimpe mtu yeyote. Kama hukuomba kubadilisha barua pepe yako, puuza barua pepe hii.
 
+### E4 Request to change your email
+To: member, at the address on file and at the new address. Channels: in-app, email.
+- **EN** Title: A request to change your email. Message: Someone asked to move your {platform_name} account to a new email. An Administrator checks every request. If this was not you, sign in and tell us, or reply to this email.
+- **SW** Title: Ombi la kubadilisha barua pepe yako. Message: Mtu ameomba kuhamisha akaunti yako ya {platform_name} kwenda barua pepe mpya. Msimamizi hukagua kila ombi. Kama si wewe, ingia na utuambie, au jibu barua pepe hii.
+
+### E5 Email change approved
+To: member, at the address on file and at the new address. Channels: in-app, email.
+- **EN** Title: Your email will change in 48 hours. Message: An Administrator approved moving your {platform_name} account to the new email. It takes effect in 48 hours. If this was not you, sign in and cancel it in Privacy settings.
+- **SW** Title: Barua pepe yako itabadilika baada ya saa 48. Message: Msimamizi ameidhinisha kuhamisha akaunti yako ya {platform_name} kwenda barua pepe mpya. Itaanza kutumika baada ya saa 48. Kama si wewe, ingia na uifute kwenye Mipangilio ya faragha.
+
+### E6 Email change refused
+To: the new address. Channels: email only.
+- **EN** Title: We could not move your account. Message: Reason: {reason}. You can send a new request.
+- **SW** Title: Hatukuweza kuhamisha akaunti yako. Message: Sababu: {reason}. Unaweza kutuma ombi jipya.
+
 ### E2 Phone number changed
 To: member. Channels: in-app, email.
 - **EN** Title: Your phone number was changed. Message: The phone number on {platform_name} was changed. If you did not do this, contact the platform team at once.

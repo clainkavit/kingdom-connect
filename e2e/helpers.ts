@@ -314,3 +314,11 @@ export async function profileCount(memberId: string) {
     await db`select count(*)::int as n from public.profiles where member_id = ${memberId}`;
   return row!.n as number;
 }
+
+/** Moves approved email recoveries past their 48 hours and applies them, as the scheduled job does. */
+export async function applyDueRecoveries() {
+  await db`update public.email_recoveries set takes_effect_at = now() - interval '1 minute'
+    where status = 'approved'`;
+  const [row] = await db`select private.apply_due_email_recoveries() as applied`;
+  return Number(row!.applied);
+}

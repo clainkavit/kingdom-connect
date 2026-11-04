@@ -21,6 +21,8 @@ export type ContactApi = {
   setAddress: (address: string) => Promise<ContactResult>;
   startEmailChange: (password: string, newEmail: string) => Promise<ContactResult>;
   confirmEmailChange: (code: string) => Promise<ContactResult>;
+  pendingRecovery: () => Promise<string | null>;
+  cancelRecovery: () => Promise<boolean>;
 };
 
 async function rpcResult(name: "set_my_phone" | "set_my_address", args: object) {
@@ -34,6 +36,20 @@ async function accessToken() {
 }
 
 export const contactApi: ContactApi = {
+  async pendingRecovery() {
+    const { data } = await supabase
+      .from("email_recoveries")
+      .select("new_email")
+      .in("status", ["pending", "approved"])
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    return (data?.new_email as string | undefined) ?? null;
+  },
+  async cancelRecovery() {
+    const { data, error } = await supabase.rpc("cancel_my_email_recovery");
+    return !error && data === "ok";
+  },
   setPhone: (phone) => rpcResult("set_my_phone", { phone }),
   setAddress: (address) => rpcResult("set_my_address", { address }),
   startEmailChange: async (password, newEmail) =>

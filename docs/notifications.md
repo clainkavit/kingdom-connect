@@ -303,6 +303,23 @@ To: idea owner. Channels: in-app, email.
 - **EN** Title: Your idea was removed. Message: {idea_title}: {reason}.
 - **SW** Title: Wazo lako limeondolewa. Message: {idea_title}: {reason}.
 
+## 10. Contact details
+
+### E1 Email changed
+To: member, at the new address and the old one. Channels: in-app, email. The notice to the old address is sent once, by the change itself.
+- **EN** Title: Your email was changed. Message: The sign-in email on {platform_name} was changed. If you did not do this, contact the platform team at once.
+- **SW** Title: Barua pepe yako imebadilishwa. Message: Barua pepe ya kuingia kwenye {platform_name} imebadilishwa. Kama si wewe, wasiliana na timu ya jukwaa mara moja.
+
+### E3 Code to confirm a new email
+To: the new address. Channels: email only.
+- **EN** Title: Confirm your new {platform_name} email. Message: Your code is {code}. It works for 10 minutes. Do not share it with anyone. If you did not ask to change your email, ignore this email.
+- **SW** Title: Thibitisha barua pepe yako mpya ya {platform_name}. Message: Msimbo wako ni {code}. Unatumika kwa dakika 10. Usimpe mtu yeyote. Kama hukuomba kubadilisha barua pepe yako, puuza barua pepe hii.
+
+### E2 Phone number changed
+To: member. Channels: in-app, email.
+- **EN** Title: Your phone number was changed. Message: The phone number on {platform_name} was changed. If you did not do this, contact the platform team at once.
+- **SW** Title: Namba yako ya simu imebadilishwa. Message: Namba ya simu kwenye {platform_name} imebadilishwa. Kama si wewe, wasiliana na timu ya jukwaa mara moja.
+
 ## Not covered
 
 A profile has no separate "hidden" or "removed" state in the PRD: an admin's actions on a profile are a warning or an account suspension, and the suspension is X1. **Edit request to poster** (PRD section 13, criterion 4) still has no notification. It needs a decision before copy is written, with posts in Release 2. A warning is X3 (decided 3 Nov). Lifting a posting pause or reinstating an account sends nothing yet.

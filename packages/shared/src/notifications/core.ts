@@ -56,7 +56,7 @@ const categoryByCode: [RegExp, NotificationCategory][] = [
   [/^[TW]\d+$/, "learning"],
   [/^R\d+$/, "reports"],
   [/^V\d+$/, "investor"],
-  [/^(L1|X1)$/, "security"],
+  [/^(L1|X1|E\d+)$/, "security"],
   [/^(X[23]|H\d+)$/, "admin_actions"],
 ];
 
@@ -74,6 +74,7 @@ const opensByCode: [RegExp, string][] = [
   [/^B\d+$/, "/settings"],
   [/^C[12]$/, "/connections"],
   [/^C3$/, "/messages"],
+  [/^E\d+$/, "/settings/privacy"],
   [/^X3$/, "/"],
   [/^[OX]\d+$/, "/opportunities"],
   [/^[IH]\d+$/, "/ideas"],

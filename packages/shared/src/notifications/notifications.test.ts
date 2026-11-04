@@ -26,7 +26,7 @@ describe("the catalogue", () => {
   it("holds every event in the doc", () => {
     const codes = [...doc.matchAll(/^### (\w+) /gm)].map((m) => m[1]);
     expect(Object.keys(notificationCopy)).toEqual(codes);
-    expect(codes).toHaveLength(50);
+    expect(codes).toHaveLength(53);
   });
 
   it("reads the channels from each event", () => {
@@ -62,6 +62,7 @@ describe("categories", () => {
     expect(notificationCopy.X3.category).toBe("admin_actions");
     expect(notificationCopy.H1.category).toBe("admin_actions");
     expect(notificationCopy.L1.category).toBe("security");
+    expect(notificationCopy.E1.category).toBe("security");
   });
 
   it("open the dashboard for a warning", () => {

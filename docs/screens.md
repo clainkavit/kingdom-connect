@@ -117,7 +117,7 @@ The tables below list only a screen's **special states**: the ones beyond these 
 | S42 | Report form | Member | Reason (Asked for money, Fake job or business, Harassment, Impersonation, Spam, Other), optional note and screenshot | Success shows a reference number. Built in R11 at `/report?type=…&id=…` for a profile (Report on S11) and a thread (Report on S15): note up to 1000 characters, one screenshot (JPEG, PNG or WebP, up to 5 MB) only staff can open. The success screen offers "Block this member" after a confirm. **Already reported and still open:** "You already reported this" with that reference. **Daily limit:** 10 reports a day, then "Try again tomorrow" |
 | S43 | My reports | Member | Each report with its reference number and outcome only (Action taken or No action) | Empty: "You haven't reported anything". Built in R11 at `/reports`: reference, date and Being reviewed, Action taken or No action |
 | S44 | Settings | All signed in | Entry to the subpages below | `/settings`. Lists only the subpages built so far: S45 (R08) |
-| S45 | Profile privacy and contact sharing | Member | Hide from the directory; three switches for phone, email and address, all off by default, each showing the value it would share | `/settings/privacy`. Each switch saves at once; if saving fails it turns back and says so. Hiding keeps existing connections' view. The values themselves cannot be changed here ("You can't change these here yet."). **Shown on S11:** a Contact section with only the shared fields, for a connection; no section for anyone else. **Blocked members (R09):** the list with Unblock; unblocking does not restore a connection |
+| S45 | Profile privacy and contact sharing | Member | Hide from the directory; three switches for phone, email and address, all off by default, each showing the value it would share | `/settings/privacy`. Each switch saves at once; if saving fails it turns back and says so. Hiding keeps existing connections' view. The member changes the values in "Your contact details" (R08b): the phone (starting +255) and the address save at once; the email needs the password, then a code sent to the new address (E3), and both addresses get the E1 notice. Recovery of a lost email is R08c (#146). **Shown on S11:** a Contact section with only the shared fields, for a connection; no section for anyone else. **Blocked members (R09):** the list with Unblock; unblocking does not restore a connection |
 | S46 | Notification settings | Member | Email for non-critical notifications; push master switch and one per category | **Push not yet permitted by the phone:** shows how to allow it. Web pilot: push section hidden |
 | S47 | Password and sign-in | Member | Change password; the email code is always required | Errors never reveal whether an account exists |
 | S48 | Language | All | English or Kiswahili | |
@@ -164,6 +164,7 @@ Each notification in [docs/notifications.md](notifications.md) opens the screen 
 | X1 Account suspended | S03 |
 | X2 Posting rights paused | S20 or S21 |
 | X3 Warning | S08 |
+| E1, E2 Email or phone changed | S45 |
 | H1, H2 Idea hidden or removed | S27 |
 | P1 to P10 Milestone plans | S32, S33 or S34 |
 | S1 Scan matches | S16 |

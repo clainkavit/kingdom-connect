@@ -42,6 +42,8 @@ Decided 1 Nov (F04, #42):
 |---|---|
 | `is_member()` | The caller is an approved member with a verified session who has accepted the current terms of use and privacy notice (R05b). Until they accept, every member table refuses them |
 | `is_approved_member()` | An approved member with a verified session, accepted or not. Only `legal_acceptances` uses it, so a member can accept |
+| `set_my_phone(phone)`, `set_my_address(address)` | The member changes their own phone (+255 and 9 digits, spaces allowed) or address (up to 300 characters); each change is audit logged with before and after, and a phone change sends E2 (R08b) |
+| `change-email` Edge Function | The password (counted toward the login lockout), then a 6-digit code sent to the new address (`private.email_changes`, 10 minutes, 3 tries, 10 codes an hour). An address already in use gets the same answer and no working code, so the member cannot find out who is registered. On the code it changes the sign-in email; the `sync_member_email` trigger on `auth.users` then changes the contact email in the same transaction, logs it and sends E1, whichever way the sign-in email changed. A notice also goes to the old address |
 | `my_language()`, `set_my_language(chosen)` | The caller's saved language, read and changed by an approved member even before accepting, so a choice on S03 or S07 is kept |
 | `accepted_terms_and_privacy()` | The caller has accepted the current version of the terms and the privacy notice (true while none is in effect) |
 | `is_staff()` | The caller is an active Administrator or Super Administrator |

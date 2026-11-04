@@ -715,7 +715,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 - Until Settings is built, the language switch is in the sign-in header and the menus. A Member's choice is saved to their account; a choice made before sign-in carries into the account.
 
 **Decided on 2 November 2026 (notifications, F10)**
-- Always emailed, with no switch: registration, login code, account locked, account suspended, posting paused, warning (added 3 Nov), idea hidden or removed. Every other category that sends email has an email switch.
+- Always emailed, with no switch: registration, login code, account locked, account suspended, posting paused, warning (added 3 Nov), email or phone changed (added 4 Nov), idea hidden or removed. Every other category that sends email has an email switch.
 - The new-message email is a daily digest of messages still unread, sent only when there is at least one.
 - The notification copy in docs/notifications.md is the single source; the apps and the email sender are generated from it.
 - Emails are queued and sent within a minute, with retries. The login code is still sent at once.
@@ -841,6 +841,14 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 - The download is a JSON file of the member's own data. Other members' messages and the encrypted ID number are not in it.
 - **Open:** the lawyer review confirms the keep-and-delete list (#64 stays open for it).
 
+**Decided on 4 November 2026 (change phone and email, R08b)**
+- R08b builds the changes a signed-in member makes (points 1 to 3 and 8 of #134). Recovery of a lost email, staff-filed requests and the 48-hour wait (points 4 to 7) move to R08c (#146), to keep pull requests small.
+- The address changes freely. The Level 3 address re-check moves to the Level 3 verification ticket, because Level 3 arrives in Release 2.
+- An email change uses its own code email (E3), so it never reads like a sign-in code. E1 (email changed) and E2 (phone changed) are always emailed.
+- A new email that is already in use gets the same answer as a free one, and no working code, so a member cannot find out who is registered.
+- A connection who was shown the member's email sees the new one straight away; the sharing switches stay as they were.
+- "An Administrator's change is logged" moves to R08c (#146), with the staff-filed requests.
+
 **Open.** Every open question is a ticket on the [wayfinder map](https://github.com/clainkavit/kingdom-connect/issues/1) and is linked where it applies above.
 
 **Outside this spec**
@@ -893,6 +901,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | 4 Nov 2026 | Admin dashboard: Release 1 counts only, live counts reloaded every 15 minutes | 7, 18 |
 | 4 Nov 2026 | Legal acceptance enforced on the server: no member data until the current terms and privacy notice are accepted | 13, 18 |
 | 4 Nov 2026 | Download or delete my data: immediate deletion after confirmation, placeholder username, scrubbed sign-in, JSON export of own data | 13, 15, 18 |
+| 4 Nov 2026 | Change phone, address and email (R08b); recovery split to R08c | 6, 8, 14, 18 |
 
 ## Appendix B: Source documents
 

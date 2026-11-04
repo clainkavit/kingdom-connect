@@ -24,6 +24,13 @@ const fakeApi = (over: Partial<PrivacyApi> = {}): PrivacyApi => ({
   ...over,
 });
 
+const contact = {
+  setPhone: vi.fn(),
+  setAddress: vi.fn(),
+  startEmailChange: vi.fn(),
+  confirmEmailChange: vi.fn(),
+};
+
 const connections = {
   blocked: vi.fn().mockResolvedValue([]),
   unblock: vi.fn().mockResolvedValue(true),
@@ -31,7 +38,7 @@ const connections = {
 
 async function show(api: PrivacyApi) {
   await act(async () => {
-    render(<PrivacyScreen api={api} connections={connections} />);
+    render(<PrivacyScreen api={api} connections={connections} contact={contact} />);
   });
 }
 
@@ -59,10 +66,10 @@ describe("PrivacyScreen (S45)", () => {
       "Share my address",
     ])
       expect(screen.getByRole("switch", { name }).getAttribute("aria-checked")).toBe("false");
-    expect(screen.getByText("+255700000001")).toBeTruthy();
-    expect(screen.getByText("member@test.invalid")).toBeTruthy();
-    expect(screen.getByText("Not given")).toBeTruthy();
-    expect(screen.getByText("You can't change these here yet.")).toBeTruthy();
+    expect(screen.getAllByText("+255700000001")).toHaveLength(2);
+    expect(screen.getAllByText("member@test.invalid")).toHaveLength(2);
+    expect(screen.getAllByText("Not given")).toHaveLength(2);
+    expect(screen.getByRole("button", { name: "Change phone number" })).toBeTruthy();
   });
 
   it("saves a switch as soon as it is turned", async () => {

@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import type { ContactApi } from "../lib/contact";
+import { ContactDetails } from "./contact-details";
 import { Text, View } from "react-native";
 import { useLanguage } from "../lib/language";
 import type { ConnectionsApi } from "../lib/connections";
@@ -58,9 +60,11 @@ export function SettingsMenu() {
 export function PrivacyScreen({
   api,
   connections,
+  contact,
 }: {
   api: PrivacyApi;
   connections: ConnectionsApi;
+  contact: ContactApi;
 }) {
   const { t } = useLanguage();
   const [settings, setSettings] = useState<PrivacySettings | null>(null);
@@ -124,7 +128,15 @@ export function PrivacyScreen({
         {switchFor("sharePhone", t.sharePhone, settings.phone || t.notGiven)}
         {switchFor("shareEmail", t.shareEmail, settings.email || t.notGiven)}
         {switchFor("shareAddress", t.shareAddress, settings.address || t.notGiven)}
-        <Text className="pb-2 font-figtree text-[13px] text-ink-2">{t.contactLocked}</Text>
+      </Card>
+      <Card>
+        <ContactDetails
+          api={contact}
+          phone={settings.phone}
+          email={settings.email}
+          address={settings.address}
+          onChanged={() => setAttempt((a) => a + 1)}
+        />
       </Card>
       <BlockedList api={connections} />
     </View>

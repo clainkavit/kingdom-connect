@@ -774,6 +774,57 @@ export const notificationCopy = {
       message: "{idea_title}: {reason}.",
     },
   },
+  E1: {
+    category: "security",
+    inApp: true,
+    email: "yes",
+    push: false,
+    opens: "/settings/privacy",
+    en: {
+      title: "Your email was changed",
+      message:
+        "The sign-in email on {platform_name} was changed. If you did not do this, contact the platform team at once.",
+    },
+    sw: {
+      title: "Barua pepe yako imebadilishwa",
+      message:
+        "Barua pepe ya kuingia kwenye {platform_name} imebadilishwa. Kama si wewe, wasiliana na timu ya jukwaa mara moja.",
+    },
+  },
+  E3: {
+    category: "security",
+    inApp: false,
+    email: "yes",
+    push: false,
+    opens: "/settings/privacy",
+    en: {
+      title: "Confirm your new {platform_name} email",
+      message:
+        "Your code is {code}. It works for 10 minutes. Do not share it with anyone. If you did not ask to change your email, ignore this email.",
+    },
+    sw: {
+      title: "Thibitisha barua pepe yako mpya ya {platform_name}",
+      message:
+        "Msimbo wako ni {code}. Unatumika kwa dakika 10. Usimpe mtu yeyote. Kama hukuomba kubadilisha barua pepe yako, puuza barua pepe hii.",
+    },
+  },
+  E2: {
+    category: "security",
+    inApp: true,
+    email: "yes",
+    push: false,
+    opens: "/settings/privacy",
+    en: {
+      title: "Your phone number was changed",
+      message:
+        "The phone number on {platform_name} was changed. If you did not do this, contact the platform team at once.",
+    },
+    sw: {
+      title: "Namba yako ya simu imebadilishwa",
+      message:
+        "Namba ya simu kwenye {platform_name} imebadilishwa. Kama si wewe, wasiliana na timu ya jukwaa mara moja.",
+    },
+  },
 } satisfies Record<string, NotificationCopy>;
 
 export type NotificationKind = keyof typeof notificationCopy;

@@ -34,6 +34,9 @@ export type SetSkillsResult = "done" | SkillProblem | "failed";
 
 export type DeleteMyDataResult = "done" | "failed";
 
+export type ChangeEmailStep =
+  { step: "start"; password: string; newEmail: string } | { step: "confirm"; code: string };
+
 export function createProfileClient(options: FunctionOptions) {
   const call = functionCaller(options);
   return {
@@ -42,6 +45,11 @@ export function createProfileClient(options: FunctionOptions) {
       if (r?.ok) return "done";
       if (r?.error === "too_many" || r?.error === "too_long") return r.error;
       return "failed";
+    },
+    async changeEmail(accessToken: string, request: ChangeEmailStep): Promise<string> {
+      const r = await call("change-email", request, accessToken);
+      if (r?.ok) return "ok";
+      return typeof r?.error === "string" ? r.error : "failed";
     },
     async deleteMyData(accessToken: string): Promise<DeleteMyDataResult> {
       const r = await call("delete-my-data", { confirm: true }, accessToken);

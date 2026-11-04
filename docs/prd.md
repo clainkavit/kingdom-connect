@@ -849,6 +849,10 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 - A connection who was shown the member's email sees the new one straight away; the sharing switches stay as they were.
 - "An Administrator's change is logged" moves to R08c (#146), with the staff-filed requests.
 
+**Decided on 4 November 2026 (end-to-end tests for Release 1, R18)**
+- Each end-to-end test creates its own fake members through the test helpers instead of sharing the seed members, so tests stay independent. Every email in the tests, database tests and seed uses a reserved test domain (`example.test`, `test.invalid`, and `deleted.invalid` for deleted accounts), and a unit test fails on any other address in any test file or the seed (section 17, criterion 3).
+- Release 1 flows and their tests: registration to approval (`member.registration`, `member.resubmission`, `admin.verification`); login with the email code and the lockout (`member.login`, `member.security`, `admin.login`); connection to message (`member.connections`, `member.messaging`); reporting (`member.reports`, `admin.reports`); the dashboard never showing admin-only counts (`member.dashboard`); and the whole journey across both apps (`member.journey`). Reporting a post is tested when posts arrive in Release 2.
+
 **Open.** Every open question is a ticket on the [wayfinder map](https://github.com/clainkavit/kingdom-connect/issues/1) and is linked where it applies above.
 
 **Outside this spec**
@@ -902,6 +906,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | 4 Nov 2026 | Legal acceptance enforced on the server: no member data until the current terms and privacy notice are accepted | 13, 18 |
 | 4 Nov 2026 | Download or delete my data: immediate deletion after confirmation, placeholder username, scrubbed sign-in, JSON export of own data | 13, 15, 18 |
 | 4 Nov 2026 | Change phone, address and email (R08b); recovery split to R08c | 6, 8, 14, 18 |
+| 4 Nov 2026 | Release 1 end-to-end coverage, a journey test across both apps, a check that tests use only reserved email domains | 17, 18 |
 
 ## Appendix B: Source documents
 

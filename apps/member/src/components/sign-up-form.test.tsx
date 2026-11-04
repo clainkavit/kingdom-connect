@@ -18,6 +18,7 @@ const clients = (signUp: RegistrationClient["signUp"]) => ({
     startResubmission: vi.fn(),
   } as RegistrationClient,
   login: {
+    requestEmailRecovery: vi.fn(),
     logIn: vi.fn().mockResolvedValue({
       kind: "code_sent",
       session: { access_token: "a", refresh_token: "r" },

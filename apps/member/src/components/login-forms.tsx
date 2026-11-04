@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { Text, TextInput, View } from "react-native";
 import { useLanguage } from "../lib/language";
 import { Button, Field, Message } from "./form";
+import { LinkButton } from "./link-button";
 
 function useCountdown(initialSeconds: number) {
   const [endsAt, setEndsAt] = useState(() => Date.now() + initialSeconds * 1000);
@@ -154,6 +155,9 @@ export function CodeForm({
         onPress={sendNew}
         disabled={resend.secondsLeft > 0}
       />
+      <LinkButton href="/recover" label={t.cantGetCode} className="items-center py-2">
+        <Text className="font-figtree-semibold text-sm text-blue-ink">{t.cantGetCode}</Text>
+      </LinkButton>
     </View>
   );
 }

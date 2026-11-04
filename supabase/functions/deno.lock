@@ -1,8 +1,14 @@
 {
   "version": "5",
   "specifiers": {
+    "jsr:@std/encoding@1": "1.0.11",
     "npm:@supabase/supabase-js@2.118.0": "2.118.0",
     "npm:postgres@3.4.9": "3.4.9"
+  },
+  "jsr": {
+    "@std/encoding@1.0.11": {
+      "integrity": "e7cef2f0b3153bccc17431e7c864a1de03a4b6d9647389c43e08aaa775d37385"
+    }
   },
   "npm": {
     "@supabase/auth-js@2.118.0": {

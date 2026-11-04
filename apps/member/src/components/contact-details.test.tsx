@@ -11,6 +11,8 @@ const fakeApi = (over: Partial<ContactApi> = {}): ContactApi => ({
   setAddress: vi.fn().mockResolvedValue("ok"),
   startEmailChange: vi.fn().mockResolvedValue("ok"),
   confirmEmailChange: vi.fn().mockResolvedValue("ok"),
+  pendingRecovery: vi.fn().mockResolvedValue(null),
+  cancelRecovery: vi.fn().mockResolvedValue(true),
   ...over,
 });
 
@@ -19,23 +21,38 @@ const click = (name: string) =>
 const type = (label: string, value: string) =>
   fireEvent.change(screen.getByLabelText(label), { target: { value } });
 
-function show(api: ContactApi, onChanged = vi.fn()) {
-  render(
-    <ContactDetails
-      api={api}
-      phone="+255700000001"
-      email="member@test.invalid"
-      address=""
-      onChanged={onChanged}
-    />,
-  );
+async function show(api: ContactApi, onChanged = vi.fn()) {
+  await act(async () => {
+    render(
+      <ContactDetails
+        api={api}
+        phone="+255700000001"
+        email="member@test.invalid"
+        address=""
+        onChanged={onChanged}
+      />,
+    );
+  });
   return onChanged;
 }
 
 describe("ContactDetails (S45)", () => {
+  it("shows an email change waiting from recovery, and the member cancels it", async () => {
+    const api = fakeApi({ pendingRecovery: vi.fn().mockResolvedValue("someone@test.invalid") });
+    await show(api);
+    expect(
+      screen.getByText(
+        "An email change to someone@test.invalid is waiting. If this was not you, cancel it.",
+      ),
+    ).toBeTruthy();
+    await click("Cancel the email change");
+    expect(api.cancelRecovery).toHaveBeenCalled();
+    expect(screen.getByText("The email change was cancelled.")).toBeTruthy();
+  });
+
   it("changes the phone number", async () => {
     const api = fakeApi();
-    const onChanged = show(api);
+    const onChanged = await show(api);
     await click("Change phone number");
     type("Phone number", "+255 754 000 999");
     await click("Save");
@@ -44,7 +61,7 @@ describe("ContactDetails (S45)", () => {
   });
 
   it("says when the phone does not start with +255", async () => {
-    show(fakeApi({ setPhone: vi.fn().mockResolvedValue("invalid_phone") }));
+    await show(fakeApi({ setPhone: vi.fn().mockResolvedValue("invalid_phone") }));
     await click("Change phone number");
     type("Phone number", "0754000999");
     await click("Save");
@@ -55,7 +72,7 @@ describe("ContactDetails (S45)", () => {
 
   it("changes the address", async () => {
     const api = fakeApi();
-    show(api);
+    await show(api);
     await click("Change address");
     type("Address", "Ilemela, Mwanza");
     await click("Save");
@@ -64,7 +81,7 @@ describe("ContactDetails (S45)", () => {
 
   it("changes the email with the password and a code sent to the new address", async () => {
     const api = fakeApi();
-    const onChanged = show(api);
+    const onChanged = await show(api);
     await click("Change email");
     type("Password", "secret-1");
     type("New email", "new@test.invalid");
@@ -81,7 +98,7 @@ describe("ContactDetails (S45)", () => {
   });
 
   it("refuses a wrong password or an email already in use", async () => {
-    show(
+    await show(
       fakeApi({
         startEmailChange: vi
           .fn()

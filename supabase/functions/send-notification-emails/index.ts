@@ -65,7 +65,7 @@ Deno.serve(async (req) => {
       continue;
     }
     try {
-      await sendEmail(account.email, plan.email);
+      await sendEmail((row as { to_email?: string | null }).to_email ?? account.email, plan.email);
       await finish(row.id, "sent");
       counts.sent++;
     } catch (error) {

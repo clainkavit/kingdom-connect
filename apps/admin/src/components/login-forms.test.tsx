@@ -4,6 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { CodeForm, LoginForm } from "./login-forms";
 
 const fakeClient = (overrides: Partial<LoginClient>): LoginClient => ({
+  requestEmailRecovery: vi.fn(),
   logIn: vi.fn(),
   verifyCode: vi.fn(),
   resendCode: vi.fn(),

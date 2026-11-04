@@ -92,10 +92,30 @@ export function functionCaller({ url, anonKey, fetch: fetchImpl = fetch }: Funct
   };
 }
 
+export type EmailRecoveryRequest = {
+  username: string;
+  newEmail: string;
+  lastDigits: string;
+  photo: string;
+  mime: string;
+};
+
+export type EmailRecoveryResult = "sent" | "invalid" | "photo_too_large" | "failed";
+
 export function createLoginClient(options: FunctionOptions) {
   const call = functionCaller(options);
 
   return {
+    async requestEmailRecovery(
+      request: EmailRecoveryRequest,
+      staffAccessToken?: string,
+    ): Promise<EmailRecoveryResult> {
+      const r = await call("request-email-recovery", request, staffAccessToken);
+      if (r?.ok) return "sent";
+      if (r?.error === "invalid" || r?.error === "photo_too_large") return r.error;
+      return "failed";
+    },
+
     async logIn(
       credentials: { username: string; password: string } | { email: string; password: string },
     ): Promise<LoginResult> {

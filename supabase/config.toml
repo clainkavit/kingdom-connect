@@ -424,5 +424,8 @@ verify_jwt = false
 [functions.sign-up]
 verify_jwt = false
 
+[functions.request-email-recovery]
+verify_jwt = false
+
 [functions.send-notification-emails]
 verify_jwt = true

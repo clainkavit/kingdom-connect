@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Text, View } from "react-native";
 import type { ContactApi, ContactResult } from "../lib/contact";
 import { useLanguage } from "../lib/language";
@@ -51,6 +51,18 @@ export function ContactDetails({
   const [problem, setProblem] = useState<string | null>(null);
   const [done, setDone] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [recovery, setRecovery] = useState<string | null>(null);
+
+  useEffect(() => {
+    api.pendingRecovery().then(setRecovery, () => undefined);
+  }, [api]);
+
+  const cancelRecovery = async () => {
+    if (await api.cancelRecovery().catch(() => false)) {
+      setRecovery(null);
+      setDone(t.recoveryCancelled);
+    } else setProblem(t.saveFailed);
+  };
 
   const problems: Record<Exclude<ContactResult, "ok">, string> = {
     invalid_phone: t.contactPhoneInvalid,
@@ -98,6 +110,12 @@ export function ContactDetails({
       <Text role="heading" aria-level={2} className="font-figtree-bold text-base text-ink">
         {t.myContactTitle}
       </Text>
+      {recovery ? (
+        <View className="gap-2 rounded-lg bg-warn-soft p-3">
+          <Text className="font-figtree text-sm text-warn-text">{t.recoveryPending(recovery)}</Text>
+          <Button secondary label={t.recoveryCancel} onPress={cancelRecovery} />
+        </View>
+      ) : null}
       <ValueRow
         label={t.contactPhone}
         value={phone || t.notGiven}

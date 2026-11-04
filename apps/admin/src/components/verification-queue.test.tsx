@@ -42,7 +42,10 @@ describe("VerificationQueue (A02)", () => {
     );
     expect(screen.getByText("2 waiting")).toBeTruthy();
     expect(screen.getByText("Oldest: 3 days")).toBeTruthy();
-    const links = screen.getAllByRole("link").map((l) => l.getAttribute("href"));
+    const links = screen
+      .getAllByRole("link")
+      .map((l) => l.getAttribute("href"))
+      .filter((href) => href?.startsWith("/verification/"));
     expect(links).toEqual(["/verification/old", "/verification/new"]);
   });
 

@@ -29,6 +29,7 @@ The text of every notification in PRD section 14, in English and Kiswahili. **Th
 | `{role}` | Investor, Partner or Both |
 | `{sector}`, `{band}` | Sector focus and ticket band (under TZS 10M, TZS 10 to 50M, over TZS 50M) |
 | `{reason}` | The reason an admin wrote |
+| `{alert}` | What the security check found, for staff (Y1) |
 | `{item}` | The idea or opportunity a milestone plan belongs to |
 | `{milestone}` | A milestone title |
 | `{code}` | The 6-digit login code |
@@ -334,6 +335,13 @@ To: the new address. Channels: email only.
 To: member. Channels: in-app, email.
 - **EN** Title: Your phone number was changed. Message: The phone number on {platform_name} was changed. If you did not do this, contact the platform team at once.
 - **SW** Title: Namba yako ya simu imebadilishwa. Message: Namba ya simu kwenye {platform_name} imebadilishwa. Kama si wewe, wasiliana na timu ya jukwaa mara moja.
+
+## 11. Staff
+
+### Y1 Security alert
+To: every Super Admin. Channels: email only. Raised by the scheduled security check (R17).
+- **EN** Title: Security alert on {platform_name}. Message: {alert}. Open the admin dashboard to see it and mark it as seen.
+- **SW** Title: Tahadhari ya usalama kwenye {platform_name}. Message: {alert}. Fungua dashibodi ya msimamizi kuiona na kuiweka kuwa imeonekana.
 
 ## Not covered
 

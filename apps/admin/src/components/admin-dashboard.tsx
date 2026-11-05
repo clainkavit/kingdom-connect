@@ -1,11 +1,17 @@
 "use client";
 
-import { formatNumber, isOverdue } from "@kingdom-connect/shared";
+import { formatDateTime, formatNumber, isOverdue } from "@kingdom-connect/shared";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ageText } from "@/lib/age";
 import { useLanguage } from "@/lib/language";
-import { STATS_REFRESH_MS, type AdminStats, type AdminStatsApi } from "@/lib/admin-dashboard";
+import {
+  STATS_REFRESH_MS,
+  type AdminStats,
+  type AdminStatsApi,
+  type SecurityAlert,
+} from "@/lib/admin-dashboard";
+import { buttonVariants } from "@/components/ui/button";
 import { Notice } from "./cards";
 import { ScreenTitle } from "./screens";
 import { ErrorState, LoadingRows } from "./states";
@@ -30,6 +36,56 @@ function StatTile({
       <span className="text-[28px] font-extrabold tracking-tight text-foreground">{value}</span>
       {detail ? <span className="text-[13px] text-ink-2">{detail}</span> : null}
     </Link>
+  );
+}
+
+function SecurityAlerts({ api }: { api: AdminStatsApi }) {
+  const { t, language } = useLanguage();
+  const [alerts, setAlerts] = useState<SecurityAlert[]>([]);
+
+  useEffect(() => {
+    let live = true;
+    const load = () =>
+      api.alerts().then(
+        (loaded) => live && setAlerts(loaded),
+        () => undefined,
+      );
+    void load();
+    const timer = setInterval(load, STATS_REFRESH_MS);
+    return () => {
+      live = false;
+      clearInterval(timer);
+    };
+  }, [api]);
+
+  if (alerts.length === 0) return null;
+  return (
+    <section
+      aria-label={t.securityAlertsTitle}
+      className="flex flex-col gap-2 rounded-lg border border-bad-soft bg-card p-4 shadow-card"
+    >
+      <h2 className="text-base font-semibold text-foreground">{t.securityAlertsTitle}</h2>
+      <ul className="flex flex-col divide-y">
+        {alerts.map((a) => (
+          <li key={a.id} className="flex flex-wrap items-center justify-between gap-2 py-2 text-sm">
+            <span className="text-foreground">
+              {a.summary} ·{" "}
+              <span className="text-ink-2">{formatDateTime(a.raisedAt, language)}</span>
+            </span>
+            <button
+              type="button"
+              onClick={async () => {
+                if (await api.acknowledge(a.id).catch(() => false))
+                  setAlerts((list) => list.filter((x) => x.id !== a.id));
+              }}
+              className={buttonVariants({ variant: "outline", size: "sm" })}
+            >
+              {t.securityAlertSeen}
+            </button>
+          </li>
+        ))}
+      </ul>
+    </section>
   );
 }
 
@@ -98,6 +154,7 @@ export function AdminDashboard({
       <ScreenTitle>{t.adminDashboardTitle}</ScreenTitle>
       <div className="flex flex-col gap-4">
         <Notice tone="warn" text={failed ? t.adminStatsStale : null} />
+        <SecurityAlerts api={api} />
         {overdue > 0 ? (
           <Link
             href="/verification"

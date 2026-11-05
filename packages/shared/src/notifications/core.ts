@@ -56,7 +56,7 @@ const categoryByCode: [RegExp, NotificationCategory][] = [
   [/^[TW]\d+$/, "learning"],
   [/^R\d+$/, "reports"],
   [/^V\d+$/, "investor"],
-  [/^(L1|X1|E\d+)$/, "security"],
+  [/^(L1|X1|E\d+|Y\d+)$/, "security"],
   [/^(X[23]|H\d+)$/, "admin_actions"],
 ];
 

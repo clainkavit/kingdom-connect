@@ -98,3 +98,25 @@ pnpm db:stop              # stop the stack
 **Windows.** Install Docker Desktop with the WSL 2 backend (the default) and keep it running. Run the `pnpm db:*` commands from PowerShell or Windows Terminal in the repository folder. The local analytics service is turned off in `supabase/config.toml` because on Windows it would need the Docker daemon exposed over TCP. If `db:start` reports a port in use, another program is on one of the ports above; stop it, or run `pnpm db:stop` first.
 
 The build issues are the issues labelled `build`, grouped into the Release 1, Release 2 and Mobile apps milestones. Claim one by assigning it to yourself.
+
+## Deploying to Vercel
+
+Both apps are hosted on Vercel (PRD section 15). Make two Vercel projects from this repository; Vercel installs with pnpm from the repository root.
+
+| Project | Root directory | Framework | Build |
+|---|---|---|---|
+| Member app | `apps/member` | Other | From [apps/member/vercel.json](apps/member/vercel.json): `expo export -p web` into `dist`, every path served by `index.html`, hashed files cached for a year |
+| Admin console | `apps/admin` | Next.js | Vercel's default |
+
+Settings (Project → Settings → Environment Variables):
+
+| Project | Name | Value |
+|---|---|---|
+| Member app | `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY` | The Supabase project's URL and anon key |
+| Member app | `EXPO_PUBLIC_SENTRY_DSN` | The DSN of the Sentry project `kingdom-connect-member` |
+| Admin console | `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` | The same Supabase values |
+| Admin console | `NEXT_PUBLIC_SENTRY_DSN` | The DSN of the Sentry project `kingdom-connect` |
+
+Without a Sentry DSN nothing is sent, so local development and previews report nothing unless you add one. Before a report leaves the device, `scrubEvent` ([packages/shared/src/monitoring.ts](packages/shared/src/monitoring.ts)) removes the member, extra data, request headers, cookies, bodies, query strings and console output, and blanks out email addresses, phone numbers and ids in error messages, breadcrumbs and URLs. It works on patterns, so it cannot promise to catch every personal detail; keep personal data out of error messages in the first place.
+
+The member app installs to a phone's home screen from the browser menu ("Add to Home screen"), using [apps/member/public/manifest.json](apps/member/public/manifest.json).

@@ -667,4 +667,6 @@ export const sw: Strings = {
   recoveryFileHint:
     "Kwa picha mpya na tarakimu za kitambulisho za mwanachama mwenyewe tu, kamwe si kwa simu peke yake.",
   recoveryFiled: "Ombi limewasilishwa. Msimamizi mwingine atalikagua.",
+  securityAlertsTitle: "Tahadhari za usalama",
+  securityAlertSeen: "Weka kuwa imeonekana",
 };

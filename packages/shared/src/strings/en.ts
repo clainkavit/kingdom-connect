@@ -652,4 +652,6 @@ export const en = {
   recoveryFileHint:
     "Only with the member's own new photo and ID digits, never on a phone call alone.",
   recoveryFiled: "Request filed. Another Administrator checks it.",
+  securityAlertsTitle: "Security alerts",
+  securityAlertSeen: "Mark as seen",
 };

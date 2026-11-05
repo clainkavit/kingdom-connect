@@ -36,9 +36,10 @@ test("turning an email category off stops that email, but critical ones still ar
   const after = new Date();
   await notify(id, "C1", { name: "Test Sender" });
   await notify(id, "X2", { reason: "Test reason" });
-  await sendQueuedEmails();
-
-  const subjects = (await emailsTo(email, after)).map((m) => m.Subject);
-  expect(subjects).not.toContain("New connection request");
-  expect(subjects).toContain("Your posting is paused");
+  const subjects = async () => {
+    await sendQueuedEmails();
+    return (await emailsTo(email, after)).map((m) => m.Subject);
+  };
+  await expect.poll(subjects).toContain("Your posting is paused");
+  expect(await subjects()).not.toContain("New connection request");
 });

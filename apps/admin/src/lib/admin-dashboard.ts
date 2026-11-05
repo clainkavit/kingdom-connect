@@ -11,7 +11,13 @@ export type AdminStats = {
   dailyCap: number | null;
 };
 
-export type AdminStatsApi = { stats: () => Promise<AdminStats> };
+export type SecurityAlert = { id: string; summary: string; raisedAt: Date };
+
+export type AdminStatsApi = {
+  stats: () => Promise<AdminStats>;
+  alerts: () => Promise<SecurityAlert[]>;
+  acknowledge: (id: string) => Promise<boolean>;
+};
 
 type StatsRow = {
   verified_members: number;
@@ -35,5 +41,25 @@ export const adminStatsApi: AdminStatsApi = {
       signUpsToday: row.sign_ups_today,
       dailyCap: row.daily_cap,
     };
+  },
+
+  async alerts() {
+    const { data, error } = await supabase
+      .from("security_alerts")
+      .select("id, summary, created_at")
+      .is("acknowledged_at", null)
+      .order("created_at", { ascending: false })
+      .limit(20);
+    if (error) throw error;
+    return data.map((a) => ({
+      id: a.id as string,
+      summary: a.summary as string,
+      raisedAt: new Date(a.created_at as string),
+    }));
+  },
+
+  async acknowledge(id) {
+    const { error } = await supabase.rpc("acknowledge_security_alert", { alert: id });
+    return !error;
   },
 };

@@ -8,10 +8,13 @@ import {
   useFonts,
 } from "@expo-google-fonts/figtree";
 import { Slot } from "expo-router";
+import { Platform } from "react-native";
 import { StatusBar } from "expo-status-bar";
+import { useEffect } from "react";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { AuthProvider } from "../src/lib/auth";
 import { LanguageProvider } from "../src/lib/language";
+import { startMonitoring } from "../src/lib/monitoring";
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
@@ -21,7 +24,8 @@ export default function RootLayout() {
     Figtree_700Bold,
     Figtree_800ExtraBold,
   });
-  if (!fontsLoaded) return null;
+  useEffect(startMonitoring, []);
+  if (!fontsLoaded && Platform.OS !== "web") return null;
   return (
     <SafeAreaProvider>
       <SafeAreaView className="flex-1 bg-bg">

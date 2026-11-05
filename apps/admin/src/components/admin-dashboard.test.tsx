@@ -1,4 +1,4 @@
-import { act, cleanup, render, screen } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { STATS_REFRESH_MS, type AdminStats, type AdminStatsApi } from "@/lib/admin-dashboard";
 import { AdminDashboard } from "./admin-dashboard";
@@ -20,8 +20,11 @@ const stats = (over: Partial<AdminStats> = {}): AdminStats => ({
   ...over,
 });
 
-const fakeApi = (s: AdminStats = stats()): AdminStatsApi => ({
+const fakeApi = (s: AdminStats = stats(), over: Partial<AdminStatsApi> = {}): AdminStatsApi => ({
   stats: vi.fn().mockResolvedValue(s),
+  alerts: vi.fn().mockResolvedValue([]),
+  acknowledge: vi.fn().mockResolvedValue(true),
+  ...over,
 });
 
 async function show(api: AdminStatsApi, superAdmin = false) {
@@ -66,9 +69,9 @@ describe("AdminDashboard (A01)", () => {
 
   it("keeps the counts and says so when a refresh fails", async () => {
     vi.useFakeTimers();
-    const api: AdminStatsApi = {
+    const api = fakeApi(stats(), {
       stats: vi.fn().mockResolvedValueOnce(stats()).mockRejectedValueOnce(new Error("offline")),
-    };
+    });
     await show(api);
     await act(async () => {
       vi.advanceTimersByTime(STATS_REFRESH_MS);
@@ -77,6 +80,24 @@ describe("AdminDashboard (A01)", () => {
     expect(screen.getAllByRole("alert").map((a) => a.textContent)).toContain(
       "We couldn't refresh the counts. They may be out of date.",
     );
+  });
+
+  it("shows security alerts and marks one as seen (PRD section 15)", async () => {
+    const api = fakeApi(stats(), {
+      alerts: vi.fn().mockResolvedValue([
+        {
+          id: "a1",
+          summary: "3 accounts locked in the last hour",
+          raisedAt: eat("2026-11-05T09:00"),
+        },
+      ]),
+    });
+    await show(api);
+    const panel = screen.getByRole("region", { name: "Security alerts" });
+    expect(panel.textContent).toMatch(/3 accounts locked in the last hour/);
+    await act(async () => fireEvent.click(screen.getByRole("button", { name: "Mark as seen" })));
+    expect(api.acknowledge).toHaveBeenCalledWith("a1");
+    expect(screen.queryByRole("region", { name: "Security alerts" })).toBeNull();
   });
 
   it("refreshes the counts every 15 minutes", async () => {

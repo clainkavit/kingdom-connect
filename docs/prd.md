@@ -517,7 +517,7 @@ The figures below are proposed starting targets for the Technical Committee to c
 | Privacy and law | Comply with Tanzania's Personal Data Protection Act 2022: consent captured at registration, members can download or delete their data, hosted with a cloud provider in a region that meets the Act's rules on storing personal data |
 | Hosting (changed 15 Oct) | Development runs on managed Supabase with test data only; no real member data goes in until the hosting decision. The production provider and region (managed Supabase outside Africa, or self-hosted in Tanzania) are decided before the pilot, with a legal check against the Act |
 | Document storage | Identity and business documents in a separate encrypted store, visible to admins only, never in public URLs |
-| Performance | Pages and searches load in under 2 seconds on 3G for 95% of requests; app usable on Android 9+ and iOS 15+ |
+| Performance | Pages and searches load in under 2 seconds on 3G for 95% of requests; app usable on Android 9+ and iOS 15+. Measured 5 Nov (R17): repeat visits meet it, first visits do not (see section 18) |
 | Scale | Built for 2,000 members in year 1 and 20,000 without redesign |
 | Availability | 99.5% monthly uptime; daily backups kept 30 days; restore tested quarterly |
 | Languages | English and Kiswahili for all member-facing screens |
@@ -538,7 +538,7 @@ The figures below are proposed starting targets for the Technical Committee to c
 | Push | Expo push service, for the Android and iOS apps once they ship. The web pilot uses the in-app bell and email only |
 | Languages | English and Kiswahili from the start, with every screen string kept in translation files |
 | Development hosting | Supabase Free plan and Vercel for development and preview builds, test data only |
-| Production hosting | Not decided. Hostinger is a candidate, which would probably mean self-hosting Supabase on a VPS, so the team would run backups and security updates. Decided before the pilot with the legal check against the Act (see Hosting above) |
+| Production hosting | The two apps, the member web app and the admin console, are hosted on Vercel (decided 5 Nov). Where Supabase runs, which holds the member data, is not decided: managed Supabase and its region, or self-hosted (Hostinger is a candidate, which would mean the team runs backups and security updates). Decided before the pilot with the legal check against the Act (see Hosting above) |
 
 ## 16. Key data entities and statuses
 
@@ -863,6 +863,24 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 - When the change applies, every session of the account is signed out. A deleted account's open requests are cancelled and never applied.
 - **Known limit:** a request filed while signed out records no staff filer, so an Administrator could file one that way and approve it alone. The notices to both addresses, the 48-hour cancel and the audit log (with the requester's IP) are the safeguards.
 
+**Decided on 5 November 2026 (launch plan)**
+- The two apps are hosted on Vercel. The production database question (L06, #72) is now only about where Supabase runs.
+- Email delivery with Brevo (F08, #46) and the delivery test to Gmail and Tanzanian addresses (L05, #71) happen during the testing phase.
+- Company registration (L01, #67) and the Data Protection Commission registration (L02, #68) happen after testing and before the pilot.
+- The lawyer review (L04, #70) also confirms R16's keep-and-delete list.
+- R17 is built for Vercel now; its backup part waits for the Supabase hosting decision.
+
+**Decided on 5 November 2026 (3G measurement, R17)**
+- Measured on the member web build (production, gzip), Chrome throttled to 3G (1.6 Mbps down, 750 kbps up, 150 ms) with a 4x slower CPU, 20 loads of the login page each. 95th percentile: first visit 4.4 s, repeat visit 1.8 s. Before two fixes it was 6.5 s and 2.4 s.
+- The fixes: icons are imported one by one instead of the whole icon library (the shared bundle fell from 2.9 MB to 0.55 MB), and the web page no longer waits for the fonts before it draws.
+- Accepted by Champion: repeat visits meet the 2-second target; a first visit takes about 4.4 s on 3G. The member website stays on Expo rather than moving to Next.js. Pre-rendering the pages is a possible later improvement.
+
+**Decided on 5 November 2026 (monitoring, R17)**
+- Sentry, EU region, organization `clain`: the project `kingdom-connect-member` (React Native) for the member app and `kingdom-connect` (Next.js) for the admin console. Error monitoring only: no session replay, tracing or profiling. The DSNs are Vercel settings; without one nothing is sent. The member app loads Sentry after the first screen so it never slows a first visit.
+- Reports never carry the member, extra data, request headers, cookies, bodies, query strings or console output, and email addresses, phone numbers and ids are blanked out in error messages, breadcrumbs and URLs. Server errors in the admin console are reported too.
+- Failed sign-ins and lockouts are counted from one record per event (`private.login_events`, kept 7 days), over a rolling window; an alert is not raised again for the same thing within its window.
+- Security alerts at these levels: 20 failed sign-ins across the platform in 10 minutes, 3 lockouts in an hour, more than 100 messages from one member in an hour, and every duplicate ID attempt. Each appears on the admin dashboard and is emailed to every Super Admin (through Brevo once it is set up).
+
 **Open.** Every open question is a ticket on the [wayfinder map](https://github.com/clainkavit/kingdom-connect/issues/1) and is linked where it applies above.
 
 **Outside this spec**
@@ -918,6 +936,9 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | 4 Nov 2026 | Change phone, address and email (R08b); recovery split to R08c | 6, 8, 14, 18 |
 | 4 Nov 2026 | Release 1 end-to-end coverage, a journey test across both apps, a check that tests use only reserved email domains | 17, 18 |
 | 4 Nov 2026 | Recover a lost email: request without signing in or by staff, photo and ID digit check, another Administrator decides, 48-hour wait with cancel | 6, 14, 18 |
+| 5 Nov 2026 | Launch plan: apps on Vercel, Brevo and email tests in the testing phase, registrations before the pilot | 15, 18 |
+| 5 Nov 2026 | 3G measured: repeat visits 1.8 s, first visits 4.4 s, accepted; the member website stays on Expo | 15, 18 |
+| 5 Nov 2026 | Monitoring: Sentry for both apps, security alerts on the dashboard and by email to Super Admins | 15, 18 |
 
 ## Appendix B: Source documents
 

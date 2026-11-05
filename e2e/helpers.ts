@@ -97,16 +97,21 @@ export async function notify(memberId: string, kind: string, payload: Record<str
   await db`select private.notify(${memberId}, ${kind}, ${db.json(payload as never)})`;
 }
 
+/** Sends every queued email, batch after batch, as the per-minute job would over time. */
 export async function sendQueuedEmails() {
-  const res = await fetch(`${LOCAL_SUPABASE.url}/functions/v1/send-notification-emails`, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${LOCAL_SERVICE_ROLE_KEY}`,
-      "Content-Type": "application/json",
-    },
-    body: "{}",
-  });
-  expect(res.ok).toBe(true);
+  for (let batch = 0; batch < 20; batch++) {
+    const res = await fetch(`${LOCAL_SUPABASE.url}/functions/v1/send-notification-emails`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${LOCAL_SERVICE_ROLE_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: "{}",
+    });
+    expect(res.ok).toBe(true);
+    const counts = (await res.json()) as { sent: number; skipped: number; failed: number };
+    if (counts.sent + counts.skipped + counts.failed === 0) return;
+  }
 }
 
 export async function emailsTo(to: string, after: Date): Promise<{ Subject: string }[]> {
@@ -321,4 +326,11 @@ export async function applyDueRecoveries() {
     where status = 'approved'`;
   const [row] = await db`select private.apply_due_email_recoveries() as applied`;
   return Number(row!.applied);
+}
+
+/** Records a duplicate ID attempt for a member and runs the security check, as the 5-minute job does. */
+export async function raiseDuplicateIdAlert(memberId: string) {
+  await db`insert into private.audit_log (actor_member_id, action, target_type, target_id, after)
+    values (${memberId}, 'registration.duplicate_id', 'members', ${memberId}, '{"id_type": "nida"}')`;
+  await db`select private.check_security_alerts()`;
 }

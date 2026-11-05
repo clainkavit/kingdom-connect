@@ -874,6 +874,21 @@ export const notificationCopy = {
         "Namba ya simu kwenye {platform_name} imebadilishwa. Kama si wewe, wasiliana na timu ya jukwaa mara moja.",
     },
   },
+  Y1: {
+    category: "security",
+    inApp: false,
+    email: "yes",
+    push: false,
+    opens: "/",
+    en: {
+      title: "Security alert on {platform_name}",
+      message: "{alert}. Open the admin dashboard to see it and mark it as seen.",
+    },
+    sw: {
+      title: "Tahadhari ya usalama kwenye {platform_name}",
+      message: "{alert}. Fungua dashibodi ya msimamizi kuiona na kuiweka kuwa imeonekana.",
+    },
+  },
 } satisfies Record<string, NotificationCopy>;
 
 export type NotificationKind = keyof typeof notificationCopy;

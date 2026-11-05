@@ -45,7 +45,7 @@ test("Members connect: a decline stays hidden, an accept connects, a block ends 
   await b.goto("/connections");
   await b.getByRole("button", { name: "Accept" }).click();
   await expect(b.getByRole("link", { name: `Asking Member ${stamp}` })).toBeVisible();
-  expect(await notificationKinds(asker.id)).toContain("C2");
+  await expect.poll(() => notificationKinds(asker.id)).toContain("C2");
 
   await a.goto(`/profile/${receiver.id}`);
   await expect(a.getByText("Connected", { exact: true })).toBeVisible();

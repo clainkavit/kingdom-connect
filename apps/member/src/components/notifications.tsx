@@ -6,7 +6,7 @@ import {
   type NotificationCategory,
   type TextKey,
 } from "@kingdom-connect/shared";
-import { Bell } from "lucide-react-native";
+import Bell from "lucide-react-native/icons/bell";
 import { Pressable, Text, View } from "react-native";
 import { useLanguage } from "../lib/language";
 import type { StoredNotification } from "../lib/notifications";

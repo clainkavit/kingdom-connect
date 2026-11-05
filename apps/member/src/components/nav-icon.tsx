@@ -1,26 +1,24 @@
 import type { NavIcon as NavIconName } from "@kingdom-connect/shared";
-import {
-  BookOpen,
-  Briefcase,
-  Calendar,
-  CheckCheck,
-  Ellipsis,
-  Flag,
-  History,
-  House,
-  Lightbulb,
-  Link,
-  ListChecks,
-  Megaphone,
-  MessageSquare,
-  Milestone,
-  Newspaper,
-  RefreshCw,
-  Shield,
-  SlidersHorizontal,
-  Users,
-  type LucideIcon,
-} from "lucide-react-native";
+import BookOpen from "lucide-react-native/icons/book-open";
+import Briefcase from "lucide-react-native/icons/briefcase";
+import Calendar from "lucide-react-native/icons/calendar";
+import CheckCheck from "lucide-react-native/icons/check-check";
+import Ellipsis from "lucide-react-native/icons/ellipsis";
+import Flag from "lucide-react-native/icons/flag";
+import History from "lucide-react-native/icons/rotate-ccw-clock";
+import House from "lucide-react-native/icons/house";
+import Lightbulb from "lucide-react-native/icons/lightbulb";
+import Link from "lucide-react-native/icons/link";
+import ListChecks from "lucide-react-native/icons/list-checks";
+import Megaphone from "lucide-react-native/icons/megaphone";
+import MessageSquare from "lucide-react-native/icons/message-square";
+import Milestone from "lucide-react-native/icons/milestone";
+import Newspaper from "lucide-react-native/icons/newspaper";
+import RefreshCw from "lucide-react-native/icons/refresh-cw";
+import Shield from "lucide-react-native/icons/shield";
+import SlidersHorizontal from "lucide-react-native/icons/sliders-horizontal";
+import Users from "lucide-react-native/icons/users";
+import type { LucideIcon } from "lucide-react-native";
 
 const icons: Record<NavIconName, LucideIcon> = {
   "book-open": BookOpen,

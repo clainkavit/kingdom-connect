@@ -5,7 +5,12 @@ import { copyFor, type OutboxRow, planDelivery } from "../_shared/outbox.ts";
 
 const MAX_ATTEMPTS = 5;
 
-type Claimed = OutboxRow & { id: string; member_id: string; attempts: number };
+type Claimed = OutboxRow & {
+  id: string;
+  member_id: string | null;
+  to_email: string | null;
+  attempts: number;
+};
 
 async function finish(id: string, status: string, error: string | null = null) {
   await sql`
@@ -40,8 +45,9 @@ Deno.serve(async (req) => {
   const counts = { sent: 0, skipped: 0, failed: 0 };
 
   for (const row of rows) {
-    const account = await accountById(row.member_id);
-    if (!account) {
+    const toEmail = row.to_email;
+    const account = row.member_id ? await accountById(row.member_id) : null;
+    if (!account && !toEmail) {
       await retryLater(row, "no account");
       counts.failed++;
       continue;
@@ -49,8 +55,8 @@ Deno.serve(async (req) => {
     const plan = planDelivery(
       row,
       {
-        language: account.language,
-        emailSwitchedOn: await emailSwitchedOn(row.member_id, row.kind),
+        language: account?.language ?? "en",
+        emailSwitchedOn: row.member_id ? await emailSwitchedOn(row.member_id, row.kind) : true,
       },
       name,
     );
@@ -65,7 +71,7 @@ Deno.serve(async (req) => {
       continue;
     }
     try {
-      await sendEmail((row as { to_email?: string | null }).to_email ?? account.email, plan.email);
+      await sendEmail(toEmail ?? account!.email, plan.email);
       await finish(row.id, "sent");
       counts.sent++;
     } catch (error) {

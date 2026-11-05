@@ -1,4 +1,4 @@
-import { CircleUser } from "lucide-react-native";
+import CircleUser from "lucide-react-native/icons/circle-user";
 import { useLanguage } from "../lib/language";
 import { LinkButton } from "./link-button";
 

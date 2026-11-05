@@ -879,6 +879,19 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 - Sentry, EU region, organization `clain`: the project `kingdom-connect-member` (React Native) for the member app and `kingdom-connect` (Next.js) for the admin console. Error monitoring only: no session replay, tracing or profiling. The DSNs are Vercel settings; without one nothing is sent. The member app loads Sentry after the first screen so it never slows a first visit.
 - Reports never carry the member, extra data, request headers, cookies, bodies, query strings or console output, and email addresses, phone numbers and ids are blanked out in error messages, breadcrumbs and URLs. Server errors in the admin console are reported too.
 - Failed sign-ins and lockouts are counted from one record per event (`private.login_events`, kept 7 days), over a rolling window; an alert is not raised again for the same thing within its window.
+
+**Decided on 6 November 2026 (Level 2 business verification, B01)**
+- A member has one business. A Level 2 request is a `verification_requests` row with `level` 2 and the three documents are `verification_documents` rows, so approval raises the member's level and the directory's verified badge follows.
+- The member gives the business name, sector, size and an optional description, the BRELA number, the TRA TIN (9 digits), the business licence number and its expiry date (in the future), and uploads the BRELA certificate, the TRA TIN certificate and the licence as PDF or image files up to 10 MB.
+- Administrators review business requests in the verification queue and approve, or reject with a preset business reason (documents unclear, name, BRELA, TIN or licence mismatch, licence expired, other) and a note where needed. The reason reaches the member in B2 in their language.
+- After a rejection the member can fix the details and send again, with no limit. One request waits at a time.
+- The registration numbers and documents are visible only to the owner and staff. Other members see an approved business's name, sector, size and description.
+- Deleting a member's data also deletes their business, its registration numbers and its documents (R16).
+- The dashboard's "Verify your business to post opportunities" now links to the business screen.
+- A business name and description cannot hold a phone number or email address, because other members read them once the business is approved.
+- A business request is decided only with `decide_business_verification()`; the Level 1 functions refuse it, and a rejection reason must fit the kind of request (identity or business).
+- A member keeps at most 30 files in their business folder, and cannot upload again to the path of a file that was sent, so a sent document cannot be swapped.
+- S40 can show Expired. The licence expiry check that sets it, the reminders and the rights pause come with B04.
 - Security alerts at these levels: 20 failed sign-ins across the platform in 10 minutes, 3 lockouts in an hour, more than 100 messages from one member in an hour, and every duplicate ID attempt. Each appears on the admin dashboard and is emailed to every Super Admin (through Brevo once it is set up).
 
 **Open.** Every open question is a ticket on the [wayfinder map](https://github.com/clainkavit/kingdom-connect/issues/1) and is linked where it applies above.
@@ -939,6 +952,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | 5 Nov 2026 | Launch plan: apps on Vercel, Brevo and email tests in the testing phase, registrations before the pilot | 15, 18 |
 | 5 Nov 2026 | 3G measured: repeat visits 1.8 s, first visits 4.4 s, accepted; the member website stays on Expo | 15, 18 |
 | 5 Nov 2026 | Monitoring: Sentry for both apps, security alerts on the dashboard and by email to Super Admins | 15, 18 |
+| 6 Nov 2026 | Level 2 business verification: documents, review in the verification queue, B1 and B2 | 6, 18 |
 
 ## Appendix B: Source documents
 

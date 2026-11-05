@@ -13,6 +13,8 @@ import { anonKey, supabase, url } from "./supabase";
 
 export type QueueItem = {
   id: string;
+  kind: "member" | "business";
+  businessName: string | null;
   submittedAt: Date;
   username: string;
   fullName: string;
@@ -82,10 +84,10 @@ export const verificationApi: VerificationApi = {
     const { data, error } = await supabase
       .from("verification_requests")
       .select(
-        "id, submitted_at, duplicate_suspected_of, member:members!verification_requests_member_id_fkey(username, profile:profiles(full_name))",
+        "id, level, submitted_at, duplicate_suspected_of, business:businesses!verification_requests_business_id_fkey(name), member:members!verification_requests_member_id_fkey(username, profile:profiles(full_name))",
       )
       .eq("status", "pending")
-      .eq("level", 1)
+      .in("level", [1, 2])
       .order("submitted_at");
     if (error) throw error;
     return data.map((row) => {
@@ -93,8 +95,11 @@ export const verificationApi: VerificationApi = {
         username: string;
         profile: { full_name: string } | null;
       };
+      const business = row.business as unknown as { name: string } | null;
       return {
         id: row.id,
+        kind: row.level === 2 ? ("business" as const) : ("member" as const),
+        businessName: business?.name ?? null,
         submittedAt: new Date(row.submitted_at),
         username: member.username,
         fullName: member.profile?.full_name ?? "",
@@ -225,6 +230,7 @@ export const verificationApi: VerificationApi = {
     const { data, error } = await supabase
       .from("rejection_reasons")
       .select("code, label_en, label_sw, needs_note")
+      .eq("for_identity", true)
       .order("sort");
     if (error) throw error;
     return data.map((r) => ({

@@ -144,7 +144,7 @@ select throws_ok(
 
 select set_config('request.jwt.claims',
   '{"sub": "00000000-0000-0000-0000-0000000000e4", "role": "authenticated", "otp_verified": true}', true);
-select is((select count(*)::int from public.rejection_reasons), 7, 'staff read the rejection reasons');
+select is((select count(*)::int from public.rejection_reasons where for_identity), 7, 'staff read the identity rejection reasons');
 select throws_ok(
   $$update public.verification_requests set status = 'approved' where id = '00000000-0000-0000-0000-0000000000f1'$$,
   '42501', null, 'staff cannot decide by editing the table, only through the audited function');

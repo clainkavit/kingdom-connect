@@ -65,7 +65,9 @@ function QuickActions({ welcome }: { welcome: Welcome }) {
       {welcome.postingPaused ? (
         <Text className="font-figtree text-sm text-ink-2">{t.postingPausedNote}</Text>
       ) : welcome.level < POSTER_LEVEL ? (
-        <Text className="font-figtree text-sm text-ink-2">{t.upgradeToPost}</Text>
+        <LinkButton href="/business" label={t.verifyBusinessLink} className="py-1">
+          <Text className="font-figtree text-sm text-blue-ink">{t.upgradeToPost}</Text>
+        </LinkButton>
       ) : null}
     </Section>
   );

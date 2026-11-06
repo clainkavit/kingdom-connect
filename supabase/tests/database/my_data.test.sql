@@ -2,7 +2,7 @@ begin;
 create extension if not exists pgtap with schema extensions;
 -- Members here have accepted the current legal texts; that rule is tested in legal_on_server.test.sql.
 create or replace function access.accepted_terms_and_privacy() returns boolean language sql stable as 'select true';
-select plan(20);
+select plan(23);
 
 insert into auth.users (id, email)
 select ('00000000-0000-0000-0000-0000000011' || k)::uuid, 'dd' || k || '@test.invalid'
@@ -34,6 +34,18 @@ insert into public.message_attachments (message_id, storage_path, file_name, mim
   values ('00000000-0000-0000-0011-000000000003', '00000000-0000-0000-0011-000000000002/cv.pdf', 'cv.pdf',
           'application/pdf', 100);
 insert into public.notifications (member_id, kind) values ('00000000-0000-0000-0000-000000001101', 'C2');
+insert into public.businesses (id, member_id, name, sector_id, size)
+select '00000000-0000-0000-0011-0000000000b1', '00000000-0000-0000-0000-000000001101', 'Leaver Co', id, 'small'
+from public.sectors limit 1;
+insert into public.business_private (business_id, brela_no, tin, licence_no, licence_expires_on)
+values ('00000000-0000-0000-0011-0000000000b1', 'BRELA-1', '111-111-111', 'LIC-1', current_date + 100);
+insert into public.verification_requests (id, member_id, level, business_id)
+values ('00000000-0000-0000-0011-0000000000b2', '00000000-0000-0000-0000-000000001101', 2,
+        '00000000-0000-0000-0011-0000000000b1');
+insert into public.verification_documents (request_id, kind, storage_path)
+values ('00000000-0000-0000-0011-0000000000b2', 'brela', '00000000-0000-0000-0000-000000001101/brela.pdf');
+insert into storage.objects (bucket_id, name)
+values ('business-documents', '00000000-0000-0000-0000-000000001101/brela.pdf');
 insert into public.investor_flags (member_id, granted_by, route)
   values ('00000000-0000-0000-0000-000000001101', '00000000-0000-0000-0000-0000000011a1', 'invitation');
 insert into storage.objects (bucket_id, name)
@@ -59,6 +71,7 @@ select throws_ok($$select public.my_data_export()$$, '42501', null, 'nor does a 
 reset role;
 select is((select array_agg(bucket || ':' || path order by bucket) from private.member_file_paths('00000000-0000-0000-0000-000000001101')),
   array['avatars:00000000-0000-0000-0000-000000001101/photo',
+        'business-documents:00000000-0000-0000-0000-000000001101/brela.pdf',
         'identity-documents:00000000-0000-0000-0000-000000001101/face',
         'identity-documents:00000000-0000-0000-0000-000000001101/id',
         'message-files:00000000-0000-0000-0011-000000000002/cv.pdf'],
@@ -70,7 +83,14 @@ select throws_ok($$select private.delete_member_data('00000000-0000-0000-0000-00
 select throws_ok($$select * from private.member_file_paths('00000000-0000-0000-0000-000000001101')$$, '42501', null,
   'nor list the files');
 reset role;
+select ok((select 'business-documents:00000000-0000-0000-0000-000000001101/brela.pdf' = any (array_agg(bucket || ':' || path))
+           from private.member_file_paths('00000000-0000-0000-0000-000000001101')), 'the business documents are listed for removal');
 select is(private.delete_member_data('00000000-0000-0000-0000-000000001101'), 'ok', 'the member''s data is deleted');
+select is((select count(*)::int from public.businesses where member_id = '00000000-0000-0000-0000-000000001101')
+          + (select count(*)::int from public.business_private where business_id = '00000000-0000-0000-0011-0000000000b1'), 0,
+  'the business and its registration numbers are deleted');
+select is((select count(*)::int from public.verification_documents where request_id = '00000000-0000-0000-0011-0000000000b2'), 0,
+  'and its documents');
 
 set local role authenticated;
 select pg_temp.login('a1');

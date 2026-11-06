@@ -42,6 +42,16 @@ export function SettingsMenu() {
           </Text>
         </LinkButton>
         <LinkButton
+          href="/business"
+          label={t.businessTitle}
+          className="min-h-[52px] flex-row items-center justify-between border-t border-line px-4"
+        >
+          <Text className="font-figtree text-[15px] text-ink">{t.businessTitle}</Text>
+          <Text aria-hidden className="font-figtree text-[15px] text-ink-2">
+            ›
+          </Text>
+        </LinkButton>
+        <LinkButton
           href="/settings/data"
           label={t.dataTitle}
           className="min-h-[52px] flex-row items-center justify-between border-t border-line px-4"

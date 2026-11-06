@@ -10,6 +10,8 @@ const now = () => eat("2026-11-10T12:00");
 
 const item = (over: Partial<QueueItem>): QueueItem => ({
   id: "r1",
+  kind: "member",
+  businessName: null,
   submittedAt: eat("2026-11-10T09:00"),
   username: "test_applicant",
   fullName: "Test Applicant",

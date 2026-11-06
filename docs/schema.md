@@ -42,6 +42,9 @@ Decided 1 Nov (F04, #42):
 |---|---|
 | `is_member()` | The caller is an approved member with a verified session who has accepted the current terms of use and privacy notice (R05b). Until they accept, every member table refuses them |
 | `is_approved_member()` | An approved member with a verified session, accepted or not. Only `legal_acceptances` uses it, so a member can accept |
+| `submit_business_verification(...)` | A member sends their business for Level 2: name, sector, size, optional description, BRELA number, TIN (9 digits), licence number, licence expiry (a date in the future, within 10 years) and the three documents they uploaded to `business-documents/<their id>/...`. Creates or updates their business and a `verification_requests` row with `level` 2, `business_id` and three `verification_documents` rows (`brela`, `tin`, `licence`). Returns `ok` or the reason it was refused. One request waits at a time; after a rejection the member can send again; once approved it is refused |
+| `my_business()` | The caller's business with its numbers and the state of the latest Level 2 request, including the reason sent after a rejection |
+| `decide_business_verification(request, approve, reason_code, note)` | Staff approve (the business becomes Level 2 and approved, B1 is sent) or reject with a business reason from `rejection_reasons` and a note where the reason needs one (B2 carries the reason in the member's language). A note holds no contact details. Both are audit logged |
 | `request-email-recovery` Edge Function | S04 "Can't get the code?": username, new email, last 4 ID digits and a new face photo (JPEG, PNG or WebP, up to 5 MB). An unknown username, a non-member account or an email in use gets the same answer and no request. 3 requests a day per IP address and at most 5 waiting per member, answered after the same delay. E4 goes to both addresses. A staff session files the request for the member |
 | `set_my_phone(phone)`, `set_my_address(address)` | The member changes their own phone (+255 and 9 digits, spaces allowed) or address (up to 300 characters); each change is audit logged with before and after, and a phone change sends E2 (R08b) |
 | `change-email` Edge Function | The password (counted toward the login lockout), then a 6-digit code sent to the new address (`private.email_changes`, 10 minutes, 3 tries, 10 codes an hour). An address already in use gets the same answer and no working code, so the member cannot find out who is registered. On the code it changes the sign-in email; the `sync_member_email` trigger on `auth.users` then changes the contact email in the same transaction, logs it and sends E1, whichever way the sign-in email changed. A notice also goes to the old address |
@@ -78,8 +81,8 @@ Private data sits in its own tables, so each rule is "this whole table is admin-
 | `rejection_reasons` | `code`, `label_en`, `label_sw`, `sort`, `needs_note` | Staff | Migrations only |
 | `verification_documents` | `request_id`, `kind` (face_photo, id_photo, brela, tin, licence, directorship, authorisation_letter), `storage_path`, `delete_after` (set once the request is decided; the retention period is open for the lawyer) | Staff | Written by `private.submit_registration()` from the files in Storage; staff |
 | `registration_drafts` | `member_id`, `step` (1 to 6), `data` (the wizard answers, never the ID number), `submitted_at` | The Applicant (own). **Never staff**: a draft is not an application | The Applicant, until they submit |
-| `businesses` | `member_id`, `name`, `sector_id`, `size`, `description`, `logo_path`, `level` (2, 3), `status` (pending, approved, rejected, expired) | Approved members see approved businesses; the owner; staff | The owner edits while not approved; staff approve |
-| `business_private` | `business_id`, `brela_no`, `tin`, `licence_no`, `licence_expires_on`, `address` | The owner; staff | The owner while pending; staff |
+| `businesses` | `member_id` (one business per member), `name`, `sector_id`, `size` (micro, small, medium, large), `description`, `logo_path`, `level` (2 or 3, the level held; empty until approved), `status` (pending, approved, rejected, expired) | Approved members see an approved business (name, sector, size, description); the owner; staff | Only through `submit_business_verification()` and `decide_business_verification()`; audit logged (B01) |
+| `business_private` | `business_id`, `brela_no`, `tin` (stored as 123-456-789), `licence_no`, `licence_expires_on`, `address` (Level 3) | The owner; staff. No other member, ever | Only through `submit_business_verification()` (B01) |
 
 ## 5. Shared lists and matching
 
@@ -205,7 +208,7 @@ All buckets are private. No file is ever at a public web address. Files are open
 |---|---|
 | `avatars` | Approved members, and the owner |
 | `identity-documents` (face photo and ID photo, at `<member_id>/face` and `<member_id>/id`; JPEG, PNG or WebP up to 5 MB) | The owner, who can add or replace them only until the application is submitted; staff |
-| `business-documents` | The owner and staff |
+| `business-documents` | The owner and staff. PDF, JPEG, PNG or WebP, up to 10 MB, in `<member id>/<file>`; a member removes only a file that was not sent |
 | `response-files` (CVs and attachments) | The member who sent it, the opportunity's poster, staff |
 | `idea-files` | Through `get_idea_file_link()` only: the owner and NDA-accepted members, watermarked |
 | `report-files` | Staff only. A member uploads one screenshot (JPEG, PNG, WebP, up to 5 MB) into their own folder and cannot open it again; they can remove it only while no report uses it, so a repeat or failed report leaves nothing behind |

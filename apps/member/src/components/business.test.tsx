@@ -1,4 +1,5 @@
 import "../test-router";
+import { addDays, tanzaniaDate } from "@kingdom-connect/shared";
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { BusinessApi, BusinessStatus, PosterStatus } from "../lib/business";
@@ -34,6 +35,8 @@ const fakeApi = (over: Partial<BusinessApi> = {}): BusinessApi => ({
   regions: vi.fn().mockResolvedValue([{ value: "r1", label: "Mwanza" }]),
   districts: vi.fn().mockResolvedValue([{ value: "d1", label: "Nyamagana" }]),
   submitPoster: vi.fn().mockResolvedValue("ok"),
+  loadRenewal: vi.fn().mockResolvedValue(null),
+  submitRenewal: vi.fn().mockResolvedValue("ok"),
   ...over,
 });
 
@@ -98,6 +101,118 @@ async function fillPoster() {
   await act(async () => fireEvent.click(screen.getByRole("option", { name: "Nyamagana" })));
   await click("Address proof: Choose file");
 }
+
+const inDays = (days: number) => addDays(tanzaniaDate(), days);
+
+const licensed = (over: Partial<BusinessStatus>, apiOver: Partial<BusinessApi> = {}) =>
+  fakeApi({
+    load: vi
+      .fn()
+      .mockResolvedValue(
+        status({ requestStatus: "approved", businessStatus: "approved", level: 2, ...over }),
+      ),
+    ...apiOver,
+  });
+
+describe("BusinessScreen (S41), licence renewal", () => {
+  it("offers renewal within 30 days of the end and sends the new licence", async () => {
+    const api = licensed({ licenceExpiresOn: inDays(10) });
+    await show(api);
+    expect(screen.getByText(/Your licence ends on/)).toBeTruthy();
+    type("New licence number", "LIC-2");
+    type("New licence expires on", "2028-06-30");
+    await click("New business licence: Choose file");
+    await click("Send the new licence");
+    expect(api.submitRenewal).toHaveBeenCalledWith(
+      { licenceNo: "LIC-2", licenceExpiresOn: "2028-06-30" },
+      file("scan.pdf"),
+    );
+    expect(
+      screen.getByText("Sent. We will tell you when the new licence is checked."),
+    ).toBeTruthy();
+  });
+
+  it("does not offer renewal while the licence has more than 30 days left", async () => {
+    await show(licensed({ licenceExpiresOn: inDays(60) }));
+    expect(screen.queryByText("Renew your licence")).toBeNull();
+  });
+
+  it("shows an expired poster as paused, with both levels Expired and the renewal form", async () => {
+    await show(
+      licensed(
+        { businessStatus: "expired", level: 3, licenceExpiresOn: inDays(-2) },
+        {
+          loadPoster: vi.fn().mockResolvedValue({
+            requestStatus: "approved",
+            reason: null,
+            proofKind: "directorship",
+            address: "Plot 1",
+            regionId: "r1",
+            districtId: "d1",
+          }),
+        },
+      ),
+    );
+    expect(screen.getAllByText("Expired")).toHaveLength(2);
+    expect(screen.getByText(/so your Level 3 rights are paused/)).toBeTruthy();
+    expect(screen.queryByText(/Your licence is valid until/)).toBeNull();
+    expect(screen.getByRole("button", { name: "Send the new licence" })).toBeTruthy();
+  });
+
+  it("keeps Level 2 Approved while a renewal waits for a business that is still approved", async () => {
+    await show(
+      licensed(
+        { licenceExpiresOn: inDays(10) },
+        {
+          loadRenewal: vi.fn().mockResolvedValue({
+            requestStatus: "pending",
+            reason: null,
+            licenceNo: "LIC-2",
+            licenceExpiresOn: "2028-06-30",
+          }),
+        },
+      ),
+    );
+    expect(screen.getAllByText("Approved").length).toBeGreaterThan(0);
+    expect(screen.queryByRole("button", { name: "Send for review" })).toBeNull();
+  });
+
+  it("shows a renewal waiting and no form", async () => {
+    await show(
+      licensed(
+        { businessStatus: "expired", licenceExpiresOn: inDays(-2) },
+        {
+          loadRenewal: vi.fn().mockResolvedValue({
+            requestStatus: "pending",
+            reason: null,
+            licenceNo: "LIC-2",
+            licenceExpiresOn: "2028-06-30",
+          }),
+        },
+      ),
+    );
+    expect(screen.getByText(/We are checking your new licence/)).toBeTruthy();
+    expect(screen.queryByRole("button", { name: "Send the new licence" })).toBeNull();
+  });
+
+  it("shows the reason after a rejected renewal, with the earlier details", async () => {
+    await show(
+      licensed(
+        { businessStatus: "expired", licenceExpiresOn: inDays(-2) },
+        {
+          loadRenewal: vi.fn().mockResolvedValue({
+            requestStatus: "rejected",
+            reason: "The licence does not match the business",
+            licenceNo: "LIC-2",
+            licenceExpiresOn: "2028-06-30",
+          }),
+        },
+      ),
+    );
+    expect(screen.getByText(/The licence does not match the business/)).toBeTruthy();
+    expect((screen.getByLabelText("New licence number") as HTMLInputElement).value).toBe("LIC-2");
+  });
+});
 
 describe("BusinessScreen (S40)", () => {
   it("shows each level's status, with Level 3 locked until the business is verified", async () => {

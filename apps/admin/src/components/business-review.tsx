@@ -32,6 +32,11 @@ const documentLabel = {
   address_proof: "docAddressProof",
 } as const;
 
+function reviewTitle(t: Strings, data: BusinessReviewData): string {
+  if (data.renewal) return t.renewalReviewTitle;
+  return data.level === 3 ? t.posterReviewTitle : t.businessReviewTitle;
+}
+
 function decisionProblem(t: Strings, result: BusinessDecision): string | null {
   return {
     ok: null,
@@ -80,7 +85,7 @@ function DecisionCard({
   };
 
   return (
-    <Card title={data.level === 3 ? t.posterReviewTitle : t.businessReviewTitle}>
+    <Card title={reviewTitle(t, data)}>
       {rejecting ? (
         <>
           <fieldset className="flex flex-col gap-2">
@@ -196,7 +201,7 @@ export function BusinessReview({ id, api }: { id: string; api: BusinessReviewApi
       </>
     );
 
-  const title = data.level === 3 ? t.posterReviewTitle : t.businessReviewTitle;
+  const title = reviewTitle(t, data);
 
   return (
     <>
@@ -217,7 +222,14 @@ export function BusinessReview({ id, api }: { id: string; api: BusinessReviewApi
               <Row label={t.businessDescription} value={data.description} />
             ) : null}
             <Row label={t.brelaNumber} value={data.brelaNo} />
-            {data.level === 3 ? (
+            {data.renewal ? (
+              <>
+                <Row label={t.currentLicenceNumber} value={data.licenceNo} />
+                <Row label={t.currentLicenceExpiry} value={data.licenceExpiresOn} />
+                <Row label={t.newLicenceNumber} value={data.renewal.licenceNo} />
+                <Row label={t.newLicenceExpiry} value={data.renewal.licenceExpiresOn} />
+              </>
+            ) : data.level === 3 ? (
               <>
                 <Row label={t.businessAddress} value={data.address} />
                 {data.region ? <Row label={t.region} value={data.region[language]} /> : null}

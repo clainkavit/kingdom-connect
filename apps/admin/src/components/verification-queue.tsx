@@ -96,11 +96,13 @@ export function VerificationQueue({
                     </span>
                     <span className="text-[13px] text-ink-2">
                       @{item.username} ·{" "}
-                      {item.kind === "poster"
-                        ? t.queueTypePoster
-                        : item.kind === "business"
-                          ? t.queueTypeBusiness
-                          : t.queueTypeMember}
+                      {item.kind === "renewal"
+                        ? t.queueTypeRenewal
+                        : item.kind === "poster"
+                          ? t.queueTypePoster
+                          : item.kind === "business"
+                            ? t.queueTypeBusiness
+                            : t.queueTypeMember}
                     </span>
                   </span>
                   <span className="flex flex-wrap items-center gap-2">

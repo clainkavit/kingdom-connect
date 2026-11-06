@@ -49,6 +49,23 @@ export function formatDateTime(date: Date, language: Language): string {
   }).format(date);
 }
 
+const DAY_MS = 86_400_000;
+
+/** Today's date in Tanzania, as YYYY-MM-DD. */
+export function tanzaniaDate(now: Date = new Date()): string {
+  return new Intl.DateTimeFormat("en-CA", { timeZone: "Africa/Dar_es_Salaam" }).format(now);
+}
+
+/** A YYYY-MM-DD date moved by whole days. */
+export function addDays(date: string, days: number): string {
+  return new Date(Date.parse(date) + days * DAY_MS).toISOString().slice(0, 10);
+}
+
+/** Whole days from today in Tanzania to a YYYY-MM-DD date; 0 or less once it has come. */
+export function daysUntil(date: string, now: Date = new Date()): number {
+  return Math.round((Date.parse(date) - Date.parse(tanzaniaDate(now))) / DAY_MS);
+}
+
 export function formatNumber(value: number, language: Language): string {
   return new Intl.NumberFormat(locale(language)).format(value);
 }

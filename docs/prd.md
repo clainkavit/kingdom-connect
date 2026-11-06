@@ -911,6 +911,12 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 - A business card shows the name, sector, size, the owner's region and district, the description, a Verified Business or Opportunity Poster badge and the owner's name. Tapping it opens the owner's profile, where Connect works as before. There is no separate business page.
 - Search by business name or description, and filters for sector, level and region (the owner's region, since the business address is private).
 
+**Decided on 6 November 2026 (licence expiry and renewal, B04)**
+- While a business licence is expired, its owner counts as Level 1 everywhere: no Verified Business badge, not on the Businesses tab, and no posting (posting needs Level 3, O01). Approving the new licence returns them to the level they held, 2 or 3.
+- A daily check just after midnight Tanzania time sends B3 once when 30 days or fewer are left and once at 7 days or fewer (not while a renewal is waiting), and on the end date marks the business Expired and sends B4. The licence end date counts as expired, as at Level 2 sign-up.
+- To renew, the member sends only the new licence: number, expiry date and the document, within 30 days of the end date or after it. BRELA, TIN and the Level 3 documents stay as approved. Staff approve, or reject with a Level 2 reason; a rejected renewal leaves the business as it was.
+- Staff see expired licences and licences ending in the next 30 days on Re-verification (A08), and renewals in the verification queue.
+
 **Open.** Every open question is a ticket on the [wayfinder map](https://github.com/clainkavit/kingdom-connect/issues/1) and is linked where it applies above.
 
 **Outside this spec**
@@ -971,6 +977,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | 5 Nov 2026 | Monitoring: Sentry for both apps, security alerts on the dashboard and by email to Super Admins | 15, 18 |
 | 6 Nov 2026 | Level 2 business verification: documents, review in the verification queue, B1 and B2 | 6, 18 |
 | 6 Nov 2026 | Brevo moved to after the testing phase, before the pilot | 18 |
+| 6 Nov 2026 | Licence expiry pauses Level 2 and 3 until a new licence is approved; B3 reminders, B4, renewal and Re-verification | 13, 18 |
 | 6 Nov 2026 | Businesses tab on People: approved Level 2 and up, following the owner's profile rules | 8, 18 |
 | 6 Nov 2026 | Level 3 Opportunity Poster verification: directorship or authorisation proof, address with proof, review in the verification queue | 6, 18 |
 

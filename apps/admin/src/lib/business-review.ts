@@ -30,6 +30,7 @@ export type BusinessReviewData = {
   region: { en: string; sw: string } | null;
   district: { en: string; sw: string } | null;
   proofKind: "directorship" | "authorisation_letter" | null;
+  renewal: { licenceNo: string; licenceExpiresOn: string } | null;
   documents: BusinessDocument[];
 };
 
@@ -92,6 +93,10 @@ type Row = {
     private: PrivateRow | PrivateRow[];
   } | null;
   documents: { kind: BusinessDocument["kind"]; storage_path: string }[];
+  renewal:
+    | { licence_no: string; licence_expires_on: string }
+    | { licence_no: string; licence_expires_on: string }[]
+    | null;
 };
 
 export const businessReviewApi: BusinessReviewApi = {
@@ -105,7 +110,8 @@ export const businessReviewApi: BusinessReviewApi = {
            sector:sectors(name_en, name_sw),
            private:business_private(brela_no, tin, licence_no, licence_expires_on, address,
              region:regions(name_en, name_sw), district:districts(name_en, name_sw))),
-         documents:verification_documents(kind, storage_path)`,
+         documents:verification_documents(kind, storage_path),
+         renewal:licence_renewals(licence_no, licence_expires_on)`,
       )
       .eq("id", id)
       .in("level", [2, 3])
@@ -117,6 +123,7 @@ export const businessReviewApi: BusinessReviewApi = {
     const details = Array.isArray(row.business.private)
       ? row.business.private[0]!
       : row.business.private;
+    const renewal = Array.isArray(row.renewal) ? (row.renewal[0] ?? null) : row.renewal;
     const paths = row.documents.map((d) => d.storage_path);
     const { data: signed } = paths.length
       ? await supabase.storage.from("business-documents").createSignedUrls(paths, LINK_SECONDS)
@@ -155,6 +162,9 @@ export const businessReviewApi: BusinessReviewApi = {
                 d.kind === "directorship" || d.kind === "authorisation_letter",
             )?.kind ?? null)
           : null,
+      renewal: renewal
+        ? { licenceNo: renewal.licence_no, licenceExpiresOn: renewal.licence_expires_on }
+        : null,
       documents: DOCUMENTS_BY_LEVEL[row.level].flatMap((kind) => {
         const doc = row.documents.find((d) => d.kind === kind);
         return doc

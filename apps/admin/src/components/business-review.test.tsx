@@ -26,6 +26,7 @@ const data = (over: Partial<BusinessReviewData> = {}): BusinessReviewData => ({
   region: null,
   district: null,
   proofKind: null,
+  renewal: null,
   documents: [
     { kind: "brela", url: "https://files.test/brela", isPdf: false },
     { kind: "tin", url: "https://files.test/tin.pdf", isPdf: true },
@@ -95,6 +96,25 @@ describe("BusinessReview", () => {
     expect(screen.queryByText("123-456-789")).toBeNull();
     await click("Reject");
     expect(api.reasons).toHaveBeenCalledWith("en", 3);
+  });
+
+  it("shows a licence renewal with the current and the new licence", async () => {
+    await show(
+      fakeApi({
+        load: vi.fn().mockResolvedValue(
+          data({
+            renewal: { licenceNo: "LIC-NEW", licenceExpiresOn: "2028-06-30" },
+            documents: [{ kind: "licence", url: "https://files.test/new-licence", isPdf: false }],
+          }),
+        ),
+      }),
+    );
+    expect(screen.getByRole("heading", { level: 1, name: "Licence renewal" })).toBeTruthy();
+    expect(screen.getByText("LIC-1")).toBeTruthy();
+    expect(screen.getByText("LIC-NEW")).toBeTruthy();
+    expect(screen.getByText("2028-06-30")).toBeTruthy();
+    expect(screen.getByRole("img", { name: "Business licence" })).toBeTruthy();
+    expect(screen.queryByText("123-456-789")).toBeNull();
   });
 
   it("approves", async () => {

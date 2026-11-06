@@ -56,9 +56,7 @@ function QuickActions({ welcome }: { welcome: Welcome }) {
             label={t[a.key] as string}
             className="rounded-lg border border-line bg-surface px-4 py-2.5"
           >
-            <Text className="font-figtree-semibold text-sm text-blue-ink">
-              {t[a.key] as string}
-            </Text>
+            <Text className="font-figtree-semibold text-sm text-blue">{t[a.key] as string}</Text>
           </LinkButton>
         ))}
       </View>
@@ -66,7 +64,7 @@ function QuickActions({ welcome }: { welcome: Welcome }) {
         <Text className="font-figtree text-sm text-ink-2">{t.postingPausedNote}</Text>
       ) : welcome.level < POSTER_LEVEL ? (
         <LinkButton href="/business" label={t.verifyBusinessLink} className="py-1">
-          <Text className="font-figtree text-sm text-blue-ink">{t.upgradeToPost}</Text>
+          <Text className="font-figtree text-sm text-blue">{t.upgradeToPost}</Text>
         </LinkButton>
       ) : null}
     </Section>

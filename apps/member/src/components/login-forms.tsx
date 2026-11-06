@@ -156,7 +156,7 @@ export function CodeForm({
         disabled={resend.secondsLeft > 0}
       />
       <LinkButton href="/recover" label={t.cantGetCode} className="items-center py-2">
-        <Text className="font-figtree-semibold text-sm text-blue-ink">{t.cantGetCode}</Text>
+        <Text className="font-figtree-semibold text-sm text-blue">{t.cantGetCode}</Text>
       </LinkButton>
     </View>
   );

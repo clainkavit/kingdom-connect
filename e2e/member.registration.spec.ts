@@ -10,10 +10,20 @@ async function signUp(page: Page, username: string) {
   const email = `${username.replace(/_/g, ".")}@example.test`;
   await page.goto("/login");
   await page.getByRole("button", { name: "Create an account" }).click();
-  await page.getByLabel("Username", { exact: true }).fill(username);
-  await page.getByLabel("Email", { exact: true }).fill(email);
-  await page.getByLabel("Phone", { exact: true }).fill("0712 345 678");
-  await page.getByLabel("Password", { exact: true }).fill("kingdom-test-1");
+  const fields = [
+    ["Username", username],
+    ["Email", email],
+    ["Phone", "0712 345 678"],
+    ["Password", "kingdom-test-1"],
+  ] as const;
+  await expect(async () => {
+    for (const [label, value] of fields) {
+      await page.getByLabel(label, { exact: true }).fill(value);
+    }
+    for (const [label, value] of fields) {
+      await expect(page.getByLabel(label, { exact: true })).toHaveValue(value, { timeout: 500 });
+    }
+  }).toPass();
   const sentAfter = new Date();
   await page.getByRole("button", { name: "Create an account" }).click();
   await expect(page.getByRole("heading", { name: "Check your email" })).toBeVisible();

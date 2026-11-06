@@ -32,8 +32,9 @@ describe("themeCss", () => {
     }
   });
 
-  it("switches to the dark tokens when the device prefers dark", () => {
-    const dark = css.slice(css.indexOf("@media (prefers-color-scheme: dark)"));
+  it("uses the dark tokens only when an element is marked data-theme=dark", () => {
+    expect(css).not.toContain("prefers-color-scheme");
+    const dark = css.slice(css.indexOf(':root[data-theme="dark"]'));
     for (const [name, value] of Object.entries(colors.dark)) {
       expect(dark).toContain(`${cssVar(name as ColorToken)}: ${value};`);
     }

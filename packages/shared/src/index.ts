@@ -12,3 +12,4 @@ export * from "./profile";
 export * from "./reports";
 export * from "./levels";
 export * from "./monitoring";
+export * from "./opportunity-rules";

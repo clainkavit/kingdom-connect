@@ -89,7 +89,7 @@ function declarations(theme: keyof typeof colors): string {
   return lines.join("\n");
 }
 
-/** The CSS custom properties both apps load: light on :root, dark when the device prefers it. */
+/** The CSS custom properties both apps load: light on :root, dark only on an element marked data-theme="dark". */
 export function themeCss(): string {
   return [
     ":root {",
@@ -97,11 +97,9 @@ export function themeCss(): string {
     `  --kc-radius: ${radius}px;`,
     declarations("light"),
     "}",
-    "@media (prefers-color-scheme: dark) {",
-    "  :root {",
-    "    color-scheme: dark;",
-    declarations("dark").replace(/^/gm, "  "),
-    "  }",
+    ':root[data-theme="dark"] {',
+    "  color-scheme: dark;",
+    declarations("dark"),
     "}",
     "",
   ].join("\n");

@@ -865,7 +865,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 
 **Decided on 5 November 2026 (launch plan)**
 - The two apps are hosted on Vercel. The production database question (L06, #72) is now only about where Supabase runs.
-- Email delivery with Brevo (F08, #46) and the delivery test to Gmail and Tanzanian addresses (L05, #71) happen during the testing phase.
+- Email delivery with Brevo (F08, #46) and the delivery test to Gmail and Tanzanian addresses (L05, #71) happen during the testing phase. **Changed 6 Nov:** Brevo is set up after the testing phase and before the pilot; until then the hosted test project has no mail provider.
 - Company registration (L01, #67) and the Data Protection Commission registration (L02, #68) happen after testing and before the pilot.
 - The lawyer review (L04, #70) also confirms R16's keep-and-delete list.
 - R17 is built for Vercel now; its backup part waits for the Supabase hosting decision.
@@ -893,6 +893,17 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 - A member keeps at most 30 files in their business folder, and cannot upload again to the path of a file that was sent, so a sent document cannot be swapped.
 - S40 can show Expired. The licence expiry check that sets it, the reminders and the rights pause come with B04.
 - Security alerts at these levels: 20 failed sign-ins across the platform in 10 minutes, 3 lockouts in an hour, more than 100 messages from one member in an hour, and every duplicate ID attempt. Each appears on the admin dashboard and is emailed to every Super Admin (through Brevo once it is set up).
+
+**Decided on 6 November 2026 (Level 3 Opportunity Poster, B02)**
+- Level 3 can be requested only once the member's business is approved at Level 2 (rule 9 in section 6). A Level 3 request is a `verification_requests` row with `level` 3 and the same `business_id`.
+- The proof of directorship or authorisation is one document, chosen by the member: a BRELA record that lists them as a director, or an authorisation letter signed by a director. Staff check the name against the member's verified ID.
+- The physical address is typed (street, area or plot, then region and district) and proven by one document dated in the last 3 months: a utility bill, a lease, or a letter from the Serikali ya Mtaa. The address holds no phone number or email address and is visible only to the owner and staff.
+- Staff review Level 3 in the verification queue ("Business, Level 3") and approve, or reject with a Level 3 reason (directorship not shown, authorisation letter not signed by a director, address proof older than 3 months, address does not match the proof, other). Level 2 reasons do not fit Level 3, and the other way round.
+- Approval makes the business and the member Level 3 and sends B1 with Level 3. A rejection leaves the business at Level 2 and sends B2 with the reason. The member can fix and send again straight away; one Level 3 request waits at a time.
+- The Level 3 address re-check (moved here from R08b) is this business address and its proof; the member's own address on S45 is not re-checked. The audit log keeps the address each Level 3 request was sent with.
+- Staff see the BRELA number on a Level 3 request too, to match a directors' record to the company. A file already sent with a request cannot be sent again.
+- A Level 3 approval does not lift an expired business; it only raises the level.
+- What Level 3 unlocks (posting opportunities) comes with O01; licence expiry pausing Level 3 comes with B04.
 
 **Open.** Every open question is a ticket on the [wayfinder map](https://github.com/clainkavit/kingdom-connect/issues/1) and is linked where it applies above.
 
@@ -953,6 +964,8 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | 5 Nov 2026 | 3G measured: repeat visits 1.8 s, first visits 4.4 s, accepted; the member website stays on Expo | 15, 18 |
 | 5 Nov 2026 | Monitoring: Sentry for both apps, security alerts on the dashboard and by email to Super Admins | 15, 18 |
 | 6 Nov 2026 | Level 2 business verification: documents, review in the verification queue, B1 and B2 | 6, 18 |
+| 6 Nov 2026 | Brevo moved to after the testing phase, before the pilot | 18 |
+| 6 Nov 2026 | Level 3 Opportunity Poster verification: directorship or authorisation proof, address with proof, review in the verification queue | 6, 18 |
 
 ## Appendix B: Source documents
 

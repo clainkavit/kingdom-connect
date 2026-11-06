@@ -334,3 +334,14 @@ export async function raiseDuplicateIdAlert(memberId: string) {
     values (${memberId}, 'registration.duplicate_id', 'members', ${memberId}, '{"id_type": "nida"}')`;
   await db`select private.check_security_alerts()`;
 }
+
+export async function verifyBusiness(memberId: string, name: string) {
+  const [business] =
+    await db`insert into public.businesses (member_id, name, sector_id, size, level, status)
+    select ${memberId}, ${name}, id, 'small', 2, 'approved' from public.sectors order by name_en limit 1
+    returning id`;
+  await db`insert into public.business_private (business_id, brela_no, tin, licence_no, licence_expires_on)
+    values (${business!.id}, 'BRELA-E2E', '123-456-789', 'LIC-E2E', current_date + 365)`;
+  await db`insert into public.verification_requests (member_id, level, status, business_id, decided_at)
+    values (${memberId}, 2, 'approved', ${business!.id}, now())`;
+}

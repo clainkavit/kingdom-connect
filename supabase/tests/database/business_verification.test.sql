@@ -60,7 +60,8 @@ select is((select row(request_status, business_status, tin)::text from public.my
 
 select pg_temp.login('02');
 select is((select count(*)::int from public.business_private), 0, 'another member reads no registration numbers');
-select is((select count(*)::int from public.businesses), 0, 'nor a business that is not approved');
+select is((select count(*)::int from public.businesses where member_id = '00000000-0000-0000-0000-000000001501'), 0,
+  'nor a business that is not approved');
 select throws_ok($$select public.decide_business_verification((select id from public.verification_requests where level = 2 and member_id = '00000000-0000-0000-0000-000000001501' limit 1), true)$$,
   'P0001', 'not_allowed', 'nor decides');
 

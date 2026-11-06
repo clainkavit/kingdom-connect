@@ -4,10 +4,16 @@ import { Text, View } from "react-native";
 import {
   BUSINESS_SIZES,
   DOCUMENT_KINDS,
+  PROOF_KINDS,
   type BusinessApi,
   type BusinessForm,
   type BusinessStatus,
   type DocumentKind,
+  type PosterFiles,
+  type PosterForm,
+  type PosterResult,
+  type PosterStatus,
+  type ProofKind,
   type SubmitResult,
 } from "../lib/business";
 import { useLanguage } from "../lib/language";
@@ -44,6 +50,25 @@ const refusalText: Record<Exclude<SubmitResult, "ok">, TextKey> = {
   documents_missing: "businessDocumentsMissing",
   already_pending: "businessAlreadyPending",
   already_approved: "businessAlreadyApproved",
+  file_too_large: "businessFileTooLarge",
+  file_wrong_type: "businessFileWrongType",
+  failed: "businessSendFailed",
+};
+
+const proofLabel: Record<ProofKind, TextKey> = {
+  directorship: "proofDirectorship",
+  authorisation_letter: "proofAuthorisation",
+};
+
+const posterRefusalText: Record<Exclude<PosterResult, "ok">, TextKey> = {
+  level2_required: "posterLevel2Required",
+  already_pending: "posterAlreadyPending",
+  already_approved: "posterAlreadyApproved",
+  invalid_proof_kind: "posterInvalidProofKind",
+  invalid_address: "posterInvalidAddress",
+  contact_details: "posterHasContact",
+  invalid_region: "posterInvalidRegion",
+  documents_missing: "posterDocumentsMissing",
   file_too_large: "businessFileTooLarge",
   file_wrong_type: "businessFileWrongType",
   failed: "businessSendFailed",
@@ -173,18 +198,121 @@ function BusinessFormView({
   );
 }
 
-/** S40: the status of each level, and the Level 2 documents (R-B01). */
+function PosterFormView({
+  api,
+  initial,
+  language,
+  onSent,
+}: {
+  api: BusinessApi;
+  initial: PosterForm;
+  language: Language;
+  onSent: () => void;
+}) {
+  const { t } = useLanguage();
+  const [form, setForm] = useState<PosterForm>(initial);
+  const [regions, setRegions] = useState<Option[]>([]);
+  const [districts, setDistricts] = useState<Option[]>([]);
+  const [files, setFiles] = useState<Partial<PosterFiles>>({});
+  const [problem, setProblem] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    api.regions(language).then(setRegions, () => undefined);
+  }, [api, language]);
+
+  useEffect(() => {
+    if (!form.regionId) return setDistricts([]);
+    api.districts(form.regionId, language).then(setDistricts, () => undefined);
+  }, [api, form.regionId, language]);
+
+  const set = <K extends keyof PosterForm>(key: K, value: PosterForm[K]) =>
+    setForm((f) => ({ ...f, [key]: value }));
+
+  const choose = async (key: keyof PosterFiles) => {
+    const picked = await api.pickFile().catch(() => null);
+    if (picked) setFiles((f) => ({ ...f, [key]: picked }));
+  };
+
+  const send = async () => {
+    const complete =
+      form.proofKind &&
+      form.address.trim() &&
+      form.regionId &&
+      form.districtId &&
+      files.proof &&
+      files.addressProof;
+    if (!complete) return setProblem(t.posterIncomplete);
+    setProblem(null);
+    setBusy(true);
+    const result = await api
+      .submitPoster({ ...form, address: form.address.trim() }, files as PosterFiles)
+      .catch(() => "failed" as const);
+    setBusy(false);
+    if (result === "ok") return onSent();
+    setProblem(t[posterRefusalText[result]] as string);
+  };
+
+  return (
+    <Section title={t.posterDetails}>
+      <Text className="font-figtree text-sm text-ink-2">{t.posterIntro}</Text>
+      <ChoiceList
+        label={t.proofKind}
+        options={PROOF_KINDS.map((k) => ({ value: k, label: t[proofLabel[k]] as string }))}
+        value={form.proofKind || undefined}
+        onChange={(v) => set("proofKind", v as ProofKind)}
+      />
+      <Button
+        secondary
+        label={`${t.docProof}: ${files.proof?.name ?? t.chooseFile}`}
+        onPress={() => choose("proof")}
+      />
+      <Field label={t.businessAddress} value={form.address} onChange={(v) => set("address", v)} />
+      <ChoiceList
+        label={t.region}
+        options={regions}
+        value={form.regionId || undefined}
+        onChange={(v) => setForm((f) => ({ ...f, regionId: v, districtId: "" }))}
+      />
+      <ChoiceList
+        label={t.district}
+        options={districts}
+        value={form.districtId || undefined}
+        onChange={(v) => set("districtId", v)}
+        disabled={!form.regionId}
+      />
+      <Text className="font-figtree text-sm text-ink-2">{t.addressProofHint}</Text>
+      <Button
+        secondary
+        label={`${t.docAddressProof}: ${files.addressProof?.name ?? t.chooseFile}`}
+        onPress={() => choose("addressProof")}
+      />
+      <Message text={problem} />
+      <Button label={t.posterSend} onPress={send} disabled={busy} />
+    </Section>
+  );
+}
+
+const emptyPoster: PosterForm = { proofKind: "", address: "", regionId: "", districtId: "" };
+
+/** S40: the status of each level, the Level 2 documents (B01) and the Level 3 documents (B02). */
 export function BusinessScreen({ api }: { api: BusinessApi }) {
   const { t, language } = useLanguage();
   const [status, setStatus] = useState<BusinessStatus | null | undefined>(undefined);
+  const [poster, setPoster] = useState<PosterStatus | null>(null);
   const [failed, setFailed] = useState(false);
   const [sent, setSent] = useState(false);
+  const [posterSent, setPosterSent] = useState(false);
   const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     let live = true;
-    api.load().then(
-      (loaded) => live && setStatus(loaded),
+    Promise.all([api.load(), api.loadPoster()]).then(
+      ([loaded, loadedPoster]) => {
+        if (!live) return;
+        setPoster(loadedPoster);
+        setStatus(loaded);
+      },
       () => live && setFailed(true),
     );
     return () => {
@@ -208,6 +336,19 @@ export function BusinessScreen({ api }: { api: BusinessApi }) {
   const pending = request === "pending" || sent;
   const approved = request === "approved";
   const expired = status?.businessStatus === "expired";
+  const level2Approved = approved && status?.businessStatus === "approved";
+  const posterRequest = poster?.requestStatus ?? null;
+  const posterPending = posterRequest === "pending" || posterSent;
+  const posterApproved = posterRequest === "approved";
+  const posterText = !level2Approved
+    ? t.statusLocked
+    : posterPending
+      ? t.statusPending
+      : posterApproved
+        ? t.statusApproved
+        : posterRequest === "rejected"
+          ? t.statusRejected
+          : t.statusNotStarted;
   const statusText = expired
     ? t.statusExpired
     : pending
@@ -224,8 +365,8 @@ export function BusinessScreen({ api }: { api: BusinessApi }) {
       <Section title={t.levelsTitle}>
         <LevelRow title={t.levelMember} status={t.statusApproved} />
         <LevelRow title={t.levelBusiness} status={statusText} />
-        <LevelRow title={t.levelPoster} status={approved ? t.statusNotStarted : t.statusLocked} />
-        {!approved ? (
+        <LevelRow title={t.levelPoster} status={posterText} />
+        {!level2Approved ? (
           <Text className="font-figtree text-sm text-ink-2">{t.posterLocked}</Text>
         ) : null}
       </Section>
@@ -256,6 +397,33 @@ export function BusinessScreen({ api }: { api: BusinessApi }) {
               : emptyForm
           }
           onSent={() => setSent(true)}
+        />
+      ) : null}
+      {posterSent ? <Message tone="info" text={t.posterSent} /> : null}
+      {level2Approved && posterRequest === "pending" && !posterSent ? (
+        <Message tone="info" text={t.posterPendingNote} />
+      ) : null}
+      {level2Approved && posterRequest === "rejected" && !posterSent ? (
+        <Message text={t.posterRejectedReason(poster?.reason ?? "")} />
+      ) : null}
+      {level2Approved && posterApproved ? (
+        <Message tone="info" text={t.posterApprovedNote} />
+      ) : null}
+      {level2Approved && !posterPending && !posterApproved ? (
+        <PosterFormView
+          api={api}
+          language={language}
+          initial={
+            poster
+              ? {
+                  proofKind: poster.proofKind,
+                  address: poster.address,
+                  regionId: poster.regionId,
+                  districtId: poster.districtId,
+                }
+              : emptyPoster
+          }
+          onSent={() => setPosterSent(true)}
         />
       ) : null}
     </View>

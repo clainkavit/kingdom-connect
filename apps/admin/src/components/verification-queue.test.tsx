@@ -51,6 +51,25 @@ describe("VerificationQueue (A02)", () => {
     expect(links).toEqual(["/verification/old", "/verification/new"]);
   });
 
+  it("lists Level 2 and Level 3 business requests by business name, each opening the business review", async () => {
+    await show(
+      vi
+        .fn()
+        .mockResolvedValue([
+          item({ id: "b2", kind: "business", businessName: "Asha Traders" }),
+          item({ id: "b3", kind: "poster", businessName: "Pendo Supplies" }),
+        ]),
+    );
+    expect(screen.getByText("Pendo Supplies")).toBeTruthy();
+    expect(screen.getByText(/Business, Level 3/)).toBeTruthy();
+    expect(screen.getByText(/Business, Level 2/)).toBeTruthy();
+    const links = screen
+      .getAllByRole("link")
+      .map((l) => l.getAttribute("href"))
+      .filter((href) => href?.startsWith("/verification/"));
+    expect(links).toEqual(["/verification/business/b2", "/verification/business/b3"]);
+  });
+
   it("warns about applications that waited 2 working days", async () => {
     await show(
       vi

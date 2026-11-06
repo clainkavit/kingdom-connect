@@ -24,6 +24,7 @@ insert into public.staff (id, full_name, role) values
 insert into public.registration_drafts (member_id, step, data, submitted_at) values
   ('00000000-0000-0000-0000-0000000000b1', 6, '{"fullName": "Status Applicant"}', now());
 
+select set_config('kc.business_review', 'on', true);
 update public.verification_requests
 set status = case when status = 'pending' then 'approved' else status end,
     decided_at = now() - interval '30 days';

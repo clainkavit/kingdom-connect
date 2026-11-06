@@ -21,6 +21,11 @@ const data = (over: Partial<BusinessReviewData> = {}): BusinessReviewData => ({
   tin: "123-456-789",
   licenceNo: "LIC-1",
   licenceExpiresOn: "2027-06-30",
+  level: 2,
+  address: "",
+  region: null,
+  district: null,
+  proofKind: null,
   documents: [
     { kind: "brela", url: "https://files.test/brela", isPdf: false },
     { kind: "tin", url: "https://files.test/tin.pdf", isPdf: true },
@@ -59,6 +64,37 @@ describe("BusinessReview", () => {
       screen.getByRole("link", { name: "Open TRA TIN certificate" }).getAttribute("href"),
     ).toBe("https://files.test/tin.pdf");
     expect(screen.getByRole("img", { name: "Business licence" })).toBeTruthy();
+  });
+
+  it("shows a Level 3 request with the address, the proof and both documents", async () => {
+    const api = fakeApi({
+      load: vi.fn().mockResolvedValue(
+        data({
+          level: 3,
+          address: "Plot 12, Kenyatta Road",
+          region: { en: "Mwanza", sw: "Mwanza" },
+          district: { en: "Nyamagana", sw: "Nyamagana" },
+          proofKind: "directorship",
+          documents: [
+            { kind: "directorship", url: "https://files.test/director.pdf", isPdf: true },
+            { kind: "address_proof", url: "https://files.test/bill", isPdf: false },
+          ],
+        }),
+      ),
+    });
+    await show(api);
+    expect(screen.getByRole("heading", { level: 1, name: "Level 3 verification" })).toBeTruthy();
+    expect(screen.getByText("Plot 12, Kenyatta Road")).toBeTruthy();
+    expect(screen.getByText("Nyamagana")).toBeTruthy();
+    expect(screen.getAllByText("Directors' record").length).toBeGreaterThan(0);
+    expect(screen.getByRole("link", { name: "Open Directors' record" }).getAttribute("href")).toBe(
+      "https://files.test/director.pdf",
+    );
+    expect(screen.getByRole("img", { name: "Address proof" })).toBeTruthy();
+    expect(screen.getByText("BRELA-1")).toBeTruthy();
+    expect(screen.queryByText("123-456-789")).toBeNull();
+    await click("Reject");
+    expect(api.reasons).toHaveBeenCalledWith("en", 3);
   });
 
   it("approves", async () => {

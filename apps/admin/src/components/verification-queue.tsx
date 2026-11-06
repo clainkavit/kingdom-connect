@@ -84,21 +84,23 @@ export function VerificationQueue({
               <li key={item.id}>
                 <Link
                   href={
-                    item.kind === "business"
-                      ? `/verification/business/${item.id}`
-                      : `/verification/${item.id}`
+                    item.kind === "member"
+                      ? `/verification/${item.id}`
+                      : `/verification/business/${item.id}`
                   }
                   className="flex min-h-[64px] flex-wrap items-center gap-x-4 gap-y-1 px-4 py-3"
                 >
                   <span className="flex min-w-0 flex-1 flex-col">
                     <span className="truncate text-[15px] font-semibold text-foreground">
-                      {item.kind === "business"
-                        ? item.businessName
-                        : item.fullName || item.username}
+                      {item.kind === "member" ? item.fullName || item.username : item.businessName}
                     </span>
                     <span className="text-[13px] text-ink-2">
                       @{item.username} ·{" "}
-                      {item.kind === "business" ? t.queueTypeBusiness : t.queueTypeMember}
+                      {item.kind === "poster"
+                        ? t.queueTypePoster
+                        : item.kind === "business"
+                          ? t.queueTypeBusiness
+                          : t.queueTypeMember}
                     </span>
                   </span>
                   <span className="flex flex-wrap items-center gap-2">

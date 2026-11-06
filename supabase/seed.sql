@@ -109,6 +109,35 @@ insert into public.connections (member_a, member_b) values
   ('5eed0000-0000-4000-8000-000000000002', '5eed0000-0000-4000-8000-000000000003')
 on conflict (member_a, member_b) do nothing;
 
+insert into public.businesses (id, member_id, name, sector_id, size, description, level, status)
+select b.id, b.member_id, b.name, s.id, b.size, b.description, b.level, 'approved'
+from (values
+  ('5eed0000-0000-4000-8000-00000000b003'::uuid, '5eed0000-0000-4000-8000-000000000003'::uuid, 'Test Kinondoni Shop',
+   'Trade', 'micro', 'Fake shop for testing', 2),
+  ('5eed0000-0000-4000-8000-00000000b004'::uuid, '5eed0000-0000-4000-8000-000000000004'::uuid, 'Test Arusha Builders',
+   'Construction', 'small', 'Fake contractor for testing', 3)
+) as b (id, member_id, name, sector, size, description, level)
+join public.sectors s on s.name_en = b.sector
+on conflict (id) do nothing;
+
+insert into public.business_private (business_id, brela_no, tin, licence_no, licence_expires_on, address, region_id, district_id)
+select p.business_id, p.brela_no, p.tin, p.licence_no, current_date + 365, p.address, r.id, d.id
+from (values
+  ('5eed0000-0000-4000-8000-00000000b003'::uuid, 'TEST-BRELA-3', '300-300-300', 'TEST-LIC-3', null, null, null),
+  ('5eed0000-0000-4000-8000-00000000b004'::uuid, 'TEST-BRELA-4', '400-400-400', 'TEST-LIC-4', 'Plot 4, Test Road', 'Arusha', 'Arusha')
+) as p (business_id, brela_no, tin, licence_no, address, region, district)
+left join public.regions r on r.name_en = p.region
+left join public.districts d on d.region_id = r.id and d.name_en = p.district
+on conflict (business_id) do nothing;
+
+update public.verification_requests v set business_id = b.id
+from (values
+  ('5eed0000-0000-4000-8000-00000000f302'::uuid, '5eed0000-0000-4000-8000-00000000b003'::uuid),
+  ('5eed0000-0000-4000-8000-00000000f402'::uuid, '5eed0000-0000-4000-8000-00000000b004'::uuid),
+  ('5eed0000-0000-4000-8000-00000000f403'::uuid, '5eed0000-0000-4000-8000-00000000b004'::uuid)
+) as b (request_id, id)
+where v.id = b.request_id and v.business_id is null;
+
 select vault.create_secret('http://kong:8000/functions/v1', 'functions_url')
 where not exists (select 1 from vault.secrets where name = 'functions_url');
 select vault.create_secret('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImV4cCI6MTk4MzgxMjk5Nn0.EGIM96RAZx35lJzdJsyH-qQwv8Hdp7fsn3W0YpN81IU', 'service_role_key')

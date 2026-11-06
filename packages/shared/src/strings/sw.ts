@@ -761,4 +761,11 @@ export const sw: Strings = {
   queueTypePoster: "Biashara, Kiwango cha 3",
   posterReviewTitle: "Uthibitisho wa Kiwango cha 3",
   posterProofKind: "Uthibitisho uliotumwa",
+  tabProfessionals: "Wataalamu",
+  tabBusinesses: "Biashara",
+  businessSearch: "Tafuta kwa jina la biashara au inachofanya",
+  filterLevel: "Kiwango",
+  optionPoster: "Mchapishaji wa fursa",
+  ownedBy: (name: string) => `Mmiliki: ${name}`,
+  noBusinessesTitle: "Hakuna biashara inayolingana",
 };

@@ -905,6 +905,12 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 - A Level 3 approval does not lift an expired business; it only raises the level.
 - What Level 3 unlocks (posting opportunities) comes with O01; licence expiry pausing Level 3 comes with B04.
 
+**Decided on 6 November 2026 (Businesses tab, B03)**
+- People has two tabs, Professionals and Businesses. The Businesses tab lists approved businesses at Level 2 and up only; pending, rejected and expired businesses never appear.
+- A business follows its owner's profile: it is not listed when the owner is hidden from the directory, when either member has blocked the other, or when the owner is not an approved member. A member does not see their own business. The rule is on the `businesses` table as well as in the search, so reading the table directly shows no business across a block either.
+- A business card shows the name, sector, size, the owner's region and district, the description, a Verified Business or Opportunity Poster badge and the owner's name. Tapping it opens the owner's profile, where Connect works as before. There is no separate business page.
+- Search by business name or description, and filters for sector, level and region (the owner's region, since the business address is private).
+
 **Open.** Every open question is a ticket on the [wayfinder map](https://github.com/clainkavit/kingdom-connect/issues/1) and is linked where it applies above.
 
 **Outside this spec**
@@ -965,6 +971,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | 5 Nov 2026 | Monitoring: Sentry for both apps, security alerts on the dashboard and by email to Super Admins | 15, 18 |
 | 6 Nov 2026 | Level 2 business verification: documents, review in the verification queue, B1 and B2 | 6, 18 |
 | 6 Nov 2026 | Brevo moved to after the testing phase, before the pilot | 18 |
+| 6 Nov 2026 | Businesses tab on People: approved Level 2 and up, following the owner's profile rules | 8, 18 |
 | 6 Nov 2026 | Level 3 Opportunity Poster verification: directorship or authorisation proof, address with proof, review in the verification queue | 6, 18 |
 
 ## Appendix B: Source documents

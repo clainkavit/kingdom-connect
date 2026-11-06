@@ -12,6 +12,9 @@ insert into public.members (id, username, status) values
   ('00000000-0000-0000-0000-000000001502', 'bv_other', 'approved');
 insert into public.staff (id, full_name, role, active)
   values ('00000000-0000-0000-0000-0000000015a1', 'Business Checker', 'admin', true);
+insert into public.profiles (member_id, full_name) values
+  ('00000000-0000-0000-0000-000000001501', 'Business Owner'),
+  ('00000000-0000-0000-0000-000000001502', 'Other Member');
 insert into public.member_private (member_id, phone, email, language) values
   ('00000000-0000-0000-0000-000000001501', '+255712000151', 'bv01@test.invalid', 'en'),
   ('00000000-0000-0000-0000-000000001502', '+255712000152', 'bv02@test.invalid', 'en');

@@ -2,10 +2,12 @@ import type { Language } from "@kingdom-connect/shared";
 import { supabase } from "./supabase";
 
 export type BusinessDocument = {
-  kind: "brela" | "tin" | "licence";
+  kind: "brela" | "tin" | "licence" | "directorship" | "authorisation_letter" | "address_proof";
   url: string | null;
   isPdf: boolean;
 };
+
+export type BusinessLevel = 2 | 3;
 
 export type BusinessReviewData = {
   id: string;
@@ -23,6 +25,11 @@ export type BusinessReviewData = {
   tin: string;
   licenceNo: string;
   licenceExpiresOn: string;
+  level: BusinessLevel;
+  address: string;
+  region: { en: string; sw: string } | null;
+  district: { en: string; sw: string } | null;
+  proofKind: "directorship" | "authorisation_letter" | null;
   documents: BusinessDocument[];
 };
 
@@ -38,7 +45,7 @@ export type BusinessDecision =
 
 export type BusinessReviewApi = {
   load: (id: string) => Promise<BusinessReviewData | null>;
-  reasons: (language: Language) => Promise<BusinessReason[]>;
+  reasons: (language: Language, level: BusinessLevel) => Promise<BusinessReason[]>;
   decide: (
     id: string,
     approve: boolean,
@@ -48,6 +55,21 @@ export type BusinessReviewApi = {
 };
 
 const LINK_SECONDS = 300;
+const DOCUMENTS_BY_LEVEL: Record<BusinessLevel, BusinessDocument["kind"][]> = {
+  2: ["brela", "tin", "licence"],
+  3: ["directorship", "authorisation_letter", "address_proof"],
+};
+
+type NamedRow = { name_en: string; name_sw: string };
+type PrivateRow = {
+  brela_no: string;
+  tin: string;
+  licence_no: string;
+  licence_expires_on: string;
+  address: string | null;
+  region: NamedRow | null;
+  district: NamedRow | null;
+};
 const decisions: BusinessDecision[] = [
   "already_decided",
   "reason_required",
@@ -57,6 +79,7 @@ const decisions: BusinessDecision[] = [
 
 type Row = {
   id: string;
+  level: BusinessLevel;
   status: string;
   reason: string | null;
   submitted_at: string;
@@ -66,9 +89,7 @@ type Row = {
     size: BusinessReviewData["size"];
     description: string | null;
     sector: { name_en: string; name_sw: string };
-    private:
-      | { brela_no: string; tin: string; licence_no: string; licence_expires_on: string }
-      | { brela_no: string; tin: string; licence_no: string; licence_expires_on: string }[];
+    private: PrivateRow | PrivateRow[];
   } | null;
   documents: { kind: BusinessDocument["kind"]; storage_path: string }[];
 };
@@ -78,15 +99,16 @@ export const businessReviewApi: BusinessReviewApi = {
     const { data, error } = await supabase
       .from("verification_requests")
       .select(
-        `id, status, reason, submitted_at,
+        `id, level, status, reason, submitted_at,
          member:members!verification_requests_member_id_fkey(username, profile:profiles(full_name)),
          business:businesses!verification_requests_business_id_fkey(name, size, description,
            sector:sectors(name_en, name_sw),
-           private:business_private(brela_no, tin, licence_no, licence_expires_on)),
+           private:business_private(brela_no, tin, licence_no, licence_expires_on, address,
+             region:regions(name_en, name_sw), district:districts(name_en, name_sw))),
          documents:verification_documents(kind, storage_path)`,
       )
       .eq("id", id)
-      .eq("level", 2)
+      .in("level", [2, 3])
       .maybeSingle();
     if (error) throw error;
     if (!data) return null;
@@ -120,7 +142,20 @@ export const businessReviewApi: BusinessReviewApi = {
       tin: details.tin,
       licenceNo: details.licence_no,
       licenceExpiresOn: details.licence_expires_on,
-      documents: (["brela", "tin", "licence"] as const).flatMap((kind) => {
+      level: row.level,
+      address: details.address ?? "",
+      region: details.region ? { en: details.region.name_en, sw: details.region.name_sw } : null,
+      district: details.district
+        ? { en: details.district.name_en, sw: details.district.name_sw }
+        : null,
+      proofKind:
+        row.level === 3
+          ? (row.documents.find(
+              (d): d is { kind: "directorship" | "authorisation_letter"; storage_path: string } =>
+                d.kind === "directorship" || d.kind === "authorisation_letter",
+            )?.kind ?? null)
+          : null,
+      documents: DOCUMENTS_BY_LEVEL[row.level].flatMap((kind) => {
         const doc = row.documents.find((d) => d.kind === kind);
         return doc
           ? [
@@ -135,11 +170,11 @@ export const businessReviewApi: BusinessReviewApi = {
     };
   },
 
-  async reasons(language) {
+  async reasons(language, level) {
     const { data, error } = await supabase
       .from("rejection_reasons")
       .select("code, label_en, label_sw, needs_note")
-      .eq("for_business", true)
+      .eq(level === 3 ? "for_poster" : "for_business", true)
       .order("sort");
     if (error) throw error;
     return data.map((r) => ({

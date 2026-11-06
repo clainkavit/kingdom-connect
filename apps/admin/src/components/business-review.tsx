@@ -23,7 +23,14 @@ const sizeLabel: Record<BusinessReviewData["size"], TextKey> = {
   large: "sizeLarge",
 };
 
-const documentLabel = { brela: "docBrela", tin: "docTin", licence: "docLicence" } as const;
+const documentLabel = {
+  brela: "docBrela",
+  tin: "docTin",
+  licence: "docLicence",
+  directorship: "docDirectorship",
+  authorisation_letter: "docAuthorisation",
+  address_proof: "docAddressProof",
+} as const;
 
 function decisionProblem(t: Strings, result: BusinessDecision): string | null {
   return {
@@ -54,8 +61,9 @@ function DecisionCard({
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
-    if (rejecting) api.reasons(language).then(setReasons, () => setProblem(t.decideFailed));
-  }, [rejecting, api, language, t]);
+    if (rejecting)
+      api.reasons(language, data.level).then(setReasons, () => setProblem(t.decideFailed));
+  }, [rejecting, api, language, t, data.level]);
 
   const chosen = reasons.find((r) => r.code === code);
 
@@ -72,7 +80,7 @@ function DecisionCard({
   };
 
   return (
-    <Card title={t.businessReviewTitle}>
+    <Card title={data.level === 3 ? t.posterReviewTitle : t.businessReviewTitle}>
       {rejecting ? (
         <>
           <fieldset className="flex flex-col gap-2">
@@ -149,7 +157,7 @@ function DecisionCard({
   );
 }
 
-/** Level 2 business verification: the details and the three documents, then approve or reject. */
+/** Level 2 and Level 3 business verification: the details and the documents, then approve or reject. */
 export function BusinessReview({ id, api }: { id: string; api: BusinessReviewApi }) {
   const { t, language } = useLanguage();
   const [data, setData] = useState<BusinessReviewData | null | undefined>(undefined);
@@ -188,9 +196,11 @@ export function BusinessReview({ id, api }: { id: string; api: BusinessReviewApi
       </>
     );
 
+  const title = data.level === 3 ? t.posterReviewTitle : t.businessReviewTitle;
+
   return (
     <>
-      <ScreenTitle>{t.businessReviewTitle}</ScreenTitle>
+      <ScreenTitle>{title}</ScreenTitle>
       <div className="flex flex-col gap-4">
         <Link href="/verification" className="text-sm font-semibold text-primary underline">
           {t.reviewBack}
@@ -207,9 +217,25 @@ export function BusinessReview({ id, api }: { id: string; api: BusinessReviewApi
               <Row label={t.businessDescription} value={data.description} />
             ) : null}
             <Row label={t.brelaNumber} value={data.brelaNo} />
-            <Row label={t.tinNumber} value={data.tin} />
-            <Row label={t.licenceNumber} value={data.licenceNo} />
-            <Row label={t.licenceExpiry} value={data.licenceExpiresOn} />
+            {data.level === 3 ? (
+              <>
+                <Row label={t.businessAddress} value={data.address} />
+                {data.region ? <Row label={t.region} value={data.region[language]} /> : null}
+                {data.district ? <Row label={t.district} value={data.district[language]} /> : null}
+                {data.proofKind ? (
+                  <Row
+                    label={t.posterProofKind}
+                    value={t[documentLabel[data.proofKind]] as string}
+                  />
+                ) : null}
+              </>
+            ) : (
+              <>
+                <Row label={t.tinNumber} value={data.tin} />
+                <Row label={t.licenceNumber} value={data.licenceNo} />
+                <Row label={t.licenceExpiry} value={data.licenceExpiresOn} />
+              </>
+            )}
           </dl>
           <p className="text-[13px] text-ink-2">
             {t.reviewSubmittedOn(formatDate(data.submittedAt, language))}

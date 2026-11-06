@@ -865,7 +865,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 
 **Decided on 5 November 2026 (launch plan)**
 - The two apps are hosted on Vercel. The production database question (L06, #72) is now only about where Supabase runs.
-- Email delivery with Brevo (F08, #46) and the delivery test to Gmail and Tanzanian addresses (L05, #71) happen during the testing phase.
+- Email delivery with Brevo (F08, #46) and the delivery test to Gmail and Tanzanian addresses (L05, #71) happen during the testing phase. **Changed 6 Nov:** Brevo is set up after the testing phase and before the pilot; until then the hosted test project has no mail provider.
 - Company registration (L01, #67) and the Data Protection Commission registration (L02, #68) happen after testing and before the pilot.
 - The lawyer review (L04, #70) also confirms R16's keep-and-delete list.
 - R17 is built for Vercel now; its backup part waits for the Supabase hosting decision.
@@ -964,6 +964,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | 5 Nov 2026 | 3G measured: repeat visits 1.8 s, first visits 4.4 s, accepted; the member website stays on Expo | 15, 18 |
 | 5 Nov 2026 | Monitoring: Sentry for both apps, security alerts on the dashboard and by email to Super Admins | 15, 18 |
 | 6 Nov 2026 | Level 2 business verification: documents, review in the verification queue, B1 and B2 | 6, 18 |
+| 6 Nov 2026 | Brevo moved to after the testing phase, before the pilot | 18 |
 | 6 Nov 2026 | Level 3 Opportunity Poster verification: directorship or authorisation proof, address with proof, review in the verification queue | 6, 18 |
 
 ## Appendix B: Source documents

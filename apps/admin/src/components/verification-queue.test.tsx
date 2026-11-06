@@ -58,16 +58,22 @@ describe("VerificationQueue (A02)", () => {
         .mockResolvedValue([
           item({ id: "b2", kind: "business", businessName: "Asha Traders" }),
           item({ id: "b3", kind: "poster", businessName: "Pendo Supplies" }),
+          item({ id: "b4", kind: "renewal", businessName: "Mlima Builders" }),
         ]),
     );
     expect(screen.getByText("Pendo Supplies")).toBeTruthy();
     expect(screen.getByText(/Business, Level 3/)).toBeTruthy();
     expect(screen.getByText(/Business, Level 2/)).toBeTruthy();
+    expect(screen.getByText(/Business, licence renewal/)).toBeTruthy();
     const links = screen
       .getAllByRole("link")
       .map((l) => l.getAttribute("href"))
       .filter((href) => href?.startsWith("/verification/"));
-    expect(links).toEqual(["/verification/business/b2", "/verification/business/b3"]);
+    expect(links).toEqual([
+      "/verification/business/b2",
+      "/verification/business/b3",
+      "/verification/business/b4",
+    ]);
   });
 
   it("warns about applications that waited 2 working days", async () => {

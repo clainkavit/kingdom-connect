@@ -2,7 +2,7 @@ begin;
 create extension if not exists pgtap with schema extensions;
 -- Members here have accepted the current legal texts; that rule is tested in legal_on_server.test.sql.
 create or replace function access.accepted_terms_and_privacy() returns boolean language sql stable as 'select true';
-select plan(35);
+select plan(36);
 
 insert into auth.users (id, email)
 select ('00000000-0000-0000-0000-0000000016' || k)::uuid, 'pv' || k || '@test.invalid'
@@ -125,13 +125,16 @@ select is(public.decide_business_verification((select id from public.verificatio
   'already_decided', 'a decided Level 3 request stays decided');
 
 reset role;
-select is(access.member_level('00000000-0000-0000-0000-000000001601'), 3, 'the member is now Level 3');
+select is(access.member_level('00000000-0000-0000-0000-000000001601'), 1,
+  'while the business is expired the member stays paused at Level 1');
 select ok(exists (select 1 from private.audit_log where action = 'business.verification_submitted'
                   and actor_member_id = '00000000-0000-0000-0000-000000001601'
                   and after ->> 'address' = 'Plot 14, Kenyatta Road'),
   'the audit log keeps the address each request was sent with');
 select is((select row(level, status)::text from public.businesses where id = '00000000-0000-0000-0000-00000000b161'), '(3,expired)',
   'the business is Level 3, and an approval does not lift an expiry');
+update public.businesses set status = 'approved' where id = '00000000-0000-0000-0000-00000000b161';
+select is(access.member_level('00000000-0000-0000-0000-000000001601'), 3, 'once the business is approved the member is Level 3');
 select is((select payload from public.notifications where kind = 'B1' and member_id = '00000000-0000-0000-0000-000000001601'),
   '{"level": 3}'::jsonb, 'B1 says Level 3');
 select ok(exists (select 1 from private.audit_log where action = 'business.verification_approved'

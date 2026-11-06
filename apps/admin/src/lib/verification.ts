@@ -10,10 +10,11 @@ import {
   type MemberCategory,
 } from "@kingdom-connect/shared";
 import { anonKey, supabase, url } from "./supabase";
+import { hasRow } from "./utils";
 
 export type QueueItem = {
   id: string;
-  kind: "member" | "business" | "poster";
+  kind: "member" | "business" | "poster" | "renewal";
   businessName: string | null;
   submittedAt: Date;
   username: string;
@@ -84,7 +85,7 @@ export const verificationApi: VerificationApi = {
     const { data, error } = await supabase
       .from("verification_requests")
       .select(
-        "id, level, submitted_at, duplicate_suspected_of, business:businesses!verification_requests_business_id_fkey(name), member:members!verification_requests_member_id_fkey(username, profile:profiles(full_name))",
+        "id, level, submitted_at, duplicate_suspected_of, business:businesses!verification_requests_business_id_fkey(name), renewal:licence_renewals(request_id), member:members!verification_requests_member_id_fkey(username, profile:profiles(full_name))",
       )
       .eq("status", "pending")
       .in("level", [1, 2, 3])
@@ -96,10 +97,12 @@ export const verificationApi: VerificationApi = {
         profile: { full_name: string } | null;
       };
       const business = row.business as unknown as { name: string } | null;
+      const isRenewal = hasRow(row.renewal as unknown as object | null);
       return {
         id: row.id,
-        kind:
-          row.level === 3
+        kind: isRenewal
+          ? ("renewal" as const)
+          : row.level === 3
             ? ("poster" as const)
             : row.level === 2
               ? ("business" as const)

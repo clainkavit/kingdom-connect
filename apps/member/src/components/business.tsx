@@ -1,4 +1,4 @@
-import type { Language, TextKey } from "@kingdom-connect/shared";
+import { daysUntil, type Language, type TextKey } from "@kingdom-connect/shared";
 import { useEffect, useState } from "react";
 import { Text, View } from "react-native";
 import {
@@ -14,6 +14,9 @@ import {
   type PosterResult,
   type PosterStatus,
   type ProofKind,
+  type RenewalForm,
+  type RenewalResult,
+  type RenewalStatus,
   type SubmitResult,
 } from "../lib/business";
 import { useLanguage } from "../lib/language";
@@ -295,11 +298,88 @@ function PosterFormView({
 
 const emptyPoster: PosterForm = { proofKind: "", address: "", regionId: "", districtId: "" };
 
-/** S40: the status of each level, the Level 2 documents (B01) and the Level 3 documents (B02). */
+const renewalRefusalText: Record<Exclude<RenewalResult, "ok">, TextKey> = {
+  not_verified: "renewNotVerified",
+  already_pending: "renewAlreadyPending",
+  not_due: "renewNotDue",
+  invalid_number: "businessInvalidNumber",
+  licence_expired: "businessLicenceExpired",
+  invalid_date: "renewInvalidDate",
+  documents_missing: "renewDocumentMissing",
+  file_too_large: "businessFileTooLarge",
+  file_wrong_type: "businessFileWrongType",
+  failed: "businessSendFailed",
+};
+
+/** S41: the new licence, sent within 30 days of the end date or after it (B04). */
+function RenewalFormView({
+  api,
+  initial,
+  intro,
+  onSent,
+}: {
+  api: BusinessApi;
+  initial: RenewalForm;
+  intro: string;
+  onSent: () => void;
+}) {
+  const { t } = useLanguage();
+  const [form, setForm] = useState<RenewalForm>(initial);
+  const [licence, setLicence] = useState<PickedFile | null>(null);
+  const [problem, setProblem] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+
+  const choose = async () => {
+    const picked = await api.pickFile().catch(() => null);
+    if (picked) setLicence(picked);
+  };
+
+  const send = async () => {
+    const date = form.licenceExpiresOn.trim();
+    if (!form.licenceNo.trim() || !/^\d{4}-\d{2}-\d{2}$/.test(date) || !licence)
+      return setProblem(t.renewIncomplete);
+    setProblem(null);
+    setBusy(true);
+    const result = await api
+      .submitRenewal({ licenceNo: form.licenceNo.trim(), licenceExpiresOn: date }, licence)
+      .catch(() => "failed" as const);
+    setBusy(false);
+    if (result === "ok") return onSent();
+    setProblem(t[renewalRefusalText[result]] as string);
+  };
+
+  return (
+    <Section title={t.renewTitle}>
+      <Text className="font-figtree text-sm text-ink-2">{intro}</Text>
+      <Field
+        label={t.newLicenceNumber}
+        value={form.licenceNo}
+        onChange={(v) => setForm((f) => ({ ...f, licenceNo: v }))}
+      />
+      <Field
+        label={t.newLicenceExpiry}
+        value={form.licenceExpiresOn}
+        onChange={(v) => setForm((f) => ({ ...f, licenceExpiresOn: v }))}
+        hint={t.licenceExpiryHint}
+      />
+      <Button
+        secondary
+        label={`${t.docNewLicence}: ${licence?.name ?? t.chooseFile}`}
+        onPress={choose}
+      />
+      <Message text={problem} />
+      <Button label={t.renewSend} onPress={send} disabled={busy} />
+    </Section>
+  );
+}
+
+/** S40 and S41: each level's status, the Level 2 (B01) and Level 3 (B02) documents, and licence renewal (B04). */
 export function BusinessScreen({ api }: { api: BusinessApi }) {
   const { t, language } = useLanguage();
   const [status, setStatus] = useState<BusinessStatus | null | undefined>(undefined);
   const [poster, setPoster] = useState<PosterStatus | null>(null);
+  const [renewal, setRenewal] = useState<RenewalStatus | null>(null);
+  const [renewalSent, setRenewalSent] = useState(false);
   const [failed, setFailed] = useState(false);
   const [sent, setSent] = useState(false);
   const [posterSent, setPosterSent] = useState(false);
@@ -307,10 +387,11 @@ export function BusinessScreen({ api }: { api: BusinessApi }) {
 
   useEffect(() => {
     let live = true;
-    Promise.all([api.load(), api.loadPoster()]).then(
-      ([loaded, loadedPoster]) => {
+    Promise.all([api.load(), api.loadPoster(), api.loadRenewal()]).then(
+      ([loaded, loadedPoster, loadedRenewal]) => {
         if (!live) return;
         setPoster(loadedPoster);
+        setRenewal(loadedRenewal);
         setStatus(loaded);
       },
       () => live && setFailed(true),
@@ -340,15 +421,23 @@ export function BusinessScreen({ api }: { api: BusinessApi }) {
   const posterRequest = poster?.requestStatus ?? null;
   const posterPending = posterRequest === "pending" || posterSent;
   const posterApproved = posterRequest === "approved";
-  const posterText = !level2Approved
-    ? t.statusLocked
-    : posterPending
-      ? t.statusPending
-      : posterApproved
-        ? t.statusApproved
-        : posterRequest === "rejected"
-          ? t.statusRejected
-          : t.statusNotStarted;
+  const posterText =
+    expired && posterApproved
+      ? t.statusExpired
+      : !level2Approved
+        ? t.statusLocked
+        : posterPending
+          ? t.statusPending
+          : posterApproved
+            ? t.statusApproved
+            : posterRequest === "rejected"
+              ? t.statusRejected
+              : t.statusNotStarted;
+  const renewalRequest = renewal?.requestStatus ?? null;
+  const renewalDue =
+    approved &&
+    !!status &&
+    (expired || (status.businessStatus === "approved" && daysUntil(status.licenceExpiresOn) <= 30));
   const statusText = expired
     ? t.statusExpired
     : pending
@@ -375,7 +464,7 @@ export function BusinessScreen({ api }: { api: BusinessApi }) {
       {request === "rejected" ? (
         <Message text={t.businessRejectedReason(status?.reason ?? "")} />
       ) : null}
-      {approved && status ? (
+      {approved && !expired && status ? (
         <Message tone="info" text={t.businessApprovedNote(status.licenceExpiresOn)} />
       ) : null}
       {!pending && !approved ? (
@@ -424,6 +513,29 @@ export function BusinessScreen({ api }: { api: BusinessApi }) {
               : emptyPoster
           }
           onSent={() => setPosterSent(true)}
+        />
+      ) : null}
+      {renewalSent ? <Message tone="info" text={t.renewSent} /> : null}
+      {renewalDue && renewalRequest === "pending" && !renewalSent ? (
+        <Message tone="info" text={t.renewPendingNote} />
+      ) : null}
+      {renewalDue && renewalRequest === "rejected" && !renewalSent ? (
+        <Message text={t.renewRejectedReason(renewal?.reason ?? "")} />
+      ) : null}
+      {renewalDue && status && renewalRequest !== "pending" && !renewalSent ? (
+        <RenewalFormView
+          api={api}
+          intro={
+            expired
+              ? t.renewExpiredIntro(status.level ?? 2)
+              : t.renewDueIntro(status.licenceExpiresOn)
+          }
+          initial={
+            renewalRequest === "rejected" && renewal
+              ? { licenceNo: renewal.licenceNo, licenceExpiresOn: renewal.licenceExpiresOn }
+              : { licenceNo: "", licenceExpiresOn: "" }
+          }
+          onSent={() => setRenewalSent(true)}
         />
       ) : null}
     </View>

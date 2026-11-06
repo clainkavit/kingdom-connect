@@ -1,6 +1,15 @@
 import { describe, expect, it } from "vitest";
 import { en } from "./en";
-import { formatDate, formatDateTime, formatNumber, languages, stringsFor } from "./index";
+import {
+  addDays,
+  daysUntil,
+  formatDate,
+  formatDateTime,
+  formatNumber,
+  languages,
+  stringsFor,
+  tanzaniaDate,
+} from "./index";
 import { sw } from "./sw";
 
 describe("string files", () => {
@@ -67,5 +76,20 @@ describe("formatting", () => {
   it("groups numbers", () => {
     expect(formatNumber(1284, "en")).toBe("1,284");
     expect(formatNumber(1284, "sw")).toBe("1,284");
+  });
+});
+
+describe("Tanzania dates", () => {
+  it("uses the Tanzania day, three hours ahead of UTC", () => {
+    expect(tanzaniaDate(new Date("2026-11-06T20:59:00Z"))).toBe("2026-11-06");
+    expect(tanzaniaDate(new Date("2026-11-06T21:01:00Z"))).toBe("2026-11-07");
+  });
+
+  it("counts whole days to a date and moves dates by days", () => {
+    const now = new Date("2026-11-06T09:00:00Z");
+    expect(daysUntil("2026-11-16", now)).toBe(10);
+    expect(daysUntil("2026-11-06", now)).toBe(0);
+    expect(daysUntil("2026-11-04", now)).toBe(-2);
+    expect(addDays("2026-11-06", 30)).toBe("2026-12-06");
   });
 });

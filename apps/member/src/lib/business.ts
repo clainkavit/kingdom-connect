@@ -40,6 +40,26 @@ export type PosterResult =
   | "file_wrong_type"
   | "failed";
 
+export type RenewalForm = { licenceNo: string; licenceExpiresOn: string };
+
+export type RenewalStatus = RenewalForm & {
+  requestStatus: "pending" | "approved" | "rejected";
+  reason: string | null;
+};
+
+export type RenewalResult =
+  | "ok"
+  | "not_verified"
+  | "already_pending"
+  | "not_due"
+  | "invalid_number"
+  | "licence_expired"
+  | "invalid_date"
+  | "documents_missing"
+  | "file_too_large"
+  | "file_wrong_type"
+  | "failed";
+
 export type BusinessForm = {
   name: string;
   sectorId: string;
@@ -86,7 +106,19 @@ export type BusinessApi = {
   regions: (language: Language) => Promise<Option[]>;
   districts: (regionId: string, language: Language) => Promise<Option[]>;
   submitPoster: (form: PosterForm, files: PosterFiles) => Promise<PosterResult>;
+  loadRenewal: () => Promise<RenewalStatus | null>;
+  submitRenewal: (form: RenewalForm, licence: PickedFile) => Promise<RenewalResult>;
 };
+
+const renewalRefusals: RenewalResult[] = [
+  "not_verified",
+  "already_pending",
+  "not_due",
+  "invalid_number",
+  "licence_expired",
+  "invalid_date",
+  "documents_missing",
+];
 
 const refusals: SubmitResult[] = [
   "invalid_name",
@@ -259,6 +291,43 @@ export function businessApi(pick: () => Promise<PickedFile | null>): BusinessApi
     regions: regionOptions,
 
     districts: districtOptions,
+
+    async loadRenewal() {
+      const { data, error } = await supabase.rpc("my_licence_renewal");
+      if (error) throw error;
+      const row = (
+        data as
+          | {
+              request_status: RenewalStatus["requestStatus"];
+              reason: string | null;
+              licence_no: string;
+              licence_expires_on: string;
+            }[]
+          | null
+      )?.[0];
+      if (!row) return null;
+      return {
+        requestStatus: row.request_status,
+        reason: row.reason,
+        licenceNo: row.licence_no,
+        licenceExpiresOn: row.licence_expires_on,
+      };
+    },
+
+    async submitRenewal(form, licence) {
+      const refused = fileRefusal([licence]);
+      if (refused) return refused;
+      const paths = await uploadAll({ licence });
+      if (!paths) return "failed";
+      const { data, error } = await supabase.rpc("submit_licence_renewal", {
+        licence_no: form.licenceNo,
+        licence_expires_on: form.licenceExpiresOn,
+        licence_path: paths.licence,
+      });
+      const result: RenewalResult = resultOf(error, data, renewalRefusals);
+      if (result !== "ok") await supabase.storage.from(BUCKET).remove(Object.values(paths));
+      return result;
+    },
 
     async submitPoster(form, files) {
       const refused = fileRefusal([files.proof, files.addressProof]);

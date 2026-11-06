@@ -787,4 +787,8 @@ export const en = {
   renewalWaiting: "Renewal waiting",
   noRenewalYet: "No renewal sent yet",
   renewalRejected: "Last renewal rejected",
+  demoTitle: "Kingdom Connect demo",
+  demoIntro: "This is a test version with made-up people. Nothing you do here is real.",
+  demoOpen: "Open the demo",
+  demoFailed: "This demo link was already used or has expired. Ask for a new one.",
 };

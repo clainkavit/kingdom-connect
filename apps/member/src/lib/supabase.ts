@@ -15,7 +15,7 @@ export const supabase = createClient(url, anonKey, {
     storage: AsyncStorage,
     persistSession: true,
     autoRefreshToken: true,
-    detectSessionInUrl: false,
+    detectSessionInUrl: process.env.EXPO_PUBLIC_DEMO_LINKS === "1",
   },
 });
 

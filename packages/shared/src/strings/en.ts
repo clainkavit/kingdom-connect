@@ -362,7 +362,7 @@ export const en = {
   loadMore: "Load more",
   directoryLoadFailed: "We couldn't load the directory. Check your connection and try again.",
   badgeMember: "Verified member",
-  badgeBusiness: "Verified business",
+  badgeBusiness: "Verified Business",
   connect: "Connect",
   privacyTitle: "Profile privacy and contact sharing",
   privacyIntro:
@@ -747,4 +747,11 @@ export const en = {
   queueTypePoster: "Business, Level 3",
   posterReviewTitle: "Level 3 verification",
   posterProofKind: "Proof sent",
+  tabProfessionals: "Professionals",
+  tabBusinesses: "Businesses",
+  businessSearch: "Search by business name or what it does",
+  filterLevel: "Level",
+  optionPoster: "Opportunity Poster",
+  ownedBy: (name: string) => `Owner: ${name}`,
+  noBusinessesTitle: "No business matches",
 };

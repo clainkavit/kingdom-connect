@@ -37,28 +37,93 @@ export type DirectoryCard = {
   relation: Relation;
 };
 
-export type DirectoryPage = { cards: DirectoryCard[]; more: boolean };
+export type ResultPage<C> = { cards: C[]; more: boolean };
+
+export type DirectoryPage = ResultPage<DirectoryCard>;
+
+export type BusinessLevel = 2 | 3;
+
+export type BusinessFilters = {
+  q: string;
+  sector: string | null;
+  level: BusinessLevel | null;
+  region: string | null;
+};
+
+export const noBusinessFilters: BusinessFilters = {
+  q: "",
+  sector: null,
+  level: null,
+  region: null,
+};
+
+export type BusinessCard = {
+  businessId: string;
+  memberId: string;
+  name: string;
+  description: string;
+  size: "micro" | "small" | "medium" | "large";
+  level: BusinessLevel;
+  sector: string;
+  ownerName: string;
+  location: string;
+};
+
+export type BusinessPage = ResultPage<BusinessCard>;
 
 export type DirectoryApi = {
   search: (filters: DirectoryFilters, page: number, language: Language) => Promise<DirectoryPage>;
   regions: (language: Language) => Promise<Option[]>;
   districts: (regionId: string, language: Language) => Promise<Option[]>;
   sectors: (language: Language) => Promise<Option[]>;
+  searchBusinesses: (
+    filters: BusinessFilters,
+    page: number,
+    language: Language,
+  ) => Promise<BusinessPage>;
 };
 
-type Row = {
+type BusinessRow = PlaceNames & {
+  business_id: string;
   member_id: string;
-  full_name: string | null;
-  headline: string | null;
+  name: string;
+  description: string | null;
+  size: BusinessCard["size"];
+  level: BusinessLevel;
+  sector_en: string;
+  sector_sw: string;
+  owner_name: string | null;
+};
+
+const placeOf = (row: PlaceNames, language: Language) =>
+  [
+    language === "sw" ? row.district_sw : row.district_en,
+    language === "sw" ? row.region_sw : row.region_en,
+  ]
+    .filter(Boolean)
+    .join(", ");
+
+type PlaceNames = {
   region_en: string | null;
   region_sw: string | null;
   district_en: string | null;
   district_sw: string | null;
+};
+
+type Row = PlaceNames & {
+  member_id: string;
+  full_name: string | null;
+  headline: string | null;
   top_skills: string[];
   verified_business: boolean;
   photo_path: string | null;
   relation: Relation;
 };
+
+const pageOf = <R, C>(rows: R[], toCard: (row: R) => C): ResultPage<C> => ({
+  more: rows.length > PAGE_SIZE,
+  cards: rows.slice(0, PAGE_SIZE).map(toCard),
+});
 
 export const directoryApi: DirectoryApi = {
   async search(filters, page, language) {
@@ -77,26 +142,41 @@ export const directoryApi: DirectoryApi = {
     if (error) throw error;
     const rows = (data ?? []) as Row[];
     const urlFor = await photoLinks(rows.map((r) => r.photo_path));
-    return {
-      more: rows.length > PAGE_SIZE,
-      cards: rows.slice(0, PAGE_SIZE).map((r) => ({
-        memberId: r.member_id,
-        fullName: r.full_name ?? "",
-        headline: r.headline ?? "",
-        location: [
-          language === "sw" ? r.district_sw : r.district_en,
-          language === "sw" ? r.region_sw : r.region_en,
-        ]
-          .filter(Boolean)
-          .join(", "),
-        topSkills: r.top_skills,
-        business: r.verified_business,
-        photoUrl: (r.photo_path && urlFor.get(r.photo_path)) || null,
-        relation: r.relation,
-      })),
-    };
+    return pageOf(rows, (r) => ({
+      memberId: r.member_id,
+      fullName: r.full_name ?? "",
+      headline: r.headline ?? "",
+      location: placeOf(r, language),
+      topSkills: r.top_skills,
+      business: r.verified_business,
+      photoUrl: (r.photo_path && urlFor.get(r.photo_path)) || null,
+      relation: r.relation,
+    }));
   },
   regions: regionOptions,
   districts: districtOptions,
   sectors: sectorOptions,
+
+  async searchBusinesses(filters, page, language) {
+    const { data, error } = await supabase.rpc("search_businesses", {
+      q: filters.q.trim() || null,
+      sector: filters.sector,
+      level: filters.level,
+      region: filters.region,
+      page,
+      page_size: PAGE_SIZE,
+    });
+    if (error) throw error;
+    return pageOf((data ?? []) as BusinessRow[], (r) => ({
+      businessId: r.business_id,
+      memberId: r.member_id,
+      name: r.name,
+      description: r.description ?? "",
+      size: r.size,
+      level: r.level,
+      sector: language === "sw" ? r.sector_sw : r.sector_en,
+      ownerName: r.owner_name ?? "",
+      location: placeOf(r, language),
+    }));
+  },
 };

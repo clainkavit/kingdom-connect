@@ -1,7 +1,13 @@
 import "../test-router";
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { noFilters, type DirectoryApi, type DirectoryCard } from "../lib/directory";
+import {
+  noBusinessFilters,
+  noFilters,
+  type BusinessCard,
+  type DirectoryApi,
+  type DirectoryCard,
+} from "../lib/directory";
 import { DirectoryScreen } from "./directory";
 
 afterEach(cleanup);
@@ -23,8 +29,27 @@ const fakeApi = (over: Partial<DirectoryApi> = {}): DirectoryApi => ({
   regions: vi.fn().mockResolvedValue([{ value: "r1", label: "Mwanza" }]),
   districts: vi.fn().mockResolvedValue([{ value: "d1", label: "Nyamagana" }]),
   sectors: vi.fn().mockResolvedValue([{ value: "s1", label: "Agriculture" }]),
+  searchBusinesses: vi.fn().mockResolvedValue({ cards: [business()], more: false }),
   ...over,
 });
+
+function business(over: Partial<BusinessCard> = {}): BusinessCard {
+  return {
+    businessId: "b1",
+    memberId: "o1",
+    name: "Pendo Supplies",
+    description: "Farm tools and seeds",
+    size: "small",
+    level: 3,
+    sector: "Trade",
+    ownerName: "Asha Owner",
+    location: "Nyamagana, Mwanza",
+    ...over,
+  };
+}
+
+const openBusinesses = () =>
+  act(async () => fireEvent.click(screen.getByRole("tab", { name: "Businesses" })));
 
 async function show(api: DirectoryApi) {
   await act(async () => {
@@ -34,6 +59,57 @@ async function show(api: DirectoryApi) {
 
 const click = (name: string) =>
   act(async () => fireEvent.click(screen.getByRole("button", { name })));
+
+describe("DirectoryScreen (S10), Businesses tab", () => {
+  it("starts on Professionals and lists verified businesses on the Businesses tab", async () => {
+    const api = fakeApi();
+    await show(api);
+    expect(screen.getByRole("tab", { name: "Professionals" }).getAttribute("aria-selected")).toBe(
+      "true",
+    );
+    expect(api.searchBusinesses).not.toHaveBeenCalled();
+    await openBusinesses();
+    expect(api.searchBusinesses).toHaveBeenCalledWith(noBusinessFilters, 0, "en");
+    const link = screen.getByRole("link", { name: /Pendo Supplies/ });
+    expect(link.getAttribute("href")).toBe("/profile/o1");
+    expect(screen.getByText("Farm tools and seeds")).toBeTruthy();
+    expect(screen.getByText("Owner: Asha Owner")).toBeTruthy();
+    expect(screen.getByText("Opportunity Poster")).toBeTruthy();
+    expect(screen.getByText(/Trade/)).toBeTruthy();
+    expect(screen.getByText("Nyamagana, Mwanza")).toBeTruthy();
+  });
+
+  it("searches and filters by sector, level and region", async () => {
+    const api = fakeApi();
+    await show(api);
+    await openBusinesses();
+    fireEvent.change(screen.getByLabelText("Search by business name or what it does"), {
+      target: { value: "pendo" },
+    });
+    await click("Sector: Any");
+    await act(async () => fireEvent.click(screen.getByRole("option", { name: "Agriculture" })));
+    await click("Level: Any");
+    await act(async () =>
+      fireEvent.click(screen.getByRole("option", { name: "Opportunity Poster" })),
+    );
+    await click("Region: Any");
+    await act(async () => fireEvent.click(screen.getByRole("option", { name: "Mwanza" })));
+    await click("Search");
+    expect(api.searchBusinesses).toHaveBeenLastCalledWith(
+      { q: "pendo", sector: "s1", level: 3, region: "r1" },
+      0,
+      "en",
+    );
+  });
+
+  it("says when no business matches", async () => {
+    await show(
+      fakeApi({ searchBusinesses: vi.fn().mockResolvedValue({ cards: [], more: false }) }),
+    );
+    await openBusinesses();
+    expect(screen.getByText("No business matches")).toBeTruthy();
+  });
+});
 
 describe("DirectoryScreen (S10)", () => {
   it("lists cards with name, headline, location, top 3 skills, badge and Connect", async () => {

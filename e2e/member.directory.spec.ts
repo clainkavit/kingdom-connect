@@ -1,5 +1,13 @@
 import { expect, test } from "@playwright/test";
-import { addProfile, createMember, hideProfile, setSkills, signInAs } from "./helpers";
+import {
+  addProfile,
+  createMember,
+  hideProfile,
+  pendingBusiness,
+  setSkills,
+  signInAs,
+  verifyBusiness,
+} from "./helpers";
 
 test("a Member finds people by skill, and hidden profiles are not listed (PRO-3, S10)", async ({
   page,
@@ -34,4 +42,30 @@ test("a Member finds people by skill, and hidden profiles are not listed (PRO-3,
   await page.getByLabel("Search by name, profession or skill").fill(`no one has this ${stamp}`);
   await page.getByRole("button", { name: "Search" }).click();
   await expect(page.getByText("No one matches")).toBeVisible();
+});
+
+test("a Member finds a verified business on the Businesses tab, and a business still waiting is not listed (PRO-3, B03, S10)", async ({
+  page,
+}) => {
+  const stamp = Date.now();
+  const searcher = await createMember(`e2e_bizseek_${stamp}`);
+  const owner = await createMember(`e2e_bizown_${stamp}`);
+  const waiting = await createMember(`e2e_bizwait_${stamp}`);
+  await addProfile(owner.id, `Business Owner ${stamp}`);
+  await addProfile(waiting.id, `Waiting Owner ${stamp}`);
+  await verifyBusiness(owner.id, `Listed Traders ${stamp}`);
+  await pendingBusiness(waiting.id, `Waiting Traders ${stamp}`);
+
+  await signInAs(page, `e2e_bizseek_${stamp}`, searcher.email);
+  await page.goto("/people");
+  await page.getByRole("tab", { name: "Businesses" }).click();
+  await page
+    .getByRole("textbox", { name: "Search by business name or what it does" })
+    .fill(`${stamp}`);
+  await page.getByRole("button", { name: "Search", exact: true }).click();
+  await expect(page.getByText(`Listed Traders ${stamp}`)).toBeVisible();
+  await expect(page.getByText(`Owner: Business Owner ${stamp}`)).toBeVisible();
+  await expect(page.getByText(`Waiting Traders ${stamp}`)).toHaveCount(0);
+  await page.getByRole("link", { name: new RegExp(`Listed Traders ${stamp}`) }).click();
+  await expect(page).toHaveURL(new RegExp(`/profile/${owner.id}`));
 });

@@ -345,3 +345,8 @@ export async function verifyBusiness(memberId: string, name: string) {
   await db`insert into public.verification_requests (member_id, level, status, business_id, decided_at)
     values (${memberId}, 2, 'approved', ${business!.id}, now())`;
 }
+
+export async function pendingBusiness(memberId: string, name: string) {
+  await db`insert into public.businesses (member_id, name, sector_id, size, status)
+    select ${memberId}, ${name}, id, 'small', 'pending' from public.sectors order by name_en limit 1`;
+}

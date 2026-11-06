@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   afterPasswordAccepted,
   CODE_MINUTES,
+  skipsCode,
   LOCK_AFTER_FAILURES,
   LOCK_MINUTES,
   generateCode,
@@ -85,5 +86,15 @@ describe("emails (docs/notifications.md A5 and L1)", () => {
       text: "There were 5 failed sign-in attempts. Try again after 15 minutes. If this was not you, change your password afterwards.",
     });
     expect(lockedEmail("sw").subject).toBe("Akaunti yako imefungwa kwa dakika 15");
+  });
+});
+
+describe("skipsCode", () => {
+  it("skips the email code only for fake test accounts on a project with demo accounts on", () => {
+    expect(skipsCode("test.level2@example.test", true)).toBe(true);
+    expect(skipsCode("test.admin@example.test", true)).toBe(true);
+    expect(skipsCode("test.level2@example.test", false)).toBe(false);
+    expect(skipsCode("asha@test.invalid", true)).toBe(false);
+    expect(skipsCode("nottest.level2@example.test", true)).toBe(false);
   });
 });

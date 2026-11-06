@@ -800,4 +800,8 @@ export const sw: Strings = {
   renewalWaiting: "Ombi la kuhuisha linasubiri",
   noRenewalYet: "Bado hakuna ombi la kuhuisha",
   renewalRejected: "Ombi la mwisho la kuhuisha lilikataliwa",
+  demoTitle: "Onyesho la Kingdom Connect",
+  demoIntro: "Hili ni toleo la majaribio lenye watu wa kubuni. Hakuna unachofanya hapa ni halisi.",
+  demoOpen: "Fungua onyesho",
+  demoFailed: "Kiungo hiki cha onyesho kimeshatumika au muda wake umeisha. Omba kipya.",
 };

@@ -14,6 +14,7 @@ import {
   lockedEmail,
   RESEND_SECONDS,
   secondsUntil,
+  skipsCode,
 } from "../_shared/login-rules.ts";
 import { sendEmail } from "../_shared/mail.ts";
 import { issueCode } from "../_shared/otp.ts";
@@ -91,7 +92,8 @@ Deno.serve(async (req) => {
     return outcome === "suspended" ? json({ error: "suspended" }, 403) : invalid();
   }
 
-  if (!(await issueCode(account, sessionIdOf(data.session.access_token)))) {
+  const demoAccount = skipsCode(account.email, Deno.env.get("DEMO_ACCOUNTS") === "1");
+  if (!demoAccount && !(await issueCode(account, sessionIdOf(data.session.access_token)))) {
     await serviceClient.auth.admin.signOut(data.session.access_token, "local");
     return json({ error: "too_many_codes" }, 429);
   }

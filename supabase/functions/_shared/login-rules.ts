@@ -56,6 +56,11 @@ export function loginCodeEmail(language: Language, platformName: string, code: s
   return notificationEmail(notificationCopy.A5, language, { platform_name: platformName, code });
 }
 
+/** On a test project with demo accounts switched on, the fake test.…@example.test accounts sign in without the email code. */
+export function skipsCode(email: string, demoAccounts: boolean): boolean {
+  return demoAccounts && /^test\.[a-z0-9.]+@example\.test$/.test(email);
+}
+
 export function lockedEmail(language: Language): Email {
   return notificationEmail(notificationCopy.L1, language, {});
 }

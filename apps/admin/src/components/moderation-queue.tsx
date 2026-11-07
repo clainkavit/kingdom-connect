@@ -10,9 +10,12 @@ import {
   type TrainingDraft,
   type TrainingFormat,
   type TrainingProblem,
+  type IdeaSeeking,
+  type IdeaStage,
 } from "@kingdom-connect/shared";
 import { useEffect, useState } from "react";
 import type { EventModerationApi, PendingEvent } from "@/lib/events";
+import type { IdeaModerationApi, PendingIdea } from "@/lib/ideas";
 import type { PendingTraining, TrainingModerationApi } from "@/lib/training";
 import { useLanguage } from "@/lib/language";
 import { Field } from "./field";
@@ -432,15 +435,48 @@ function PendingRow({
   );
 }
 
-type Queue = { events: PendingEvent[]; training: PendingTraining[] };
+type Queue = { events: PendingEvent[]; training: PendingTraining[]; ideas: PendingIdea[] };
 
-/** A04: the moderation queue. Events (T03) and training (T01); opportunities and ideas join with their tickets. */
+const stageLabel = (t: Strings, stage: IdeaStage): string =>
+  ({
+    idea: t.ideaStageIdea,
+    prototype: t.ideaStagePrototype,
+    early_revenue: t.ideaStageEarlyRevenue,
+    growing: t.ideaStageGrowing,
+  })[stage];
+
+const seekingLabel = (t: Strings, seeking: IdeaSeeking): string =>
+  ({ investor: t.ideaSeekingInvestor, partner: t.ideaSeekingPartner, both: t.ideaSeekingBoth })[
+    seeking
+  ];
+
+const tzs = (n: number) => `TZS ${n.toLocaleString("en-US")}`;
+
+/** The whole idea for moderation: the summary members will see, then the confidential details. */
+function ideaText(t: Strings, idea: PendingIdea): string {
+  // Field labels without their "(optional)" note.
+  const plain = (label: string) => label.replace(/\s*\([^)]*\)$/, "");
+  return [
+    idea.problem,
+    `${t.ideaDescriptionLabel}: ${idea.description}`,
+    idea.businessModel ? `${plain(t.ideaModelLabel)}: ${idea.businessModel}` : null,
+    idea.market ? `${plain(t.ideaMarketLabel)}: ${idea.market}` : null,
+    idea.financials ? `${plain(t.ideaFinancialsLabel)}: ${idea.financials}` : null,
+    idea.team ? `${plain(t.ideaTeamLabel)}: ${idea.team}` : null,
+  ]
+    .filter(Boolean)
+    .join("\n\n");
+}
+
+/** A04: the moderation queue. Ideas (I01), training (T01) and events (T03); opportunities join with O01. */
 export function ModerationQueue({
   events,
   training,
+  ideas,
 }: {
   events: EventModerationApi;
   training: TrainingModerationApi;
+  ideas: IdeaModerationApi;
 }) {
   const { t, language } = useLanguage();
   const [items, setItems] = useState<Queue | null>(null);
@@ -451,14 +487,14 @@ export function ModerationQueue({
 
   useEffect(() => {
     let live = true;
-    Promise.all([events.queue(), training.queue()]).then(
-      ([e, tr]) => live && setItems({ events: e, training: tr }),
+    Promise.all([events.queue(), training.queue(), ideas.queue()]).then(
+      ([e, tr, id]) => live && setItems({ events: e, training: tr, ideas: id }),
       () => live && setFailed(true),
     );
     return () => {
       live = false;
     };
-  }, [events, training, attempt]);
+  }, [events, training, ideas, attempt]);
 
   const reload = () => {
     setFailed(false);
@@ -505,10 +541,41 @@ export function ModerationQueue({
           <ErrorState message={t.eventsLoadFailed} onRetry={reload} />
         ) : !items ? (
           <LoadingRows />
-        ) : items.events.length === 0 && items.training.length === 0 ? (
+        ) : items.events.length === 0 && items.training.length === 0 && items.ideas.length === 0 ? (
           <EmptyState title={t.moderationEmptyTitle} message={t.moderationEmptyMessage} />
         ) : (
           <>
+            {items.ideas.length ? (
+              <section className="flex flex-col gap-2">
+                <h2 className="text-lg font-semibold text-foreground">{t.moderationIdeasTitle}</h2>
+                <ul className="flex flex-col divide-y rounded-lg border bg-card shadow-card">
+                  {items.ideas.map((item) => (
+                    <PendingRow
+                      key={item.id}
+                      id={item.id}
+                      title={item.title}
+                      meta={[
+                        language === "sw" ? item.sectorSw : item.sectorEn,
+                        stageLabel(t, item.stage),
+                        seekingLabel(t, item.seeking),
+                        item.investmentMin !== null || item.investmentMax !== null
+                          ? [item.investmentMin, item.investmentMax]
+                              .map((n) => (n === null ? "…" : tzs(n)))
+                              .join(" – ")
+                          : null,
+                        t.moderationPostedBy(item.ownerUsername),
+                        item.showOwner ? null : t.moderationIdeaAnonymous,
+                      ]
+                        .filter(Boolean)
+                        .join(" · ")}
+                      details={ideaText(t, item)}
+                      decide={(approve, reason) => ideas.decide(item.id, approve, reason)}
+                      onDecided={reload}
+                    />
+                  ))}
+                </ul>
+              </section>
+            ) : null}
             {items.training.length ? (
               <section className="flex flex-col gap-2">
                 <h2 className="text-lg font-semibold text-foreground">

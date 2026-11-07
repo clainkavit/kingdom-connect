@@ -39,7 +39,9 @@ export default function NotificationsScreen() {
         ? `/events/${eventId}`
         : typeof trainingId === "string"
           ? `/training/${trainingId}`
-          : notificationCopy[item.kind].opens) as never,
+          : typeof item.payload.idea_id === "string"
+            ? "/ideas"
+            : notificationCopy[item.kind].opens) as never,
     );
   };
 

@@ -47,22 +47,17 @@ async function show(node: React.ReactElement) {
 const click = (name: string) =>
   act(async () => fireEvent.click(screen.getByRole("button", { name })));
 
+const twoIdeas = [
+  idea({ id: "i1", status: "draft", reviewReason: "Remove the price list" }),
+  idea({ id: "i2", title: "Clinic booking", status: "pending_moderation", showOwner: false }),
+];
+
 describe("MyIdeas (S27)", () => {
   it("shows each idea's status, a sent-back reason and an idea shared without a name", async () => {
     await show(
       <MyIdeas
         api={fakeApi({
-          mine: vi
-            .fn()
-            .mockResolvedValue([
-              idea({ id: "i1", status: "draft", reviewReason: "Remove the price list" }),
-              idea({
-                id: "i2",
-                title: "Clinic booking",
-                status: "pending_moderation",
-                showOwner: false,
-              }),
-            ]),
+          mine: vi.fn().mockResolvedValue(twoIdeas),
         })}
       />,
     );

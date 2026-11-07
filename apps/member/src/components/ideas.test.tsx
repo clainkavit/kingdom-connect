@@ -31,6 +31,9 @@ const idea = (over: Partial<MyIdea> = {}): MyIdea => ({
 });
 
 const fakeApi = (over: Partial<IdeasApi> = {}): IdeasApi => ({
+  pool: vi.fn().mockResolvedValue([]),
+  summary: vi.fn().mockResolvedValue(null),
+  byOwner: vi.fn().mockResolvedValue([]),
   mine: vi.fn().mockResolvedValue([idea()]),
   sectors: vi.fn().mockResolvedValue([{ value: "s1", label: "Agriculture" }]),
   save: vi.fn().mockResolvedValue({ result: "pending_moderation", ideaId: "i9" }),
@@ -130,7 +133,7 @@ describe("IdeaForm (S27)", () => {
       expect.objectContaining({ title: "Clinic booking", seeking: "partner", showOwner: false }),
       true,
     );
-    expect(router.pushed).toContain("/ideas");
+    expect(router.pushed).toContain("/ideas/mine");
   });
 
   it("shows the server's reason, such as contact details", async () => {

@@ -93,7 +93,7 @@ function MyIdeaRow({
   );
 }
 
-/** S27: the member's own ideas with their status, and Share an idea (I01). The pool arrives with I02. */
+/** S27: the member's own ideas with their status, and Share an idea (I01). At /ideas/mine since I02. */
 export function MyIdeas({ api }: { api: IdeasApi }) {
   const { t } = useLanguage();
   const [attempt, setAttempt] = useState(0);
@@ -102,8 +102,7 @@ export function MyIdeas({ api }: { api: IdeasApi }) {
 
   return (
     <View className="gap-3">
-      <ScreenTitle>{t.navIdeas}</ScreenTitle>
-      <Text className="font-figtree text-sm text-ink-2">{t.ideasPoolSoon}</Text>
+      <ScreenTitle>{t.ideasMine}</ScreenTitle>
       <LinkButton
         href="/ideas/new"
         label={t.ideasShare}
@@ -111,9 +110,6 @@ export function MyIdeas({ api }: { api: IdeasApi }) {
       >
         <Text className="font-figtree-bold text-[15px] text-blue-ink">{t.ideasShare}</Text>
       </LinkButton>
-      <Text role="heading" aria-level={2} className="font-figtree-bold text-[17px] text-ink">
-        {t.ideasMine}
-      </Text>
       {loaded.state === "failed" ? (
         <ErrorState message={t.ideasLoadFailed} onRetry={reload} />
       ) : loaded.state === "loading" ? (
@@ -216,7 +212,7 @@ export function IdeaForm({ api, ideaId }: { api: IdeasApi; ideaId: string | null
       <EmptyState
         title={t.eventsNotFound}
         message=""
-        action={{ label: t.ideasMine, href: "/ideas" }}
+        action={{ label: t.ideasMine, href: "/ideas/mine" }}
       />
     );
   }
@@ -236,7 +232,7 @@ export function IdeaForm({ api, ideaId }: { api: IdeasApi; ideaId: string | null
         setProblem(problemText(t, known));
       } else if (saved.result === "pending_moderation" || saved.result === "draft") {
         setNotice(saved.result === "draft" ? t.eventSaved : t.eventSent);
-        router.push("/ideas");
+        router.push("/ideas/mine");
       } else {
         setProblem(t.eventsActionFailed);
       }

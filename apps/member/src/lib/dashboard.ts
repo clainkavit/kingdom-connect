@@ -20,8 +20,19 @@ export type Welcome = {
   postingPaused: boolean;
 };
 
+/** A training or event the member registered for, or waits for (T01). */
+export type MyRegistration = {
+  kind: "training" | "event";
+  id: string;
+  title: string;
+  startsAt: string | null;
+  status: "registered" | "waitlisted";
+  waitlistPosition: number | null;
+};
+
 export type DashboardApi = {
   welcome: () => Promise<Welcome | null>;
+  registrations: () => Promise<MyRegistration[]>;
 };
 
 const bilingual = (en: string | null, sw: string | null): BilingualName | null =>
@@ -40,5 +51,27 @@ export const dashboardApi: DashboardApi = {
       level: row.level,
       postingPaused: row.posting_paused,
     };
+  },
+
+  async registrations() {
+    const { data, error } = await supabase.rpc("my_registrations");
+    if (error) throw error;
+    return (
+      data as {
+        kind: MyRegistration["kind"];
+        item_id: string;
+        title: string;
+        starts_at: string | null;
+        status: MyRegistration["status"];
+        waitlist_position: number | null;
+      }[]
+    ).map((r) => ({
+      kind: r.kind,
+      id: r.item_id,
+      title: r.title,
+      startsAt: r.starts_at,
+      status: r.status,
+      waitlistPosition: r.waitlist_position,
+    }));
   },
 };

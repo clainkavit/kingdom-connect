@@ -24,8 +24,12 @@ const fakeConnections = (over: Partial<ConnectionsApi> = {}) =>
     ...over,
   }) as unknown as ConnectionsApi;
 
-const fakeApi = (w: Welcome | null = welcome()): DashboardApi => ({
+const fakeApi = (
+  w: Welcome | null = welcome(),
+  registrations: Awaited<ReturnType<DashboardApi["registrations"]>> = [],
+): DashboardApi => ({
   welcome: vi.fn().mockResolvedValue(w),
+  registrations: vi.fn().mockResolvedValue(registrations),
 });
 
 async function show(api: DashboardApi, connections: ConnectionsApi) {
@@ -128,5 +132,40 @@ describe("DashboardScreen (S08)", () => {
     expect(
       screen.queryByText(/verified members|registered businesses|ideas in the pool/i),
     ).toBeNull();
+  });
+});
+
+describe("My activity: training and events (T01)", () => {
+  it("lists upcoming training and events, with a waitlist spot", async () => {
+    await show(
+      fakeApi(welcome(), [
+        {
+          kind: "training",
+          id: "t1",
+          title: "Bookkeeping basics",
+          startsAt: null,
+          status: "registered",
+          waitlistPosition: null,
+        },
+        {
+          kind: "event",
+          id: "e1",
+          title: "Business breakfast",
+          startsAt: "2099-11-10T05:30:00Z",
+          status: "waitlisted",
+          waitlistPosition: 2,
+        },
+      ]),
+      fakeConnections(),
+    );
+    expect(screen.getByRole("link", { name: "Bookkeeping basics" }).getAttribute("href")).toBe(
+      "/training/t1",
+    );
+    expect(screen.getByText(/^Training · Self-paced · You have a seat\.$/)).toBeTruthy();
+    expect(screen.getByRole("link", { name: "Business breakfast" }).getAttribute("href")).toBe(
+      "/events/e1",
+    );
+    expect(screen.getByText(/You are number 2 on the waitlist\.$/)).toBeTruthy();
+    expect(screen.queryByText("Nothing here yet")).toBeNull();
   });
 });

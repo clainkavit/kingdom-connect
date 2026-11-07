@@ -7,6 +7,7 @@ export * from "./notifications";
 export * from "./legal";
 export * from "./registration-rules";
 export * from "./event-rules";
+export * from "./training-rules";
 export * from "./verification";
 export * from "./staff";
 export * from "./profile";

@@ -1,6 +1,7 @@
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { EventModerationApi, PendingEvent } from "@/lib/events";
+import type { PendingTraining, TrainingModerationApi } from "@/lib/training";
 import { ModerationQueue } from "./moderation-queue";
 
 afterEach(cleanup);
@@ -25,9 +26,16 @@ const fakeApi = (over: Partial<EventModerationApi> = {}): EventModerationApi => 
   ...over,
 });
 
-async function show(api: EventModerationApi) {
+const fakeTraining = (over: Partial<TrainingModerationApi> = {}): TrainingModerationApi => ({
+  queue: vi.fn().mockResolvedValue([]),
+  decide: vi.fn().mockResolvedValue("ok"),
+  post: vi.fn().mockResolvedValue("published"),
+  ...over,
+});
+
+async function show(api: EventModerationApi, training: TrainingModerationApi = fakeTraining()) {
   await act(async () => {
-    render(<ModerationQueue events={api} />);
+    render(<ModerationQueue events={api} training={training} />);
   });
 }
 
@@ -84,6 +92,47 @@ describe("ModerationQueue events (A04, T03)", () => {
     fireEvent.change(screen.getByLabelText("Places"), { target: { value: "120" } });
     await click("Publish");
     expect(api.post).toHaveBeenCalledWith(expect.objectContaining({ title: "Pilot open day" }));
+    expect(screen.getByRole("status").textContent).toBe("Published. Members can see it now.");
+  });
+});
+
+const pendingTraining = (over: Partial<PendingTraining> = {}): PendingTraining => ({
+  id: "t1",
+  title: "Bookkeeping basics",
+  provider: "Mwanza Business Centre",
+  format: "in_person",
+  details: null,
+  venue: "Mkuyuni church hall",
+  startsAt: null,
+  seats: 30,
+  posterUsername: "asha_m",
+  submittedAt: "2026-11-07T06:00:00Z",
+  ...over,
+});
+
+describe("ModerationQueue training (A04, T01)", () => {
+  it("lists training waiting for review and approves it", async () => {
+    const training = fakeTraining({ queue: vi.fn().mockResolvedValue([pendingTraining()]) });
+    await show(fakeApi({ queue: vi.fn().mockResolvedValue([]) }), training);
+    expect(screen.getByRole("heading", { name: "Training waiting for review" })).toBeTruthy();
+    expect(screen.getByText(/By Mwanza Business Centre · Self-paced/)).toBeTruthy();
+    await click("Approve");
+    expect(training.decide).toHaveBeenCalledWith("t1", true, "");
+  });
+
+  it("posts self-paced online training as admin", async () => {
+    const training = fakeTraining();
+    await show(fakeApi({ queue: vi.fn().mockResolvedValue([]) }), training);
+    await click("Post a training as admin");
+    fireEvent.change(screen.getByLabelText("Title"), { target: { value: "Savings groups" } });
+    fireEvent.change(screen.getByLabelText("Provider"), { target: { value: "Kingdom Connect" } });
+    fireEvent.click(screen.getByLabelText("Online"));
+    fireEvent.click(screen.getByLabelText("Self-paced, no fixed date"));
+    fireEvent.change(screen.getByLabelText("Seats"), { target: { value: "200" } });
+    await click("Publish");
+    expect(training.post).toHaveBeenCalledWith(
+      expect.objectContaining({ title: "Savings groups", format: "online", selfPaced: true }),
+    );
     expect(screen.getByRole("status").textContent).toBe("Published. Members can see it now.");
   });
 });

@@ -1,8 +1,8 @@
-import { formatDate, POSTER_LEVEL, type TextKey } from "@kingdom-connect/shared";
+import { formatDate, formatDateTime, POSTER_LEVEL, type TextKey } from "@kingdom-connect/shared";
 import { useEffect, useState } from "react";
 import { Text, View } from "react-native";
 import type { ConnectionsApi, ReceivedRequest, SentRequest } from "../lib/connections";
-import type { DashboardApi, Welcome } from "../lib/dashboard";
+import type { DashboardApi, MyRegistration, Welcome } from "../lib/dashboard";
 import { useLanguage } from "../lib/language";
 import { PersonRow, ReceivedRequestRow } from "./connections";
 import { Message } from "./form";
@@ -20,7 +20,38 @@ const quickActions: QuickAction[] = [
   { key: "actionPostOpportunity", href: "/opportunities", minLevel: POSTER_LEVEL, posts: true },
 ];
 
-type DashboardData = { welcome: Welcome; received: ReceivedRequest[]; sent: SentRequest[] };
+type DashboardData = {
+  welcome: Welcome;
+  received: ReceivedRequest[];
+  sent: SentRequest[];
+  registrations: MyRegistration[];
+};
+
+function RegistrationRow({ item }: { item: MyRegistration }) {
+  const { t, language } = useLanguage();
+  const href = item.kind === "training" ? `/training/${item.id}` : `/events/${item.id}`;
+  const when = item.startsAt
+    ? formatDateTime(new Date(item.startsAt), language)
+    : t.trainingSelfPaced;
+  const state =
+    item.status === "waitlisted" && item.waitlistPosition
+      ? t.eventsWaitlisted(item.waitlistPosition)
+      : item.kind === "training"
+        ? t.trainingRegistered
+        : t.eventsRegistered;
+  return (
+    <LinkButton
+      href={href}
+      label={item.title}
+      className="min-h-[52px] gap-0.5 rounded-card border border-line bg-surface px-4 py-3"
+    >
+      <Text className="font-figtree-semibold text-[15px] text-ink">{item.title}</Text>
+      <Text className="font-figtree text-[13px] text-ink-2">
+        {item.kind === "training" ? t.myActivityTraining : t.myActivityEvent} · {when} · {state}
+      </Text>
+    </LinkButton>
+  );
+}
 
 function WelcomeCard({ welcome, today }: { welcome: Welcome; today: Date }) {
   const { t, language } = useLanguage();
@@ -89,10 +120,15 @@ export function DashboardScreen({
 
   useEffect(() => {
     let live = true;
-    Promise.all([api.welcome(), connections.received(), connections.sent()]).then(
-      ([welcome, received, sent]) => {
+    Promise.all([
+      api.welcome(),
+      connections.received(),
+      connections.sent(),
+      api.registrations(),
+    ]).then(
+      ([welcome, received, sent, registrations]) => {
         if (!live) return;
-        if (welcome) setLoaded({ welcome, received, sent });
+        if (welcome) setLoaded({ welcome, received, sent, registrations });
         else setFailed(true);
       },
       () => live && setFailed(true),
@@ -142,12 +178,17 @@ export function DashboardScreen({
         )}
       </Section>
       <Section title={t.myActivity}>
-        {loaded.sent.length ? (
-          loaded.sent.map((r) => (
-            <PersonRow key={r.requestId} person={r}>
-              <Text className="font-figtree text-sm text-ink-2">{t.requestSent}</Text>
-            </PersonRow>
-          ))
+        {loaded.sent.length || loaded.registrations.length ? (
+          <>
+            {loaded.registrations.map((r) => (
+              <RegistrationRow key={`${r.kind}-${r.id}`} item={r} />
+            ))}
+            {loaded.sent.map((r) => (
+              <PersonRow key={r.requestId} person={r}>
+                <Text className="font-figtree text-sm text-ink-2">{t.requestSent}</Text>
+              </PersonRow>
+            ))}
+          </>
         ) : (
           <EmptyState title={t.activityEmptyTitle} message={t.activityEmptyMessage} />
         )}

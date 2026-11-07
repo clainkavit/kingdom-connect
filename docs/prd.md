@@ -917,6 +917,13 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 - To renew, the member sends only the new licence: number, expiry date and the document, within 30 days of the end date or after it. BRELA, TIN and the Level 3 documents stay as approved. Staff approve, or reject with a Level 2 reason; a rejected renewal leaves the business as it was.
 - Staff see expired licences and licences ending in the next 30 days on Re-verification (A08), and renewals in the verification queue.
 
+**Decided on 7 November 2026 (post an opportunity, O01)**
+- Opportunity Posters (Level 3) and staff post through the same rules: type (job, partnership, collaboration or investment; tenders come with O04), a title of 5 to 120 characters, an employment type for jobs only, a region or "remote", a sector, a description of 100 to 5000 characters, and a closing date after today and within 90 days. Up to 5 skills; at least one for jobs and collaborations.
+- Phone numbers and emails anywhere in the post are refused. A post with a link always goes to review. A poster's posts go to review until 3 have been approved; after that they publish at once. A poster must tick the no-fee declaration.
+- Staff posts (A15) publish at once, without the tick or review, and are marked as staff posts.
+- Staff review a post (A05): Approve (O5), Send back to Draft with a reason the poster sees (O6), or Remove with a reason (O8). Reasons: not clear enough, asks applicants for money, misleading or fake, wrong type, or other with a note. Every decision is audit logged.
+- The poster can edit a Draft and close a Published post. A daily job marks Published posts Expired after their closing date.
+
 **Open.** Every open question is a ticket on the [wayfinder map](https://github.com/clainkavit/kingdom-connect/issues/1) and is linked where it applies above.
 
 **Outside this spec**
@@ -980,6 +987,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | 6 Nov 2026 | Licence expiry pauses Level 2 and 3 until a new licence is approved; B3 reminders, B4, renewal and Re-verification | 13, 18 |
 | 6 Nov 2026 | Businesses tab on People: approved Level 2 and up, following the owner's profile rules | 8, 18 |
 | 6 Nov 2026 | Level 3 Opportunity Poster verification: directorship or authorisation proof, address with proof, review in the verification queue | 6, 18 |
+| 7 Nov 2026 | Posting opportunities: shared posting rules, review of a poster's posts until 3 are approved and of any post with a link, staff posts publish at once, staff review with Approve, Send back or Remove | 10, 18 |
 
 ## Appendix B: Source documents
 

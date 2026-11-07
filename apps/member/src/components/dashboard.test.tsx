@@ -117,7 +117,9 @@ describe("DashboardScreen (S08)", () => {
 
   it("offers Post an opportunity to a Level 3 poster", async () => {
     await show(fakeApi(welcome({ level: 3 })), fakeConnections());
-    expect(screen.getByRole("link", { name: "Post an opportunity" })).toBeTruthy();
+    expect(screen.getByRole("link", { name: "Post an opportunity" }).getAttribute("href")).toBe(
+      "/opportunities/new",
+    );
     expect(screen.queryByText("Verify your business to post opportunities.")).toBeNull();
   });
 

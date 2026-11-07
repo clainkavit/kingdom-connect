@@ -147,6 +147,9 @@ export function OpportunityFormScreen({ api, id }: { api: OpportunitiesApi; id?:
   return (
     <View className="gap-4">
       <ScreenTitle>{id ? t.editPostTitle : t.postTitle}</ScreenTitle>
+      <LinkButton href="/opportunities/mine" label={t.myPostsTitle} className="py-1">
+        <Text className="font-figtree-semibold text-sm text-blue">{t.myPostsTitle}</Text>
+      </LinkButton>
       <Section title={t.postTitle}>
         <Chips
           label={t.fieldType}

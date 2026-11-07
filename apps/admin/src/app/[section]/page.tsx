@@ -11,6 +11,7 @@ const builtScreens = new Set([
   "/audit-log",
   "/re-verification",
   "/news",
+  "/post",
 ]);
 const sections = adminNav.filter((item) => !builtScreens.has(item.href));
 

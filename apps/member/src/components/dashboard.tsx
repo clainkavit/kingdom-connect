@@ -17,7 +17,7 @@ const quickActions: QuickAction[] = [
   { key: "actionShareIdea", href: "/ideas", minLevel: 1, posts: true },
   { key: "actionScan", href: "/opportunities", minLevel: 1, posts: false },
   { key: "actionPostTraining", href: "/training", minLevel: 1, posts: true },
-  { key: "actionPostOpportunity", href: "/opportunities", minLevel: POSTER_LEVEL, posts: true },
+  { key: "actionPostOpportunity", href: "/opportunities/new", minLevel: POSTER_LEVEL, posts: true },
 ];
 
 type DashboardData = { welcome: Welcome; received: ReceivedRequest[]; sent: SentRequest[] };

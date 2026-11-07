@@ -350,3 +350,18 @@ export async function pendingBusiness(memberId: string, name: string) {
   await db`insert into public.businesses (member_id, name, sector_id, size, status)
     select ${memberId}, ${name}, id, 'small', 'pending' from public.sectors order by name_en limit 1`;
 }
+
+/** Makes a member an Opportunity Poster: a verified business at Level 3 (B02), as O01's tests need. */
+export async function makePoster(memberId: string, businessName: string) {
+  await verifyBusiness(memberId, businessName);
+  await db`update public.businesses set level = 3 where member_id = ${memberId}`;
+  await db`insert into public.verification_requests (member_id, level, status, business_id, decided_at)
+    select ${memberId}, 3, 'approved', id, now() from public.businesses where member_id = ${memberId}`;
+}
+
+/** The status of an opportunity found by its title, and whether staff posted it. */
+export async function opportunityByTitle(title: string) {
+  const [row] = await db`select status, poster_staff_id is not null as by_staff
+    from public.opportunities where title = ${title}`;
+  return row as { status: string; by_staff: boolean } | undefined;
+}

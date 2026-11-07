@@ -65,8 +65,15 @@ export type OpportunityModerationApi = {
 };
 
 type Named = { name_en: string; name_sw: string } | null;
-const named = (n: Named, language: Language) =>
-  n ? (language === "sw" ? n.name_sw : n.name_en) : null;
+function named(n: Named, language: Language): string | null {
+  if (!n) return null;
+  return language === "sw" ? n.name_sw : n.name_en;
+}
+
+type NamedRow = { id: string; name_en: string; name_sw: string };
+function toOptions(rows: NamedRow[], language: Language): Option[] {
+  return rows.map((r) => ({ value: r.id, label: language === "sw" ? r.name_sw : r.name_en }));
+}
 
 type PosterRows = {
   profiles: { member_id: string; full_name: string | null }[];
@@ -82,11 +89,11 @@ async function posters(ids: string[]) {
   if (unique.length === 0) return { names, approved };
   const profiles = supabase.from("profiles").select("member_id, full_name").in("member_id", unique);
   const members = supabase.from("members").select("id, username").in("id", unique);
-  const posts = supabase
+  const approvals = supabase
     .from("opportunities")
     .select("poster_member_id")
-    .in("poster_member_id", unique);
-  const approvals = posts.not("approved_at", "is", null);
+    .in("poster_member_id", unique)
+    .not("approved_at", "is", null);
   const [p, m, a] = await Promise.all([profiles, members, approvals]);
   const rows: PosterRows = {
     profiles: (p.data ?? []) as PosterRows["profiles"],
@@ -216,9 +223,10 @@ export const opportunityModerationApi: OpportunityModerationApi = {
     ]);
     if (sectors.error) throw sectors.error;
     if (regions.error) throw regions.error;
-    const toOptions = (rows: { id: string; name_en: string; name_sw: string }[]) =>
-      rows.map((r) => ({ value: r.id, label: language === "sw" ? r.name_sw : r.name_en }));
-    return { sectors: toOptions(sectors.data), regions: toOptions(regions.data) };
+    return {
+      sectors: toOptions(sectors.data, language),
+      regions: toOptions(regions.data, language),
+    };
   },
 
   async districts(regionId, language) {
@@ -228,7 +236,7 @@ export const opportunityModerationApi: OpportunityModerationApi = {
       .eq("region_id", regionId)
       .order("name_en");
     if (error) throw error;
-    return data.map((r) => ({ value: r.id, label: language === "sw" ? r.name_sw : r.name_en }));
+    return toOptions(data, language);
   },
 
   async post(input) {

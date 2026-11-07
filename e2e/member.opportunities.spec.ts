@@ -4,6 +4,7 @@ import {
   ADMIN_URL,
   addProfile,
   createMember,
+  createStaff,
   makePoster,
   notificationKinds,
   opportunityByTitle,
@@ -46,7 +47,7 @@ test("a new poster sends a post, an Administrator approves it, and it is Publish
   await expect(page.getByText(/^Partnership · Pending review · Closes /)).toBeVisible();
 
   const admin = await (await browser.newContext()).newPage();
-  await signInToAdmin(admin);
+  await signInToAdmin(admin, await createStaff(`Post Reviewer ${stamp}`));
   await admin.goto(`${ADMIN_URL}/moderation`);
   await admin.getByRole("link", { name: new RegExp(title) }).click();
   await expect(admin.getByText(description)).toBeVisible();
@@ -63,8 +64,9 @@ test("a new poster sends a post, an Administrator approves it, and it is Publish
 test("an Administrator posts an opportunity from A15 and it publishes at once (O01, A15)", async ({
   page,
 }) => {
-  const title = `Admin partnership ${Date.now()}`;
-  await signInToAdmin(page);
+  const stamp = Date.now();
+  const title = `Admin partnership ${stamp}`;
+  await signInToAdmin(page, await createStaff(`Admin Poster ${stamp}`));
   await page.goto(`${ADMIN_URL}/post`);
   await expect(page.getByLabel("No fee will be charged to applicants at any stage")).toHaveCount(0);
   await page.getByLabel("Type").selectOption("partnership");

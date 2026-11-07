@@ -365,3 +365,22 @@ export async function opportunityByTitle(title: string) {
     from public.opportunities where title = ${title}`;
   return row as { status: string; by_staff: boolean } | undefined;
 }
+
+/**
+ * A new Administrator account for one test. Sign-in codes are limited per account per hour, so tests
+ * that sign in to the admin app often should not all share the seeded Test Administrator.
+ */
+export async function createStaff(name: string): Promise<string> {
+  const email = `${name.toLowerCase().replace(/[^a-z0-9]+/g, ".")}@example.test`;
+  const user = await fetch(`${LOCAL_SUPABASE.url}/auth/v1/admin/users`, {
+    method: "POST",
+    headers: {
+      apikey: LOCAL_SERVICE_ROLE_KEY,
+      Authorization: `Bearer ${LOCAL_SERVICE_ROLE_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ email, password: TEST_PASSWORD, email_confirm: true }),
+  }).then((r) => r.json());
+  await db`insert into public.staff (id, full_name, role) values (${user.id}, ${name}, 'admin')`;
+  return email;
+}

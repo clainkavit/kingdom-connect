@@ -949,7 +949,6 @@ export const sw: Strings = {
   postReviewTitle: "Ukaguzi wa tangazo",
   postedBy: (name: string) => `Limetangazwa na ${name}`,
   postedByAdmin: "Limetangazwa na msimamizi",
-  moderationSendBack: "Rudisha",
   moderationRemove: "Ondoa",
   moderationApproved: "Limeidhinishwa. Mtangazaji ameambiwa.",
   moderationSentBack: "Limerudishwa. Mtangazaji ameambiwa sababu.",

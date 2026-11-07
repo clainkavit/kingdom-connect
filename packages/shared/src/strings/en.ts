@@ -934,7 +934,6 @@ export const en = {
   postReviewTitle: "Post review",
   postedBy: (name: string) => `Posted by ${name}`,
   postedByAdmin: "Posted by an administrator",
-  moderationSendBack: "Send back",
   moderationRemove: "Remove",
   moderationApproved: "Approved. The poster has been told.",
   moderationSentBack: "Sent back. The poster has been told the reason.",

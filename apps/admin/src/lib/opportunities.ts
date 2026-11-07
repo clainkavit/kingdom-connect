@@ -7,13 +7,7 @@ import type {
 import { supabase } from "./supabase";
 
 export type PostStatus =
-  | "draft"
-  | "pending_review"
-  | "published"
-  | "closed"
-  | "expired"
-  | "hidden"
-  | "removed";
+  "draft" | "pending_review" | "published" | "closed" | "expired" | "hidden" | "removed";
 
 export type PendingPost = {
   id: string;

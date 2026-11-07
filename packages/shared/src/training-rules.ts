@@ -53,3 +53,22 @@ export function checkTraining(
   if (!/^\d+$/.test(draft.seats.trim()) || seats < 1 || seats > 5000) return "seats";
   return null;
 }
+
+/** An embeddable player address for a YouTube video link, so it plays inside the platform (T02). */
+export function videoEmbedUrl(url: string): string | null {
+  const match =
+    /^https:\/\/(?:www\.|m\.)?(?:youtube\.com\/watch\?(?:[^#\s]*&)?v=|youtu\.be\/|youtube\.com\/embed\/)([\w-]{11})(?:[^\w-]|$)/.exec(
+      url.trim(),
+    );
+  return match ? `https://www.youtube-nocookie.com/embed/${match[1]}` : null;
+}
+
+export const MATERIAL_MAX_BYTES = 20 * 1024 * 1024;
+
+export function checkMaterialLink(title: string, url: string): "title" | "url" | null {
+  const clean = title.trim();
+  if (clean.length < 2 || clean.length > 120) return "title";
+  const link = url.trim();
+  if (!/^https:\/\/\S+$/.test(link) || link.length > 500) return "url";
+  return null;
+}

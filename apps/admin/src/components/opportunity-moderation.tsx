@@ -357,8 +357,9 @@ export function AdminPostForm({ api }: { api: OpportunityModerationApi }) {
     api.options(language).then(setOptions, () => setProblem(t.moderationLoadFailed));
   }, [api, language, t]);
   useEffect(() => {
-    if (!form.regionId) return setDistricts([]);
-    api.districts(form.regionId, language).then(setDistricts, () => setDistricts([]));
+    if (form.regionId) {
+      api.districts(form.regionId, language).then(setDistricts, () => setDistricts([]));
+    }
   }, [api, form.regionId, language]);
 
   const set = <K extends keyof OpportunityInput>(key: K, value: OpportunityInput[K]) =>
@@ -443,7 +444,10 @@ export function AdminPostForm({ api }: { api: OpportunityModerationApi }) {
               label={t.region}
               value={form.regionId}
               options={options.regions}
-              onChange={(v) => setForm((f) => ({ ...f, regionId: v, districtId: "" }))}
+              onChange={(v) => {
+                setDistricts([]);
+                setForm((f) => ({ ...f, regionId: v, districtId: "" }));
+              }}
             />
             <Select
               id="post-district"

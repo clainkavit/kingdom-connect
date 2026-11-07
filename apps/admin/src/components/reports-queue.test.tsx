@@ -235,8 +235,14 @@ describe("ReportDetail (A07)", () => {
 });
 
 describe("ModerationQueue (A04)", () => {
-  it("is empty until Release 2 content arrives", () => {
-    render(<ModerationQueue />);
+  it("is empty when nothing waits for review", async () => {
+    await act(async () => {
+      render(
+        <ModerationQueue
+          events={{ queue: vi.fn().mockResolvedValue([]), decide: vi.fn(), post: vi.fn() }}
+        />,
+      );
+    });
     expect(screen.getByText("Nothing to review")).toBeTruthy();
   });
 });

@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Join Kingdom Connect (sign-up design, option 2)</title>
+<!-- Design mockup only, not app code. Option 2 for the sign-up page (S02): as option 1, with a joined-hands photo. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&amp;family=Figtree:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F7F1EA}
+a{color:#4A0E1A}a:hover{color:#2A0610}
+input::placeholder{color:#8C7B7F}
+</style>
+</head>
+<body>
+<div style="min-height: 900px; box-sizing: border-box; padding: 24px; background: #F7F1EA; font-family: Figtree, system-ui, sans-serif; color: #2A1A1E; display: flex; flex-wrap: wrap; gap: 24px; align-items: stretch">
+
+<div style="flex: 1 1 420px; min-width: 0; display: flex; flex-direction: column; padding: 8px 24px 8px 16px; box-sizing: border-box">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 16px">
+<img src="logo.jpg" alt="Kingdom Connect" style="width: 96px; height: 88px; object-fit: cover; border-radius: 14px; display: block">
+<div style="display: flex; align-items: center; gap: 4px; border: 1px solid #E4D9CC; border-radius: 999px; padding: 4px">
+<button type="button" aria-pressed="true" style="min-height: 36px; min-width: 44px; border: 0; border-radius: 999px; background: #4A0E1A; color: #FFFFFF; font: 600 13px Figtree, sans-serif; cursor: pointer">EN</button>
+<button type="button" aria-pressed="false" style="min-height: 36px; min-width: 44px; border: 0; border-radius: 999px; background: transparent; color: #5A4A4E; font: 600 13px Figtree, sans-serif; cursor: pointer">SW</button>
+</div>
+</div>
+
+<div style="flex: 1 1 auto; display: flex; align-items: center; justify-content: center; padding: 40px 0">
+<form style="width: 100%; max-width: 420px; display: flex; flex-direction: column; gap: 18px" aria-labelledby="join-title-2">
+<div style="display: flex; flex-direction: column; gap: 8px; text-align: center; margin-bottom: 8px">
+<h1 id="join-title-2" style="margin: 0; font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 600; font-size: 46px; line-height: 1.05; color: #4A0E1A">Join Kingdom Connect</h1>
+<p style="margin: 0; font-size: 15px; line-height: 1.5; color: #5A4A4E">Open to anyone in Tanzania with a verified identity.</p>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="kc2-username" style="font-size: 13px; font-weight: 600; color: #5A4A4E; padding-left: 18px">Username</label>
+<input id="kc2-username" type="text" placeholder="e.g. neema.joseph" style="min-height: 52px; box-sizing: border-box; width: 100%; border: 1px solid #E4D9CC; border-radius: 999px; background: #FFFFFF; padding: 0 20px; font: 400 15px Figtree, sans-serif; color: #2A1A1E">
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="kc2-email" style="font-size: 13px; font-weight: 600; color: #5A4A4E; padding-left: 18px">Email</label>
+<input id="kc2-email" type="email" placeholder="you@example.com" style="min-height: 52px; box-sizing: border-box; width: 100%; border: 1px solid #E4D9CC; border-radius: 999px; background: #FFFFFF; padding: 0 20px; font: 400 15px Figtree, sans-serif; color: #2A1A1E">
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="kc2-phone" style="font-size: 13px; font-weight: 600; color: #5A4A4E; padding-left: 18px">Phone number</label>
+<input id="kc2-phone" type="tel" placeholder="+255 7XX XXX XXX" style="min-height: 52px; box-sizing: border-box; width: 100%; border: 1px solid #E4D9CC; border-radius: 999px; background: #FFFFFF; padding: 0 20px; font: 400 15px Figtree, sans-serif; color: #2A1A1E">
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="kc2-password" style="font-size: 13px; font-weight: 600; color: #5A4A4E; padding-left: 18px">Password</label>
+<div style="position: relative">
+<input id="kc2-password" type="password" placeholder="At least 8 characters, with a number" style="min-height: 52px; box-sizing: border-box; width: 100%; border: 1px solid #E4D9CC; border-radius: 999px; background: #FFFFFF; padding: 0 56px 0 20px; font: 400 15px Figtree, sans-serif; color: #2A1A1E">
+<button type="button" aria-label="Show password" style="position: absolute; right: 6px; top: 4px; width: 44px; height: 44px; border: 0; border-radius: 999px; background: transparent; color: #5A4A4E; cursor: pointer; display: flex; align-items: center; justify-content: center">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+</button>
+</div>
+</div>
+
+<button type="submit" style="min-height: 56px; margin-top: 8px; border: 0; border-radius: 999px; background: #4A0E1A; color: #FFFFFF; font: 600 16px Figtree, sans-serif; cursor: pointer">Create an account</button>
+<p style="margin: 0; text-align: center; font-size: 13px; line-height: 1.5; color: #5A4A4E">An administrator checks your identity before your account opens.</p>
+</form>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; font-size: 14px; color: #5A4A4E">
+<span>Already have an account? <a href="#" style="font-weight: 600">Log in</a></span>
+<span style="display: flex; gap: 16px"><a href="#">Terms of use</a><a href="#">Privacy notice</a></span>
+</div>
+</div>
+
+<div style="flex: 999 1 560px; min-width: 0; min-height: 852px; position: relative; border-radius: 28px; overflow: hidden; background: #4A0E1A">
+<img src="hands-photo.jpg" alt="Hands of people of different skin tones joined together in a circle" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 45%; display: block">
+
+<div style="position: absolute; top: 48px; right: 48px; max-width: 300px; background: #4A0E1A; border-radius: 18px; padding: 14px 20px; text-align: right; color: #F3E6D0; font-family: 'Cormorant Garamond', Georgia, serif; font-size: 28px; font-weight: 700; line-height: 1.15">People · Opportunities · Growth</div>
+
+<div style="position: absolute; top: 48px; left: 48px; display: flex; align-items: center; gap: 12px; background: #FFFFFF; color: #2A0610; border-radius: 18px; padding: 14px 18px; max-width: 300px">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M16 11l2 2 4-4"></path></svg>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 15px; font-weight: 700">Connection accepted</span>
+<span style="font-size: 13px">You can now message each other</span>
+</div>
+</div>
+
+<div style="position: absolute; bottom: 56px; right: 48px; display: flex; flex-direction: column; align-items: flex-end; gap: 10px">
+<div style="display: flex">
+<span style="width: 64px; height: 64px; border-radius: 999px; background: #F3E6D0; color: #4A0E1A; border: 3px solid #4A0E1A; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px">NJ</span>
+<span style="width: 64px; height: 64px; margin-left: -14px; border-radius: 999px; background: #E7C36A; color: #2A0610; border: 3px solid #4A0E1A; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px">BM</span>
+<span style="width: 64px; height: 64px; margin-left: -14px; border-radius: 999px; background: #FFFFFF; color: #4A0E1A; border: 3px solid #4A0E1A; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px">AK</span>
+</div>
+<span style="display: flex; align-items: center; gap: 6px; background: #FFFFFF; color: #4A0E1A; border-radius: 999px; padding: 8px 14px; font-size: 13px; font-weight: 700">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="M9 12l2 2 4-4"></path></svg>
+Every member verified
+</span>
+</div>
+
+<div style="position: absolute; left: 56px; bottom: 56px; width: 320px; max-width: calc(100% - 112px); background: #FFFFFF; border-radius: 20px; padding: 18px 20px; display: flex; flex-direction: column; gap: 10px; color: #2A1A1E">
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 8px">
+<span style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #7A2A38">New opportunity</span>
+<span style="width: 10px; height: 10px; border-radius: 999px; background: #E7C36A"></span>
+</div>
+<span style="font-size: 17px; font-weight: 700">[OPPORTUNITY TITLE]</span>
+<span style="font-size: 14px; color: #5A4A4E">[Region] · Closes [date]</span>
+</div>
+</div>
+
+</div>
+</body>
+</html>

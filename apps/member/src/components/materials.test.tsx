@@ -87,7 +87,7 @@ describe("Materials (S36)", () => {
   });
 
   it("offers Download when the poster allowed it", async () => {
-    const open = vi.spyOn(Linking, "openURL").mockResolvedValue(true);
+    const open = vi.spyOn(Linking, "openURL").mockResolvedValue(undefined);
     const api = fakeApi();
     await show(api, { downloadsAllowed: true });
     await act(async () => fireEvent.click(screen.getByRole("button", { name: "Download" })));
@@ -96,7 +96,7 @@ describe("Materials (S36)", () => {
   });
 
   it("plays a YouTube video inside the platform and opens other links", async () => {
-    const open = vi.spyOn(Linking, "openURL").mockResolvedValue(true);
+    const open = vi.spyOn(Linking, "openURL").mockResolvedValue(undefined);
     await show(fakeApi());
     expect(screen.getByText("Video")).toBeTruthy();
     await act(async () => fireEvent.click(buttons("Open")[1]!));

@@ -34,16 +34,19 @@ export default function NotificationsScreen() {
     await markRead(item.id);
     const eventId = item.payload.event_id;
     const trainingId = item.payload.training_id;
+    const planId = item.payload.plan_id;
     router.push(
-      (typeof eventId === "string"
-        ? `/events/${eventId}`
-        : typeof trainingId === "string"
-          ? `/training/${trainingId}`
-          : typeof item.payload.idea_id === "string"
-            ? item.kind === "O6"
-              ? "/ideas/mine"
-              : `/ideas/${item.payload.idea_id}`
-            : notificationCopy[item.kind].opens) as never,
+      (typeof planId === "string"
+        ? `/plans/${planId}`
+        : typeof eventId === "string"
+          ? `/events/${eventId}`
+          : typeof trainingId === "string"
+            ? `/training/${trainingId}`
+            : typeof item.payload.idea_id === "string"
+              ? item.kind === "O6"
+                ? "/ideas/mine"
+                : `/ideas/${item.payload.idea_id}`
+              : notificationCopy[item.kind].opens) as never,
     );
   };
 

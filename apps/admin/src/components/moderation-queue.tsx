@@ -62,7 +62,8 @@ function AdminEventForm({ api, onDone }: { api: EventModerationApi; onDone: () =
     try {
       const result = await api.post(form);
       if (result === "published") return onDone();
-      setProblem(fromServer[result] ? problemText(t, fromServer[result]) : t.saveFailed);
+      const known = fromServer[result];
+      setProblem(known ? problemText(t, known) : t.saveFailed);
     } catch {
       setProblem(t.saveFailed);
     }

@@ -16,8 +16,10 @@ export type EventProblem = "title" | "start" | "venue_or_link" | "link" | "capac
 
 /** The start as an instant, reading the date and time as Tanzania time (UTC+3, no daylight saving). */
 export function eventStart(date: string, time: string): Date | null {
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(date.trim()) || !/^\d{1,2}:\d{2}$/.test(time.trim())) return null;
-  const [h, m] = time.trim().split(":").map(Number);
+  const clock = /^(\d{1,2}):(\d{2})$/.exec(time.trim());
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date.trim()) || !clock) return null;
+  const h = Number(clock[1]);
+  const m = Number(clock[2]);
   if (h > 23 || m > 59) return null;
   const start = new Date(
     `${date.trim()}T${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:00+03:00`,

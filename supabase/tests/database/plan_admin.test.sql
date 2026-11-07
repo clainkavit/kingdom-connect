@@ -52,7 +52,7 @@ select is((select member_a_name || ' & ' || member_b_name || ' · ' || item_titl
                   || confirmed || '/' || milestones
            from public.admin_plans() where plan_id = pg_temp.plan()),
   'Asha Mwita & Baraka Mtaji · Solar dryers · ended · 1/2', 'staff see names, the idea, status and progress');
-select is((select string_agg(position || ' ' || status || ' ' || responsible_name, ',' order by position)
+select is((select string_agg(stage_no || ' ' || status || ' ' || responsible_name, ',' order by stage_no)
            from public.admin_plan_stages(pg_temp.plan())),
   '1 confirmed Baraka Mtaji,2 open Baraka Mtaji', 'and every stage with who is responsible');
 select is(public.annotate_plan(pg_temp.plan(), 'x'), 'invalid_note', 'an annotation needs some text');

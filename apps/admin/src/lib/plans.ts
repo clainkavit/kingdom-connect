@@ -78,7 +78,7 @@ export const plansAdminApi: PlansAdminApi = {
     if (error) throw error;
     return (
       data as {
-        position: number;
+        stage_no: number;
         title: string;
         description: string;
         target_date: string | null;
@@ -86,7 +86,7 @@ export const plansAdminApi: PlansAdminApi = {
         status: AdminStage["status"];
       }[]
     ).map((r) => ({
-      position: r.position,
+      position: r.stage_no,
       title: r.title,
       description: r.description,
       targetDate: r.target_date,

@@ -48,7 +48,7 @@ $$;
 
 -- A14: one plan's stages, who closed it and why, and the annotations so far. Staff only.
 create function access.admin_plan_stages(plan uuid)
-returns table (position int, title text, description text, target_date date, responsible_name text, status text,
+returns table (stage_no int, title text, description text, target_date date, responsible_name text, status text,
                done_at timestamptz, confirmed_at timestamptz)
 language sql stable security definer set search_path = '' as $$
   select m.position, m.title, m.description, m.target_date, private.viewer_name(m.responsible_member_id), m.status,
@@ -102,7 +102,7 @@ returns table (plan_id uuid, status text, member_a_name text, member_b_name text
                stage1_agreed_at timestamptz, closed_at timestamptz, annotations int)
 language sql stable security invoker set search_path = '' as $$ select * from access.admin_plans(); $$;
 create function public.admin_plan_stages(plan uuid)
-returns table (position int, title text, description text, target_date date, responsible_name text, status text,
+returns table (stage_no int, title text, description text, target_date date, responsible_name text, status text,
                done_at timestamptz, confirmed_at timestamptz)
 language sql stable security invoker set search_path = '' as $$ select * from access.admin_plan_stages(plan); $$;
 create function public.admin_plan_notes(plan uuid)

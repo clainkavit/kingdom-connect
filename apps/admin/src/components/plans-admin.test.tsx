@@ -1,6 +1,6 @@
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import type { AdminPlan, PlansAdminApi } from "@/lib/plans";
+import type { AdminNote, AdminPlan, AdminStage, PlansAdminApi } from "@/lib/plans";
 import { PlansAdminScreen } from "./plans-admin";
 
 afterEach(cleanup);
@@ -19,36 +19,37 @@ const plan: AdminPlan = {
   annotations: 0,
 };
 
+const stages: AdminStage[] = [
+  {
+    position: 1,
+    title: "Agreed in principle",
+    description: "",
+    targetDate: "2026-11-01",
+    responsible: "Baraka Mtaji",
+    status: "confirmed",
+  },
+  {
+    position: 2,
+    title: "First investment",
+    description: "",
+    targetDate: null,
+    responsible: "Baraka Mtaji",
+    status: "open",
+  },
+];
+const notes: AdminNote[] = [
+  {
+    kind: "ended",
+    author: "Baraka Mtaji",
+    note: "The funding fell through",
+    createdAt: new Date(),
+  },
+];
+
 const fakeApi = (over: Partial<PlansAdminApi> = {}): PlansAdminApi => ({
   plans: vi.fn().mockResolvedValue([plan]),
-  stages: vi.fn().mockResolvedValue([
-    {
-      position: 1,
-      title: "Agreed in principle",
-      description: "",
-      targetDate: "2026-11-01",
-      responsible: "Baraka Mtaji",
-      status: "confirmed",
-    },
-    {
-      position: 2,
-      title: "First investment",
-      description: "",
-      targetDate: null,
-      responsible: "Baraka Mtaji",
-      status: "open",
-    },
-  ]),
-  notes: vi
-    .fn()
-    .mockResolvedValue([
-      {
-        kind: "ended",
-        author: "Baraka Mtaji",
-        note: "The funding fell through",
-        createdAt: new Date(),
-      },
-    ]),
+  stages: vi.fn().mockResolvedValue(stages),
+  notes: vi.fn().mockResolvedValue(notes),
   annotate: vi.fn().mockResolvedValue("ok"),
   ...over,
 });

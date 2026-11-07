@@ -1,9 +1,16 @@
 import { formatDate, type Strings } from "@kingdom-connect/shared";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { Text, View } from "react-native";
+import { Linking, Text, View } from "react-native";
 import { useLanguage } from "../lib/language";
-import type { Plan, PlanStatus, PlansApi, PlanSummary, StepDraft } from "../lib/plans";
+import {
+  PLAN_DOCUMENT_MAX_BYTES,
+  type Plan,
+  type PlanStatus,
+  type PlansApi,
+  type PlanSummary,
+  type StepDraft,
+} from "../lib/plans";
 import { useLoad } from "./events";
 import { Button, Chips, ChoiceList, ConfirmButton, Field, Message } from "./form";
 import { AcceptTexts } from "./legal";
@@ -334,6 +341,77 @@ function Milestones({
 
 const HOUR = 60 * 60 * 1000;
 
+/** S34: each member uploads the signed agreement once every stage is confirmed (P03). */
+function SignedAgreement({
+  plan,
+  api,
+  onChanged,
+}: {
+  plan: Plan;
+  api: PlansApi;
+  onChanged: () => void;
+}) {
+  const { t, language } = useLanguage();
+  const [attempt, setAttempt] = useState(0);
+  const docs = useLoad(() => api.documents(plan.id), attempt);
+  const [problem, setProblem] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  if (docs.state === "failed") {
+    return <ErrorState message={t.plansLoadFailed} onRetry={() => setAttempt((a) => a + 1)} />;
+  }
+  if (docs.state === "loading") return <LoadingRows rows={1} />;
+  const mine = docs.value.list.find((d) => d.mine);
+  const theirs = docs.value.list.find((d) => !d.mine);
+
+  const upload = async () => {
+    setProblem(null);
+    const file = await api.pickPdf().catch(() => null);
+    if (!file) return;
+    if (file.mime !== "application/pdf") return setProblem(t.planDocWrongType);
+    if (file.size > PLAN_DOCUMENT_MAX_BYTES) return setProblem(t.planDocTooLarge);
+    setBusy(true);
+    const result = await api.upload(plan.id, file).catch(() => "error");
+    setBusy(false);
+    if (result === "ok") {
+      setAttempt((a) => a + 1);
+      onChanged();
+    } else setProblem(result === "too_large" ? t.planDocTooLarge : t.plansActionFailed);
+  };
+  const open = async (path: string) => {
+    const url = await api.documentUrl(path).catch(() => null);
+    if (url) void Linking.openURL(url);
+    else setProblem(t.plansActionFailed);
+  };
+
+  return (
+    <Section title={t.planDocHeading}>
+      <Text className="font-figtree text-[13px] text-ink-2">{t.planDocHint}</Text>
+      <Text className="font-figtree text-sm text-ink">
+        {mine
+          ? t.planDocYours(formatDate(new Date(mine.uploadedAt), language))
+          : t.planDocYoursMissing}
+      </Text>
+      <Text className="font-figtree text-sm text-ink">
+        {theirs
+          ? t.planDocTheirs(plan.otherName, formatDate(new Date(theirs.uploadedAt), language))
+          : t.planDocTheirsMissing(plan.otherName)}
+      </Text>
+      <Message text={problem} />
+      <View className="flex-row flex-wrap gap-2">
+        {docs.value.canUpload ? (
+          <Button label={t.planDocUpload} disabled={busy} onPress={upload} />
+        ) : null}
+        {mine ? (
+          <Button secondary label={t.planDocOpenMine} onPress={() => open(mine.storagePath)} />
+        ) : null}
+        {theirs ? (
+          <Button secondary label={t.planDocOpenTheirs} onPress={() => open(theirs.storagePath)} />
+        ) : null}
+      </View>
+    </Section>
+  );
+}
+
 /** S33: in the first hour after stage 1 either member may withdraw; after it, End plan with a reason. */
 function ActivePlan({
   plan,
@@ -466,6 +544,11 @@ export function PlanScreen({ api, planId }: { api: PlansApi; planId: string }) {
       ) : null}
       {plan.status === "active" ? <ActivePlan plan={plan} api={api} onChanged={reload} /> : null}
       <Milestones plan={plan} api={api} onChanged={reload} />
+      {(plan.status === "active" && plan.milestoneList.every((x) => x.status === "confirmed")) ||
+      plan.status === "completed" ? (
+        <SignedAgreement plan={plan} api={api} onChanged={reload} />
+      ) : null}
+      {plan.status === "completed" ? <Message tone="info" text={t.planCompletedMessage} /> : null}
       {plan.status === "pending" && !plan.startedByMe ? (
         <Section title={t.planReviewHeading}>
           <Message tone="info" text={t.planExpiresIn(daysLeft(plan.expiresAt))} />

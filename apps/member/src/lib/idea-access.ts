@@ -1,10 +1,16 @@
 import type { IdeaSeeking } from "@kingdom-connect/shared";
+import { legalEntityName, type PendingText } from "./legal";
 import { supabase } from "./supabase";
 
 export type RequestStatus = "pending" | "approved" | "declined" | "nda_accepted" | "revoked";
 export type TicketBand = "under_10m" | "10m_to_50m" | "over_50m";
 
-export type MyRequest = { status: RequestStatus; role: IdeaSeeking; anonymous: boolean };
+export type MyRequest = {
+  id: string;
+  status: RequestStatus;
+  role: IdeaSeeking;
+  anonymous: boolean;
+};
 
 /** One card in the owner's access manager. An anonymous investor has no id or name before the NDA. */
 export type RequestCard = {
@@ -29,6 +35,11 @@ export type IdeaAccessApi = {
   viewCount: (ideaId: string) => Promise<number>;
   decide: (requestId: string, approve: boolean) => Promise<string>;
   revoke: (requestId: string) => Promise<string>;
+  terms: (requestId: string) => Promise<PendingText[]>;
+  acceptTerms: (requestId: string, textIds: string[]) => Promise<string>;
+  /** The idea thread with the other side; the requester leaves out the owner. */
+  thread: (ideaId: string, otherId: string | null) => Promise<string | null>;
+  entityName: () => Promise<string>;
 };
 
 /** S24 and S28: interest in an idea and the owner's access manager (I03). */
@@ -46,7 +57,7 @@ export const ideaAccessApi: IdeaAccessApi = {
   async myRequest(ideaId) {
     const { data, error } = await supabase
       .from("idea_access_requests")
-      .select("status, role, anonymous")
+      .select("id, status, role, anonymous")
       .eq("idea_id", ideaId)
       .maybeSingle();
     if (error) throw error;
@@ -117,4 +128,30 @@ export const ideaAccessApi: IdeaAccessApi = {
     if (error) throw error;
     return data as string;
   },
+
+  async terms(requestId) {
+    const { data, error } = await supabase.rpc("idea_terms", { request: requestId });
+    if (error) throw error;
+    return (data ?? []) as PendingText[];
+  },
+
+  async acceptTerms(requestId, textIds) {
+    const { data, error } = await supabase.rpc("accept_idea_terms", {
+      request: requestId,
+      text_ids: textIds,
+    });
+    if (error) throw error;
+    return data as string;
+  },
+
+  async thread(ideaId, otherId) {
+    const { data, error } = await supabase.rpc(
+      "idea_thread",
+      otherId ? { idea: ideaId, other: otherId } : { idea: ideaId },
+    );
+    if (error) throw error;
+    return (data as string | null) ?? null;
+  },
+
+  entityName: legalEntityName,
 };

@@ -78,12 +78,12 @@ select is((select status from public.idea_access_requests where id = pg_temp.app
 select is((select count(*)::int from public.idea_details), 1, 'the requester now reads the details');
 select is((select full_name from public.profiles where member_id = '00000000-0000-0000-0000-000000002701'),
   'Asha Mwita', 'and sees the owner');
-select is((select idea_title from public.my_threads()), 'Solar dryers', 'a thread opens, labelled with the idea');
 select is((select count(*)::int from public.get_contact_details('00000000-0000-0000-0000-000000002701')), 0,
   'contact details still need a connection');
 select lives_ok($$insert into public.messages (thread_id, body)
                   values (public.idea_thread(pg_temp.idea(), '00000000-0000-0000-0000-000000002701'), 'Hello')$$,
   'the requester can message the owner without a connection');
+select is((select idea_title from public.my_threads()), 'Solar dryers', 'the thread is labelled with the idea');
 
 reset role;
 select is((select count(*)::int from public.legal_acceptances a join public.legal_texts t on t.id = a.legal_text_id

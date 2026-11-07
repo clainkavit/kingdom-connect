@@ -219,6 +219,14 @@ export const en = {
   accessDecline: "Decline",
   accessRevoke: "Remove access",
   accessRevokeConfirm: "Remove this member's access now? They are told their access was removed.",
+  ndaIntro:
+    "To open the details, accept the non-disclosure agreement and the IP terms. Once you accept, you and the owner see each other's profiles and can message about this idea.",
+  ndaAccept: "Accept and open the details",
+  ndaChanged: "The terms were just updated. Read the new version and accept again.",
+  ndaMissing: "The terms are not ready yet. Try again later.",
+  ideaMessageOwner: "Message the owner",
+  ideaMessage: "Message",
+  threadAbout: (title: string) => `About: ${title}`,
   language: "Language",
 
   navDashboard: "Dashboard",

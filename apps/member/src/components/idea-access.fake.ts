@@ -11,5 +11,9 @@ export const fakeAccess = (over: Partial<IdeaAccessApi> = {}): IdeaAccessApi => 
   viewCount: vi.fn().mockResolvedValue(0),
   decide: vi.fn().mockResolvedValue("ok"),
   revoke: vi.fn().mockResolvedValue("ok"),
+  terms: vi.fn().mockResolvedValue([]),
+  acceptTerms: vi.fn().mockResolvedValue("ok"),
+  thread: vi.fn().mockResolvedValue("t1"),
+  entityName: vi.fn().mockResolvedValue("Kingdom Connect Ltd"),
   ...over,
 });

@@ -1,4 +1,4 @@
-import "../test-router";
+import { router } from "../test-router";
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { RequestCard } from "../lib/idea-access";
@@ -118,5 +118,88 @@ describe("AccessManager (S28)", () => {
     await show(<AccessManager api={fakeAccess()} ideaId="i1" />);
     expect(screen.getByText("No requests yet")).toBeTruthy();
     expect(screen.getByText("Viewed by 0 investors")).toBeTruthy();
+  });
+});
+
+describe("IdeaTerms (S25)", () => {
+  const texts = [
+    {
+      id: "ip1",
+      kind: "ip" as const,
+      version: "1.0",
+      body_en: "IP terms",
+      body_sw: "Masharti",
+      approved_at: "2026-11-01",
+    },
+    {
+      id: "nda1",
+      kind: "nda" as const,
+      version: "1.0",
+      body_en: "The NDA",
+      body_sw: "NDA",
+      approved_at: "2026-11-01",
+    },
+  ];
+
+  it("asks an approved requester to accept both texts, then opens the thread", async () => {
+    const myRequest = vi.fn().mockResolvedValue({
+      id: "r1",
+      status: "approved",
+      role: "partner",
+      anonymous: false,
+    });
+    const acceptTerms = vi.fn().mockResolvedValue("ok");
+    const terms = vi.fn().mockResolvedValue(texts);
+    const thread = vi.fn().mockResolvedValue("t9");
+    await show(
+      <IdeaInterest api={fakeAccess({ myRequest, acceptTerms, terms, thread })} ideaId="i1" />,
+    );
+    expect(terms).toHaveBeenCalledWith("r1");
+    expect(screen.getByText("The NDA")).toBeTruthy();
+    const accept = screen.getByRole("button", { name: "Accept and open the details" });
+    expect(accept.getAttribute("aria-disabled")).toBe("true");
+    for (const box of screen.getAllByRole("checkbox")) {
+      await act(async () => fireEvent.click(box));
+    }
+    myRequest.mockResolvedValue({
+      id: "r1",
+      status: "nda_accepted",
+      role: "partner",
+      anonymous: false,
+    });
+    await click("button", "Accept and open the details");
+    expect(acceptTerms).toHaveBeenCalledWith("r1", ["ip1", "nda1"]);
+    expect(screen.getByText("You have access to the details.")).toBeTruthy();
+    await click("button", "Message the owner");
+    expect(thread).toHaveBeenCalledWith("i1", null);
+    expect(router.pushed).toContain("/messages/t9");
+  });
+
+  it("shows the new version when the terms changed while reading", async () => {
+    const myRequest = vi.fn().mockResolvedValue({
+      id: "r1",
+      status: "approved",
+      role: "partner",
+      anonymous: false,
+    });
+    const acceptTerms = vi.fn().mockResolvedValue("texts_changed");
+    const terms = vi.fn().mockResolvedValue(texts);
+    await show(<IdeaInterest api={fakeAccess({ myRequest, acceptTerms, terms })} ideaId="i1" />);
+    for (const box of screen.getAllByRole("checkbox")) {
+      await act(async () => fireEvent.click(box));
+    }
+    await click("button", "Accept and open the details");
+    expect(
+      screen.getByText("The terms were just updated. Read the new version and accept again."),
+    ).toBeTruthy();
+    expect(terms).toHaveBeenCalledTimes(2);
+  });
+
+  it("lets the owner message a requester past the NDA", async () => {
+    const thread = vi.fn().mockResolvedValue("t9");
+    const requests = vi.fn().mockResolvedValue([card({ status: "nda_accepted" })]);
+    await show(<AccessManager api={fakeAccess({ requests, thread })} ideaId="i1" />);
+    await click("button", "Message");
+    expect(thread).toHaveBeenCalledWith("i1", "m2");
   });
 });

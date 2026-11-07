@@ -126,11 +126,13 @@ end;
 $$;
 
 -- The thread between the viewer and an idea partner about this idea, for the "Message" link on both sides.
-create function access.idea_thread(idea uuid, other uuid) returns uuid
+-- The requester leaves out the other member: it is the owner, whose id the summary may hide.
+create function access.idea_thread(idea uuid, other uuid default null) returns uuid
 language sql stable security definer set search_path = '' as $$
   select t.id from public.message_threads t
+  cross join lateral (select coalesce(other, (select i.owner_id from public.ideas i where i.id = idea)) as who) o
   where t.idea_id = idea and t.opportunity_id is null
-    and t.member_a = least(auth.uid(), other) and t.member_b = greatest(auth.uid(), other)
+    and t.member_a = least(auth.uid(), o.who) and t.member_b = greatest(auth.uid(), o.who)
     and (select access.is_member());
 $$;
 
@@ -187,7 +189,7 @@ returns table (id uuid, kind text, version text, body_en text, body_sw text, app
 language sql stable security invoker set search_path = '' as $$ select * from access.idea_terms(request); $$;
 create function public.accept_idea_terms(request uuid, text_ids uuid[]) returns text
 language sql volatile security invoker set search_path = '' as $$ select access.accept_idea_terms(request, text_ids); $$;
-create function public.idea_thread(idea uuid, other uuid) returns uuid
+create function public.idea_thread(idea uuid, other uuid default null) returns uuid
 language sql stable security invoker set search_path = '' as $$ select access.idea_thread(idea, other); $$;
 create function public.thread_details(thread uuid)
 returns table (can_send boolean, idea_id uuid, idea_title text)

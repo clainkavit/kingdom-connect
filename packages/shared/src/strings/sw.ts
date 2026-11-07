@@ -225,6 +225,14 @@ export const sw: Strings = {
   accessRevoke: "Ondoa ufikiaji",
   accessRevokeConfirm:
     "Uondoe ufikiaji wa mwanachama huyu sasa? Ataarifiwa kuwa ufikiaji wake umeondolewa.",
+  ndaIntro:
+    "Ili kufungua maelezo, kubali makubaliano ya usiri na masharti ya miliki bunifu. Ukikubali, wewe na mwenye wazo mtaona wasifu wa kila mmoja na kutumiana ujumbe kuhusu wazo hili.",
+  ndaAccept: "Kubali na ufungue maelezo",
+  ndaChanged: "Masharti yamesasishwa sasa hivi. Soma toleo jipya ukubali tena.",
+  ndaMissing: "Masharti bado hayako tayari. Jaribu tena baadaye.",
+  ideaMessageOwner: "Mtumie mwenye wazo ujumbe",
+  ideaMessage: "Tuma ujumbe",
+  threadAbout: (title: string) => `Kuhusu: ${title}`,
   language: "Lugha",
 
   navDashboard: "Dashibodi",

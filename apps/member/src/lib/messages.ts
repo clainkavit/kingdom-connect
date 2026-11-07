@@ -1,5 +1,4 @@
 import { photoLinks } from "./avatars";
-import { connectionsApi } from "./connections";
 import { supabase } from "./supabase";
 
 export const MAX_MESSAGE_LENGTH = 4000;
@@ -27,6 +26,8 @@ export type ThreadSummary = {
   lastDeleted: boolean;
   lastAt: string;
   unread: boolean;
+  /** The idea a thread opened by an NDA is about (I04). */
+  ideaTitle?: string | null;
 };
 
 export type Attachment = { id: string; fileName: string; mime: string; url: string | null };
@@ -47,6 +48,7 @@ export type Thread = {
   otherDeleted: boolean;
   reported: boolean;
   canSend: boolean;
+  ideaTitle?: string | null;
   messages: Message[];
 };
 
@@ -104,6 +106,7 @@ export function messagesApi(pick: () => Promise<PickedFile | null>): MessagesApi
         last_deleted: boolean;
         last_message_at: string;
         unread: boolean;
+        idea_title: string | null;
       }[];
       const [urls, deleted] = await Promise.all([
         photoLinks(rows.map((r) => r.photo_path)),
@@ -119,6 +122,7 @@ export function messagesApi(pick: () => Promise<PickedFile | null>): MessagesApi
         lastDeleted: r.last_deleted,
         lastAt: r.last_message_at,
         unread: r.unread,
+        ideaTitle: r.idea_title,
       }));
     },
 
@@ -155,7 +159,7 @@ export function messagesApi(pick: () => Promise<PickedFile | null>): MessagesApi
       if (thread.error) throw thread.error;
       if (!thread.data) return null;
       const otherId = thread.data.member_a === me ? thread.data.member_b : thread.data.member_a;
-      const [messages, other, relation, deleted] = await Promise.all([
+      const [messages, other, details, deleted] = await Promise.all([
         supabase
           .from("messages")
           .select(
@@ -164,7 +168,7 @@ export function messagesApi(pick: () => Promise<PickedFile | null>): MessagesApi
           .eq("thread_id", threadId)
           .order("created_at"),
         supabase.from("profiles").select("full_name").eq("member_id", otherId).maybeSingle(),
-        connectionsApi.relation(otherId).catch(() => "none" as const),
+        supabase.rpc("thread_details", { thread: threadId }).maybeSingle(),
         deletedAmong([otherId]),
       ]);
       if (messages.error) throw messages.error;
@@ -176,7 +180,8 @@ export function messagesApi(pick: () => Promise<PickedFile | null>): MessagesApi
         otherName: other.data?.full_name ?? "",
         otherDeleted: deleted.has(otherId),
         reported: thread.data.status === "reported",
-        canSend: relation === "connected" && thread.data.status !== "closed",
+        canSend: Boolean((details.data as { can_send?: boolean } | null)?.can_send),
+        ideaTitle: (details.data as { idea_title?: string | null } | null)?.idea_title ?? null,
         messages: rows.map((r) => ({
           id: r.id,
           mine: r.sender_id === me,

@@ -50,7 +50,7 @@ describe("IdeaDetailsScreen (S26)", () => {
     expect(screen.getByText("Pays back in one season.")).toBeTruthy();
     expect(screen.getByText(/^Opened by Neema Joseph · .+ · Confidential\./)).toBeTruthy();
     expect(
-      screen.getAllByText(/Neema Joseph · .+ · Confidential {3}Neema Joseph/).length,
+      screen.getAllByText(/Neema Joseph · .+ · Confidential Neema Joseph/).length,
     ).toBeGreaterThan(1);
     expect(screen.queryByText("Market")).toBeNull();
   });

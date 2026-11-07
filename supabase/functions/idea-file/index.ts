@@ -29,7 +29,7 @@ Deno.serve(async (req) => {
     String(file.file_name)
       .replace(/\.[a-z]+$/i, "")
       .replace(/[^\w .-]/g, "_") + ".pdf";
-  return new Response(stamped, {
+  return new Response(new Blob([stamped as Uint8Array<ArrayBuffer>]), {
     headers: {
       ...corsHeaders,
       "Content-Type": "application/pdf",

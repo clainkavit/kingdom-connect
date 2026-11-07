@@ -72,10 +72,13 @@ select is(public.apply_for_investor_flag(null, null, ''), 'already_applied', 'on
 select is(public.my_investor_status(), 'applied', 'and sees the application waiting');
 
 select pg_temp.login('a1');
-select is((select username from public.investor_application_queue()), 'iv_business', 'staff see the application');
-select is(public.decide_investor_application((select application_id from public.investor_application_queue()), true),
+select is((select username from public.investor_application_queue() where username like 'iv\_%'), 'iv_business',
+  'staff see the application');
+select is(public.decide_investor_application((select application_id from public.investor_application_queue()
+                                              where username = 'iv_business'), true),
   'ok', 'and approve it');
-select is((select username || ' ' || route || ' ' || ticket_band from public.investor_list()),
+select is((select username || ' ' || route || ' ' || ticket_band from public.investor_list()
+           where username like 'iv\_%'),
   'iv_business application 10m_to_50m', 'the flag is granted with its route and band');
 select is((select string_agg(username || ':' || is_investor, ',' order by username)
            from public.investor_invite_search('iv_')),

@@ -269,8 +269,26 @@ const acceptProblem = (t: Strings, result: string) =>
   ({ handoff_changed: t.ndaChanged, not_pending: t.planLapsedMessage })[result] ??
   t.plansActionFailed;
 
-function Milestones({ plan }: { plan: Plan }) {
+function Milestones({
+  plan,
+  api,
+  onChanged,
+}: {
+  plan: Plan;
+  api: PlansApi;
+  onChanged: () => void;
+}) {
   const { t, language } = useLanguage();
+  const [problem, setProblem] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  const step = async (run: () => Promise<string>) => {
+    setBusy(true);
+    setProblem(null);
+    const result = await run().catch(() => "error");
+    setBusy(false);
+    if (result === "ok") onChanged();
+    else setProblem(t.plansActionFailed);
+  };
   return (
     <Section title={t.planStagesHeading}>
       {plan.milestoneList.map((m) => (
@@ -292,15 +310,105 @@ function Milestones({ plan }: { plan: Plan }) {
               .filter(Boolean)
               .join(" · ")}
           </Text>
+          {plan.status === "active" && m.status === "open" && m.responsibleIsMe ? (
+            <Button
+              secondary
+              label={t.milestoneMarkDone}
+              disabled={busy}
+              onPress={() => step(() => api.markDone(m.id))}
+            />
+          ) : null}
+          {plan.status === "active" && m.status === "done" && !m.responsibleIsMe ? (
+            <Button
+              label={t.milestoneConfirm}
+              disabled={busy}
+              onPress={() => step(() => api.confirm(m.id))}
+            />
+          ) : null}
         </View>
       ))}
+      <Message text={problem} />
+    </Section>
+  );
+}
+
+const HOUR = 60 * 60 * 1000;
+
+/** S33: in the first hour after stage 1 either member may withdraw; after it, End plan with a reason. */
+function ActivePlan({
+  plan,
+  api,
+  onChanged,
+}: {
+  plan: Plan;
+  api: PlansApi;
+  onChanged: () => void;
+}) {
+  const { t } = useLanguage();
+  const [ending, setEnding] = useState(false);
+  const [reason, setReason] = useState("");
+  const [problem, setProblem] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  const agreed = plan.stage1AgreedAt ? new Date(plan.stage1AgreedAt).getTime() : 0;
+  const minutesLeft = Math.ceil((agreed + HOUR - Date.now()) / 60000);
+
+  if (minutesLeft > 0) {
+    return (
+      <View className="gap-2">
+        <Message tone="info" text={t.planWithdrawWindow(minutesLeft)} />
+        <ConfirmButton
+          label={t.planWithdraw}
+          question={t.planWithdrawConfirm}
+          confirmLabel={t.planWithdraw}
+          onConfirm={async () => {
+            const result = await api.withdraw(plan.id).catch(() => "error");
+            if (result === "ok") onChanged();
+            else setProblem(t.plansActionFailed);
+          }}
+        />
+        <Message text={problem} />
+      </View>
+    );
+  }
+  if (!ending) {
+    return (
+      <View className="gap-2">
+        <Message tone="info" text={t.planStage1Agreed} />
+        <Button secondary label={t.planEnd} onPress={() => setEnding(true)} />
+      </View>
+    );
+  }
+  return (
+    <Section title={t.planEnd}>
+      <Text className="font-figtree text-sm text-ink">{t.planEndHint}</Text>
+      <Field label={t.planEndReason} value={reason} multiline onChange={setReason} />
+      <Message text={problem} />
+      <View className="flex-row flex-wrap gap-2">
+        <Button
+          label={t.planEndConfirm}
+          disabled={busy}
+          onPress={async () => {
+            if (reason.trim().length < 3) return setProblem(t.planEndReasonNeeded);
+            setBusy(true);
+            setProblem(null);
+            const result = await api.end(plan.id, reason).catch(() => "error");
+            setBusy(false);
+            if (result === "ok") onChanged();
+            else
+              setProblem(
+                result === "contact_details" ? t.eventProblemContact : t.plansActionFailed,
+              );
+          }}
+        />
+        <Button secondary label={t.cancel} onPress={() => setEnding(false)} />
+      </View>
     </Section>
   );
 }
 
 /** S32 and S33: one plan. The other member reviews and accepts; either may start a lapsed one again. */
 export function PlanScreen({ api, planId }: { api: PlansApi; planId: string }) {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const router = useRouter();
   const [attempt, setAttempt] = useState(0);
   const loaded = useLoad(() => api.load(planId), attempt);
@@ -346,8 +454,18 @@ export function PlanScreen({ api, planId }: { api: PlansApi; planId: string }) {
       ) : null}
       {plan.status === "lapsed" ? <Message tone="info" text={t.planLapsedMessage} /> : null}
       {plan.status === "withdrawn" ? <Message tone="info" text={t.planWithdrawnMessage} /> : null}
-      {plan.status === "active" ? <Message tone="info" text={t.planStage1Agreed} /> : null}
-      <Milestones plan={plan} />
+      {plan.status === "ended" && plan.closedAt ? (
+        <Message
+          tone="info"
+          text={t.planEndedBy(
+            plan.closedByMe ? t.planYouDoIt : plan.otherName,
+            formatDate(new Date(plan.closedAt), language),
+            plan.endedReason ?? "",
+          )}
+        />
+      ) : null}
+      {plan.status === "active" ? <ActivePlan plan={plan} api={api} onChanged={reload} /> : null}
+      <Milestones plan={plan} api={api} onChanged={reload} />
       {plan.status === "pending" && !plan.startedByMe ? (
         <Section title={t.planReviewHeading}>
           <Message tone="info" text={t.planExpiresIn(daysLeft(plan.expiresAt))} />

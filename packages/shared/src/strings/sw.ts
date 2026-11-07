@@ -361,6 +361,20 @@ export const sw: Strings = {
   planWithdrawnMessage: "Mpango huu umefutwa. Unabaki kwenye kumbukumbu.",
   planStartAgain: "Uanzishe tena",
   planStage1Agreed: "Hatua ya 1 imekubaliwa.",
+  milestoneMarkDone: "Weka kuwa imekamilika",
+  milestoneConfirm: "Thibitisha imekamilika",
+  planWithdrawWindow: (minutes: number) =>
+    minutes === 1
+      ? "Unaweza kujitoa kwa dakika 1 zaidi."
+      : `Unaweza kujitoa kwa dakika ${minutes} zaidi.`,
+  planEnd: "Sitisha mpango",
+  planEndHint:
+    "Kusitisha kunamjulisha mwanachama mwingine na kubakiza mpango kwenye kumbukumbu kama Umesitishwa, pamoja na sababu yako na kila hatua hadi sasa.",
+  planEndReason: "Kwa nini unasitisha?",
+  planEndReasonNeeded: "Toa sababu ya angalau herufi 3.",
+  planEndConfirm: "Sitisha mpango",
+  planEndedBy: (who: string, date: string, reason: string) =>
+    `Umesitishwa na ${who} tarehe ${date}. Sababu: ${reason}`,
   language: "Lugha",
 
   navDashboard: "Dashibodi",

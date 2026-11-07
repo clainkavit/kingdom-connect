@@ -352,6 +352,20 @@ export const en = {
   planWithdrawnMessage: "This plan was withdrawn. It stays on record.",
   planStartAgain: "Start it again",
   planStage1Agreed: "Stage 1 is agreed.",
+  milestoneMarkDone: "Mark as done",
+  milestoneConfirm: "Confirm it is done",
+  planWithdrawWindow: (minutes: number) =>
+    minutes === 1
+      ? "You can withdraw for 1 more minute."
+      : `You can withdraw for ${minutes} more minutes.`,
+  planEnd: "End plan",
+  planEndHint:
+    "Ending tells the other member and keeps the plan on record as Ended, with your reason and every stage so far.",
+  planEndReason: "Why are you ending it?",
+  planEndReasonNeeded: "Give a reason of at least 3 characters.",
+  planEndConfirm: "End the plan",
+  planEndedBy: (who: string, date: string, reason: string) =>
+    `Ended by ${who} on ${date}. Reason: ${reason}`,
   language: "Language",
 
   navDashboard: "Dashboard",

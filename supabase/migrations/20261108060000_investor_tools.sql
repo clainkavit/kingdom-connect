@@ -266,14 +266,16 @@ language sql stable security definer set search_path = '' as $$
   left join public.profiles p on p.member_id = i.owner_id
   left join public.saved_ideas sv on sv.idea_id = s.id and sv.investor_id = auth.uid()
   where access.i_am_investor()
-    and (sector is null or s.sector_id = sector)
-    and (stage is null or s.stage = stage)
-    and (min_tzs is null or coalesce(s.investment_max_tzs, s.investment_min_tzs) >= min_tzs)
-    and (max_tzs is null or coalesce(s.investment_min_tzs, s.investment_max_tzs) <= max_tzs)
-    and (region is null or p.region_id = region)
-    and (not coalesce(saved_only, false) or sv.idea_id is not null)
+    and (investor_ideas.sector is null or s.sector_id = investor_ideas.sector)
+    and (investor_ideas.stage is null or s.stage = investor_ideas.stage)
+    and (investor_ideas.min_tzs is null
+         or coalesce(s.investment_max_tzs, s.investment_min_tzs) >= investor_ideas.min_tzs)
+    and (investor_ideas.max_tzs is null
+         or coalesce(s.investment_min_tzs, s.investment_max_tzs) <= investor_ideas.max_tzs)
+    and (investor_ideas.region is null or p.region_id = investor_ideas.region)
+    and (not coalesce(investor_ideas.saved_only, false) or sv.idea_id is not null)
   order by s.published_at desc, s.id
-  limit 20 offset greatest(coalesce(page, 0), 0) * 20;
+  limit 20 offset greatest(coalesce(investor_ideas.page, 0), 0) * 20;
 $$;
 
 revoke all on function access.i_am_investor(), access.my_investor_status(),

@@ -106,7 +106,7 @@ The tables below list only a screen's **special states**: the ones beyond these 
 | S36 | Learning materials | Registered member | PDFs, video links, slides, inside the platform | **Downloads** only if the poster allowed them. Not registered: locked with Register |
 | S37 | Post a training | Member, Admin | The training form | Member posts go to **Pending review** before they are live |
 | S38 | Events list and detail | Member | Title, date and time, venue or link, capacity; Register; Add to calendar | Full: waitlist. Posting is for Admins and Level 2 and up (**locked** with a reason for others). Built in T03 at `/events`: upcoming events with places left, the member's own drafts and events waiting for review; Post an event at `/events/new` (date and time are Tanzania time; Send for review or Save draft; a sent-back event returns to Draft with the reason and can be edited); each event at `/events/<id>` with Register, Join the waitlist, Cancel my place or Leave the waitlist, the waitlist number, Add to calendar (Google Calendar) and, once registered, the online link; the poster sees registered members by name and headline, each opening their profile |
-| S39 | News | Member | News and updates, pinned item first | Empty: "No news yet" |
+| S39 | News | Member | News and updates, pinned item first | Empty: "No news yet". Built in T04 at `/news`, reached from More until the dashboard news widget arrives (D01) |
 
 ## 8. Business levels, safety and settings
 
@@ -137,7 +137,7 @@ The tables below list only a screen's **special states**: the ones beyond these 
 | A08 | Re-verification | Admin | Licences expiring soon and expired | Built in B04 at `/re-verification`: Expired, then Ending in the next 30 days, soonest first; each row shows the business, the owner, the level and the end date, with "Renewal waiting" or "Last renewal rejected" linking to the review, or "No renewal sent yet". **Empty:** "No licence is ending" |
 | A09 | Members | Admin | Search and open a member; suspend; invite for the investor flag | Staff cannot connect or message, and have no member profile |
 | A10 | Investors | Admin | Flag holders, invitations and applications (staff only) | The investor list is never visible outside staff |
-| A11 | News editor | Admin | Create, publish, pin | Draft and Published |
+| A11 | News editor | Admin | Create, publish, pin | Draft and Published. Built in T04 at `/news`: title, text, optional image (JPG, PNG or WebP up to 2 MB), pin, publish or save as draft, delete |
 | A12 | Featured | Admin | Up to 5 featured opportunities, remove | Slot count shown; full: remove one first |
 | A13 | Audit log | Super Admin | Read-only list of actions with before and after values | Cannot be edited by anyone. Filterable by actor, action and date. Built in R13 at `/audit-log`, in the menu for Super Admins only: filters for a staff account, a member username, system entries, the action and a date range; each entry shows the time, actor, action, target, the changed fields and the IP, with "Show full record" for the whole before and after; Load more adds 50. **Administrator:** "Only Super Admins can open the audit log". **No match:** "No entries match these filters" |
 | A14 | Milestone plans (admin view) | Admin | Names, the idea or opportunity, stage statuses, dates, notes; add an annotation | Never shows contact details or the investor flag. Annotations cannot be deleted |

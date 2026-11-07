@@ -10,9 +10,11 @@ import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { Text, View } from "react-native";
 import { useLanguage } from "../lib/language";
+import type { MaterialsApi } from "../lib/materials";
 import type { TrainingApi, TrainingItem } from "../lib/training";
 import { Registrants, useLoad } from "./events";
 import { Button, Checkbox, Chips, Field, Message } from "./form";
+import { Materials } from "./materials";
 import { LinkButton } from "./link-button";
 import { ScreenTitle } from "./screens";
 import { EmptyState, ErrorState, LoadingRows, LockedState } from "./states";
@@ -120,7 +122,15 @@ export function TrainingList({ api }: { api: TrainingApi }) {
 }
 
 /** S35: one training, with Register or the waitlist, and the poster's registrant list. */
-export function TrainingDetail({ api, trainingId }: { api: TrainingApi; trainingId: string }) {
+export function TrainingDetail({
+  api,
+  materials,
+  trainingId,
+}: {
+  api: TrainingApi;
+  materials: MaterialsApi;
+  trainingId: string;
+}) {
   const { t, language } = useLanguage();
   const [attempt, setAttempt] = useState(0);
   const [busy, setBusy] = useState(false);
@@ -191,8 +201,14 @@ export function TrainingDetail({ api, trainingId }: { api: TrainingApi; training
           />
         )
       ) : null}
-      {published && item.myStatus === "registered" ? (
-        <Text className="font-figtree text-sm text-ink-2">{t.trainingMaterialsSoon}</Text>
+      {published || item.isMine ? (
+        <Materials
+          key={`${item.id}-${item.myStatus}`}
+          api={materials}
+          trainingId={item.id}
+          canOpen={item.isMine || item.myStatus === "registered"}
+          downloadsAllowed={item.downloadsAllowed}
+        />
       ) : null}
 
       {item.isMine && item.status === "draft" ? (

@@ -1,6 +1,7 @@
 import { router } from "../test-router";
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import type { MaterialsApi } from "../lib/materials";
 import type { TrainingApi, TrainingItem } from "../lib/training";
 import { TrainingDetail, TrainingForm, TrainingList } from "./training";
 
@@ -32,6 +33,17 @@ const fakeApi = (over: Partial<TrainingApi> = {}): TrainingApi => ({
   register: vi.fn().mockResolvedValue({ result: "registered", waitlistPosition: null }),
   cancel: vi.fn().mockResolvedValue("ok"),
   registrants: vi.fn().mockResolvedValue([]),
+  ...over,
+});
+
+const fakeMaterials = (over: Partial<MaterialsApi> = {}): MaterialsApi => ({
+  list: vi.fn().mockResolvedValue([]),
+  canManage: vi.fn().mockResolvedValue(false),
+  fileUrl: vi.fn().mockResolvedValue("https://files.example.test/signed"),
+  pickPdf: vi.fn().mockResolvedValue(null),
+  addFile: vi.fn().mockResolvedValue("ok"),
+  addLink: vi.fn().mockResolvedValue("ok"),
+  remove: vi.fn().mockResolvedValue("ok"),
   ...over,
 });
 
@@ -67,16 +79,15 @@ describe("TrainingList (S35)", () => {
 describe("TrainingDetail (S35)", () => {
   it("joins the waitlist when full, and cancels a seat", async () => {
     const full = fakeApi({ feed: vi.fn().mockResolvedValue([item({ registered: 2 })]) });
-    await show(<TrainingDetail api={full} trainingId="t1" />);
+    await show(<TrainingDetail api={full} materials={fakeMaterials()} trainingId="t1" />);
+    expect(screen.getByText("Register to open the learning materials.")).toBeTruthy();
     await click("Join the waitlist");
     expect(full.register).toHaveBeenCalledWith("t1");
     cleanup();
 
     const mine = fakeApi({ feed: vi.fn().mockResolvedValue([item({ myStatus: "registered" })]) });
-    await show(<TrainingDetail api={mine} trainingId="t1" />);
-    expect(
-      screen.getByText("Learning materials will appear here for registered members."),
-    ).toBeTruthy();
+    await show(<TrainingDetail api={mine} materials={fakeMaterials()} trainingId="t1" />);
+    expect(screen.getByText("No materials yet.")).toBeTruthy();
     await click("Cancel my seat");
     expect(mine.cancel).toHaveBeenCalledWith("t1");
   });
@@ -96,6 +107,7 @@ describe("TrainingDetail (S35)", () => {
             },
           ]),
         })}
+        materials={fakeMaterials()}
         trainingId="t1"
       />,
     );

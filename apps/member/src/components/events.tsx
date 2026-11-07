@@ -18,7 +18,7 @@ import { EmptyState, ErrorState, LoadingRows, LockedState } from "./states";
 
 type Loaded<T> = { state: "loading" } | { state: "failed" } | { state: "ready"; value: T };
 
-function useLoad<T>(load: () => Promise<T>, attempt: number): Loaded<T> {
+export function useLoad<T>(load: () => Promise<T>, attempt: number): Loaded<T> {
   const [loaded, setLoaded] = useState<Loaded<T>>({ state: "loading" });
   useEffect(() => {
     let live = true;
@@ -132,10 +132,11 @@ export function EventsList({ api }: { api: EventsApi }) {
   );
 }
 
-function Registrants({ api, eventId }: { api: EventsApi; eventId: string }) {
+/** The poster's registrant list, by name and headline: never contact details. Shared with training (T01). */
+export function Registrants({ load }: { load: () => Promise<Registrant[]> }) {
   const { t } = useLanguage();
   const [attempt, setAttempt] = useState(0);
-  const loaded = useLoad<Registrant[]>(() => api.registrants(eventId), attempt);
+  const loaded = useLoad<Registrant[]>(load, attempt);
   return (
     <View className="gap-2">
       <Text role="heading" aria-level={2} className="font-figtree-bold text-[17px] text-ink">
@@ -279,7 +280,7 @@ export function EventDetail({ api, eventId }: { api: EventsApi; eventId: string 
           <Text className="font-figtree-semibold text-sm text-ink-2">{t.eventsEdit}</Text>
         </LinkButton>
       ) : null}
-      {event.isMine && published ? <Registrants api={api} eventId={event.id} /> : null}
+      {event.isMine && published ? <Registrants load={() => api.registrants(event.id)} /> : null}
     </View>
   );
 }

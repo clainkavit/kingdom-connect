@@ -12,14 +12,7 @@ export const memberCategories = [
 export type MemberCategory = (typeof memberCategories)[number];
 
 export type FieldProblem =
-  | "required"
-  | "username"
-  | "email"
-  | "phone"
-  | "password"
-  | "nida"
-  | "id_number"
-  | "study_year";
+  "required" | "username" | "email" | "phone" | "password" | "nida" | "id_number" | "study_year";
 
 export type SignUpInput = { username: string; email: string; phone: string; password: string };
 

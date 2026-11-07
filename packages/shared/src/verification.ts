@@ -43,10 +43,7 @@ export type DecideResult =
   | { kind: "failed" };
 
 export type MarkDuplicateResult =
-  | { kind: "done" }
-  | { kind: "unknown_member" }
-  | { kind: "already_decided" }
-  | { kind: "failed" };
+  { kind: "done" } | { kind: "unknown_member" } | { kind: "already_decided" } | { kind: "failed" };
 
 export type ReopenResult = "done" | "note_required" | "not_final" | "failed";
 

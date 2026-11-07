@@ -35,8 +35,7 @@ export type SetSkillsResult = "done" | SkillProblem | "failed";
 export type DeleteMyDataResult = "done" | "failed";
 
 export type ChangeEmailStep =
-  | { step: "start"; password: string; newEmail: string }
-  | { step: "confirm"; code: string };
+  { step: "start"; password: string; newEmail: string } | { step: "confirm"; code: string };
 
 export function createProfileClient(options: FunctionOptions) {
   const call = functionCaller(options);

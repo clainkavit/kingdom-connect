@@ -59,8 +59,8 @@ describe("IdeasPool (S22)", () => {
       />,
     );
     expect(
-      screen.getByText("Agriculture · Prototype · Investor · TZS 10,000,000 to 50,000,000"),
-    ).toBeTruthy();
+      screen.getAllByText("Agriculture · Prototype · Investor · TZS 10,000,000 to 50,000,000"),
+    ).toHaveLength(2);
     expect(screen.getByText("Asha Mwita · 3 interested")).toBeTruthy();
     expect(screen.getByText("A verified member · 1 interested")).toBeTruthy();
     expect(screen.getByRole("link", { name: "Clinic booking" }).getAttribute("href")).toBe(

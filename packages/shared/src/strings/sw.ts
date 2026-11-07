@@ -126,8 +126,6 @@ export const sw: Strings = {
   ideasMine: "Mawazo yangu",
   ideasShare: "Shiriki wazo",
   ideasEditTitle: "Hariri wazo",
-  ideasPoolSoon:
-    "Hazina ya mawazo, ambapo wanachama huona mawazo ya wenzao, inakuja hivi karibuni.",
   ideasEmptyTitle: "Bado hakuna mawazo",
   ideasEmptyMessage: "Shiriki wazo ili kupata wawekezaji au washirika.",
   ideasLoadFailed: "Hatukuweza kupakia mawazo yako. Angalia mtandao wako ujaribu tena.",

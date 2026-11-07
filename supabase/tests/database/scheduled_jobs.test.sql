@@ -27,8 +27,8 @@ select ('00000000-0000-0000-0000-00000000b4' || k)::uuid, ('00000000-0000-0000-0
        'Clock Business ' || k, (select id from public.sectors order by name_en limit 1), 'small', 2, 'approved'
 from unnest(array['01', '02']) k;
 insert into public.business_private (business_id, brela_no, tin, licence_no, licence_expires_on) values
-  ('00000000-0000-0000-0000-00000000b401', 'BRELA-3401', '340-340-01', 'LIC-3401', '2030-03-20'),
-  ('00000000-0000-0000-0000-00000000b402', 'BRELA-3402', '340-340-02', 'LIC-3402', '2030-03-09');
+  ('00000000-0000-0000-0000-00000000b401', 'BRELA-3401', '340-340-001', 'LIC-3401', '2030-03-20'),
+  ('00000000-0000-0000-0000-00000000b402', 'BRELA-3402', '340-340-002', 'LIC-3402', '2030-03-09');
 insert into public.verification_requests (member_id, level, status, business_id, submitted_at, decided_at)
 select ('00000000-0000-0000-0000-0000000034' || k)::uuid, l, 'approved',
        case when l = 1 then null else ('00000000-0000-0000-0000-00000000b4' || k)::uuid end, now(), now()

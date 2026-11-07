@@ -68,29 +68,43 @@ type Named = { name_en: string; name_sw: string } | null;
 const named = (n: Named, language: Language) =>
   n ? (language === "sw" ? n.name_sw : n.name_en) : null;
 
+type PosterRows = {
+  profiles: { member_id: string; full_name: string | null }[];
+  members: { id: string; username: string }[];
+  approvals: { poster_member_id: string }[];
+};
+
 /** Names and approved-post counts for the members who posted, read by staff. */
 async function posters(ids: string[]) {
   const unique = [...new Set(ids)];
-  if (unique.length === 0)
-    return { names: new Map<string, string>(), approved: new Map<string, number>() };
-  const [profiles, members, approvals] = await Promise.all([
-    supabase.from("profiles").select("member_id, full_name").in("member_id", unique),
-    supabase.from("members").select("id, username").in("id", unique),
-    supabase
-      .from("opportunities")
-      .select("poster_member_id")
-      .in("poster_member_id", unique)
-      .not("approved_at", "is", null),
-  ]);
   const names = new Map<string, string>();
-  for (const m of (members.data ?? []) as { id: string; username: string }[])
-    names.set(m.id, m.username);
-  for (const p of (profiles.data ?? []) as { member_id: string; full_name: string | null }[])
-    if (p.full_name) names.set(p.member_id, p.full_name);
   const approved = new Map<string, number>();
-  for (const a of (approvals.data ?? []) as { poster_member_id: string }[])
-    approved.set(a.poster_member_id, (approved.get(a.poster_member_id) ?? 0) + 1);
+  if (unique.length === 0) return { names, approved };
+  const profiles = supabase.from("profiles").select("member_id, full_name").in("member_id", unique);
+  const members = supabase.from("members").select("id, username").in("id", unique);
+  const posts = supabase
+    .from("opportunities")
+    .select("poster_member_id")
+    .in("poster_member_id", unique);
+  const approvals = posts.not("approved_at", "is", null);
+  const [p, m, a] = await Promise.all([profiles, members, approvals]);
+  const rows: PosterRows = {
+    profiles: (p.data ?? []) as PosterRows["profiles"],
+    members: (m.data ?? []) as PosterRows["members"],
+    approvals: (a.data ?? []) as PosterRows["approvals"],
+  };
+  for (const row of rows.members) names.set(row.id, row.username);
+  for (const row of rows.profiles) if (row.full_name) names.set(row.member_id, row.full_name);
+  for (const row of rows.approvals) {
+    approved.set(row.poster_member_id, (approved.get(row.poster_member_id) ?? 0) + 1);
+  }
   return { names, approved };
+}
+
+/** The poster's name and approved posts, or none for a staff post. */
+function posterOf(who: Awaited<ReturnType<typeof posters>>, id: string | null) {
+  if (!id) return { posterName: null, approvedPosts: 0 };
+  return { posterName: who.names.get(id) ?? "", approvedPosts: who.approved.get(id) ?? 0 };
 }
 
 /** A04, A05 and A15 for opportunities (O01). */
@@ -116,8 +130,7 @@ export const opportunityModerationApi: OpportunityModerationApi = {
       id: r.id,
       title: r.title,
       type: r.type,
-      posterName: r.poster_member_id ? (who.names.get(r.poster_member_id) ?? "") : null,
-      approvedPosts: r.poster_member_id ? (who.approved.get(r.poster_member_id) ?? 0) : 0,
+      ...posterOf(who, r.poster_member_id),
       submittedAt: new Date(r.updated_at),
     }));
   },
@@ -164,8 +177,7 @@ export const opportunityModerationApi: OpportunityModerationApi = {
       closingOn: row.closing_at,
       skills: row.skills.flatMap((s) => (s.skill ? [s.skill.name] : [])),
       status: row.status,
-      posterName: row.poster_member_id ? (who.names.get(row.poster_member_id) ?? "") : null,
-      approvedPosts: row.poster_member_id ? (who.approved.get(row.poster_member_id) ?? 0) : 0,
+      ...posterOf(who, row.poster_member_id),
       reason: row.reason,
     };
   },
@@ -177,9 +189,9 @@ export const opportunityModerationApi: OpportunityModerationApi = {
       .eq("for_post", true)
       .order("sort");
     if (error) throw error;
-    return (
-      data as { code: string; label_en: string; label_sw: string; needs_note: boolean }[]
-    ).map((r) => ({
+    type ReasonRow = { code: string; label_en: string; label_sw: string; needs_note: boolean };
+    const rows = data as ReasonRow[];
+    return rows.map((r) => ({
       code: r.code,
       label: language === "sw" ? r.label_sw : r.label_en,
       needsNote: r.needs_note,

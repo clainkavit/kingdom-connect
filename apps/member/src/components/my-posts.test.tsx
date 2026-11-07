@@ -79,6 +79,14 @@ describe("MyPosts (S21)", () => {
     expect(api.mine).toHaveBeenCalledTimes(2);
   });
 
+  it("gives the reason a post was removed", async () => {
+    await show(
+      fakeApi([post({ status: "removed", reason: "The post asks applicants for money" })]),
+    );
+    expect(screen.getByText("Removed: The post asks applicants for money")).toBeTruthy();
+    expect(screen.queryByText(/^Sent back/)).toBeNull();
+  });
+
   it("explains a hidden post", async () => {
     await show(fakeApi([post({ status: "hidden" })]));
     expect(screen.getByText("Our team is reviewing it.")).toBeTruthy();

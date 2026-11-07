@@ -958,6 +958,7 @@ export const sw: Strings = {
   moderationWaiting: (count: number) => `${count} yanasubiri`,
   remoteWork: "Kazi ya mbali",
   adminPostPublished: "Limechapishwa. Wanachama wanaweza kuliona sasa.",
+  postRemovedReason: (reason: string) => `Limeondolewa: ${reason}`,
   postHiddenNotice: "Timu yetu inalikagua.",
   postLocation: "Mahali",
   moderationPostsTitle: "Fursa",

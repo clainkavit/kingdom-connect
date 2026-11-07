@@ -40,8 +40,11 @@ function PostRow({
           t.postClosesOn(formatDate(new Date(`${post.closingAt}T12:00:00+03:00`), language)),
         ].join(" · ")}
       </Text>
-      {post.reason && (post.status === "draft" || post.status === "removed") ? (
+      {post.reason && post.status === "draft" ? (
         <Text className="font-figtree text-sm text-ink">{t.postSentBack(post.reason)}</Text>
+      ) : null}
+      {post.reason && post.status === "removed" ? (
+        <Text className="font-figtree text-sm text-ink">{t.postRemovedReason(post.reason)}</Text>
       ) : null}
       {post.status === "hidden" ? <Message tone="info" text={t.postHiddenNotice} /> : null}
       <Message text={problem} />

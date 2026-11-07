@@ -943,6 +943,7 @@ export const en = {
   moderationWaiting: (count: number) => `${count} waiting`,
   remoteWork: "Remote",
   adminPostPublished: "Published. Members can see it now.",
+  postRemovedReason: (reason: string) => `Removed: ${reason}`,
   postHiddenNotice: "Our team is reviewing it.",
   postLocation: "Location",
   moderationPostsTitle: "Opportunities",

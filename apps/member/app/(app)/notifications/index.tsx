@@ -32,7 +32,12 @@ export default function NotificationsScreen() {
 
   const open = async (item: StoredNotification) => {
     await markRead(item.id);
-    router.push(notificationCopy[item.kind].opens as never);
+    const eventId = item.payload.event_id;
+    router.push(
+      (typeof eventId === "string"
+        ? `/events/${eventId}`
+        : notificationCopy[item.kind].opens) as never,
+    );
   };
 
   return (

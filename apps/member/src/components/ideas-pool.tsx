@@ -1,10 +1,12 @@
 import type { Strings } from "@kingdom-connect/shared";
 import { useState } from "react";
 import { Text, View } from "react-native";
+import type { IdeaAccessApi } from "../lib/idea-access";
 import { POOL_PAGE, type IdeaSummary, type IdeasApi } from "../lib/ideas";
 import { useLanguage } from "../lib/language";
 import { useLoad } from "./events";
 import { Button } from "./form";
+import { AccessManager, IdeaInterest } from "./idea-access";
 import { seekingLabel, stageLabel } from "./ideas";
 import { LinkButton } from "./link-button";
 import { ScreenTitle } from "./screens";
@@ -119,8 +121,16 @@ export function IdeasPool({ api }: { api: IdeasApi }) {
   );
 }
 
-/** S23: one idea's summary. The details stay locked; interest arrives with I03. */
-export function IdeaSummaryScreen({ api, ideaId }: { api: IdeasApi; ideaId: string }) {
+/** S23: one idea's summary. The details stay locked; members ask for access and the owner manages it (I03). */
+export function IdeaSummaryScreen({
+  api,
+  access,
+  ideaId,
+}: {
+  api: IdeasApi;
+  access: IdeaAccessApi;
+  ideaId: string;
+}) {
   const { t, language } = useLanguage();
   const [attempt, setAttempt] = useState(0);
   const loaded = useLoad(() => api.summary(ideaId), attempt);
@@ -164,13 +174,16 @@ export function IdeaSummaryScreen({ api, ideaId }: { api: IdeasApi; ideaId: stri
         </Text>
       </View>
       {idea.isMine ? (
-        <LinkButton
-          href="/ideas/mine"
-          label={t.ideaManageMine}
-          className="min-h-[44px] items-center justify-center rounded-[9px] border border-line bg-surface px-4"
-        >
-          <Text className="font-figtree-semibold text-sm text-ink-2">{t.ideaManageMine}</Text>
-        </LinkButton>
+        <>
+          <AccessManager api={access} ideaId={idea.id} />
+          <LinkButton
+            href="/ideas/mine"
+            label={t.ideaManageMine}
+            className="min-h-[44px] items-center justify-center rounded-[9px] border border-line bg-surface px-4"
+          >
+            <Text className="font-figtree-semibold text-sm text-ink-2">{t.ideaManageMine}</Text>
+          </LinkButton>
+        </>
       ) : (
         <>
           {idea.ownerId ? (
@@ -187,7 +200,7 @@ export function IdeaSummaryScreen({ api, ideaId }: { api: IdeasApi; ideaId: stri
             </Text>
           )}
           <Text className="font-figtree text-sm text-ink-2">{t.ideaLockedDetails}</Text>
-          <Text className="font-figtree text-sm text-ink-2">{t.ideaInterestSoon}</Text>
+          <IdeaInterest api={access} ideaId={idea.id} />
         </>
       )}
     </View>

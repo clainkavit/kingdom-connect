@@ -77,6 +77,15 @@ function MyIdeaRow({
           </LinkButton>
         ) : null}
         {idea.status === "published" ? (
+          <LinkButton
+            href={`/ideas/${idea.id}`}
+            label={t.ideaOpenAccess}
+            className="min-h-[44px] items-center justify-center rounded-[9px] border border-line bg-surface px-4"
+          >
+            <Text className="font-figtree-semibold text-sm text-ink-2">{t.ideaOpenAccess}</Text>
+          </LinkButton>
+        ) : null}
+        {idea.status === "published" ? (
           <ConfirmButton
             label={t.ideaArchive}
             question={t.ideaArchiveConfirm}

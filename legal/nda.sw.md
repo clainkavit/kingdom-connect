@@ -1,6 +1,6 @@
 ---
-version: 0.1
-effective: 2026-11-02
+version: 0.2
+effective: 2026-11-06
 approved:
 ---
 # Makubaliano ya kutunza siri
@@ -25,7 +25,7 @@ Taarifa unazoweza kuonyesha kwamba ulikuwa nazo tayari, zilizokuwa za umma tayar
 
 ## Muda wake
 
-Makubaliano haya yanadumu kwa miaka [TO CONFIRM: muda] tangu siku unayoyakubali, hata kama ruhusa yako ikiisha mapema.
+Makubaliano haya yanaanza siku unayoyakubali na hayana tarehe ya mwisho. Yanaendelea kutumika hata baada ya ruhusa yako kuisha.
 
 ## Kumbukumbu
 

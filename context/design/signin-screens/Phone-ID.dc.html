@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Registration ID and photos step on a phone</title>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&amp;family=Figtree:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#4A0E1A}a:hover{color:#2A0610}
+input::placeholder{color:#7A6A6E}
+</style>
+</helmet>
+<div style="width: 430px; height: 900px; box-sizing: border-box; padding: 28px 20px; border-radius: 64px; background: #1E1416; font-family: Figtree, system-ui, sans-serif; color: #2A1A1E">
+<div style="position: relative; width: 390px; height: 844px; border-radius: 44px; overflow: hidden; background: #F7F1EA; display: flex; flex-direction: column">
+<span style="position: absolute; top: 12px; left: 140px; width: 110px; height: 30px; border-radius: 999px; background: #1E1416; z-index: 2"></span>
+
+<div style="display: flex; flex-direction: column; gap: 10px; padding: 58px 22px 0">
+<div style="display: flex; align-items: center; justify-content: space-between">
+<a href="Phone-CatDetails.dc.html" aria-label="Back to category details" style="width: 44px; height: 44px; border-radius: 999px; background: #FFFFFF; border: 1px solid #E4D9CC; color: #4A0E1A; display: flex; align-items: center; justify-content: center; box-sizing: border-box">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg>
+</a>
+<span style="font-size: 13px; font-weight: 700; color: #5A4A4E">Step 4 of 6</span>
+</div>
+<div role="progressbar" aria-label="Registration progress" aria-valuemin="1" aria-valuemax="6" aria-valuenow="4" style="display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px">
+<span style="height: 6px; border-radius: 999px; background: #4A0E1A"></span>
+<span style="height: 6px; border-radius: 999px; background: #4A0E1A"></span>
+<span style="height: 6px; border-radius: 999px; background: #4A0E1A"></span>
+<span style="height: 6px; border-radius: 999px; background: #4A0E1A"></span>
+<span style="height: 6px; border-radius: 999px; background: #E4D9CC"></span>
+<span style="height: 6px; border-radius: 999px; background: #E4D9CC"></span>
+</div>
+</div>
+
+<form style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 12px; padding: 16px 22px 22px" aria-labelledby="id-title">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<h1 id="id-title" style="margin: 0; font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 600; font-size: 32px; line-height: 1.05; color: #4A0E1A">Your ID and photos</h1>
+<p style="margin: 0; font-size: 14px; line-height: 1.45; color: #5A4A4E">An administrator uses these to check that you are who you say you are.</p>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 4px">
+<label for="id-type" style="font-size: 13px; font-weight: 600; color: #5A4A4E; padding-left: 18px">ID type</label>
+<select id="id-type" style="min-height: 48px; box-sizing: border-box; width: 100%; border: 1px solid #D9CBBB; border-radius: 999px; background: #FFFFFF; padding: 0 20px; font: 400 15px Figtree, sans-serif; color: #2A1A1E">
+<option>NIDA</option>
+<option>Passport</option>
+<option>Driving licence</option>
+<option>Voter's ID</option>
+</select>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 4px">
+<label for="id-number" style="font-size: 13px; font-weight: 600; color: #5A4A4E; padding-left: 18px">ID number</label>
+<input id="id-number" type="text" inputmode="numeric" placeholder="20 digits for NIDA" style="min-height: 48px; box-sizing: border-box; width: 100%; border: 1px solid #D9CBBB; border-radius: 999px; background: #FFFFFF; padding: 0 20px; font: 400 15px Figtree, sans-serif; color: #2A1A1E">
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 2px">
+<label style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; min-height: 168px; box-sizing: border-box; padding: 14px 10px; border: 1.5px dashed #B9A898; border-radius: 20px; background: #FFFFFF; text-align: center">
+<input type="file" accept="image/*" capture="environment" style="position: absolute; width: 1px; height: 1px; opacity: 0">
+<span style="width: 48px; height: 48px; border-radius: 16px; background: #F3E6D0; color: #4A0E1A; display: flex; align-items: center; justify-content: center">
+<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"></rect><circle cx="8" cy="12" r="2.5"></circle><path d="M13 10h5"></path><path d="M13 14h4"></path></svg>
+</span>
+<span style="font-size: 15px; font-weight: 700; color: #2A1A1E">Photo of your ID</span>
+<span style="font-size: 12px; line-height: 1.35; color: #5A4A4E">The side with your photo. All corners in view</span>
+<span style="font-size: 13px; font-weight: 700; color: #4A0E1A">Take or choose</span>
+</label>
+
+<label style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; min-height: 168px; box-sizing: border-box; padding: 14px 10px; border: 1.5px dashed #B9A898; border-radius: 20px; background: #FFFFFF; text-align: center">
+<input type="file" accept="image/*" capture="user" style="position: absolute; width: 1px; height: 1px; opacity: 0">
+<span style="width: 48px; height: 48px; border-radius: 16px; background: #F3E6D0; color: #4A0E1A; display: flex; align-items: center; justify-content: center">
+<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="9" r="4"></circle><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"></path></svg>
+</span>
+<span style="font-size: 15px; font-weight: 700; color: #2A1A1E">Photo of your face</span>
+<span style="font-size: 12px; line-height: 1.35; color: #5A4A4E">Face the camera in good light, no hat or sunglasses</span>
+<span style="font-size: 13px; font-weight: 700; color: #4A0E1A">Take a photo</span>
+</label>
+</div>
+
+<div style="display: flex; gap: 10px; align-items: flex-start; background: #EFE7DE; border-radius: 16px; padding: 11px 14px">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4A0E1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0; margin-top: 1px"><rect x="4" y="11" width="16" height="10" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg>
+<span style="font-size: 13px; line-height: 1.4; color: #3A2A2E">Only staff see these two photos. Other members never do.</span>
+</div>
+
+<div style="flex: 1 1 auto"></div>
+<a href="Phone-Legal.dc.html" style="min-height: 56px; border-radius: 999px; background: #4A0E1A; color: #FFFFFF; font-weight: 600; font-size: 16px; text-decoration: none; display: flex; align-items: center; justify-content: center">Continue</a>
+</form>
+
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":430,"height":900}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

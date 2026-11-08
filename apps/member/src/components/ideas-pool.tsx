@@ -6,7 +6,7 @@ import { POOL_PAGE, type IdeaSummary, type IdeasApi } from "../lib/ideas";
 import { useLanguage } from "../lib/language";
 import { useLoad } from "./events";
 import { Button } from "./form";
-import { AccessManager, IdeaInterest } from "./idea-access";
+import { AccessManager, DetailsLink, IdeaInterest } from "./idea-access";
 import { seekingLabel, stageLabel } from "./ideas";
 import { LinkButton } from "./link-button";
 import { ScreenTitle } from "./screens";
@@ -175,6 +175,7 @@ export function IdeaSummaryScreen({
       </View>
       {idea.isMine ? (
         <>
+          <DetailsLink ideaId={idea.id} />
           <AccessManager api={access} ideaId={idea.id} />
           <LinkButton
             href="/ideas/mine"

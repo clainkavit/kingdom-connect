@@ -46,7 +46,12 @@ create index opportunity_skills_skill on public.opportunity_skills (skill_id);
 alter table public.opportunities enable row level security;
 alter table public.opportunity_skills enable row level security;
 revoke all on public.opportunities, public.opportunity_skills from anon, authenticated;
-grant select on public.opportunities, public.opportunity_skills to authenticated;
+grant select on public.opportunity_skills to authenticated;
+-- Who reviewed a post, the reason code, the note and the approval time stay out of members' reach.
+grant select (id, poster_member_id, poster_staff_id, type, title, role, employment_type, region_id, district_id,
+              remote, sector_id, description, closing_at, no_fee_declared, featured_at, status, reason, published_at,
+              closed_at, created_at, updated_at)
+  on public.opportunities to authenticated;
 create policy "base rule" on public.opportunities as restrictive for all to authenticated
   using ((select access.is_member()) or (select access.is_staff()))
   with check ((select access.is_member()) or (select access.is_staff()));
@@ -110,6 +115,7 @@ declare
   tag text;
   skill uuid;
   approvals int;
+  sent_back boolean := false;
   next_status text;
   saved uuid;
 begin
@@ -131,6 +137,9 @@ begin
     return query select 'not_editable', null::uuid; return;
   end if;
 
+  if opportunity is not null then
+    select o.reason_code is not null into sent_back from public.opportunities o where o.id = opportunity;
+  end if;
   if kind is null or kind not in ('job', 'partnership', 'collaboration', 'investment') then
     return query select 'invalid_type', null::uuid; return;
   end if;
@@ -162,7 +171,8 @@ begin
     return query select 'skills_required', null::uuid; return;
   end if;
   if private.holds_contact_details(jsonb_build_object('title', clean_title, 'role', coalesce(clean_role, ''),
-                                                      'text', clean_description)) then
+                                                      'text', clean_description,
+                                                      'skills', array_to_string(tags, ' '))) then
     return query select 'contact_details', null::uuid; return;
   end if;
   if not staff_poster and not coalesce(no_fee, false) then
@@ -177,7 +187,9 @@ begin
     select count(*) into approvals from public.opportunities o
     where o.poster_member_id = me and o.approved_at is not null;
     next_status := case
-      when approvals < 3 or private.holds_link(clean_title || ' ' || coalesce(clean_role, '') || ' ' || clean_description)
+      when sent_back or approvals < 3
+           or private.holds_link(clean_title || ' ' || coalesce(clean_role, '') || ' ' || clean_description
+                                 || ' ' || array_to_string(tags, ' '))
         then 'pending_review'
       else 'published' end;
   end if;

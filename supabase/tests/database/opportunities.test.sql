@@ -2,7 +2,7 @@ begin;
 create extension if not exists pgtap with schema extensions;
 -- Members here have accepted the current legal texts; that rule is tested in legal_on_server.test.sql.
 create or replace function access.accepted_terms_and_privacy() returns boolean language sql stable as 'select true';
-select plan(44);
+select plan(50);
 
 insert into auth.users (id, email)
 select ('00000000-0000-0000-0000-0000000019' || k)::uuid, 'op' || k || '@test.invalid'
@@ -70,6 +70,7 @@ select is(pg_temp.post(skills => array['a', 'b', 'c', 'd', 'e', 'f']), 'too_many
 select is(pg_temp.post(description => repeat('Call 0712345678 for the details of this work please. ', 3)), 'contact_details',
   'phone numbers in the text are refused');
 select is(pg_temp.post(title => 'Write to me at boss@example.test'), 'contact_details', 'and emails too');
+select is(pg_temp.post(skills => array['supervision', 'call 0712345678']), 'contact_details', 'and in the skills');
 select is(pg_temp.post(no_fee => false), 'no_fee_required', 'a member poster ticks the no-fee declaration');
 select is(pg_temp.post(title => 'Draft supervisor post', send => false), 'ok', 'a member saves a draft');
 select is(pg_temp.status('Draft supervisor post'), 'draft', 'which stays a draft');
@@ -120,6 +121,18 @@ select is(pg_temp.post(title => 'Fifth post with a link',
                        description => repeat('See more details at https://jobs.example and apply soon please. ', 3)), 'ok',
   'a post with a link');
 select is(pg_temp.status('Fifth post with a link'), 'pending_review', 'still goes to review');
+select pg_temp.login('a1');
+select is(public.moderate_opportunity(pg_temp.post_id('Fifth post with a link'), 'reject', 'post_unclear', null), 'ok',
+  'staff send it back');
+select pg_temp.login('01');
+select is(pg_temp.post(title => 'Fifth post with a link', existing => pg_temp.post_id('Fifth post with a link')), 'ok',
+  'the poster edits it and sends it again');
+select is(pg_temp.status('Fifth post with a link'), 'pending_review',
+  'a post that was sent back is reviewed again, whatever the poster''s record');
+select throws_ok($$select reason_code from public.opportunities$$, '42501', null, 'a poster cannot read the review columns');
+select pg_temp.login('05');
+select throws_ok($$select reviewed_by, approved_at from public.opportunities$$, '42501', null, 'nor can other members');
+select pg_temp.login('01');
 select is((select string_agg(s.name::text, ',' order by s.name) from public.opportunity_skills os
            join public.skills s on s.id = os.skill_id where os.opportunity_id = pg_temp.post_id('Fourth post goes live')),
   'civil works,supervision', 'skills are stored as tags');

@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Landing on a phone</title>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&amp;family=Figtree:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#4A0E1A}a:hover{color:#2A0610}
+</style>
+</helmet>
+<div style="width: 430px; height: 900px; box-sizing: border-box; padding: 28px 20px; border-radius: 64px; background: #1E1416; font-family: Figtree, system-ui, sans-serif; color: #2A1A1E">
+<div style="position: relative; width: 390px; height: 844px; border-radius: 44px; overflow: hidden; background: #F7F1EA; display: flex; flex-direction: column">
+<span style="position: absolute; top: 12px; left: 140px; width: 110px; height: 30px; border-radius: 999px; background: #1E1416; z-index: 2"></span>
+
+<div style="position: relative; height: 470px; flex-shrink: 0; background: #4A0E1A">
+<img src="hands-photo.jpg" alt="Hands of people of different skin tones joined together in a circle" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 45%; display: block">
+<div style="position: absolute; top: 56px; left: 20px; right: 20px; display: flex; align-items: center; justify-content: space-between">
+<img src="logo.jpg" alt="Kingdom Connect" style="width: 64px; height: 58px; object-fit: cover; border-radius: 12px; display: block">
+<div style="display: flex; gap: 4px; background: #FFFFFF; border-radius: 999px; padding: 4px">
+<button type="button" aria-pressed="true" style="min-height: 36px; min-width: 44px; border: 0; border-radius: 999px; background: #4A0E1A; color: #FFFFFF; font: 600 13px Figtree, sans-serif">EN</button>
+<button type="button" aria-pressed="false" style="min-height: 36px; min-width: 44px; border: 0; border-radius: 999px; background: transparent; color: #5A4A4E; font: 600 13px Figtree, sans-serif">SW</button>
+</div>
+</div>
+<span style="position: absolute; left: 20px; bottom: 24px; display: flex; align-items: center; gap: 6px; background: #FFFFFF; color: #4A0E1A; border-radius: 999px; padding: 8px 14px; font-size: 13px; font-weight: 700">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="M9 12l2 2 4-4"></path></svg>
+Every member verified
+</span>
+</div>
+
+<div style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 14px; padding: 28px 24px 32px">
+<span style="font-family: 'Cormorant Garamond', Georgia, serif; font-size: 20px; font-weight: 700; color: #7A2A38">People · Opportunities · Growth</span>
+<h1 style="margin: 0; font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 600; font-size: 36px; line-height: 1.08; color: #4A0E1A">Find people, opportunities and ideas to grow together</h1>
+<p style="margin: 0; font-size: 15px; line-height: 1.5; color: #5A4A4E">A members-only platform for Tanzania. Every member is verified.</p>
+<div style="flex: 1 1 auto"></div>
+<a href="Phone-Signup.dc.html" style="min-height: 56px; border-radius: 999px; background: #4A0E1A; color: #FFFFFF; font-weight: 600; font-size: 16px; text-decoration: none; display: flex; align-items: center; justify-content: center">Create an account</a>
+<a href="Phone-Login.dc.html" style="min-height: 56px; border-radius: 999px; border: 1.5px solid #4A0E1A; color: #4A0E1A; font-weight: 600; font-size: 16px; text-decoration: none; display: flex; align-items: center; justify-content: center; box-sizing: border-box">Log in</a>
+</div>
+
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":430,"height":900}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Staff forgot password on a computer</title>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&amp;family=Figtree:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F7F1EA}
+a{color:#4A0E1A}a:hover{color:#2A0610}
+</style>
+</helmet>
+<div style="min-height: 900px; box-sizing: border-box; padding: 24px; background: #F7F1EA; font-family: Figtree, system-ui, sans-serif; color: #2A1A1E; display: flex; flex-wrap: wrap; gap: 24px; align-items: stretch">
+<div style="flex: 1 1 420px; min-width: 0; display: flex; flex-direction: column; padding: 8px 24px 8px 16px; box-sizing: border-box">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 16px">
+<span style="display: flex; align-items: center; gap: 12px"><img src="logo.jpg" alt="Kingdom Connect" style="width: 72px; height: 64px; object-fit: cover; border-radius: 14px; display: block"><span style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #7A2A38">Admin</span></span>
+<div role="group" aria-label="Language" style="display: flex; gap: 4px; background: #FFFFFF; border: 1px solid #E4D9CC; border-radius: 999px; padding: 4px">
+<button type="button" aria-pressed="true" style="min-height: 36px; min-width: 44px; border: 0; border-radius: 999px; background: #4A0E1A; color: #FFFFFF; font: 700 13px Figtree, sans-serif">EN</button>
+<button type="button" aria-pressed="false" style="min-height: 36px; min-width: 44px; border: 0; border-radius: 999px; background: transparent; color: #5A4A4E; font: 600 13px Figtree, sans-serif">SW</button>
+</div>
+</div>
+<div style="flex: 1 1 auto; display: flex; align-items: center; justify-content: center; padding: 40px 0">
+<div style="width: 100%; max-width: 420px; display: flex; flex-direction: column; gap: 18px">
+<span style="width: 60px; height: 60px; border-radius: 18px; background: #4A0E1A; color: #F3E6D0; display: flex; align-items: center; justify-content: center; align-self: flex-start"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="15" r="4"></circle><path d="M11 12l9-9"></path><path d="M17 6l3 3"></path></svg></span><div style="display: flex; flex-direction: column; gap: 8px; text-align: left">
+<h1 style="margin: 0; font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 600; font-size: 40px; line-height: 1.05; color: #4A0E1A">Forgot your password?</h1>
+<p style="margin: 0; font-size: 15px; line-height: 1.5; color: #5A4A4E">Enter the email of your staff account. A Super Administrator checks that it is really you, then sends you a link to choose a new password.</p>
+</div><div style="display: flex; flex-direction: column; gap: 6px; min-width: 0">
+<label for="f-email" style="font-size: 13px; font-weight: 600; color: #5A4A4E; padding-left: 18px">Email</label>
+<input id="f-email" type="email" placeholder="you@kingdomconnect.co.tz" autocomplete="username" style="min-height: 50px; box-sizing: border-box; width: 100%; border: 1px solid #D9CBBB; border-radius: 999px; background: #FFFFFF; padding: 0 20px; font: 400 15px Figtree, sans-serif; color: #2A1A1E">
+</div><a href="Admin-ForgotSent.dc.html" style="min-height: 54px; border-radius: 999px; background: #4A0E1A; color: #FFFFFF; font-weight: 600; font-size: 16px; text-decoration: none; display: flex; align-items: center; justify-content: center">Ask for a reset</a><a href="Admin-Login.dc.html" style="align-self: flex-start; min-height: 44px; display: flex; align-items: center; font-size: 14px; font-weight: 600">Back to log in</a>
+</div>
+</div>
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; font-size: 14px; color: #5A4A4E"><span>Administrators do not connect or message. Message contents open only for reported threads.</span></div>
+</div>
+<div style="flex: 999 1 560px; min-width: 0; min-height: 852px; box-sizing: border-box; border-radius: 28px; background: #4A0E1A; padding: 56px; display: flex; flex-direction: column; justify-content: space-between; gap: 32px; color: #F3E6D0">
+<div style="display: flex; align-items: center; gap: 14px">
+<img src="logo.jpg" alt="" style="width: 72px; height: 64px; object-fit: cover; border-radius: 14px; display: block">
+<span style="font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #E7C36A">Admin console · staff only</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 22px; max-width: 520px">
+<h2 style="margin: 0; font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 600; font-size: 52px; line-height: 1.05; color: #FFFFFF">Keep Kingdom Connect safe and trusted</h2>
+<ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px">
+<li style="display: flex; align-items: center; gap: 14px; font-size: 17px"><span style="width: 40px; height: 40px; border-radius: 12px; background: rgba(255,255,255,0.12); color: #E7C36A; display: flex; align-items: center; justify-content: center; flex-shrink: 0"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="M9 12l2 2 4-4"></path></svg></span>Check every member's identity</li><li style="display: flex; align-items: center; gap: 14px; font-size: 17px"><span style="width: 40px; height: 40px; border-radius: 12px; background: rgba(255,255,255,0.12); color: #E7C36A; display: flex; align-items: center; justify-content: center; flex-shrink: 0"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg></span>Review posts before members see them</li><li style="display: flex; align-items: center; gap: 14px; font-size: 17px"><span style="width: 40px; height: 40px; border-radius: 12px; background: rgba(255,255,255,0.12); color: #E7C36A; display: flex; align-items: center; justify-content: center; flex-shrink: 0"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 22V4"></path><path d="M4 4h12l-2 4 2 4H4"></path></svg></span>Act on reports quickly and fairly</li>
+</ul>
+</div>
+<p style="margin: 0; display: flex; align-items: center; gap: 8px; font-size: 14px; color: #E9DCCB"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg>Every staff action is written to the audit log.</p>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

@@ -1,6 +1,6 @@
 ---
-version: 0.1
-effective: 2026-11-02
+version: 0.2
+effective: 2026-11-06
 approved:
 ---
 # Terms of use
@@ -10,7 +10,7 @@ These terms are an agreement between you and {entity_name}, which runs {platform
 ## Who can join
 
 - {platform_name} is for people in Tanzania with a verified identity.
-- You must be at least [TO CONFIRM: minimum age] years old.
+- You must be at least 18 years old.
 - You register with one accepted ID (NIDA, passport, driving licence or voter's ID), a +255 phone number and a Tanzanian address. We check them before your account is approved.
 - One person has one account. You may not register for someone else or use someone else's ID.
 
@@ -56,4 +56,6 @@ These terms are governed by the laws of the United Republic of Tanzania. If the 
 
 ## Contact
 
-[TO CONFIRM: contact email and postal address of {entity_name}]
+Email: kingdomconnect@global.co.tz
+
+Postal address: [TO CONFIRM: postal address of {entity_name}]

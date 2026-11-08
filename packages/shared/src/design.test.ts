@@ -16,16 +16,16 @@ describe("colors", () => {
   });
 
   it("keeps text readable: 4.5:1 for text, 3:1 for input borders", () => {
-    const luminance = (hex: string) => {
-      const [r, g, b] = [1, 3, 5].map((i) => {
-        const c = parseInt(hex.slice(i, i + 2), 16) / 255;
-        return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
-      });
-      return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+    const channel = (hex: string, start: number) => {
+      const c = parseInt(hex.slice(start, start + 2), 16) / 255;
+      return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
     };
+    const luminance = (hex: string) =>
+      0.2126 * channel(hex, 1) + 0.7152 * channel(hex, 3) + 0.0722 * channel(hex, 5);
     const ratio = (a: string, b: string) => {
-      const [hi, lo] = [luminance(a), luminance(b)].sort((x, y) => y - x);
-      return (hi + 0.05) / (lo + 0.05);
+      const la = luminance(a);
+      const lb = luminance(b);
+      return (Math.max(la, lb) + 0.05) / (Math.min(la, lb) + 0.05);
     };
     for (const theme of [colors.light, colors.dark]) {
       const text: [ColorToken, ColorToken][] = [

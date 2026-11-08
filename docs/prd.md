@@ -205,6 +205,7 @@ The member dashboard shows community activity and the member's own to-dos; every
 | Moderation queue counts (opportunities, ideas, training, events, tenders) | ✗ | ✓ |
 | Re-verifications due in 30 days | ✗ | ✓ |
 | Investor count and activity | ✗ | ✓ |
+| New verified members per week, last 8 weeks, as a line chart (**Proposed 8 Nov**, design in `context/design/signin-screens/`) | ✗ | ✓ |
 
 **Acceptance criteria**
 1. The member dashboard API never returns pending, rejected or investor counts, or any platform-wide count (members, businesses, opportunities, ideas), so they cannot appear even through a client bug.
@@ -980,6 +981,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | 6 Nov 2026 | Licence expiry pauses Level 2 and 3 until a new licence is approved; B3 reminders, B4, renewal and Re-verification | 13, 18 |
 | 6 Nov 2026 | Businesses tab on People: approved Level 2 and up, following the owner's profile rules | 8, 18 |
 | 6 Nov 2026 | Level 3 Opportunity Poster verification: directorship or authorisation proof, address with proof, review in the verification queue | 6, 18 |
+| 8 Nov 2026 | Proposed, awaiting Champion: admin dashboard line chart of new verified members per week; it needs approvals counted by week | 7 |
 | 8 Nov 2026 | Proposed, awaiting Champion (#180): S06 Under review drops the expected time and the next-step list, and says a notification follows the review | 6, 18 |
 | 8 Nov 2026 | Proposed, awaiting Champion (#161): registration categories become tick all that apply from Professional, Businessperson and Other; Entrepreneur and Student removed | 6, 18 |
 

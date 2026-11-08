@@ -112,6 +112,13 @@ function MemberPool({ api, showApply }: { api: IdeasApi; showApply: boolean }) {
         >
           <Text className="font-figtree-semibold text-[15px] text-ink">{t.ideasMine}</Text>
         </LinkButton>
+        <LinkButton
+          href="/plans"
+          label={t.plansTitle}
+          className="min-h-[48px] items-center justify-center rounded-[10px] border border-line bg-surface px-4"
+        >
+          <Text className="font-figtree-semibold text-[15px] text-ink">{t.plansTitle}</Text>
+        </LinkButton>
       </View>
       {first.state === "failed" ? (
         <ErrorState message={t.ideasPoolLoadFailed} onRetry={() => setAttempt((a) => a + 1)} />

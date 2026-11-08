@@ -53,6 +53,20 @@ export function DetailsLink({ ideaId }: { ideaId: string }) {
   );
 }
 
+/** S31 with this idea and partner chosen. The requester leaves out the owner, whose id may be hidden. */
+function PlanLink({ ideaId, otherId }: { ideaId: string; otherId: string | null }) {
+  const { t } = useLanguage();
+  return (
+    <LinkButton
+      href={otherId ? `/plans/new?idea=${ideaId}&with=${otherId}` : `/plans/new?idea=${ideaId}`}
+      label={t.planPropose}
+      className="min-h-[44px] items-center justify-center rounded-[9px] border border-line bg-surface px-4"
+    >
+      <Text className="font-figtree-semibold text-sm text-ink-2">{t.planPropose}</Text>
+    </LinkButton>
+  );
+}
+
 /** Opens the idea thread with the other side, made when the NDA was accepted. */
 function MessageButton({
   api,
@@ -163,6 +177,7 @@ export function IdeaInterest({ api, ideaId }: { api: IdeaAccessApi; ideaId: stri
       <View className="gap-2">
         <Message text={t.interestHasAccess} tone="info" />
         <DetailsLink ideaId={ideaId} />
+        <PlanLink ideaId={ideaId} otherId={null} />
         <MessageButton api={api} ideaId={ideaId} otherId={null} label={t.ideaMessageOwner} />
       </View>
     );
@@ -270,12 +285,15 @@ function RequestRow({
       ) : card.status === "approved" || card.status === "nda_accepted" ? (
         <View className="gap-2">
           {card.status === "nda_accepted" && card.requesterId ? (
-            <MessageButton
-              api={api}
-              ideaId={ideaId}
-              otherId={card.requesterId}
-              label={t.ideaMessage}
-            />
+            <>
+              <MessageButton
+                api={api}
+                ideaId={ideaId}
+                otherId={card.requesterId}
+                label={t.ideaMessage}
+              />
+              <PlanLink ideaId={ideaId} otherId={card.requesterId} />
+            </>
           ) : null}
           <ConfirmButton
             label={t.accessRevoke}

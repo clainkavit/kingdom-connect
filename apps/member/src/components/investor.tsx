@@ -159,6 +159,13 @@ export function InvestorPool({ ideas, investor }: { ideas: IdeasApi; investor: I
         >
           <Text className="font-figtree-semibold text-[15px] text-ink">{t.ideasMine}</Text>
         </LinkButton>
+        <LinkButton
+          href="/plans"
+          label={t.plansTitle}
+          className="min-h-[48px] items-center justify-center rounded-[10px] border border-line bg-surface px-4"
+        >
+          <Text className="font-figtree-semibold text-[15px] text-ink">{t.plansTitle}</Text>
+        </LinkButton>
         <Button
           secondary
           label={showFilters ? t.investorHideFilters : t.investorFilters}

@@ -599,6 +599,101 @@
       "title": "S08 Member dashboard · business owner, Level 3 · phone",
       "page": "member",
       "is_interactive": true
+    },
+    "Ideas-Pool.dc.html": {
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 1500,
+      "title": "S22 Ideas pool · computer",
+      "page": "ideas",
+      "expand": "fill",
+      "is_interactive": true
+    },
+    "Ideas-Summary.dc.html": {
+      "x": 1520,
+      "y": 0,
+      "w": 1440,
+      "h": 1200,
+      "title": "S23 and S24 Someone's idea: summary and I'm interested · computer",
+      "page": "ideas",
+      "expand": "fill",
+      "is_interactive": true
+    },
+    "Ideas-Manage.dc.html": {
+      "x": 3040,
+      "y": 0,
+      "w": 1440,
+      "h": 1300,
+      "title": "S28 My idea: requests and access · computer",
+      "page": "ideas",
+      "expand": "fill",
+      "is_interactive": true
+    },
+    "Ideas-Details.dc.html": {
+      "x": 4560,
+      "y": 0,
+      "w": 1440,
+      "h": 1300,
+      "title": "S25 and S26 Details after the NDA, watermarked · computer",
+      "page": "ideas",
+      "expand": "fill",
+      "is_interactive": true
+    },
+    "Ideas-Share.dc.html": {
+      "x": 6080,
+      "y": 0,
+      "w": 1440,
+      "h": 1400,
+      "title": "S27 Share an idea · computer",
+      "page": "ideas",
+      "expand": "fill",
+      "is_interactive": true
+    },
+    "Ideas-Phone-Pool.dc.html": {
+      "x": 0,
+      "y": 1920,
+      "w": 430,
+      "h": 900,
+      "title": "S22 Ideas pool · phone",
+      "page": "ideas",
+      "is_interactive": true
+    },
+    "Ideas-Phone-Summary.dc.html": {
+      "x": 510,
+      "y": 1920,
+      "w": 430,
+      "h": 900,
+      "title": "S23 and S24 Someone's idea: summary and I'm interested · phone",
+      "page": "ideas",
+      "is_interactive": true
+    },
+    "Ideas-Phone-Manage.dc.html": {
+      "x": 1020,
+      "y": 1920,
+      "w": 430,
+      "h": 900,
+      "title": "S28 My idea: requests and access · phone",
+      "page": "ideas",
+      "is_interactive": true
+    },
+    "Ideas-Phone-Details.dc.html": {
+      "x": 1530,
+      "y": 1920,
+      "w": 430,
+      "h": 900,
+      "title": "S25 and S26 Details after the NDA, watermarked · phone",
+      "page": "ideas",
+      "is_interactive": true
+    },
+    "Ideas-Phone-Share.dc.html": {
+      "x": 2040,
+      "y": 1920,
+      "w": 430,
+      "h": 900,
+      "title": "S27 Share an idea · phone",
+      "page": "ideas",
+      "is_interactive": true
     }
   },
   "createdOnFiles": {
@@ -701,6 +796,22 @@
       "kind": "title1",
       "maxW": 1950,
       "page": "member"
+    },
+    "ideasComp": {
+      "x": 0,
+      "y": -300,
+      "text": "Ideas, on a computer",
+      "kind": "title1",
+      "maxW": 7520,
+      "page": "ideas"
+    },
+    "ideasPhone": {
+      "x": 0,
+      "y": 1620,
+      "text": "Ideas, on a phone",
+      "kind": "title1",
+      "maxW": 2470,
+      "page": "ideas"
     }
   },
   "order": [
@@ -766,7 +877,17 @@
     "Member-Phone-People.dc.html",
     "Member-Phone-Profile.dc.html",
     "Business-Dashboard.dc.html",
-    "Business-Phone-Dashboard.dc.html"
+    "Business-Phone-Dashboard.dc.html",
+    "Ideas-Pool.dc.html",
+    "Ideas-Summary.dc.html",
+    "Ideas-Manage.dc.html",
+    "Ideas-Details.dc.html",
+    "Ideas-Share.dc.html",
+    "Ideas-Phone-Pool.dc.html",
+    "Ideas-Phone-Summary.dc.html",
+    "Ideas-Phone-Manage.dc.html",
+    "Ideas-Phone-Details.dc.html",
+    "Ideas-Phone-Share.dc.html"
   ],
   "pages": [
     {
@@ -780,6 +901,10 @@
     {
       "id": "member",
       "name": "Member"
+    },
+    {
+      "id": "ideas",
+      "name": "Ideas"
     }
   ],
   "title": "Kingdom Connect sign-in screens"

@@ -32,10 +32,11 @@ insert into public.idea_details (idea_id, description, financials) values
 insert into public.idea_access_requests (id, idea_id, requester_id, role, status, decided_at) values
   ('00000000-0000-0000-0000-00000000a281', '00000000-0000-0000-0000-00000000e281',
    '00000000-0000-0000-0000-000000002802', 'partner', 'nda_accepted', now());
-insert into storage.objects (bucket_id, name) values
-  ('idea-files', '00000000-0000-0000-0000-00000000e281/00000000-0000-0000-0000-0000000f0281.pdf'),
-  ('idea-files', '00000000-0000-0000-0000-00000000e281/00000000-0000-0000-0000-0000000f0282.png'),
-  ('idea-files', '00000000-0000-0000-0000-00000000e282/00000000-0000-0000-0000-0000000f0283.pdf');
+insert into storage.objects (bucket_id, name, metadata) values
+  ('idea-files', '00000000-0000-0000-0000-00000000e281/00000000-0000-0000-0000-0000000f0281.pdf', '{"size": 1000}'),
+  ('idea-files', '00000000-0000-0000-0000-00000000e281/00000000-0000-0000-0000-0000000f0282.png', '{"size": 5000}'),
+  ('idea-files', '00000000-0000-0000-0000-00000000e281/00000000-0000-0000-0000-0000000f0284.png', '{"size": 20971000}'),
+  ('idea-files', '00000000-0000-0000-0000-00000000e282/00000000-0000-0000-0000-0000000f0283.pdf', '{"size": 10}');
 
 create function pg_temp.login(who text) returns void language sql as $$
   select set_config('request.jwt.claims', json_build_object(
@@ -56,8 +57,8 @@ select throws_ok($$insert into public.idea_files (idea_id, storage_path, file_na
   '42501', null, 'nobody writes to the table directly');
 select is((select result from public.add_idea_file(pg_temp.idea(), 'Business plan.pdf', pg_temp.path('1.pdf'), 1000)),
   'ok', 'the owner adds a PDF');
-select is((select result from public.add_idea_file(pg_temp.idea(), 'Prototype.png', pg_temp.path('2.png'), 20971000)),
-  'too_large', 'the 20 MB counts every file of the idea');
+select is((select result from public.add_idea_file(pg_temp.idea(), 'Big.png', pg_temp.path('4.png'), 1)),
+  'too_large', 'the 20 MB counts every file of the idea, by the stored size and not the size the app reports');
 select is((select result from public.add_idea_file(pg_temp.idea(), 'Prototype.png', pg_temp.path('2.png'), 5000)),
   'ok', 'the owner adds an image');
 select is((select mime from public.idea_files where file_name = 'Prototype.png'), 'image/png', 'its type follows the path');

@@ -1,6 +1,6 @@
 ---
-version: 0.1
-effective: 2026-11-02
+version: 0.2
+effective: 2026-11-06
 approved:
 ---
 # Privacy notice and data consent
@@ -26,7 +26,7 @@ We do not sell your data and we do not use it for advertising.
 
 ## Who can see it
 
-- **Other members** see your profile. They never see your phone number or email unless you are connected and you have switched sharing on for that detail. [TO CONFIRM: whether your address can also be shared this way]
+- **Other members** see your profile. They never see your phone number, email or address unless you are connected and you have switched sharing on for that detail.
 - **Administrators** see what they need to verify you and handle reports. Your ID photo and face photo are kept in a separate store that only administrators can open. Viewing your full ID number is logged.
 - **Service providers** that host {platform_name} and send our emails process data for us under contract. [TO CONFIRM: hosting provider and the country where data is stored]
 - **Authorities**, when the law requires it.
@@ -37,7 +37,7 @@ We keep your data while your account is open. When you ask us to delete your dat
 
 ## Your rights
 
-You can see and download your data, correct it, ask us to delete it, and withdraw this consent, from Settings or by contacting us. [TO CONFIRM: how consent is withdrawn and what happens to the account] You can complain to the Personal Data Protection Commission.
+You can see and download your data, correct it, ask us to delete it, and withdraw this consent, from Settings or by contacting us. If you withdraw this consent, your account is closed, because we cannot verify you or run your account without processing your data. You can complain to the Personal Data Protection Commission.
 
 ## Your consent
 
@@ -49,4 +49,6 @@ When we change this notice, we show you the new version at your next sign-in and
 
 ## Contact
 
-[TO CONFIRM: contact email and postal address of {entity_name}]
+Email: kingdomconnect@global.co.tz
+
+Postal address: [TO CONFIRM: postal address of {entity_name}]

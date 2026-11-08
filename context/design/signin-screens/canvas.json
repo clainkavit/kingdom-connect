@@ -523,6 +523,82 @@
       "title": "Choose a new password · phone (proposed, #182)",
       "x": 4080,
       "y": 5360
+    },
+    "Member-Dashboard.dc.html": {
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 2300,
+      "title": "S08 Member dashboard · Professional and Businessperson · computer",
+      "page": "member",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "Member-Phone-Dashboard.dc.html": {
+      "x": 0,
+      "y": 2720,
+      "w": 430,
+      "h": 900,
+      "title": "S08 Member dashboard · phone",
+      "page": "member",
+      "is_interactive": true
+    },
+    "Member-People.dc.html": {
+      "x": 1520,
+      "y": 0,
+      "w": 1440,
+      "h": 1700,
+      "title": "S10 People · Professionals tab · computer",
+      "page": "member",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "Member-Profile.dc.html": {
+      "x": 3040,
+      "y": 0,
+      "w": 1440,
+      "h": 1500,
+      "title": "S11 Member profile, not connected yet · computer",
+      "page": "member",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "Member-Phone-People.dc.html": {
+      "x": 510,
+      "y": 2720,
+      "w": 430,
+      "h": 900,
+      "title": "S10 People · phone",
+      "page": "member",
+      "is_interactive": true
+    },
+    "Member-Phone-Profile.dc.html": {
+      "x": 1020,
+      "y": 2720,
+      "w": 430,
+      "h": 900,
+      "title": "S11 Member profile · phone",
+      "page": "member",
+      "is_interactive": true
+    },
+    "Business-Dashboard.dc.html": {
+      "x": 0,
+      "y": 4040,
+      "w": 1440,
+      "h": 2100,
+      "title": "S08 Member dashboard · business owner, Level 3 · computer",
+      "page": "member",
+      "expand": "fill",
+      "is_interactive": true
+    },
+    "Business-Phone-Dashboard.dc.html": {
+      "x": 1520,
+      "y": 4040,
+      "w": 430,
+      "h": 900,
+      "title": "S08 Member dashboard · business owner, Level 3 · phone",
+      "page": "member",
+      "is_interactive": true
     }
   },
   "createdOnFiles": {
@@ -601,6 +677,30 @@
       "kind": "title1",
       "maxW": 4480,
       "page": "admin"
+    },
+    "memberDash": {
+      "x": 0,
+      "y": -300,
+      "text": "Member after approval (Professional and Businessperson), on a computer",
+      "kind": "title1",
+      "maxW": 4480,
+      "page": "member"
+    },
+    "memberPhone": {
+      "x": 0,
+      "y": 2420,
+      "text": "Member, on a phone",
+      "kind": "title1",
+      "maxW": 1450,
+      "page": "member"
+    },
+    "memberBusiness": {
+      "x": 0,
+      "y": 3740,
+      "text": "Business owner (Opportunity Poster, Level 3)",
+      "kind": "title1",
+      "maxW": 1950,
+      "page": "member"
     }
   },
   "order": [
@@ -658,7 +758,15 @@
     "Admin-NewPassword.dc.html",
     "Admin-Phone-Forgot.dc.html",
     "Admin-Phone-ForgotSent.dc.html",
-    "Admin-Phone-NewPassword.dc.html"
+    "Admin-Phone-NewPassword.dc.html",
+    "Member-Dashboard.dc.html",
+    "Member-Phone-Dashboard.dc.html",
+    "Member-People.dc.html",
+    "Member-Profile.dc.html",
+    "Member-Phone-People.dc.html",
+    "Member-Phone-Profile.dc.html",
+    "Business-Dashboard.dc.html",
+    "Business-Phone-Dashboard.dc.html"
   ],
   "pages": [
     {
@@ -668,6 +776,10 @@
     {
       "id": "admin",
       "name": "Admin"
+    },
+    {
+      "id": "member",
+      "name": "Member"
     }
   ],
   "title": "Kingdom Connect sign-in screens"

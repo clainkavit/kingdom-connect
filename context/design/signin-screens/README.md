@@ -1,4 +1,4 @@
-# Sign-in and registration screens
+# Kingdom Connect screens
 
 The member app's screens from landing to "Under review", on a phone and on a computer, drawn on 8 November 2026. They follow PRD section 6 and docs/screens.md S01 to S06. The live, clickable version is the "Kingdom Connect sign-in screens" design canvas on claude.ai. These files are a copy of it.
 
@@ -48,6 +48,19 @@ Staff do not sign themselves up. A Super Administrator invites them (PRD section
 
 The admin screens use the maroon and cream look of the member screens. The console as built today is navy and blue, so restyling it is a separate change. The chart colours (wine `#9B2C45`, gold `#B97A10`, teal `#0F8F7F`, indigo `#5B5BD6`) pass a colour-blindness and contrast check on white.
 
+## Member, after approval
+
+PRD section 7 has one member dashboard that changes with the member's level and categories (decided 15 October; tied to categories in the #161 proposal). Two members show how it changes. Members never see platform-wide counts.
+
+| Screen | Computer | Phone |
+|---|---|---|
+| S08 Dashboard for Neema: Professional and Businessperson, Level 1. Profile ring, My profiles, people you may know, jobs for her skills, tenders for her business (locked until Level 2), latest, requests, activity, featured, news | `Member-Dashboard` | `Member-Phone-Dashboard` |
+| S08 Dashboard for Rehema: business owner, Opportunity Poster (Level 3). My business with the licence date, responses to her posts as a ring chart, My posts (S21) with response bars, new responses with Shortlist and Decline, tenders she can respond to | `Business-Dashboard` | `Business-Phone-Dashboard` |
+| S10 People: Professionals and Businesses tabs, filters, member cards | `Member-People` | `Member-Phone-People` |
+| S11 A member's profile (Asha, not connected yet): About, Skills, Business, Ideas, Connect with a note; phone and email hidden | `Member-Profile` | `Member-Phone-Profile` |
+
+The profile pictures are illustrated placeholders, not photos of real people. Emmanuel keeps his initials, to show a member without a photo.
+
 ## Not decided yet
 
 These screens show proposals that still need Champion's answer. Build from the PRD until they are decided.
@@ -56,6 +69,7 @@ These screens show proposals that still need Champion's answer. Build from the P
 - **Other (#161).** Ticking Other opens a page asking what the member hopes to find: they have a business idea, they are looking for investors, or something else, with a few words. The PRD today asks Other for a short description only. There is no "I want to invest" choice, because the investor flag stays private and is granted by an administrator (PRD section 11).
 - **Under review (#180).** S06 says "You will get a notification when the review is done", with no expected review time.
 - **Forgot password (#182).** Not in the PRD yet. Members reset with an email code. Staff ask for a reset and a Super Administrator approves it after checking it is really them; nobody approves their own, so the pilot needs at least two Super Administrators. Locked staff accounts can be unlocked by a Super Administrator.
+- **Dashboard by category (#161).** The jobs and tenders cards, the My profiles card and the Certified professional badge follow the #161 proposal.
 - **Weekly new members chart.** The admin dashboard's line chart needs a history of approvals per week. PRD section 7 has current counts only, so the chart is Proposed in PR #179.
 - **Maroon look for the admin console.** Agreed on 8 Nov for the designs. The built console is still navy and blue.
 

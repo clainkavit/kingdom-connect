@@ -179,7 +179,7 @@ No one reaches member content until an administrator has verified their identity
 14. NIDA's verification service may be connected after the pilot, for NIDA holders, once the company exists and the production hosting is decided (NIDA asks where the server is; ticket [#30](https://github.com/clainkavit/kingdom-connect/issues/30)). Passports, driving licences and voter's IDs stay manual, and Persona is deferred until the company exists.
 15. **Sign-up is open from day one (decided 22 Oct, ticket [#30](https://github.com/clainkavit/kingdom-connect/issues/30)),** so review volume is managed in four ways:
     - The sign-up form checks what it can before an admin sees the application: a NIDA number must be 20 digits, the phone must start with +255, the address must come from the region and district lists, a duplicate ID is flagged automatically, and the face photo and ID photo are required.
-    - Applications are reviewed oldest first. The admin dashboard shows queue size and the age of the oldest application, with an alert when an application has waited 2 working days. Applicants see "Your application is being reviewed" with the expected time.
+    - Applications are reviewed oldest first. The admin dashboard shows queue size and the age of the oldest application, with an alert when an application has waited 2 working days. Applicants see "Your application is being reviewed" with the expected time. **Proposed 8 Nov, awaiting Champion in [#180](https://github.com/clainkavit/kingdom-connect/issues/180):** drop the expected time; the screen says "You will get a notification when the review is done".
     - A daily cap on new applications is a Super Administrator setting, off by default. When it is on, people over the cap see "We're reviewing a high number of applications, please try again tomorrow".
     - The pilot starts with at least 3 staff accounts, including trusted volunteers, not one admin.
 
@@ -742,7 +742,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 - Staff decide only through the audited decision function, never by editing the application directly. Approving, rejecting, marking a duplicate and revealing an ID number are each written to the audit log with the admin and their IP address.
 
 **Decided on 2 November 2026 (registration status, R02)**
-- Under review, the Applicant sees an expected time worked out from the queue: their place in it, divided by the decisions staff made per working day over the last 14 days, rounded up, at least 1 working day. With no decisions in that window it says "We usually decide within 2 working days". The Applicant sees only the days, never their place or the queue size (section 7, criterion 1).
+- Under review, the Applicant sees an expected time worked out from the queue: their place in it, divided by the decisions staff made per working day over the last 14 days, rounded up, at least 1 working day. With no decisions in that window it says "We usually decide within 2 working days". The Applicant sees only the days, never their place or the queue size (section 7, criterion 1). (If [#180](https://github.com/clainkavit/kingdom-connect/issues/180) is accepted, this expected time is no longer shown.)
 - Fix and resubmit reopens the whole wizard on the review step with the earlier answers, so any detail, the ID or either photo can be changed. Starting it uses the one resubmission. Each submitted application keeps its own copy of the photos, so a replaced photo never changes what an earlier decision was based on.
 - An Administrator can reopen a final rejection on A03, with a note for the audit log. The Applicant is told by the new notification A6 and can send the application once more; a rejection after that is final again.
 - A rejection still ends the Applicant's sessions (decided with F09). They sign in again to read the reason.
@@ -980,6 +980,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | 6 Nov 2026 | Licence expiry pauses Level 2 and 3 until a new licence is approved; B3 reminders, B4, renewal and Re-verification | 13, 18 |
 | 6 Nov 2026 | Businesses tab on People: approved Level 2 and up, following the owner's profile rules | 8, 18 |
 | 6 Nov 2026 | Level 3 Opportunity Poster verification: directorship or authorisation proof, address with proof, review in the verification queue | 6, 18 |
+| 8 Nov 2026 | Proposed, awaiting Champion (#180): S06 Under review drops the expected time and the next-step list, and says a notification follows the review | 6, 18 |
 | 8 Nov 2026 | Proposed, awaiting Champion (#161): registration categories become tick all that apply from Professional, Businessperson and Other; Entrepreneur and Student removed | 6, 18 |
 
 ## Appendix B: Source documents

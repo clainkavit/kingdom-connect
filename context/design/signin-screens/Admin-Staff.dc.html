@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Invite staff on a computer</title>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&amp;family=Figtree:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F7F1EA}
+a{color:#4A0E1A}a:hover{color:#2A0610}
+</style>
+</helmet>
+<div style="min-height: 1100px; box-sizing: border-box; padding: 24px; background: #F7F1EA; font-family: Figtree, system-ui, sans-serif; color: #2A1A1E; display: flex; flex-wrap: wrap; gap: 24px; align-items: stretch">
+<aside style="flex: 1 1 260px; max-width: 100%; min-width: 0; box-sizing: border-box; background: #4A0E1A; border-radius: 28px; padding: 24px 16px; display: flex; flex-direction: column; gap: 22px">
+<div style="display: flex; align-items: center; gap: 12px; padding: 0 8px">
+<img src="logo.jpg" alt="Kingdom Connect" style="width: 56px; height: 50px; object-fit: cover; border-radius: 12px; display: block">
+<span style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-family: 'Cormorant Garamond', Georgia, serif; font-size: 22px; font-weight: 700; color: #FFFFFF; line-height: 1">Kingdom Connect</span>
+<span style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #E7C36A">Admin</span>
+</span>
+</div>
+<nav aria-label="Admin menu" style="display: flex; flex-direction: column; gap: 2px">
+<a href="#" style="min-height: 44px; display: flex; align-items: center; gap: 12px; padding: 0 12px; border-radius: 12px; color: #F3E6D0; font-size: 15px; font-weight: 500; text-decoration: none"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1.5"></rect><rect x="14" y="3" width="7" height="5" rx="1.5"></rect><rect x="14" y="12" width="7" height="9" rx="1.5"></rect><rect x="3" y="16" width="7" height="5" rx="1.5"></rect></svg><span>Dashboard</span></a>
+<a href="#" style="min-height: 44px; display: flex; align-items: center; gap: 12px; padding: 0 12px; border-radius: 12px; color: #F3E6D0; font-size: 15px; font-weight: 500; text-decoration: none"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="M9 12l2 2 4-4"></path></svg><span>Verification queue</span><span style="margin-left: auto; min-width: 24px; height: 22px; padding: 0 7px; box-sizing: border-box; border-radius: 999px; background: #E7C36A; color: #2A0610; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center">31</span></a>
+<a href="#" style="min-height: 44px; display: flex; align-items: center; gap: 12px; padding: 0 12px; border-radius: 12px; color: #F3E6D0; font-size: 15px; font-weight: 500; text-decoration: none"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg><span>Moderation queue</span><span style="margin-left: auto; min-width: 24px; height: 22px; padding: 0 7px; box-sizing: border-box; border-radius: 999px; background: #E7C36A; color: #2A0610; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center">16</span></a>
+<a href="#" style="min-height: 44px; display: flex; align-items: center; gap: 12px; padding: 0 12px; border-radius: 12px; color: #F3E6D0; font-size: 15px; font-weight: 500; text-decoration: none"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 22V4"></path><path d="M4 4h12l-2 4 2 4H4"></path></svg><span>Reports</span><span style="margin-left: auto; min-width: 24px; height: 22px; padding: 0 7px; box-sizing: border-box; border-radius: 999px; background: #E7C36A; color: #2A0610; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center">7</span></a>
+<a href="#" style="min-height: 44px; display: flex; align-items: center; gap: 12px; padding: 0 12px; border-radius: 12px; color: #F3E6D0; font-size: 15px; font-weight: 500; text-decoration: none"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7"></path><path d="M21 3v6h-6"></path></svg><span>Re-verification</span><span style="margin-left: auto; min-width: 24px; height: 22px; padding: 0 7px; box-sizing: border-box; border-radius: 999px; background: #E7C36A; color: #2A0610; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center">4</span></a>
+<a href="#" style="min-height: 44px; display: flex; align-items: center; gap: 12px; padding: 0 12px; border-radius: 12px; color: #F3E6D0; font-size: 15px; font-weight: 500; text-decoration: none"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.9"></path><path d="M16 3.1a4 4 0 0 1 0 7.8"></path></svg><span>Members and investors</span></a>
+<a href="#" style="min-height: 44px; display: flex; align-items: center; gap: 12px; padding: 0 12px; border-radius: 12px; color: #F3E6D0; font-size: 15px; font-weight: 500; text-decoration: none"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"></rect><path d="M7 8h10"></path><path d="M7 12h10"></path><path d="M7 16h6"></path></svg><span>News and featured</span></a>
+<a href="#" style="min-height: 44px; display: flex; align-items: center; gap: 12px; padding: 0 12px; border-radius: 12px; color: #F3E6D0; font-size: 15px; font-weight: 500; text-decoration: none"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="19" r="2"></circle><circle cx="18" cy="5" r="2"></circle><path d="M8 19h6a4 4 0 0 0 0-8h-4a4 4 0 0 1 0-8h6"></path></svg><span>Milestone plans</span></a>
+<a href="#" style="min-height: 44px; display: flex; align-items: center; gap: 12px; padding: 0 12px; border-radius: 12px; color: #F3E6D0; font-size: 15px; font-weight: 500; text-decoration: none"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"></rect><path d="M12 8v8"></path><path d="M8 12h8"></path></svg><span>Post as admin</span></a>
+<a href="#" style="min-height: 44px; display: flex; align-items: center; gap: 12px; padding: 0 12px; border-radius: 12px; color: #F3E6D0; font-size: 15px; font-weight: 500; text-decoration: none"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><path d="M14 3v6h6"></path><path d="M8 13h8"></path><path d="M8 17h5"></path></svg><span>Audit log <span style="font-size: 11px; font-weight: 600; color: #E9C9A6">Super Admin</span></span></a>
+<a href="#" aria-current="page" style="min-height: 44px; display: flex; align-items: center; gap: 12px; padding: 0 12px; border-radius: 12px; background: #F7F1EA; color: #4A0E1A; font-size: 15px; font-weight: 700; text-decoration: none"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M12 2v3"></path><path d="M12 19v3"></path><path d="M4.9 4.9l2.1 2.1"></path><path d="M17 17l2.1 2.1"></path><path d="M2 12h3"></path><path d="M19 12h3"></path><path d="M4.9 19.1L7 17"></path><path d="M17 7l2.1-2.1"></path></svg>Settings</a>
+</nav>
+<div style="flex: 1 1 auto"></div>
+<p style="margin: 0; padding: 0 8px; font-size: 13px; line-height: 1.5; color: #E9DCCB">Staff accounts cannot connect with or message members.</p>
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 0 8px">
+<div role="group" aria-label="Language" style="display: flex; gap: 4px; background: rgba(255,255,255,0.12); border-radius: 999px; padding: 4px">
+<button type="button" aria-pressed="true" style="min-height: 36px; min-width: 44px; border: 0; border-radius: 999px; background: #F7F1EA; color: #4A0E1A; font: 700 13px Figtree, sans-serif">EN</button>
+<button type="button" aria-pressed="false" style="min-height: 36px; min-width: 44px; border: 0; border-radius: 999px; background: transparent; color: #F3E6D0; font: 600 13px Figtree, sans-serif">SW</button>
+</div>
+<a href="Admin-Login.dc.html" style="min-height: 44px; display: flex; align-items: center; color: #FFFFFF; font-size: 14px; font-weight: 600">Log out</a>
+</div>
+</aside>
+<main style="flex: 999 1 640px; min-width: 0; display: flex; flex-direction: column; gap: 20px; padding: 8px 8px 24px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 14px; color: #5A4A4E">Settings · Super Administrators only</span>
+<h1 style="margin: 0; font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 600; font-size: 44px; line-height: 1.05; color: #4A0E1A">Staff accounts</h1>
+</div>
+<nav aria-label="Settings sections" style="display: flex; flex-wrap: wrap; gap: 8px">
+<a href="#" style="min-height: 40px; display: flex; align-items: center; padding: 0 16px; border-radius: 999px; border: 1px solid #D9CBBB; background: #FFFFFF; color: #4A0E1A; font-size: 14px; font-weight: 600; text-decoration: none">Daily sign-up limit</a><a href="#" aria-current="page" style="min-height: 40px; display: flex; align-items: center; padding: 0 16px; border-radius: 999px; border: 1px solid #4A0E1A; background: #4A0E1A; color: #FFFFFF; font-size: 14px; font-weight: 600; text-decoration: none">Staff accounts</a><a href="#" style="min-height: 40px; display: flex; align-items: center; padding: 0 16px; border-radius: 999px; border: 1px solid #D9CBBB; background: #FFFFFF; color: #4A0E1A; font-size: 14px; font-weight: 600; text-decoration: none">Skill synonyms</a><a href="#" style="min-height: 40px; display: flex; align-items: center; padding: 0 16px; border-radius: 999px; border: 1px solid #D9CBBB; background: #FFFFFF; color: #4A0E1A; font-size: 14px; font-weight: 600; text-decoration: none">Matching</a><a href="#" style="min-height: 40px; display: flex; align-items: center; padding: 0 16px; border-radius: 999px; border: 1px solid #D9CBBB; background: #FFFFFF; color: #4A0E1A; font-size: 14px; font-weight: 600; text-decoration: none">Platform</a><a href="#" style="min-height: 40px; display: flex; align-items: center; padding: 0 16px; border-radius: 999px; border: 1px solid #D9CBBB; background: #FFFFFF; color: #4A0E1A; font-size: 14px; font-weight: 600; text-decoration: none">Legal texts</a>
+</nav>
+<section style="background: #FFFFFF; border: 1px solid #E4D9CC; border-radius: 22px; padding: 18px 20px; display: flex; flex-direction: column; gap: 12px; min-width: 0">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px">
+<h2 style="margin: 0; font-size: 17px; font-weight: 700; color: #2A1A1E">Password resets and locked accounts</h2>
+
+</div>
+<p style="margin: 0; display: flex; align-items: flex-start; gap: 8px; font-size: 14px; line-height: 1.45; color: #5E3A00; background: #FDF1DC; border-radius: 14px; padding: 10px 14px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg>Before you send a link, check it is really them, for example by calling the number you have for them. You cannot approve your own request.</p>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 10px 0; border-top: 1px solid #EFE7DE">
+<span style="width: 40px; height: 40px; border-radius: 999px; background: #F3E6D0; color: #4A0E1A; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; flex-shrink: 0">AK</span>
+<span style="display: flex; flex-direction: column; gap: 2px; flex: 1 1 220px; min-width: 0"><span style="font-size: 15px; font-weight: 600">Asha Kombo <span style="font-weight: 400; color: #5A4A4E">· asha.kombo@kingdomconnect.co.tz</span></span><span style="font-size: 13px; color: #5A4A4E">Asked to reset her password · Today 08:10</span></span>
+<span style="display: flex; flex-wrap: wrap; gap: 8px"><a href="Admin-NewPassword.dc.html" style="min-height: 40px; display: flex; align-items: center; padding: 0 16px; border-radius: 999px; background: #4A0E1A; color: #FFFFFF; font-size: 13px; font-weight: 600; text-decoration: none">Send reset link</a><a href="#" style="min-height: 40px; display: flex; align-items: center; padding: 0 16px; border-radius: 999px; background: #FFFFFF; border: 1px solid #D9CBBB; color: #4A0E1A; font-size: 13px; font-weight: 600; text-decoration: none">Refuse</a></span>
+</div>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 10px 0; border-top: 1px solid #EFE7DE">
+<span style="width: 40px; height: 40px; border-radius: 999px; background: #F3E6D0; color: #4A0E1A; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; flex-shrink: 0">JM</span>
+<span style="display: flex; flex-direction: column; gap: 2px; flex: 1 1 220px; min-width: 0"><span style="font-size: 15px; font-weight: 600">Joseph Mrema <span style="font-weight: 400; color: #5A4A4E">· joseph.mrema@kingdomconnect.co.tz</span></span><span style="font-size: 13px; color: #5A4A4E">Locked after 5 failed sign-ins · Today 07:42</span></span>
+<span style="display: flex; flex-wrap: wrap; gap: 8px"><a href="#" style="min-height: 40px; display: flex; align-items: center; padding: 0 16px; border-radius: 999px; background: #4A0E1A; color: #FFFFFF; font-size: 13px; font-weight: 600; text-decoration: none">Unlock</a><a href="Admin-NewPassword.dc.html" style="min-height: 40px; display: flex; align-items: center; padding: 0 16px; border-radius: 999px; background: #FFFFFF; border: 1px solid #D9CBBB; color: #4A0E1A; font-size: 13px; font-weight: 600; text-decoration: none">Send reset link</a></span>
+</div>
+<span style="font-size: 13px; color: #5A4A4E">Every reset, refusal and unlock is written to the audit log.</span>
+</section>
+<section style="background: #FFFFFF; border: 1px solid #E4D9CC; border-radius: 22px; padding: 18px 20px; display: flex; flex-direction: column; gap: 12px; min-width: 0">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px">
+<h2 style="margin: 0; font-size: 17px; font-weight: 700; color: #2A1A1E">Invite a staff member</h2>
+
+</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px">
+<div style="display: flex; flex-direction: column; gap: 6px; min-width: 0">
+<label for="i-name" style="font-size: 13px; font-weight: 600; color: #5A4A4E; padding-left: 18px">Full name</label>
+<input id="i-name" type="text" placeholder="e.g. Asha Kombo" style="min-height: 50px; box-sizing: border-box; width: 100%; border: 1px solid #D9CBBB; border-radius: 999px; background: #FFFFFF; padding: 0 20px; font: 400 15px Figtree, sans-serif; color: #2A1A1E">
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px; min-width: 0">
+<label for="i-email" style="font-size: 13px; font-weight: 600; color: #5A4A4E; padding-left: 18px">Email</label>
+<input id="i-email" type="email" placeholder="name@kingdomconnect.co.tz" style="min-height: 50px; box-sizing: border-box; width: 100%; border: 1px solid #D9CBBB; border-radius: 999px; background: #FFFFFF; padding: 0 20px; font: 400 15px Figtree, sans-serif; color: #2A1A1E">
+</div>
+</div>
+<fieldset style="border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px">
+<legend style="font-size: 13px; font-weight: 600; color: #5A4A4E; padding-left: 18px; margin-bottom: 8px">Role</legend>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px">
+<label style="display: flex; gap: 12px; align-items: flex-start; background: #FFFFFF; border: 2px solid #4A0E1A; border-radius: 18px; padding: 14px"><input type="radio" name="role" checked style="width: 20px; height: 20px; margin: 2px 0 0; accent-color: #4A0E1A"><span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 700">Administrator</span><span style="font-size: 13px; line-height: 1.4; color: #5A4A4E">Verifies members, moderates posts and handles reports</span></span></label>
+<label style="display: flex; gap: 12px; align-items: flex-start; background: #FFFFFF; border: 1px solid #D9CBBB; border-radius: 18px; padding: 14px"><input type="radio" name="role" style="width: 20px; height: 20px; margin: 2px 0 0; accent-color: #4A0E1A"><span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 700">Super Administrator</span><span style="font-size: 13px; line-height: 1.4; color: #5A4A4E">Also manages staff, settings and the audit log</span></span></label>
+</div>
+</fieldset>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 14px"><a href="Admin-Email.dc.html" style="align-self: flex-start; padding: 0 28px; min-height: 54px; border-radius: 999px; background: #4A0E1A; color: #FFFFFF; font-weight: 600; font-size: 16px; text-decoration: none; display: flex; align-items: center; justify-content: center">Send invite</a><span style="font-size: 13px; color: #5A4A4E">They get an email with a link to set their own password. Nobody else ever knows it.</span></div>
+<div role="status" style="display: flex; align-items: center; gap: 10px; background: #E3F5EC; color: #0F5A36; border-radius: 16px; padding: 12px 16px; font-size: 14px; font-weight: 600"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg>Invite sent to asha.kombo@kingdomconnect.co.tz. The link works for 24 hours.</div>
+</section>
+<section style="background: #FFFFFF; border: 1px solid #E4D9CC; border-radius: 22px; padding: 18px 20px; display: flex; flex-direction: column; gap: 12px; min-width: 0">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px">
+<h2 style="margin: 0; font-size: 17px; font-weight: 700; color: #2A1A1E">Staff accounts</h2>
+
+</div>
+<span style="font-size: 13px; color: #5A4A4E">You cannot deactivate yourself or the last Super Administrator.</span><div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; min-height: 60px; padding: 8px 0; border-top: 1px solid #EFE7DE">
+<span style="width: 40px; height: 40px; border-radius: 999px; background: #F3E6D0; color: #4A0E1A; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; flex-shrink: 0">SP</span>
+<span style="display: flex; flex-direction: column; gap: 2px; flex: 1 1 200px; min-width: 0"><span style="font-size: 15px; font-weight: 600">Susan Peter</span><span style="font-size: 13px; color: #5A4A4E">susan.peter@kingdomconnect.co.tz</span></span>
+<span style="font-size: 14px; color: #2A1A1E; min-width: 150px">Super Administrator</span>
+<span style="background: #E3F5EC; color: #0F5A36; border-radius: 999px; padding: 3px 10px; font-size: 12px; font-weight: 700; min-width: 76px; text-align: center">Active</span>
+<button type="button" style="min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid #D9CBBB; background: #FFFFFF; color: #4A0E1A; font: 600 13px Figtree, sans-serif">Deactivate</button>
+</div><div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; min-height: 60px; padding: 8px 0; border-top: 1px solid #EFE7DE">
+<span style="width: 40px; height: 40px; border-radius: 999px; background: #F3E6D0; color: #4A0E1A; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; flex-shrink: 0">JM</span>
+<span style="display: flex; flex-direction: column; gap: 2px; flex: 1 1 200px; min-width: 0"><span style="font-size: 15px; font-weight: 600">Joseph Mrema</span><span style="font-size: 13px; color: #5A4A4E">joseph.mrema@kingdomconnect.co.tz</span></span>
+<span style="font-size: 14px; color: #2A1A1E; min-width: 150px">Administrator</span>
+<span style="background: #E3F5EC; color: #0F5A36; border-radius: 999px; padding: 3px 10px; font-size: 12px; font-weight: 700; min-width: 76px; text-align: center">Active</span>
+<button type="button" style="min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid #D9CBBB; background: #FFFFFF; color: #4A0E1A; font: 600 13px Figtree, sans-serif">Deactivate</button>
+</div><div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; min-height: 60px; padding: 8px 0; border-top: 1px solid #EFE7DE">
+<span style="width: 40px; height: 40px; border-radius: 999px; background: #F3E6D0; color: #4A0E1A; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; flex-shrink: 0">AK</span>
+<span style="display: flex; flex-direction: column; gap: 2px; flex: 1 1 200px; min-width: 0"><span style="font-size: 15px; font-weight: 600">Asha Kombo</span><span style="font-size: 13px; color: #5A4A4E">asha.kombo@kingdomconnect.co.tz</span></span>
+<span style="font-size: 14px; color: #2A1A1E; min-width: 150px">Administrator</span>
+<span style="background: #FDF1DC; color: #5E3A00; border-radius: 999px; padding: 3px 10px; font-size: 12px; font-weight: 700; min-width: 76px; text-align: center">Invited</span>
+<button type="button" style="min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid #D9CBBB; background: #FFFFFF; color: #4A0E1A; font: 600 13px Figtree, sans-serif">Send again</button>
+</div><div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; min-height: 60px; padding: 8px 0; border-top: 1px solid #EFE7DE">
+<span style="width: 40px; height: 40px; border-radius: 999px; background: #F3E6D0; color: #4A0E1A; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; flex-shrink: 0">DL</span>
+<span style="display: flex; flex-direction: column; gap: 2px; flex: 1 1 200px; min-width: 0"><span style="font-size: 15px; font-weight: 600">Daudi Lyimo</span><span style="font-size: 13px; color: #5A4A4E">daudi.lyimo@kingdomconnect.co.tz</span></span>
+<span style="font-size: 14px; color: #2A1A1E; min-width: 150px">Administrator</span>
+<span style="background: #EFE7DE; color: #5A4A4E; border-radius: 999px; padding: 3px 10px; font-size: 12px; font-weight: 700; min-width: 76px; text-align: center">Deactivated</span>
+<button type="button" style="min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid #D9CBBB; background: #FFFFFF; color: #4A0E1A; font: 600 13px Figtree, sans-serif">Reactivate</button>
+</div>
+</section>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1100}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

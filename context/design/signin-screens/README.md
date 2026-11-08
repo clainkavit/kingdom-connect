@@ -32,6 +32,21 @@ Open any `.dc.html` file in a browser to see that screen, and click its buttons 
 | Choose a new password | `Phone-Reset` | `Web-Reset` |
 | S04 Can't get the code? (recover a lost email) | `Phone-Recover` | `Web-Recover` |
 
+## Admin console
+
+Staff do not sign themselves up. A Super Administrator invites them (PRD section 18, 3 November, R04).
+
+| Screen | Computer | Phone |
+|---|---|---|
+| A16 Settings, Staff accounts: invite by name, email and role; the staff list with Deactivate, Reactivate and Send again | `Admin-Staff` | `Admin-Phone-Staff` |
+| The invite email, with a set-password link that works for 24 hours | `Admin-Email` | |
+| Set your password (typed twice), then "Your password is set", with the expired-link message | `Admin-SetPassword`, `Admin-PasswordSet` | `Admin-Phone-SetPassword`, `Admin-Phone-PasswordSet` |
+| Log in to the admin console with email and password | `Admin-Login` | `Admin-Phone-Login` |
+| Email code | `Admin-Code` | `Admin-Phone-Code` |
+| A01 Admin dashboard (PRD section 7), with charts | `Admin-Dashboard` | `Admin-Phone-Dashboard` |
+
+The admin screens use the maroon and cream look of the member screens. The console as built today is navy and blue, so restyling it is a separate change. The chart colours (wine `#9B2C45`, gold `#B97A10`, teal `#0F8F7F`, indigo `#5B5BD6`) pass a colour-blindness and contrast check on white.
+
 ## Not decided yet
 
 These screens show proposals that still need Champion's answer. Build from the PRD until they are decided.
@@ -39,6 +54,8 @@ These screens show proposals that still need Champion's answer. Build from the P
 - **Categories (#161).** Step 2 offers Professional, Businessperson and Other, tick all that apply. Entrepreneur and Student are removed. Proof for each category comes after sign-up.
 - **Other (#161).** Ticking Other opens a page asking what the member hopes to find: they have a business idea, they are looking for investors, or something else, with a few words. The PRD today asks Other for a short description only. There is no "I want to invest" choice, because the investor flag stays private and is granted by an administrator (PRD section 11).
 - **Under review (#180).** S06 says "You will get a notification when the review is done", with no expected review time.
-- **Forgot password.** Not in the PRD yet. It needs a story or a ticket before it is built.
+- **Forgot password (#182).** Not in the PRD yet. For staff, the log-in page says to ask a Super Administrator for a new invite, which is also part of #182.
+- **Weekly new members chart.** The admin dashboard's line chart needs a history of approvals per week. PRD section 7 has current counts only, so the chart is Proposed in PR #179.
+- **Maroon look for the admin console.** Agreed on 8 Nov for the designs. The built console is still navy and blue.
 
 The names, ID number and business on the screens are made-up examples. The sector list on step 3 is a placeholder for the 16 starter sectors.

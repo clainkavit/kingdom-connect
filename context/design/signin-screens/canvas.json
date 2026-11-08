@@ -4,7 +4,7 @@
   "boards": {
     "Admin-Dashboard.dc.html": {
       "x": 3040,
-      "y": 1520,
+      "y": 1820,
       "w": 1440,
       "h": 1800,
       "title": "A01 Admin dashboard · computer",
@@ -14,7 +14,7 @@
     },
     "Admin-Phone-Dashboard.dc.html": {
       "x": 2550,
-      "y": 3740,
+      "y": 5360,
       "w": 430,
       "h": 900,
       "title": "A01 Admin dashboard · phone",
@@ -367,8 +367,8 @@
       "x": 0,
       "y": 0,
       "w": 1440,
-      "h": 1100,
-      "title": "A16 Settings · Staff accounts, invite · computer",
+      "h": 1400,
+      "title": "A16 Settings · Staff accounts: resets, unlocks, invites · computer",
       "page": "admin",
       "expand": "fill",
       "is_interactive": true
@@ -404,7 +404,7 @@
     },
     "Admin-Login.dc.html": {
       "x": 0,
-      "y": 1520,
+      "y": 1820,
       "w": 1440,
       "h": 900,
       "title": "Admin log in · computer",
@@ -414,7 +414,7 @@
     },
     "Admin-Code.dc.html": {
       "x": 1520,
-      "y": 1520,
+      "y": 1820,
       "w": 1440,
       "h": 900,
       "title": "Admin email code · computer",
@@ -424,16 +424,16 @@
     },
     "Admin-Phone-Staff.dc.html": {
       "x": 0,
-      "y": 3740,
+      "y": 5360,
       "w": 430,
       "h": 900,
-      "title": "Invite a staff member · phone",
+      "title": "Staff accounts: resets, unlocks, invites · phone",
       "page": "admin",
       "is_interactive": true
     },
     "Admin-Phone-SetPassword.dc.html": {
       "x": 510,
-      "y": 3740,
+      "y": 5360,
       "w": 430,
       "h": 900,
       "title": "Set your password · phone",
@@ -442,7 +442,7 @@
     },
     "Admin-Phone-PasswordSet.dc.html": {
       "x": 1020,
-      "y": 3740,
+      "y": 5360,
       "w": 430,
       "h": 900,
       "title": "Password set · phone",
@@ -451,7 +451,7 @@
     },
     "Admin-Phone-Login.dc.html": {
       "x": 1530,
-      "y": 3740,
+      "y": 5360,
       "w": 430,
       "h": 900,
       "title": "Admin log in · phone",
@@ -460,12 +460,69 @@
     },
     "Admin-Phone-Code.dc.html": {
       "x": 2040,
-      "y": 3740,
+      "y": 5360,
       "w": 430,
       "h": 900,
       "title": "Admin email code · phone",
       "page": "admin",
       "is_interactive": true
+    },
+    "Admin-Forgot.dc.html": {
+      "x": 0,
+      "y": 4040,
+      "w": 1440,
+      "h": 900,
+      "title": "Staff forgot password · computer (proposed, #182)",
+      "page": "admin",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "Admin-ForgotSent.dc.html": {
+      "x": 1520,
+      "y": 4040,
+      "w": 1440,
+      "h": 900,
+      "title": "Reset request sent · computer (proposed, #182)",
+      "page": "admin",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "Admin-NewPassword.dc.html": {
+      "x": 3040,
+      "y": 4040,
+      "w": 1440,
+      "h": 900,
+      "title": "Choose a new password (link from a Super Admin) · computer (proposed, #182)",
+      "page": "admin",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "Admin-Phone-Forgot.dc.html": {
+      "w": 430,
+      "h": 900,
+      "page": "admin",
+      "is_interactive": true,
+      "title": "Staff forgot password · phone (proposed, #182)",
+      "x": 3060,
+      "y": 5360
+    },
+    "Admin-Phone-ForgotSent.dc.html": {
+      "w": 430,
+      "h": 900,
+      "page": "admin",
+      "is_interactive": true,
+      "title": "Reset request sent · phone (proposed, #182)",
+      "x": 3570,
+      "y": 5360
+    },
+    "Admin-Phone-NewPassword.dc.html": {
+      "w": 430,
+      "h": 900,
+      "page": "admin",
+      "is_interactive": true,
+      "title": "Choose a new password · phone (proposed, #182)",
+      "x": 4080,
+      "y": 5360
     }
   },
   "createdOnFiles": {
@@ -523,7 +580,7 @@
     },
     "adminLogin": {
       "x": 0,
-      "y": 1220,
+      "y": 1520,
       "text": "Staff log in, on a computer",
       "kind": "title1",
       "maxW": 4480,
@@ -531,10 +588,18 @@
     },
     "adminPhone": {
       "x": 0,
-      "y": 3440,
+      "y": 5060,
       "text": "Admin on a phone",
       "kind": "title1",
-      "maxW": 2980,
+      "maxW": 4510,
+      "page": "admin"
+    },
+    "adminForgot": {
+      "x": 0,
+      "y": 3740,
+      "text": "Staff forgot password, approved by a Super Admin, on a computer",
+      "kind": "title1",
+      "maxW": 4480,
       "page": "admin"
     }
   },
@@ -587,7 +652,13 @@
     "Admin-Phone-PasswordSet.dc.html",
     "Admin-Phone-Login.dc.html",
     "Admin-Phone-Code.dc.html",
-    "Admin-Phone-Dashboard.dc.html"
+    "Admin-Phone-Dashboard.dc.html",
+    "Admin-Forgot.dc.html",
+    "Admin-ForgotSent.dc.html",
+    "Admin-NewPassword.dc.html",
+    "Admin-Phone-Forgot.dc.html",
+    "Admin-Phone-ForgotSent.dc.html",
+    "Admin-Phone-NewPassword.dc.html"
   ],
   "pages": [
     {

@@ -39,6 +39,20 @@ export const bandLabel = (t: Strings, band: TicketBand | null): string =>
         over_50m: t.accessBandOver50m,
       }[band];
 
+/** S26, for the owner and for a requester past the NDA. */
+export function DetailsLink({ ideaId }: { ideaId: string }) {
+  const { t } = useLanguage();
+  return (
+    <LinkButton
+      href={`/ideas/${ideaId}/details`}
+      label={t.ideaOpenDetails}
+      className="min-h-[48px] items-center justify-center rounded-[10px] bg-blue px-4"
+    >
+      <Text className="font-figtree-bold text-[15px] text-blue-ink">{t.ideaOpenDetails}</Text>
+    </LinkButton>
+  );
+}
+
 /** Opens the idea thread with the other side, made when the NDA was accepted. */
 function MessageButton({
   api,
@@ -148,6 +162,7 @@ export function IdeaInterest({ api, ideaId }: { api: IdeaAccessApi; ideaId: stri
     return (
       <View className="gap-2">
         <Message text={t.interestHasAccess} tone="info" />
+        <DetailsLink ideaId={ideaId} />
         <MessageButton api={api} ideaId={ideaId} otherId={null} label={t.ideaMessageOwner} />
       </View>
     );

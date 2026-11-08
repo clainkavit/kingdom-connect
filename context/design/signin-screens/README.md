@@ -2,7 +2,7 @@
 
 The member app's screens from landing to "Under review", on a phone and on a computer, drawn on 8 November 2026. They follow PRD section 6 and docs/screens.md S01 to S06. The live, clickable version is the "Kingdom Connect sign-in screens" design canvas on claude.ai. These files are a copy of it.
 
-There are 73 screens: sign-in and registration, the admin console, the member and business dashboards with People and profiles, and Ideas, each on a computer and a phone.
+There are 75 screens: sign-in and registration, the admin console, the member and business dashboards with People and profiles, and Ideas, each on a computer and a phone.
 
 Open any `.dc.html` file in a browser to see that screen, and click its buttons to move through the flow. The copies show only the layout. The language switch on the legal pages works on the canvas only, so a copy shows the English and Kiswahili texts one after the other.
 
@@ -47,6 +47,7 @@ Staff do not sign themselves up. A Super Administrator invites them (PRD section
 | Email code | `Admin-Code` | `Admin-Phone-Code` |
 | Forgot password: ask for a reset, request sent, choose a new password from the Super Admin's link (Proposed, #182) | `Admin-Forgot`, `Admin-ForgotSent`, `Admin-NewPassword` | `Admin-Phone-Forgot`, `Admin-Phone-ForgotSent`, `Admin-Phone-NewPassword` |
 | A01 Admin dashboard (PRD section 7), with charts | `Admin-Dashboard` | `Admin-Phone-Dashboard` |
+| Ideas overview for staff (Proposed, #186): counts, ideas by stage and industry, interest to NDA, waiting for moderation, all ideas | `Admin-Ideas` | `Admin-Phone-Ideas` |
 
 The admin screens use the maroon and cream look of the member screens. The console as built today is navy and blue, so restyling it is a separate change. The chart colours (wine `#9B2C45`, gold `#B97A10`, teal `#0F8F7F`, indigo `#5B5BD6`) pass a colour-blindness and contrast check on white.
 

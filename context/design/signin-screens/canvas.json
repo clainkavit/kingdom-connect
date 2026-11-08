@@ -694,6 +694,25 @@
       "title": "S27 Share an idea · phone",
       "page": "ideas",
       "is_interactive": true
+    },
+    "Admin-Ideas.dc.html": {
+      "x": 4560,
+      "y": 1820,
+      "w": 1440,
+      "h": 1700,
+      "title": "Ideas overview for staff · computer (proposed)",
+      "page": "admin",
+      "expand": "fill",
+      "is_interactive": true
+    },
+    "Admin-Phone-Ideas.dc.html": {
+      "x": 4590,
+      "y": 5360,
+      "w": 430,
+      "h": 900,
+      "title": "Ideas overview for staff · phone (proposed)",
+      "page": "admin",
+      "is_interactive": true
     }
   },
   "createdOnFiles": {
@@ -752,9 +771,9 @@
     "adminLogin": {
       "x": 0,
       "y": 1520,
-      "text": "Staff log in, on a computer",
+      "text": "Staff log in, the dashboard and the Ideas overview, on a computer",
       "kind": "title1",
-      "maxW": 4480,
+      "maxW": 6000,
       "page": "admin"
     },
     "adminPhone": {
@@ -762,7 +781,7 @@
       "y": 5060,
       "text": "Admin on a phone",
       "kind": "title1",
-      "maxW": 4510,
+      "maxW": 5020,
       "page": "admin"
     },
     "adminForgot": {
@@ -887,7 +906,9 @@
     "Ideas-Phone-Summary.dc.html",
     "Ideas-Phone-Manage.dc.html",
     "Ideas-Phone-Details.dc.html",
-    "Ideas-Phone-Share.dc.html"
+    "Ideas-Phone-Share.dc.html",
+    "Admin-Ideas.dc.html",
+    "Admin-Phone-Ideas.dc.html"
   ],
   "pages": [
     {

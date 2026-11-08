@@ -1,9 +1,11 @@
 import { useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { ConnectPanel } from "../../../src/components/connections";
+import { ProfileIdeas } from "../../../src/components/ideas-pool";
 import { ProfileView } from "../../../src/components/profile";
 import { ProfileLoader } from "../../../src/components/profile-screen";
 import { connectionsApi } from "../../../src/lib/connections";
+import { ideasApi } from "../../../src/lib/ideas";
 import { memberMessagesApi } from "../../../src/lib/messages-api";
 import { memberProfileApi } from "../../../src/lib/profile-api";
 
@@ -22,6 +24,7 @@ export default function MemberProfileScreen() {
       {(profile) => (
         <ProfileView
           profile={profile}
+          ideas={<ProfileIdeas api={ideasApi} memberId={profile.memberId} />}
           actions={
             <ConnectPanel
               memberId={profile.memberId}

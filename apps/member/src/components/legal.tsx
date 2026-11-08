@@ -57,10 +57,14 @@ export function AcceptTexts({
   texts,
   entityName,
   onAccept,
+  intro,
+  acceptLabel,
 }: {
   texts: PendingText[];
   entityName: string;
   onAccept: (ids: string[]) => Promise<void>;
+  intro?: string;
+  acceptLabel?: string;
 }) {
   const { t, language, platformName } = useLanguage();
   const [ticked, setTicked] = useState<Record<string, boolean>>({});
@@ -82,7 +86,7 @@ export function AcceptTexts({
   return (
     <View className="gap-4">
       <Text className="font-figtree text-sm leading-5 text-ink-2">
-        {t.acceptUpdatedIntro(platformName)}
+        {intro ?? t.acceptUpdatedIntro(platformName)}
       </Text>
       {texts.map((text) => {
         const name = t[legalTitleKeys[text.kind]];
@@ -122,13 +126,15 @@ export function AcceptTexts({
       ) : null}
       <Pressable
         role="button"
-        aria-label={t.continueLabel}
+        aria-label={acceptLabel ?? t.continueLabel}
         aria-disabled={!allTicked || busy}
         disabled={!allTicked || busy}
         onPress={submit}
         className={`min-h-[48px] items-center justify-center rounded-[10px] bg-blue px-4 ${!allTicked || busy ? "opacity-50" : ""}`}
       >
-        <Text className="font-figtree-bold text-[15px] text-blue-ink">{t.continueLabel}</Text>
+        <Text className="font-figtree-bold text-[15px] text-blue-ink">
+          {acceptLabel ?? t.continueLabel}
+        </Text>
       </Pressable>
     </View>
   );

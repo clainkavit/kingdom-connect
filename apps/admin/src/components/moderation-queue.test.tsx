@@ -1,6 +1,7 @@
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { EventModerationApi, PendingEvent } from "@/lib/events";
+import type { IdeaModerationApi, PendingIdea } from "@/lib/ideas";
 import type { PendingTraining, TrainingModerationApi } from "@/lib/training";
 import { ModerationQueue } from "./moderation-queue";
 
@@ -33,9 +34,19 @@ const fakeTraining = (over: Partial<TrainingModerationApi> = {}): TrainingModera
   ...over,
 });
 
-async function show(api: EventModerationApi, training: TrainingModerationApi = fakeTraining()) {
+const fakeIdeas = (over: Partial<IdeaModerationApi> = {}): IdeaModerationApi => ({
+  queue: vi.fn().mockResolvedValue([]),
+  decide: vi.fn().mockResolvedValue("ok"),
+  ...over,
+});
+
+async function show(
+  api: EventModerationApi,
+  training: TrainingModerationApi = fakeTraining(),
+  ideas: IdeaModerationApi = fakeIdeas(),
+) {
   await act(async () => {
-    render(<ModerationQueue events={api} training={training} />);
+    render(<ModerationQueue events={api} training={training} ideas={ideas} />);
   });
 }
 
@@ -134,5 +145,45 @@ describe("ModerationQueue training (A04, T01)", () => {
       expect.objectContaining({ title: "Savings groups", format: "online", selfPaced: true }),
     );
     expect(screen.getByRole("status").textContent).toBe("Published. Members can see it now.");
+  });
+});
+
+const pendingIdea = (over: Partial<PendingIdea> = {}): PendingIdea => ({
+  id: "i1",
+  title: "Solar dryers for fruit farmers",
+  problem: "Farmers lose much of their mango harvest before market.",
+  sectorEn: "Agriculture",
+  sectorSw: "Kilimo",
+  stage: "prototype",
+  seeking: "investor",
+  investmentMin: 10000000,
+  investmentMax: 50000000,
+  showOwner: false,
+  description: "A low-cost solar dryer built from local materials.",
+  businessModel: null,
+  market: null,
+  financials: "Each dryer pays back in one season.",
+  team: null,
+  ownerUsername: "asha_m",
+  ...over,
+});
+
+describe("ModerationQueue ideas (A04, I01)", () => {
+  it("shows staff the whole idea, including the confidential details, and sends it back", async () => {
+    const ideas = fakeIdeas({ queue: vi.fn().mockResolvedValue([pendingIdea()]) });
+    await show(fakeApi({ queue: vi.fn().mockResolvedValue([]) }), fakeTraining(), ideas);
+    expect(screen.getByRole("heading", { name: "Ideas waiting for moderation" })).toBeTruthy();
+    expect(
+      screen.getByText(
+        "Agriculture · Prototype · Investor · TZS 10,000,000 – TZS 50,000,000 · Posted by asha_m · Shared without a name",
+      ),
+    ).toBeTruthy();
+    expect(screen.getByText(/Financials: Each dryer pays back in one season\./)).toBeTruthy();
+    await click("Send back");
+    fireEvent.change(screen.getByLabelText("Reason the poster will see"), {
+      target: { value: "Please remove the price list" },
+    });
+    await click("Send back");
+    expect(ideas.decide).toHaveBeenCalledWith("i1", false, "Please remove the price list");
   });
 });

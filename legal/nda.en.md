@@ -1,6 +1,6 @@
 ---
-version: 0.1
-effective: 2026-11-02
+version: 0.2
+effective: 2026-11-06
 approved:
 ---
 # Non-disclosure agreement
@@ -25,7 +25,7 @@ Information you can show you already had, that was already public, or that someo
 
 ## How long it lasts
 
-This agreement lasts for [TO CONFIRM: duration] years from the day you accept it, even if your access ends earlier.
+This agreement starts on the day you accept it and has no end date. It stays in force even after your access ends.
 
 ## Records
 

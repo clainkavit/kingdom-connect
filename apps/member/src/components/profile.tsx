@@ -93,7 +93,16 @@ function SkillChips({ skills, onRemove }: { skills: string[]; onRemove?: (s: str
 }
 
 /** S11: a member's profile. Contact details show only when the server returns them for a connection. */
-export function ProfileView({ profile, actions }: { profile: Profile; actions?: React.ReactNode }) {
+export function ProfileView({
+  profile,
+  actions,
+  ideas,
+}: {
+  profile: Profile;
+  actions?: React.ReactNode;
+  /** The member's published ideas (I02); without it the section says ideas are coming. */
+  ideas?: React.ReactNode;
+}) {
   const { t } = useLanguage();
   const study = [profile.study.institution, profile.study.course, profile.study.year?.toString()]
     .filter(Boolean)
@@ -174,9 +183,7 @@ export function ProfileView({ profile, actions }: { profile: Profile; actions?: 
           <Body text={study} />
         </Section>
       ) : null}
-      <Section title={t.ideasTitle}>
-        <Muted text={t.ideasComingSoon} />
-      </Section>
+      <Section title={t.ideasTitle}>{ideas ?? <Muted text={t.ideasComingSoon} />}</Section>
     </View>
   );
 }

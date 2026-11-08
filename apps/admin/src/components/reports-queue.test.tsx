@@ -241,6 +241,7 @@ describe("ModerationQueue (A04)", () => {
         <ModerationQueue
           events={{ queue: vi.fn().mockResolvedValue([]), decide: vi.fn(), post: vi.fn() }}
           training={{ queue: vi.fn().mockResolvedValue([]), decide: vi.fn(), post: vi.fn() }}
+          ideas={{ queue: vi.fn().mockResolvedValue([]), decide: vi.fn() }}
         />,
       );
     });

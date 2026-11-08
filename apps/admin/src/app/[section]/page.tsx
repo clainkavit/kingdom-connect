@@ -10,6 +10,7 @@ const builtScreens = new Set([
   "/moderation",
   "/audit-log",
   "/re-verification",
+  "/members",
   "/news",
   "/post",
 ]);

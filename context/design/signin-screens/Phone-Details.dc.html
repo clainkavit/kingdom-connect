@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Registration personal details step on a phone</title>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&amp;family=Figtree:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#4A0E1A}a:hover{color:#2A0610}
+input::placeholder{color:#7A6A6E}
+</style>
+</helmet>
+<div style="width: 430px; height: 900px; box-sizing: border-box; padding: 28px 20px; border-radius: 64px; background: #1E1416; font-family: Figtree, system-ui, sans-serif; color: #2A1A1E">
+<div style="position: relative; width: 390px; height: 844px; border-radius: 44px; overflow: hidden; background: #F7F1EA; display: flex; flex-direction: column">
+<span style="position: absolute; top: 12px; left: 140px; width: 110px; height: 30px; border-radius: 999px; background: #1E1416; z-index: 2"></span>
+
+<div style="display: flex; flex-direction: column; gap: 10px; padding: 58px 22px 0">
+<div style="display: flex; align-items: center; justify-content: space-between">
+<a href="Phone-Landing.dc.html" style="min-height: 44px; display: flex; align-items: center; font-size: 14px; font-weight: 600">Save and exit</a>
+<span style="font-size: 13px; font-weight: 700; color: #5A4A4E">Step 1 of 6</span>
+</div>
+<div role="progressbar" aria-label="Registration progress" aria-valuemin="1" aria-valuemax="6" aria-valuenow="1" style="display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px">
+<span style="height: 6px; border-radius: 999px; background: #4A0E1A"></span>
+<span style="height: 6px; border-radius: 999px; background: #E4D9CC"></span>
+<span style="height: 6px; border-radius: 999px; background: #E4D9CC"></span>
+<span style="height: 6px; border-radius: 999px; background: #E4D9CC"></span>
+<span style="height: 6px; border-radius: 999px; background: #E4D9CC"></span>
+<span style="height: 6px; border-radius: 999px; background: #E4D9CC"></span>
+</div>
+</div>
+
+<form style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 11px; padding: 16px 22px 22px" aria-labelledby="pd-title">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<h1 id="pd-title" style="margin: 0; font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 600; font-size: 32px; line-height: 1.05; color: #4A0E1A">About you</h1>
+<p style="margin: 0; font-size: 14px; line-height: 1.45; color: #5A4A4E">Write your name exactly as it is on your ID.</p>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 4px">
+<label for="pd-name" style="font-size: 13px; font-weight: 600; color: #5A4A4E; padding-left: 18px">Full name</label>
+<input id="pd-name" type="text" autocomplete="name" placeholder="e.g. Neema Joseph Mushi" style="min-height: 46px; box-sizing: border-box; width: 100%; border: 1px solid #D9CBBB; border-radius: 999px; background: #FFFFFF; padding: 0 20px; font: 400 15px Figtree, sans-serif; color: #2A1A1E">
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+<div style="display: flex; flex-direction: column; gap: 4px; min-width: 0">
+<label for="pd-region" style="font-size: 13px; font-weight: 600; color: #5A4A4E; padding-left: 18px">Region</label>
+<select id="pd-region" style="min-height: 46px; box-sizing: border-box; width: 100%; border: 1px solid #D9CBBB; border-radius: 999px; background: #FFFFFF; padding: 0 14px; font: 400 15px Figtree, sans-serif; color: #2A1A1E">
+<option>Choose</option>
+<option selected>Dar es Salaam</option>
+<option>Arusha</option>
+<option>Dodoma</option>
+<option>Mwanza</option>
+</select>
+</div>
+<div style="display: flex; flex-direction: column; gap: 4px; min-width: 0">
+<label for="pd-district" style="font-size: 13px; font-weight: 600; color: #5A4A4E; padding-left: 18px">District</label>
+<select id="pd-district" style="min-height: 46px; box-sizing: border-box; width: 100%; border: 1px solid #D9CBBB; border-radius: 999px; background: #FFFFFF; padding: 0 14px; font: 400 15px Figtree, sans-serif; color: #2A1A1E">
+<option>Choose</option>
+<option selected>Kinondoni</option>
+<option>Ilala</option>
+<option>Temeke</option>
+<option>Ubungo</option>
+<option>Kigamboni</option>
+</select>
+</div>
+</div>
+
+<fieldset style="border: 1px solid #E4D9CC; border-radius: 20px; margin: 4px 0 0; padding: 12px 14px 14px; display: flex; flex-direction: column; gap: 9px; background: #FBF7F2">
+<legend style="font-size: 13px; font-weight: 700; color: #4A0E1A; padding: 0 6px">Studies (optional)</legend>
+<div style="display: flex; flex-direction: column; gap: 4px">
+<label for="pd-school" style="font-size: 13px; font-weight: 600; color: #5A4A4E; padding-left: 14px">School, college or university</label>
+<input id="pd-school" type="text" placeholder="e.g. University of Dar es Salaam" style="min-height: 44px; box-sizing: border-box; width: 100%; border: 1px solid #D9CBBB; border-radius: 999px; background: #FFFFFF; padding: 0 18px; font: 400 15px Figtree, sans-serif; color: #2A1A1E">
+</div>
+<div style="display: grid; grid-template-columns: 2fr 1fr; gap: 8px">
+<div style="display: flex; flex-direction: column; gap: 4px; min-width: 0">
+<label for="pd-course" style="font-size: 13px; font-weight: 600; color: #5A4A4E; padding-left: 14px">Course</label>
+<input id="pd-course" type="text" placeholder="e.g. Accounting" style="min-height: 44px; box-sizing: border-box; width: 100%; border: 1px solid #D9CBBB; border-radius: 999px; background: #FFFFFF; padding: 0 18px; font: 400 15px Figtree, sans-serif; color: #2A1A1E">
+</div>
+<div style="display: flex; flex-direction: column; gap: 4px; min-width: 0">
+<label for="pd-year" style="font-size: 13px; font-weight: 600; color: #5A4A4E; padding-left: 14px">Year</label>
+<input id="pd-year" type="text" inputmode="numeric" placeholder="2024" style="min-height: 44px; box-sizing: border-box; width: 100%; border: 1px solid #D9CBBB; border-radius: 999px; background: #FFFFFF; padding: 0 16px; font: 400 15px Figtree, sans-serif; color: #2A1A1E">
+</div>
+</div>
+</fieldset>
+
+<div style="flex: 1 1 auto"></div>
+<p style="margin: 0; text-align: center; font-size: 13px; line-height: 1.4; color: #5A4A4E">Each step is saved, so you can stop and carry on later.</p>
+<a href="Phone-Category.dc.html" style="min-height: 56px; border-radius: 999px; background: #4A0E1A; color: #FFFFFF; font-weight: 600; font-size: 16px; text-decoration: none; display: flex; align-items: center; justify-content: center">Continue</a>
+</form>
+
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":430,"height":900}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

@@ -1,6 +1,6 @@
-import { MyIdeas } from "../../../src/components/ideas";
+import { IdeasPool } from "../../../src/components/ideas-pool";
 import { ideasApi } from "../../../src/lib/ideas";
 
 export default function IdeasScreen() {
-  return <MyIdeas api={ideasApi} />;
+  return <IdeasPool api={ideasApi} />;
 }

@@ -40,7 +40,7 @@ export default function NotificationsScreen() {
         : typeof trainingId === "string"
           ? `/training/${trainingId}`
           : typeof item.payload.idea_id === "string"
-            ? "/ideas"
+            ? "/ideas/mine"
             : notificationCopy[item.kind].opens) as never,
     );
   };

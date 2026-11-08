@@ -96,7 +96,9 @@ describe("DashboardScreen (S08)", () => {
 
   it("hides Post an opportunity below Level 3, with the path to upgrade", async () => {
     await show(fakeApi(), fakeConnections());
-    expect(screen.getByRole("link", { name: "Share an idea" }).getAttribute("href")).toBe("/ideas");
+    expect(screen.getByRole("link", { name: "Share an idea" }).getAttribute("href")).toBe(
+      "/ideas/new",
+    );
     expect(screen.getByRole("link", { name: "Scan for opportunities" })).toBeTruthy();
     expect(screen.getByRole("link", { name: "Post training" })).toBeTruthy();
     expect(screen.queryByRole("link", { name: "Post an opportunity" })).toBeNull();

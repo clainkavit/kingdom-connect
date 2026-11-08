@@ -14,7 +14,7 @@ import { EmptyState, ErrorState, LoadingRows } from "./states";
 type QuickAction = { key: TextKey; href: string; minLevel: number; posts: boolean };
 
 const quickActions: QuickAction[] = [
-  { key: "actionShareIdea", href: "/ideas", minLevel: 1, posts: true },
+  { key: "actionShareIdea", href: "/ideas/new", minLevel: 1, posts: true },
   { key: "actionScan", href: "/opportunities", minLevel: 1, posts: false },
   { key: "actionPostTraining", href: "/training", minLevel: 1, posts: true },
   { key: "actionPostOpportunity", href: "/opportunities", minLevel: POSTER_LEVEL, posts: true },

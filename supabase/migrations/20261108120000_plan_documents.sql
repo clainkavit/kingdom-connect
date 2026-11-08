@@ -81,6 +81,7 @@ declare
   found_plan public.milestone_plans;
   me uuid := auth.uid();
   other uuid;
+  stored_size bigint;
 begin
   select * into found_plan from public.milestone_plans p where p.id = plan for update;
   if not found or not access.in_plan(plan) then
@@ -93,11 +94,16 @@ begin
      or not exists (select 1 from storage.objects o where o.bucket_id = 'plan-documents' and o.name = storage_path) then
     return 'invalid_file';
   end if;
-  if size is null or size not between 1 and 10485760 then
+  select nullif(o.metadata ->> 'size', '')::bigint into stored_size
+  from storage.objects o where o.bucket_id = 'plan-documents' and o.name = storage_path;
+  if stored_size is null or stored_size < 1 then
+    return 'invalid_file';
+  end if;
+  if stored_size > 10485760 then
     return 'too_large';
   end if;
   other := case when found_plan.member_a = me then found_plan.member_b else found_plan.member_a end;
-  insert into public.plan_documents (plan_id, uploaded_by, storage_path, size) values (plan, me, storage_path, size);
+  insert into public.plan_documents (plan_id, uploaded_by, storage_path, size) values (plan, me, storage_path, stored_size);
   if exists (select 1 from public.plan_documents d where d.plan_id = plan and d.uploaded_by = other) then
     update public.milestone_plans set status = 'completed', completed_at = now() where id = plan;
     perform private.notify(m, 'P7', jsonb_build_object('item', private.plan_item(found_plan), 'plan_id', plan::text))

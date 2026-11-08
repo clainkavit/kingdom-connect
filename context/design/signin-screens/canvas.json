@@ -1,0 +1,389 @@
+{
+  "v": 3,
+  "createdOnFiles": {
+    "v": 1,
+    "at": "2026-11-08T13:20:00Z"
+  },
+  "title": "Kingdom Connect sign-in screens",
+  "launch": {
+    "view": "canvas"
+  },
+  "pages": [],
+  "boards": {
+    "Web-Landing.dc.html": {
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "expand": "fill",
+      "is_interactive": true,
+      "title": "S01 Landing · computer"
+    },
+    "Main.dc.html": {
+      "x": 1520,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "title": "S02 Sign up · computer",
+      "expand": "fill",
+      "is_interactive": true
+    },
+    "Web-Code.dc.html": {
+      "x": 3040,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "expand": "fill",
+      "is_interactive": true,
+      "title": "S04 Email code · computer"
+    },
+    "Web-Details.dc.html": {
+      "x": 4560,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "expand": "fill",
+      "is_interactive": true,
+      "title": "S05 Wizard · 1 About you · computer"
+    },
+    "Web-Category.dc.html": {
+      "x": 6080,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "expand": "fill",
+      "is_interactive": true,
+      "title": "S05 Wizard · 2 Category (proposed, #161) · computer"
+    },
+    "Web-CatDetails.dc.html": {
+      "x": 7600,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "expand": "fill",
+      "is_interactive": true,
+      "title": "S05 Wizard · 3 Category details · computer"
+    },
+    "Web-CatOther.dc.html": {
+      "x": 9120,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "is_interactive": true,
+      "expand": "fill",
+      "title": "S05 Wizard · 3 If Other is ticked · computer (proposed)"
+    },
+    "Web-ID.dc.html": {
+      "x": 10640,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "expand": "fill",
+      "is_interactive": true,
+      "title": "S05 Wizard · 4 ID and photos · computer"
+    },
+    "Web-Legal.dc.html": {
+      "x": 12160,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "expand": "fill",
+      "is_interactive": true,
+      "title": "S05 Wizard · 5 Terms and privacy · computer"
+    },
+    "Web-Terms.dc.html": {
+      "x": 13680,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "is_interactive": true,
+      "expand": "fill",
+      "title": "Terms of use (draft 0.1) · computer"
+    },
+    "Web-Privacy.dc.html": {
+      "x": 15200,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "is_interactive": true,
+      "expand": "fill",
+      "title": "Privacy notice (draft 0.1) · computer"
+    },
+    "Web-Review.dc.html": {
+      "x": 16720,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "expand": "fill",
+      "is_interactive": true,
+      "title": "S05 Wizard · 6 Check and send · computer"
+    },
+    "Web-Status.dc.html": {
+      "x": 18240,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "expand": "fill",
+      "is_interactive": true,
+      "title": "S06 Registration status · computer"
+    },
+    "Phone-Landing.dc.html": {
+      "x": 0,
+      "y": 4220,
+      "w": 430,
+      "h": 900,
+      "title": "S01 Landing",
+      "is_interactive": true
+    },
+    "Phone-Signup.dc.html": {
+      "x": 510,
+      "y": 4220,
+      "w": 430,
+      "h": 900,
+      "title": "S02 Sign up",
+      "is_interactive": true
+    },
+    "Phone-Code.dc.html": {
+      "x": 1020,
+      "y": 4220,
+      "w": 430,
+      "h": 900,
+      "title": "S04 Email code",
+      "is_interactive": true
+    },
+    "Phone-Details.dc.html": {
+      "w": 430,
+      "h": 900,
+      "is_interactive": true,
+      "x": 1530,
+      "y": 4220,
+      "title": "S05 Wizard · 1 About you"
+    },
+    "Phone-Category.dc.html": {
+      "x": 2040,
+      "y": 4220,
+      "w": 430,
+      "h": 900,
+      "title": "S05 Wizard · 2 Category (proposed, #161)",
+      "is_interactive": true
+    },
+    "Phone-CatDetails.dc.html": {
+      "w": 430,
+      "h": 900,
+      "is_interactive": true,
+      "x": 2550,
+      "y": 4220,
+      "title": "S05 Wizard · 3 Category details"
+    },
+    "Phone-CatOther.dc.html": {
+      "x": 3060,
+      "y": 4220,
+      "w": 430,
+      "h": 900,
+      "is_interactive": true,
+      "title": "S05 Wizard · 3 If Other is ticked (proposed)"
+    },
+    "Phone-ID.dc.html": {
+      "x": 3570,
+      "y": 4220,
+      "w": 430,
+      "h": 900,
+      "title": "S05 Wizard · 4 ID and photos",
+      "is_interactive": true
+    },
+    "Phone-Legal.dc.html": {
+      "w": 430,
+      "h": 900,
+      "is_interactive": true,
+      "x": 4080,
+      "y": 4220,
+      "title": "S05 Wizard · 5 Terms and privacy"
+    },
+    "Phone-Terms.dc.html": {
+      "x": 4590,
+      "y": 4220,
+      "w": 430,
+      "h": 900,
+      "is_interactive": true,
+      "title": "Terms of use (draft 0.1)"
+    },
+    "Phone-Privacy.dc.html": {
+      "x": 5100,
+      "y": 4220,
+      "w": 430,
+      "h": 900,
+      "is_interactive": true,
+      "title": "Privacy notice (draft 0.1)"
+    },
+    "Phone-Review.dc.html": {
+      "w": 430,
+      "h": 900,
+      "is_interactive": true,
+      "x": 5610,
+      "y": 4220,
+      "title": "S05 Wizard · 6 Check and send"
+    },
+    "Phone-Status.dc.html": {
+      "x": 6120,
+      "y": 4220,
+      "w": 430,
+      "h": 900,
+      "title": "S06 Registration status",
+      "is_interactive": true
+    },
+    "Web-Login.dc.html": {
+      "x": 0,
+      "y": 1320,
+      "w": 1440,
+      "h": 900,
+      "expand": "fill",
+      "is_interactive": true,
+      "title": "S03 Log in · computer"
+    },
+    "Web-Locked.dc.html": {
+      "x": 1520,
+      "y": 1320,
+      "w": 1440,
+      "h": 900,
+      "expand": "fill",
+      "is_interactive": true,
+      "title": "S03 Log in · locked · computer"
+    },
+    "Web-Forgot.dc.html": {
+      "x": 3040,
+      "y": 1320,
+      "w": 1440,
+      "h": 900,
+      "expand": "fill",
+      "is_interactive": true,
+      "title": "Forgot password · computer (new, not in the PRD)"
+    },
+    "Web-Reset.dc.html": {
+      "x": 4560,
+      "y": 1320,
+      "w": 1440,
+      "h": 900,
+      "expand": "fill",
+      "is_interactive": true,
+      "title": "New password · computer (new, not in the PRD)"
+    },
+    "Web-Recover.dc.html": {
+      "x": 6080,
+      "y": 1320,
+      "w": 1440,
+      "h": 900,
+      "expand": "fill",
+      "is_interactive": true,
+      "title": "S04 Can't get the code? · computer"
+    },
+    "Phone-Login.dc.html": {
+      "x": 0,
+      "y": 4220,
+      "w": 430,
+      "h": 900,
+      "title": "S03 Log in",
+      "is_interactive": true
+    },
+    "Phone-Locked.dc.html": {
+      "x": 510,
+      "y": 4220,
+      "w": 430,
+      "h": 900,
+      "title": "S03 Log in · locked",
+      "is_interactive": true
+    },
+    "Phone-Forgot.dc.html": {
+      "x": 1020,
+      "y": 4220,
+      "w": 430,
+      "h": 900,
+      "title": "Forgot password (new, not in the PRD)",
+      "is_interactive": true
+    },
+    "Phone-Reset.dc.html": {
+      "x": 1530,
+      "y": 4220,
+      "w": 430,
+      "h": 900,
+      "title": "New password (new, not in the PRD)",
+      "is_interactive": true
+    },
+    "Phone-Recover.dc.html": {
+      "x": 2040,
+      "y": 4220,
+      "w": 430,
+      "h": 900,
+      "title": "S04 Can't get the code?",
+      "is_interactive": true
+    }
+  },
+  "order": [
+    "Web-Landing.dc.html",
+    "Main.dc.html",
+    "Web-Code.dc.html",
+    "Web-Details.dc.html",
+    "Web-Category.dc.html",
+    "Web-CatDetails.dc.html",
+    "Web-CatOther.dc.html",
+    "Web-ID.dc.html",
+    "Web-Legal.dc.html",
+    "Web-Terms.dc.html",
+    "Web-Privacy.dc.html",
+    "Web-Review.dc.html",
+    "Web-Status.dc.html",
+    "Web-Login.dc.html",
+    "Web-Locked.dc.html",
+    "Web-Forgot.dc.html",
+    "Web-Reset.dc.html",
+    "Web-Recover.dc.html",
+    "Phone-Landing.dc.html",
+    "Phone-Login.dc.html",
+    "Phone-Signup.dc.html",
+    "Phone-Locked.dc.html",
+    "Phone-Code.dc.html",
+    "Phone-Forgot.dc.html",
+    "Phone-Details.dc.html",
+    "Phone-Reset.dc.html",
+    "Phone-Category.dc.html",
+    "Phone-Recover.dc.html",
+    "Phone-CatDetails.dc.html",
+    "Phone-CatOther.dc.html",
+    "Phone-ID.dc.html",
+    "Phone-Legal.dc.html",
+    "Phone-Terms.dc.html",
+    "Phone-Privacy.dc.html",
+    "Phone-Review.dc.html",
+    "Phone-Status.dc.html"
+  ],
+  "notes": {
+    "rowDesktop": {
+      "x": 0,
+      "y": -300,
+      "text": "Joining, on a computer",
+      "kind": "title1",
+      "maxW": 19680
+    },
+    "rowDesktopBack": {
+      "x": 0,
+      "y": 1020,
+      "text": "Coming back, on a computer",
+      "kind": "title1",
+      "maxW": 7520
+    },
+    "rowPhone": {
+      "x": 0,
+      "y": 2600,
+      "text": "Joining, on a phone",
+      "kind": "title1",
+      "maxW": 6550
+    },
+    "rowReturn": {
+      "x": 0,
+      "y": 3920,
+      "text": "Coming back, on a phone",
+      "kind": "title1",
+      "maxW": 2470
+    }
+  },
+  "designSystems": []
+}

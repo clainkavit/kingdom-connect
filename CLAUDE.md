@@ -12,7 +12,7 @@
 - **[.claude/skills/](.claude/skills/)** holds the planning skills (wayfinder, grilling, domain-modeling, research, prototype) and the build skills (implement, tdd, code-review, diagnosing-bugs, codebase-design, handoff, pr), so they load for anyone working in this repo.
 - **[GLOSSARY.md](GLOSSARY.md)** is the glossary. Use its terms.
 - **[sources/](sources/)** holds the original Plan v1.1 (frozen, approved church document), PRD v0.1 (superseded) and the use case diagram (outdated). Extracts sit in `context/`.
-- **[context/design/](context/design/)** holds the mockup and the clickable dashboard prototype.
+- **[context/design/](context/design/)** holds the mockup, the clickable dashboard prototype and the sign-in and registration screens for phone and computer ([signin-screens](context/design/signin-screens/README.md)).
 - [context/memory.md](context/memory.md) indexes facts discovered while working.
 
 ## Rules specific to this project

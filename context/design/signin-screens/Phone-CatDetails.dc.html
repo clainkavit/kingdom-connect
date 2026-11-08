@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Registration category details step on a phone</title>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&amp;family=Figtree:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#4A0E1A}a:hover{color:#2A0610}
+input::placeholder{color:#7A6A6E}
+</style>
+</helmet>
+<div style="width: 430px; height: 900px; box-sizing: border-box; padding: 28px 20px; border-radius: 64px; background: #1E1416; font-family: Figtree, system-ui, sans-serif; color: #2A1A1E">
+<div style="position: relative; width: 390px; height: 844px; border-radius: 44px; overflow: hidden; background: #F7F1EA; display: flex; flex-direction: column">
+<span style="position: absolute; top: 12px; left: 140px; width: 110px; height: 30px; border-radius: 999px; background: #1E1416; z-index: 2"></span>
+
+<div style="display: flex; flex-direction: column; gap: 10px; padding: 58px 22px 0">
+<div style="display: flex; align-items: center; justify-content: space-between">
+<a href="Phone-Category.dc.html" aria-label="Back to category" style="width: 44px; height: 44px; border-radius: 999px; background: #FFFFFF; border: 1px solid #E4D9CC; color: #4A0E1A; display: flex; align-items: center; justify-content: center; box-sizing: border-box">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg>
+</a>
+<span style="font-size: 13px; font-weight: 700; color: #5A4A4E">Step 3 of 6</span>
+</div>
+<div role="progressbar" aria-label="Registration progress" aria-valuemin="1" aria-valuemax="6" aria-valuenow="3" style="display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px">
+<span style="height: 6px; border-radius: 999px; background: #4A0E1A"></span>
+<span style="height: 6px; border-radius: 999px; background: #4A0E1A"></span>
+<span style="height: 6px; border-radius: 999px; background: #4A0E1A"></span>
+<span style="height: 6px; border-radius: 999px; background: #E4D9CC"></span>
+<span style="height: 6px; border-radius: 999px; background: #E4D9CC"></span>
+<span style="height: 6px; border-radius: 999px; background: #E4D9CC"></span>
+</div>
+</div>
+
+<form style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 11px; padding: 16px 22px 22px" aria-labelledby="cd-title">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<h1 id="cd-title" style="margin: 0; font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 600; font-size: 32px; line-height: 1.05; color: #4A0E1A">A little more about your work</h1>
+<p style="margin: 0; font-size: 14px; line-height: 1.45; color: #5A4A4E">One section for each category you ticked. No documents are needed now.</p>
+</div>
+
+<fieldset style="border: 1px solid #E4D9CC; border-radius: 20px; margin: 0; padding: 12px 14px 14px; display: flex; flex-direction: column; gap: 9px; background: #FFFFFF">
+<legend style="font-size: 14px; font-weight: 700; color: #4A0E1A; padding: 0 6px">Professional</legend>
+<div style="display: flex; flex-direction: column; gap: 4px">
+<label for="cd-profession" style="font-size: 13px; font-weight: 600; color: #5A4A4E; padding-left: 14px">Profession</label>
+<input id="cd-profession" type="text" placeholder="e.g. Accountant" style="min-height: 44px; box-sizing: border-box; width: 100%; border: 1px solid #D9CBBB; border-radius: 999px; background: #FFFFFF; padding: 0 18px; font: 400 15px Figtree, sans-serif; color: #2A1A1E">
+</div>
+<div style="display: flex; flex-direction: column; gap: 4px">
+<label for="cd-certs" style="font-size: 13px; font-weight: 600; color: #5A4A4E; padding-left: 14px">Certifications (optional)</label>
+<input id="cd-certs" type="text" placeholder="e.g. CPA (T)" style="min-height: 44px; box-sizing: border-box; width: 100%; border: 1px solid #D9CBBB; border-radius: 999px; background: #FFFFFF; padding: 0 18px; font: 400 15px Figtree, sans-serif; color: #2A1A1E">
+</div>
+<div style="display: flex; flex-direction: column; gap: 4px">
+<label for="cd-licence" style="font-size: 13px; font-weight: 600; color: #5A4A4E; padding-left: 14px">Licence number (optional)</label>
+<input id="cd-licence" type="text" style="min-height: 44px; box-sizing: border-box; width: 100%; border: 1px solid #D9CBBB; border-radius: 999px; background: #FFFFFF; padding: 0 18px; font: 400 15px Figtree, sans-serif; color: #2A1A1E">
+</div>
+</fieldset>
+
+<fieldset style="border: 1px solid #E4D9CC; border-radius: 20px; margin: 0; padding: 12px 14px 14px; display: flex; flex-direction: column; gap: 9px; background: #FFFFFF">
+<legend style="font-size: 14px; font-weight: 700; color: #4A0E1A; padding: 0 6px">Businessperson</legend>
+<div style="display: flex; flex-direction: column; gap: 4px">
+<label for="cd-business" style="font-size: 13px; font-weight: 600; color: #5A4A4E; padding-left: 14px">Business name</label>
+<input id="cd-business" type="text" placeholder="As it is known to customers" style="min-height: 44px; box-sizing: border-box; width: 100%; border: 1px solid #D9CBBB; border-radius: 999px; background: #FFFFFF; padding: 0 18px; font: 400 15px Figtree, sans-serif; color: #2A1A1E">
+</div>
+<div style="display: flex; flex-direction: column; gap: 4px">
+<label for="cd-sector" style="font-size: 13px; font-weight: 600; color: #5A4A4E; padding-left: 14px">Sector</label>
+<select id="cd-sector" style="min-height: 44px; box-sizing: border-box; width: 100%; border: 1px solid #D9CBBB; border-radius: 999px; background: #FFFFFF; padding: 0 16px; font: 400 15px Figtree, sans-serif; color: #2A1A1E">
+<option>Choose a sector</option>
+</select>
+</div>
+</fieldset>
+
+<div style="flex: 1 1 auto"></div>
+<a href="Phone-ID.dc.html" style="min-height: 56px; border-radius: 999px; background: #4A0E1A; color: #FFFFFF; font-weight: 600; font-size: 16px; text-decoration: none; display: flex; align-items: center; justify-content: center">Continue</a>
+</form>
+
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":430,"height":900}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

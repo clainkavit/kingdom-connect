@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Log in locked on a phone</title>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&amp;family=Figtree:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#4A0E1A}a:hover{color:#2A0610}
+</style>
+</helmet>
+<div style="width: 430px; height: 900px; box-sizing: border-box; padding: 28px 20px; border-radius: 64px; background: #1E1416; font-family: Figtree, system-ui, sans-serif; color: #2A1A1E">
+<div style="position: relative; width: 390px; height: 844px; border-radius: 44px; overflow: hidden; background: #F7F1EA; display: flex; flex-direction: column">
+<span style="position: absolute; top: 12px; left: 140px; width: 110px; height: 30px; border-radius: 999px; background: #1E1416; z-index: 2"></span>
+
+<div style="position: relative; height: 220px; flex-shrink: 0; background: #4A0E1A">
+<img src="hands-photo.jpg" alt="Hands of people of different skin tones joined together in a circle" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 40%; display: block">
+<div style="position: absolute; top: 56px; left: 20px; right: 20px; display: flex; align-items: center; justify-content: space-between">
+<img src="logo.jpg" alt="Kingdom Connect" style="width: 56px; height: 50px; object-fit: cover; border-radius: 12px; display: block">
+<div style="display: flex; gap: 4px; background: #FFFFFF; border-radius: 999px; padding: 4px">
+<button type="button" aria-pressed="true" style="min-height: 36px; min-width: 44px; border: 0; border-radius: 999px; background: #4A0E1A; color: #FFFFFF; font: 600 13px Figtree, sans-serif">EN</button>
+<button type="button" aria-pressed="false" style="min-height: 36px; min-width: 44px; border: 0; border-radius: 999px; background: transparent; color: #5A4A4E; font: 600 13px Figtree, sans-serif">SW</button>
+</div>
+</div>
+</div>
+
+<form style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 14px; padding: 26px 22px 24px; margin-top: -22px; border-radius: 26px 26px 0 0; background: #F7F1EA; position: relative" aria-labelledby="k-login-title">
+<div style="display: flex; flex-direction: column; gap: 6px; text-align: center; margin-bottom: 6px">
+<h1 id="k-login-title" style="margin: 0; font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 600; font-size: 34px; line-height: 1.05; color: #4A0E1A">Log in to Kingdom Connect</h1>
+</div>
+
+<div role="alert" style="display: flex; gap: 12px; align-items: flex-start; background: #FBEBEB; border: 1px solid #E8C4C4; border-radius: 18px; padding: 14px 16px; color: #7A1C1C">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0; margin-top: 1px"><rect x="4" y="11" width="16" height="10" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg>
+<div style="display: flex; flex-direction: column; gap: 4px">
+<span style="font-size: 15px; font-weight: 700">Too many failed attempts. Try again in 14:32.</span>
+<span style="font-size: 13px; line-height: 1.45">The account is locked for 15 minutes to keep it safe.</span>
+</div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 5px">
+<label for="k-username" style="font-size: 13px; font-weight: 600; color: #5A4A4E; padding-left: 18px">Username</label>
+<input id="k-username" type="text" value="neema.joseph" disabled style="min-height: 52px; box-sizing: border-box; width: 100%; border: 1px solid #D9CBBB; border-radius: 999px; background: #EFE7DE; padding: 0 20px; font: 400 15px Figtree, sans-serif; color: #5A4A4E">
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 5px">
+<label for="k-password" style="font-size: 13px; font-weight: 600; color: #5A4A4E; padding-left: 18px">Password</label>
+<input id="k-password" type="password" disabled style="min-height: 52px; box-sizing: border-box; width: 100%; border: 1px solid #D9CBBB; border-radius: 999px; background: #EFE7DE; padding: 0 20px; font: 400 15px Figtree, sans-serif; color: #5A4A4E">
+</div>
+
+<a href="Phone-Forgot.dc.html" style="align-self: flex-end; min-height: 44px; display: flex; align-items: center; padding: 0 8px; font-size: 14px; font-weight: 600; margin-top: -6px">Forgot password?</a>
+
+<button type="button" disabled style="min-height: 56px; margin-top: 0; border: 0; border-radius: 999px; background: #D9CBBB; color: #4A3A3E; font: 600 16px Figtree, sans-serif">Try again in 14:32</button>
+
+<div style="flex: 1 1 auto"></div>
+<p style="margin: 0; text-align: center; font-size: 14px; color: #5A4A4E">New here? <a href="Phone-Signup.dc.html" style="font-weight: 600">Create an account</a></p>
+</form>
+
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":430,"height":900}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

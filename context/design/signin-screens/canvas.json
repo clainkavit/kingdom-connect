@@ -751,6 +751,149 @@
       "title": "Ask anonymously · phone",
       "page": "ideas",
       "is_interactive": true
+    },
+    "Admin-Verify.dc.html": {
+      "x": 0,
+      "y": 6680,
+      "w": 1440,
+      "h": 1300,
+      "title": "A02 Verification queue · computer",
+      "page": "admin",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "Admin-VerifyDetail.dc.html": {
+      "x": 1520,
+      "y": 6680,
+      "w": 1440,
+      "h": 1600,
+      "title": "A03 Verification detail · computer",
+      "page": "admin",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "Admin-Phone-Verify.dc.html": {
+      "x": 3040,
+      "y": 6680,
+      "w": 430,
+      "h": 900,
+      "title": "A02 Verification queue · phone",
+      "page": "admin",
+      "is_interactive": true
+    },
+    "Admin-Phone-VerifyDetail.dc.html": {
+      "x": 3550,
+      "y": 6680,
+      "w": 430,
+      "h": 900,
+      "title": "A03 Verification detail · phone",
+      "page": "admin",
+      "is_interactive": true
+    },
+    "Opp-List.dc.html": {
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 1700,
+      "title": "S16 Opportunities list with Scan · computer",
+      "page": "opps",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "Opp-Detail.dc.html": {
+      "x": 1520,
+      "y": 0,
+      "w": 1440,
+      "h": 1300,
+      "title": "S17 Tender detail, Level 1 · computer",
+      "page": "opps",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "Opp-Apply.dc.html": {
+      "x": 3040,
+      "y": 0,
+      "w": 1440,
+      "h": 1100,
+      "title": "S18 Apply for a job · computer",
+      "page": "opps",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "Opp-Responses.dc.html": {
+      "x": 4560,
+      "y": 0,
+      "w": 1440,
+      "h": 1000,
+      "title": "S19 My responses · computer",
+      "page": "opps",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "Opp-Post.dc.html": {
+      "x": 6080,
+      "y": 0,
+      "w": 1440,
+      "h": 1300,
+      "title": "S20 Post an opportunity, Level 3 · computer",
+      "page": "opps",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "Biz-Verify.dc.html": {
+      "x": 7600,
+      "y": 0,
+      "w": 1440,
+      "h": 1800,
+      "title": "S40 Business verification · computer",
+      "page": "opps",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "Opp-Phone-List.dc.html": {
+      "x": 0,
+      "y": 2220,
+      "w": 430,
+      "h": 900,
+      "title": "S16 Opportunities · phone",
+      "page": "opps",
+      "is_interactive": true
+    },
+    "Opp-Phone-Detail.dc.html": {
+      "x": 510,
+      "y": 2220,
+      "w": 430,
+      "h": 900,
+      "title": "S17 Tender detail · phone",
+      "page": "opps",
+      "is_interactive": true
+    },
+    "Opp-Phone-Apply.dc.html": {
+      "x": 1020,
+      "y": 2220,
+      "w": 430,
+      "h": 900,
+      "title": "S18 Apply · phone",
+      "page": "opps",
+      "is_interactive": true
+    },
+    "Opp-Phone-Post.dc.html": {
+      "x": 1530,
+      "y": 2220,
+      "w": 430,
+      "h": 900,
+      "title": "S20 Post an opportunity · phone",
+      "page": "opps",
+      "is_interactive": true
+    },
+    "Biz-Phone-Verify.dc.html": {
+      "x": 2040,
+      "y": 2220,
+      "w": 430,
+      "h": 900,
+      "title": "S40 Business verification · phone",
+      "page": "opps",
+      "is_interactive": true
     }
   },
   "createdOnFiles": {
@@ -877,6 +1020,30 @@
       "kind": "title1",
       "maxW": 3980,
       "page": "ideas"
+    },
+    "adminVerify": {
+      "x": 0,
+      "y": 6380,
+      "text": "Verifying members",
+      "kind": "title1",
+      "maxW": 3980,
+      "page": "admin"
+    },
+    "oppsComp": {
+      "x": 0,
+      "y": -300,
+      "text": "Opportunities and business verification, on a computer",
+      "kind": "title1",
+      "maxW": 9040,
+      "page": "opps"
+    },
+    "oppsPhone": {
+      "x": 0,
+      "y": 1920,
+      "text": "On a phone",
+      "kind": "title1",
+      "maxW": 2470,
+      "page": "opps"
     }
   },
   "order": [
@@ -958,7 +1125,22 @@
     "Investor-Pool.dc.html",
     "Investor-Interest.dc.html",
     "Investor-Phone-Pool.dc.html",
-    "Investor-Phone-Interest.dc.html"
+    "Investor-Phone-Interest.dc.html",
+    "Admin-Verify.dc.html",
+    "Admin-VerifyDetail.dc.html",
+    "Admin-Phone-Verify.dc.html",
+    "Admin-Phone-VerifyDetail.dc.html",
+    "Opp-List.dc.html",
+    "Opp-Detail.dc.html",
+    "Opp-Apply.dc.html",
+    "Opp-Responses.dc.html",
+    "Opp-Post.dc.html",
+    "Biz-Verify.dc.html",
+    "Opp-Phone-List.dc.html",
+    "Opp-Phone-Detail.dc.html",
+    "Opp-Phone-Apply.dc.html",
+    "Opp-Phone-Post.dc.html",
+    "Biz-Phone-Verify.dc.html"
   ],
   "pages": [
     {
@@ -976,6 +1158,10 @@
     {
       "id": "ideas",
       "name": "Ideas"
+    },
+    {
+      "id": "opps",
+      "name": "Opportunities"
     }
   ],
   "title": "Kingdom Connect sign-in screens"

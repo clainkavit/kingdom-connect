@@ -6,12 +6,42 @@ describe("colors", () => {
     expect(Object.keys(colors.dark).sort()).toEqual(Object.keys(colors.light).sort());
   });
 
-  it("matches the dashboard prototype", () => {
-    expect(colors.light.navy).toBe("#0e1d3a");
-    expect(colors.light.blue).toBe("#1f5fd6");
-    expect(colors.light.bg).toBe("#eef2f8");
-    expect(colors.dark.bg).toBe("#0b1222");
-    expect(colors.dark.blue).toBe("#4d86f0");
+  it("uses the maroon and cream look of the 8 November designs", () => {
+    expect(colors.light.navy).toBe("#4a0e1a");
+    expect(colors.light.blue).toBe("#4a0e1a");
+    expect(colors.light.blueSoft).toBe("#f3e6d0");
+    expect(colors.light.bg).toBe("#f7f1ea");
+    expect(colors.dark.bg).toBe("#160d0f");
+    expect(colors.dark.blue).toBe("#e59aaa");
+  });
+
+  it("keeps text readable: 4.5:1 for text, 3:1 for input borders", () => {
+    const luminance = (hex: string) => {
+      const [r, g, b] = [1, 3, 5].map((i) => {
+        const c = parseInt(hex.slice(i, i + 2), 16) / 255;
+        return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+      });
+      return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+    };
+    const ratio = (a: string, b: string) => {
+      const [hi, lo] = [luminance(a), luminance(b)].sort((x, y) => y - x);
+      return (hi + 0.05) / (lo + 0.05);
+    };
+    for (const theme of [colors.light, colors.dark]) {
+      const text: [ColorToken, ColorToken][] = [
+        ["navyInk", "navy"],
+        ["navyMute", "navy"],
+        ["blueInk", "blue"],
+        ["blue", "surface"],
+        ["blue", "blueSoft"],
+        ["ink", "bg"],
+        ["ink2", "surface"],
+        ["ink3", "bg"],
+        ["infoText", "surface"],
+      ];
+      for (const [fg, bg] of text) expect(ratio(theme[fg], theme[bg])).toBeGreaterThanOrEqual(4.5);
+      expect(ratio(theme.field, theme.surface)).toBeGreaterThanOrEqual(3);
+    }
   });
 });
 

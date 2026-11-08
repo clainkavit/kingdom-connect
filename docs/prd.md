@@ -110,7 +110,7 @@ Members and administrators get different menus; a member never sees admin items,
 
 **On phones** the menu becomes a bottom tab bar: Home, People, Opportunities, Messages, More for members, shown as icons with their names read out by screen readers; Home, Verify, Moderate, Reports, More for admins. More lists the remaining menu items.
 
-**Visual direction.** The [Kingdom Connect Screens canvas](https://claude.ai/artifact/7pbedM5rqr67UUbxncHx8X) sets the look and the layout of every screen. It replaces the earlier mockup ([context/design/dashboard-mockup.jpg](../context/design/dashboard-mockup.jpg)) and prototype ([context/design/dashboard-prototype.html](../context/design/dashboard-prototype.html)). Where the canvas conflicts with this PRD, the PRD wins.
+**Visual direction.** The [Kingdom Connect Screens canvas](https://claude.ai/artifact/7pbedM5rqr67UUbxncHx8X) sets the look and the layout of every screen. It replaces the earlier mockup ([context/design/dashboard-mockup.jpg](../context/design/dashboard-mockup.jpg)) and prototype ([context/design/dashboard-prototype.html](../context/design/dashboard-prototype.html)). Where the canvas conflicts with this PRD, the PRD wins. **Colours changed 8 Nov:** both apps use the maroon and cream look of the screens in [context/design/signin-screens/](../context/design/signin-screens/README.md) (maroon `#4A0E1A`, cream `#F7F1EA`); the layout still follows the canvas.
 
 **Key screens**
 
@@ -918,6 +918,11 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 - To renew, the member sends only the new licence: number, expiry date and the document, within 30 days of the end date or after it. BRELA, TIN and the Level 3 documents stay as approved. Staff approve, or reject with a Level 2 reason; a rejected renewal leaves the business as it was.
 - Staff see expired licences and licences ending in the next 30 days on Re-verification (A08), and renewals in the verification queue.
 
+**Decided on 8 November 2026 (colours, F06b, [#184](https://github.com/clainkavit/kingdom-connect/issues/184))**
+- Both apps change from navy and blue to maroon and cream: maroon `#4A0E1A` for the menu, header and main buttons, cream `#F7F1EA` for the page, `#F3E6D0` for the selected menu item and highlights. Dark mode has its own maroon steps.
+- Every text colour keeps at least 4.5:1 contrast and input borders at least 3:1, checked by a test.
+- The Cormorant Garamond headings of the designs follow in a separate ticket, because the member app needs a font package for them.
+
 **Open.** Every open question is a ticket on the [wayfinder map](https://github.com/clainkavit/kingdom-connect/issues/1) and is linked where it applies above.
 
 **Outside this spec**
@@ -981,6 +986,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | 6 Nov 2026 | Licence expiry pauses Level 2 and 3 until a new licence is approved; B3 reminders, B4, renewal and Re-verification | 13, 18 |
 | 6 Nov 2026 | Businesses tab on People: approved Level 2 and up, following the owner's profile rules | 8, 18 |
 | 6 Nov 2026 | Level 3 Opportunity Poster verification: directorship or authorisation proof, address with proof, review in the verification queue | 6, 18 |
+| 8 Nov 2026 | Colours: maroon and cream in both apps, replacing navy and blue (F06b) | 5, 18 |
 | 8 Nov 2026 | Proposed, awaiting Champion: admin dashboard line chart of new verified members per week; it needs approvals counted by week | 7 |
 | 8 Nov 2026 | Proposed, awaiting Champion (#180): S06 Under review drops the expected time and the next-step list, and says a notification follows the review | 6, 18 |
 | 8 Nov 2026 | Proposed, awaiting Champion (#161): registration categories become tick all that apply from Professional, Businessperson and Other; Entrepreneur and Student removed | 6, 18 |

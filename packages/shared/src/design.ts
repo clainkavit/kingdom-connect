@@ -1,22 +1,27 @@
-/** Design tokens from the Kingdom Connect Screens canvas (PRD section 5, Visual direction). */
+/**
+ * Design tokens: the maroon and cream look of the 8 November designs (PRD section 5).
+ * The names are roles, kept from the first canvas so components did not change:
+ * `navy` is the menu and header colour, `blue` the main action colour, and
+ * `blueSoft` the selected and highlighted background.
+ */
 
 export const colors = {
   light: {
-    navy: "#0e1d3a",
-    navy2: "#162a50",
-    navyInk: "#c9d6ee",
-    navyMute: "#8496b8",
-    blue: "#1f5fd6",
+    navy: "#4a0e1a",
+    navy2: "#5e1626",
+    navyInk: "#f3e6d0",
+    navyMute: "#d9b8a3",
+    blue: "#4a0e1a",
     blueInk: "#ffffff",
-    blueSoft: "#e8effc",
-    bg: "#eef2f8",
+    blueSoft: "#f3e6d0",
+    bg: "#f7f1ea",
     surface: "#ffffff",
-    surface2: "#f6f8fc",
-    line: "#dfe5ef",
-    field: "#b9c3d6",
-    ink: "#152039",
-    ink2: "#4a5672",
-    ink3: "#7a849b",
+    surface2: "#fbf7f2",
+    line: "#e4d9cc",
+    field: "#9a877d",
+    ink: "#2a1a1e",
+    ink2: "#5a4a4e",
+    ink3: "#7a6a6e",
     good: "#1a8a55",
     goodSoft: "#e3f5ec",
     goodText: "#0f5a36",
@@ -26,7 +31,7 @@ export const colors = {
     bad: "#c23b3b",
     badSoft: "#fbe7e7",
     badText: "#7d1f1f",
-    infoText: "#13367a",
+    infoText: "#4a0e1a",
     violet: "#6a42c2",
     violetSoft: "#efe9fb",
     teal: "#0e7d86",
@@ -35,21 +40,21 @@ export const colors = {
     roseSoft: "#fae6f0",
   },
   dark: {
-    navy: "#081227",
-    navy2: "#13213f",
-    navyInk: "#c9d6ee",
-    navyMute: "#7b8db0",
-    blue: "#4d86f0",
-    blueInk: "#ffffff",
-    blueSoft: "#1a2b4f",
-    bg: "#0b1222",
-    surface: "#121c31",
-    surface2: "#18243d",
-    line: "#24324f",
-    field: "#3a4a6b",
-    ink: "#e6ecf7",
-    ink2: "#aab6cd",
-    ink3: "#7d8aa4",
+    navy: "#2a0810",
+    navy2: "#3a0f1a",
+    navyInk: "#f3e6d0",
+    navyMute: "#c7a894",
+    blue: "#e59aaa",
+    blueInk: "#2a0810",
+    blueSoft: "#3a1e26",
+    bg: "#160d0f",
+    surface: "#211417",
+    surface2: "#2a1a1e",
+    line: "#3d2a2f",
+    field: "#86707a",
+    ink: "#f5ede6",
+    ink2: "#cdbdb8",
+    ink3: "#a08e8a",
     good: "#4cc78a",
     goodSoft: "#123326",
     goodText: "#8fdcb5",
@@ -59,7 +64,7 @@ export const colors = {
     bad: "#ef7373",
     badSoft: "#3a1a1d",
     badText: "#f4a7a7",
-    infoText: "#a9c4f5",
+    infoText: "#f0b8c4",
     violet: "#a98af0",
     violetSoft: "#261d42",
     teal: "#4cc3cc",
@@ -73,7 +78,7 @@ export type ColorToken = keyof typeof colors.light;
 
 export const radius = 12;
 export const shadow = {
-  light: "0 1px 2px rgba(14,29,58,.06), 0 4px 14px rgba(14,29,58,.05)",
+  light: "0 1px 2px rgba(74,14,26,.06), 0 4px 14px rgba(74,14,26,.05)",
   dark: "0 1px 2px rgba(0,0,0,.3)",
 } as const;
 

@@ -65,7 +65,7 @@ select pg_temp.login('02');
 select is((select string_agg(kind || ' ' || version || ' ' || body_sw, ',' order by kind)
            from public.idea_terms(pg_temp.approved())),
   'ip 9.0 IP tisa,nda 9.0 NDA tisa', 'the requester gets both texts, in both languages');
-select is((select count(*)::int from public.idea_details), 0, 'the details stay closed before acceptance');
+select is((select count(*)::int from public.open_idea_details(pg_temp.idea())), 0, 'the details stay closed before acceptance');
 select is((select full_name from public.profiles where member_id = '00000000-0000-0000-0000-000000002701'), null,
   'and a hidden owner stays hidden');
 select is(public.accept_idea_terms(pg_temp.approved(),
@@ -75,7 +75,7 @@ select is(public.accept_idea_terms(pg_temp.approved(), pg_temp.texts()), 'ok', '
 select is(public.accept_idea_terms(pg_temp.approved(), pg_temp.texts()), 'already_accepted', 'once');
 select is((select status from public.idea_access_requests where id = pg_temp.approved()), 'nda_accepted',
   'the request moves past the NDA');
-select is((select count(*)::int from public.idea_details), 1, 'the requester now reads the details');
+select is((select count(*)::int from public.open_idea_details(pg_temp.idea())), 1, 'the requester now opens the details');
 select is((select full_name from public.profiles where member_id = '00000000-0000-0000-0000-000000002701'),
   'Asha Mwita', 'and sees the owner');
 select is((select count(*)::int from public.get_contact_details('00000000-0000-0000-0000-000000002701')), 0,
@@ -108,7 +108,7 @@ select throws_ok($$update public.legal_acceptances set legal_text_id =
   'P0001', null, 'and the acceptance itself can never be changed');
 set local role authenticated;
 select pg_temp.login('02');
-select is((select count(*)::int from public.idea_details), 1, 'the requester keeps access');
+select is((select count(*)::int from public.open_idea_details(pg_temp.idea())), 1, 'the requester keeps access');
 
 select pg_temp.login('01');
 select is((select full_name from public.profiles where member_id = '00000000-0000-0000-0000-000000002702'),
@@ -117,7 +117,7 @@ select ok((select can_send from public.thread_details(
   public.idea_thread(pg_temp.idea(), '00000000-0000-0000-0000-000000002702'))), 'and can reply');
 select is(public.revoke_idea_access(pg_temp.approved()), 'ok', 'the owner revokes');
 select pg_temp.login('02');
-select is((select count(*)::int from public.idea_details), 0, 'revoking closes the details at once');
+select is((select count(*)::int from public.open_idea_details(pg_temp.idea())), 0, 'revoking closes the details at once');
 
 select * from finish();
 rollback;

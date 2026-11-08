@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Choose a new password on a phone</title>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&amp;family=Figtree:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#4A0E1A}a:hover{color:#2A0610}
+input::placeholder{color:#7A6A6E}
+</style>
+</helmet>
+<div style="width: 430px; height: 900px; box-sizing: border-box; padding: 28px 20px; border-radius: 64px; background: #1E1416; font-family: Figtree, system-ui, sans-serif; color: #2A1A1E">
+<div style="position: relative; width: 390px; height: 844px; border-radius: 44px; overflow: hidden; background: #F7F1EA; display: flex; flex-direction: column">
+<span style="position: absolute; top: 12px; left: 140px; width: 110px; height: 30px; border-radius: 999px; background: #1E1416; z-index: 2"></span>
+
+<div style="display: flex; align-items: center; justify-content: space-between; padding: 58px 20px 0">
+<a href="Phone-Forgot.dc.html" aria-label="Back" style="width: 44px; height: 44px; border-radius: 999px; background: #FFFFFF; border: 1px solid #E4D9CC; color: #4A0E1A; display: flex; align-items: center; justify-content: center; box-sizing: border-box">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg>
+</a>
+<img src="logo.jpg" alt="Kingdom Connect" style="width: 56px; height: 50px; object-fit: cover; border-radius: 12px; display: block">
+</div>
+
+<form style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 14px; padding: 28px 22px 26px" aria-labelledby="n-title">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<h1 id="n-title" style="margin: 0; font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 600; font-size: 34px; line-height: 1.05; color: #4A0E1A">Choose a new password</h1>
+<p style="margin: 0; font-size: 14px; line-height: 1.5; color: #5A4A4E">If the username is right, we sent a 6-digit code to its email. It works for 10 minutes.</p>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 5px">
+<label for="n-code" style="font-size: 13px; font-weight: 600; color: #5A4A4E; padding-left: 18px">Email code</label>
+<input id="n-code" type="text" inputmode="numeric" maxlength="6" placeholder="6 digits" style="min-height: 52px; box-sizing: border-box; width: 100%; border: 1px solid #D9CBBB; border-radius: 999px; background: #FFFFFF; padding: 0 20px; font: 600 18px Figtree, sans-serif; letter-spacing: 0.3em; color: #2A1A1E">
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 5px">
+<label for="n-password" style="font-size: 13px; font-weight: 600; color: #5A4A4E; padding-left: 18px">New password</label>
+<input id="n-password" type="password" autocomplete="new-password" placeholder="At least 8 characters, with a number" style="min-height: 52px; box-sizing: border-box; width: 100%; border: 1px solid #D9CBBB; border-radius: 999px; background: #FFFFFF; padding: 0 20px; font: 400 15px Figtree, sans-serif; color: #2A1A1E">
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 5px">
+<label for="n-password2" style="font-size: 13px; font-weight: 600; color: #5A4A4E; padding-left: 18px">Confirm new password</label>
+<input id="n-password2" type="password" autocomplete="new-password" placeholder="Type the same password again" style="min-height: 52px; box-sizing: border-box; width: 100%; border: 1.5px solid #B4232A; border-radius: 999px; background: #FFFFFF; padding: 0 20px; font: 400 15px Figtree, sans-serif; color: #2A1A1E" aria-describedby="n-mismatch">
+<span id="n-mismatch" style="font-size: 13px; color: #9A1C22; padding-left: 18px">The two passwords are not the same.</span>
+</div>
+
+<a href="Phone-Login.dc.html" style="min-height: 56px; margin-top: 6px; border-radius: 999px; background: #4A0E1A; color: #FFFFFF; font-weight: 600; font-size: 16px; text-decoration: none; display: flex; align-items: center; justify-content: center">Save new password</a>
+<button type="button" disabled style="min-height: 44px; border: 0; background: transparent; color: #5A4A4E; font: 600 14px Figtree, sans-serif">Send a new code in 42s</button>
+
+<div style="flex: 1 1 auto"></div>
+<p style="margin: 0; text-align: center; font-size: 13px; line-height: 1.5; color: #5A4A4E">After saving, log in with the new password and the email code.</p>
+</form>
+
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":430,"height":900}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

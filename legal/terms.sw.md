@@ -1,6 +1,6 @@
 ---
-version: 0.1
-effective: 2026-11-02
+version: 0.2
+effective: 2026-11-06
 approved:
 ---
 # Masharti ya matumizi
@@ -10,7 +10,7 @@ Masharti haya ni makubaliano kati yako na {entity_name}, inayoendesha {platform_
 ## Nani anaweza kujiunga
 
 - {platform_name} ni kwa ajili ya watu walio Tanzania wenye utambulisho uliothibitishwa.
-- Lazima uwe na umri wa angalau miaka [TO CONFIRM: umri wa chini].
+- Lazima uwe na umri wa angalau miaka 18.
 - Unajisajili kwa kitambulisho kimoja kinachokubalika (NIDA, pasipoti, leseni ya udereva au kadi ya mpiga kura), namba ya simu ya +255 na anwani ya Tanzania. Tunavikagua kabla akaunti yako haijaidhinishwa.
 - Mtu mmoja ana akaunti moja. Huwezi kumsajili mtu mwingine wala kutumia kitambulisho cha mtu mwingine.
 
@@ -56,4 +56,6 @@ Masharti haya yanaongozwa na sheria za Jamhuri ya Muungano wa Tanzania. Kama tol
 
 ## Mawasiliano
 
-[TO CONFIRM: barua pepe na anwani ya posta ya {entity_name}]
+Barua pepe: kingdomconnect@global.co.tz
+
+Anwani ya posta: [TO CONFIRM: anwani ya posta ya {entity_name}]

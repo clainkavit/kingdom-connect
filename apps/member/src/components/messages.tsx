@@ -95,6 +95,11 @@ export function InboxScreen({ api }: { api: MessagesApi }) {
                 >
                   {item.fullName || (item.otherDeleted ? t.deletedMember : t.memberUnavailable)}
                 </Text>
+                {item.ideaTitle ? (
+                  <Text numberOfLines={1} className="font-figtree-semibold text-[13px] text-ink-2">
+                    {t.threadAbout(item.ideaTitle)}
+                  </Text>
+                ) : null}
                 <Text numberOfLines={1} className="font-figtree text-sm text-ink-2">
                   {item.lastDeleted ? t.messageDeleted : item.lastBody || t.attachmentPreview}
                 </Text>
@@ -220,6 +225,11 @@ export function ThreadScreen({ api, threadId }: { api: MessagesApi; threadId: st
         </LinkButton>
         <ReportLink target={{ type: "thread", id: thread.id }} memberId={thread.otherId} />
       </View>
+      {thread.ideaTitle ? (
+        <Text className="font-figtree-semibold text-sm text-ink-2">
+          {t.threadAbout(thread.ideaTitle)}
+        </Text>
+      ) : null}
       {thread.reported ? <Message tone="info" text={t.threadReported} /> : null}
       <View className="gap-3">
         {thread.messages.map((m) => (

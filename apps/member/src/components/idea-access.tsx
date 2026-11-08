@@ -1,4 +1,5 @@
 import { IDEA_SEEKING, type IdeaSeeking, type Strings } from "@kingdom-connect/shared";
+import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { Text, View } from "react-native";
 import type { IdeaAccessApi, RequestCard, RequestStatus, TicketBand } from "../lib/idea-access";
@@ -7,6 +8,7 @@ import { useLoad } from "./events";
 import { Button, Checkbox, Chips, ConfirmButton, Message } from "./form";
 import { seekingLabel } from "./ideas";
 import { LinkButton } from "./link-button";
+import { AcceptTexts } from "./legal";
 import { Section } from "./profile";
 import { ErrorState, LoadingRows } from "./states";
 
@@ -37,7 +39,87 @@ export const bandLabel = (t: Strings, band: TicketBand | null): string =>
         over_50m: t.accessBandOver50m,
       }[band];
 
-/** S23: "I'm interested", or where the member's request stands (I03). */
+/** Opens the idea thread with the other side, made when the NDA was accepted. */
+function MessageButton({
+  api,
+  ideaId,
+  otherId,
+  label,
+}: {
+  api: IdeaAccessApi;
+  ideaId: string;
+  otherId: string | null;
+  label: string;
+}) {
+  const { t } = useLanguage();
+  const router = useRouter();
+  const [problem, setProblem] = useState<string | null>(null);
+  return (
+    <>
+      <Button
+        secondary
+        label={label}
+        onPress={async () => {
+          const thread = await api.thread(ideaId, otherId).catch(() => null);
+          if (thread) router.push(`/messages/${thread}`);
+          else setProblem(t.interestFailed);
+        }}
+      />
+      <Message text={problem} />
+    </>
+  );
+}
+
+/** S25: the current NDA and IP terms, both languages, for an approved requester (I04). */
+function IdeaTerms({
+  api,
+  requestId,
+  onAccepted,
+}: {
+  api: IdeaAccessApi;
+  requestId: string;
+  onAccepted: () => void;
+}) {
+  const { t } = useLanguage();
+  const [attempt, setAttempt] = useState(0);
+  const loaded = useLoad(
+    async () => ({
+      texts: await api.terms(requestId),
+      entity: await api.entityName().catch(() => ""),
+    }),
+    attempt,
+  );
+  const [problem, setProblem] = useState<string | null>(null);
+  if (loaded.state === "failed") {
+    return <ErrorState message={t.interestFailed} onRetry={() => setAttempt((a) => a + 1)} />;
+  }
+  if (loaded.state === "loading") return <LoadingRows rows={2} />;
+  if (loaded.value.texts.length < 2) return <Message text={t.ndaMissing} tone="info" />;
+  return (
+    <Section title={t.interestApproved}>
+      <Message text={problem} />
+      <AcceptTexts
+        key={attempt}
+        texts={loaded.value.texts}
+        entityName={loaded.value.entity}
+        intro={t.ndaIntro}
+        acceptLabel={t.ndaAccept}
+        onAccept={async (ids) => {
+          const result = await api.acceptTerms(requestId, ids);
+          if (result === "ok" || result === "already_accepted") return onAccepted();
+          if (result === "texts_changed") {
+            setProblem(t.ndaChanged);
+            setAttempt((a) => a + 1);
+            return;
+          }
+          throw new Error(result);
+        }}
+      />
+    </Section>
+  );
+}
+
+/** S23: "I'm interested", or where the member's request stands (I03), then the NDA (I04). */
 export function IdeaInterest({ api, ideaId }: { api: IdeaAccessApi; ideaId: string }) {
   const { t } = useLanguage();
   const [attempt, setAttempt] = useState(0);
@@ -59,6 +141,17 @@ export function IdeaInterest({ api, ideaId }: { api: IdeaAccessApi; ideaId: stri
   }
   if (loaded.state === "loading") return <LoadingRows rows={1} />;
   const { mine, investor } = loaded.value;
+  if (mine?.status === "approved") {
+    return <IdeaTerms api={api} requestId={mine.id} onAccepted={() => setAttempt((a) => a + 1)} />;
+  }
+  if (mine?.status === "nda_accepted") {
+    return (
+      <View className="gap-2">
+        <Message text={t.interestHasAccess} tone="info" />
+        <MessageButton api={api} ideaId={ideaId} otherId={null} label={t.ideaMessageOwner} />
+      </View>
+    );
+  }
   if (mine) return <Message text={myStatusText(t, mine.status)} tone="info" />;
 
   const send = async () => {
@@ -99,10 +192,12 @@ export function IdeaInterest({ api, ideaId }: { api: IdeaAccessApi; ideaId: stri
 function RequestRow({
   card,
   api,
+  ideaId,
   onChanged,
 }: {
   card: RequestCard;
   api: IdeaAccessApi;
+  ideaId: string;
   onChanged: () => void;
 }) {
   const { t, language } = useLanguage();
@@ -158,12 +253,22 @@ function RequestRow({
           />
         </View>
       ) : card.status === "approved" || card.status === "nda_accepted" ? (
-        <ConfirmButton
-          label={t.accessRevoke}
-          question={t.accessRevokeConfirm}
-          confirmLabel={t.accessRevoke}
-          onConfirm={() => act(() => api.revoke(card.id))}
-        />
+        <View className="gap-2">
+          {card.status === "nda_accepted" && card.requesterId ? (
+            <MessageButton
+              api={api}
+              ideaId={ideaId}
+              otherId={card.requesterId}
+              label={t.ideaMessage}
+            />
+          ) : null}
+          <ConfirmButton
+            label={t.accessRevoke}
+            question={t.accessRevokeConfirm}
+            confirmLabel={t.accessRevoke}
+            onConfirm={() => act(() => api.revoke(card.id))}
+          />
+        </View>
       ) : null}
     </View>
   );
@@ -194,7 +299,7 @@ export function AccessManager({ api, ideaId }: { api: IdeaAccessApi; ideaId: str
             <Text className="font-figtree text-sm text-ink-2">{t.accessEmpty}</Text>
           ) : (
             loaded.value.cards.map((card) => (
-              <RequestRow key={card.id} card={card} api={api} onChanged={reload} />
+              <RequestRow key={card.id} card={card} api={api} ideaId={ideaId} onChanged={reload} />
             ))
           )}
         </>

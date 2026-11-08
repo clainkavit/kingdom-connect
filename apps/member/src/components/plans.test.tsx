@@ -37,6 +37,9 @@ const plan = (over: Partial<Plan> = {}): Plan => ({
   confirmed: 0,
   expiresAt: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000).toISOString(),
   stage1AgreedAt: null,
+  closedByMe: null,
+  closedAt: null,
+  endedReason: null,
   milestoneList: [
     {
       id: "s1",
@@ -73,6 +76,9 @@ const fakeApi = (over: Partial<PlansApi> = {}): PlansApi => ({
   restart: vi.fn().mockResolvedValue({ result: "ok", planId: "p10" }),
   accept: vi.fn().mockResolvedValue("ok"),
   withdraw: vi.fn().mockResolvedValue("ok"),
+  markDone: vi.fn().mockResolvedValue("ok"),
+  confirm: vi.fn().mockResolvedValue("ok"),
+  end: vi.fn().mockResolvedValue("ok"),
   ...over,
 });
 
@@ -177,5 +183,68 @@ describe("PlanScreen (S32)", () => {
     await click("button", "Start it again");
     expect(api.restart).toHaveBeenCalledWith("p1", "h1");
     expect(router.pushed).toContain("/plans/p10");
+  });
+});
+
+describe("PlanScreen (S33)", () => {
+  const active = (agreedMinutesAgo: number, over: Partial<Plan> = {}) =>
+    plan({
+      status: "active",
+      stage1AgreedAt: new Date(Date.now() - agreedMinutesAgo * 60000).toISOString(),
+      ...over,
+    });
+
+  it("offers Withdraw in the first hour, and marks a stage done", async () => {
+    const api = fakeApi({ load: vi.fn().mockResolvedValue(active(20)) });
+    await show(<PlanScreen api={api} planId="p1" />);
+    expect(screen.getByText("You can withdraw for 40 more minutes.")).toBeTruthy();
+    expect(screen.queryByRole("button", { name: "End plan" })).toBeNull();
+    await click("button", "Mark as done");
+    expect(api.markDone).toHaveBeenCalledWith("s2");
+  });
+
+  it("lets the other member confirm a stage marked done", async () => {
+    const done = active(90);
+    done.milestoneList = done.milestoneList.map((m) =>
+      m.position === 2 ? { ...m, responsibleIsMe: false, status: "done" as const } : m,
+    );
+    const api = fakeApi({ load: vi.fn().mockResolvedValue(done) });
+    await show(<PlanScreen api={api} planId="p1" />);
+    expect(screen.queryByRole("button", { name: "Mark as done" })).toBeNull();
+    await click("button", "Confirm it is done");
+    expect(api.confirm).toHaveBeenCalledWith("s2");
+  });
+
+  it("ends the plan after the first hour only with a reason", async () => {
+    const api = fakeApi({ load: vi.fn().mockResolvedValue(active(90)) });
+    await show(<PlanScreen api={api} planId="p1" />);
+    expect(screen.queryByRole("button", { name: "Withdraw" })).toBeNull();
+    await click("button", "End plan");
+    await click("button", "End the plan");
+    expect(api.end).not.toHaveBeenCalled();
+    expect(screen.getByText("Give a reason of at least 3 characters.")).toBeTruthy();
+    fireEvent.change(screen.getByLabelText("Why are you ending it?"), {
+      target: { value: "The funding fell through" },
+    });
+    await click("button", "End the plan");
+    expect(api.end).toHaveBeenCalledWith("p1", "The funding fell through");
+  });
+
+  it("shows an ended plan read-only, with who, when and why", async () => {
+    const ended = plan({
+      status: "ended",
+      stage1AgreedAt: "2026-11-01T09:00:00Z",
+      closedByMe: false,
+      closedAt: "2026-11-05T09:00:00Z",
+      endedReason: "The funding fell through",
+    });
+    await show(
+      <PlanScreen api={fakeApi({ load: vi.fn().mockResolvedValue(ended) })} planId="p1" />,
+    );
+    expect(
+      screen.getByText(/^Ended by Asha Mwita on .+\. Reason: The funding fell through$/),
+    ).toBeTruthy();
+    expect(screen.queryByRole("button", { name: "Mark as done" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "End plan" })).toBeNull();
   });
 });

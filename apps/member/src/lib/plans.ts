@@ -27,7 +27,13 @@ export type Milestone = {
   status: "open" | "done" | "confirmed";
 };
 
-export type Plan = PlanSummary & { milestoneList: Milestone[] };
+export type Plan = PlanSummary & {
+  milestoneList: Milestone[];
+  /** Who withdrew or ended it, when and why (P02). */
+  closedByMe: boolean | null;
+  closedAt: string | null;
+  endedReason: string | null;
+};
 
 export type PlanPartner = { ideaId: string; ideaTitle: string; otherId: string; otherName: string };
 
@@ -55,6 +61,9 @@ export type PlansApi = {
   ) => Promise<{ result: string; planId: string | null }>;
   accept: (planId: string, handoffId: string) => Promise<string>;
   withdraw: (planId: string) => Promise<string>;
+  markDone: (milestoneId: string) => Promise<string>;
+  confirm: (milestoneId: string) => Promise<string>;
+  end: (planId: string, reason: string) => Promise<string>;
 };
 
 type SummaryRow = {
@@ -102,14 +111,32 @@ export const plansApi: PlansApi = {
   async load(planId) {
     const plan = (await plansApi.mine()).find((p) => p.id === planId);
     if (!plan) return null;
-    const { data, error } = await supabase
-      .from("milestones")
-      .select("id, position, title, description, target_date, responsible_member_id, status")
-      .eq("plan_id", planId)
-      .order("position");
+    const [{ data, error }, closed] = await Promise.all([
+      supabase
+        .from("milestones")
+        .select("id, position, title, description, target_date, responsible_member_id, status")
+        .eq("plan_id", planId)
+        .order("position"),
+      supabase
+        .from("milestone_plans")
+        .select("withdrawn_by, withdrawn_at, ended_by, ended_at, ended_reason")
+        .eq("id", planId)
+        .maybeSingle(),
+    ]);
     if (error) throw error;
+    const c = closed.data as {
+      withdrawn_by: string | null;
+      withdrawn_at: string | null;
+      ended_by: string | null;
+      ended_at: string | null;
+      ended_reason: string | null;
+    } | null;
+    const by = c?.ended_by ?? c?.withdrawn_by ?? null;
     return {
       ...plan,
+      closedByMe: by === null ? null : by !== plan.otherId,
+      closedAt: c?.ended_at ?? c?.withdrawn_at ?? null,
+      endedReason: c?.ended_reason ?? null,
       milestoneList: (
         data as {
           id: string;
@@ -186,6 +213,24 @@ export const plansApi: PlansApi = {
 
   async withdraw(planId) {
     const { data, error } = await supabase.rpc("withdraw_plan", { plan: planId });
+    if (error) throw error;
+    return data as string;
+  },
+
+  async markDone(milestoneId) {
+    const { data, error } = await supabase.rpc("mark_milestone_done", { milestone: milestoneId });
+    if (error) throw error;
+    return data as string;
+  },
+
+  async confirm(milestoneId) {
+    const { data, error } = await supabase.rpc("confirm_milestone", { milestone: milestoneId });
+    if (error) throw error;
+    return data as string;
+  },
+
+  async end(planId, reason) {
+    const { data, error } = await supabase.rpc("end_plan", { plan: planId, reason });
     if (error) throw error;
     return data as string;
   },

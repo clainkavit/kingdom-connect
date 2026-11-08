@@ -713,6 +713,44 @@
       "title": "Ideas overview for staff · phone (proposed)",
       "page": "admin",
       "is_interactive": true
+    },
+    "Investor-Pool.dc.html": {
+      "x": 0,
+      "y": 3240,
+      "w": 1440,
+      "h": 1700,
+      "title": "S22 and S29 Ideas for an investor: focus, filters, Saved, my requests · computer",
+      "page": "ideas",
+      "expand": "fill",
+      "is_interactive": true
+    },
+    "Investor-Interest.dc.html": {
+      "x": 1520,
+      "y": 3240,
+      "w": 1440,
+      "h": 1200,
+      "title": "S24 Ask anonymously as an investor · computer",
+      "page": "ideas",
+      "expand": "fill",
+      "is_interactive": true
+    },
+    "Investor-Phone-Pool.dc.html": {
+      "x": 3040,
+      "y": 3240,
+      "w": 430,
+      "h": 900,
+      "title": "Ideas for an investor · phone",
+      "page": "ideas",
+      "is_interactive": true
+    },
+    "Investor-Phone-Interest.dc.html": {
+      "x": 3550,
+      "y": 3240,
+      "w": 430,
+      "h": 900,
+      "title": "Ask anonymously · phone",
+      "page": "ideas",
+      "is_interactive": true
     }
   },
   "createdOnFiles": {
@@ -831,6 +869,14 @@
       "kind": "title1",
       "maxW": 2470,
       "page": "ideas"
+    },
+    "ideasInvestor": {
+      "x": 0,
+      "y": 2940,
+      "text": "Ideas as an investor sees them (flag holder only)",
+      "kind": "title1",
+      "maxW": 3980,
+      "page": "ideas"
     }
   },
   "order": [
@@ -908,7 +954,11 @@
     "Ideas-Phone-Details.dc.html",
     "Ideas-Phone-Share.dc.html",
     "Admin-Ideas.dc.html",
-    "Admin-Phone-Ideas.dc.html"
+    "Admin-Phone-Ideas.dc.html",
+    "Investor-Pool.dc.html",
+    "Investor-Interest.dc.html",
+    "Investor-Phone-Pool.dc.html",
+    "Investor-Phone-Interest.dc.html"
   ],
   "pages": [
     {

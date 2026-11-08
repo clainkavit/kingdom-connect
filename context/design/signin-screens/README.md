@@ -2,7 +2,7 @@
 
 The member app's screens from landing to "Under review", on a phone and on a computer, drawn on 8 November 2026. They follow PRD section 6 and docs/screens.md S01 to S06. The live, clickable version is the "Kingdom Connect sign-in screens" design canvas on claude.ai. These files are a copy of it.
 
-There are 75 screens: sign-in and registration, the admin console, the member and business dashboards with People and profiles, and Ideas, each on a computer and a phone.
+There are 79 screens: sign-in and registration, the admin console, the member and business dashboards with People and profiles, and Ideas, each on a computer and a phone.
 
 Open any `.dc.html` file in a browser to see that screen, and click its buttons to move through the flow. The copies show only the layout. The language switch on the legal pages works on the canvas only, so a copy shows the English and Kiswahili texts one after the other.
 
@@ -75,6 +75,15 @@ PRD section 11 and S22 to S29, as Neema sees them. She does not hold the investo
 | S28 My idea: "Viewed by N investors", request cards (named, and "A verified investor" with sector and band), Approve, Decline, people with access and Remove access | `Ideas-Manage` | `Ideas-Phone-Manage` |
 | S25 and S26 Details after the NDA, as the approved requester sees them: watermarked with her name and the date, files, Message the owner | `Ideas-Details` | `Ideas-Phone-Details` |
 | S27 Share an idea: the Summary every member sees, with "Show my name and profile", and the Details only approved people see | `Ideas-Share` | `Ideas-Phone-Share` |
+
+**As an investor sees them** (flag holders only; the flag is never shown to anyone else):
+
+| Screen | Computer | Phone |
+|---|---|---|
+| S22 and S29 The pool with investor tools: focus (sectors and ticket band), filters, Matching, All and Saved tabs, my requests, silent browsing | `Investor-Pool` | `Investor-Phone-Pool` |
+| S24 Ask anonymously: the owner sees "A verified investor" with sector focus and ticket band | `Investor-Interest` | `Investor-Phone-Interest` |
+
+The "Your focus" setting and the Matching tab are Proposed in #186.
 
 The ideas, names and figures are samples.
 

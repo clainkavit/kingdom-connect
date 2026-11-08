@@ -3,6 +3,7 @@ import { act, cleanup, fireEvent, render, screen } from "@testing-library/react"
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { POOL_PAGE, type IdeaSummary, type IdeasApi } from "../lib/ideas";
 import { fakeAccess } from "./idea-access.fake";
+import { fakeInvestor } from "./investor.fake";
 import { IdeasPool, IdeaSummaryScreen, ProfileIdeas } from "./ideas-pool";
 
 afterEach(cleanup);
@@ -45,6 +46,7 @@ describe("IdeasPool (S22)", () => {
   it("shows cards with the facts, the owner and the interest count", async () => {
     await show(
       <IdeasPool
+        investor={fakeInvestor()}
         api={fakeApi({
           pool: vi.fn().mockResolvedValue([
             summary(),
@@ -77,7 +79,7 @@ describe("IdeasPool (S22)", () => {
     const pool = vi.fn();
     pool.mockResolvedValueOnce(page);
     pool.mockResolvedValueOnce([summary({ id: "last", title: "The last idea" })]);
-    await show(<IdeasPool api={fakeApi({ pool })} />);
+    await show(<IdeasPool api={fakeApi({ pool })} investor={fakeInvestor()} />);
     await act(async () => fireEvent.click(screen.getByRole("button", { name: "Load more" })));
     expect(pool).toHaveBeenLastCalledWith(1);
     expect(screen.getByText("The last idea")).toBeTruthy();
@@ -85,7 +87,12 @@ describe("IdeasPool (S22)", () => {
   });
 
   it("invites the first idea when the pool is empty", async () => {
-    await show(<IdeasPool api={fakeApi({ pool: vi.fn().mockResolvedValue([]) })} />);
+    await show(
+      <IdeasPool
+        api={fakeApi({ pool: vi.fn().mockResolvedValue([]) })}
+        investor={fakeInvestor()}
+      />,
+    );
     expect(screen.getByText("No ideas yet")).toBeTruthy();
   });
 });

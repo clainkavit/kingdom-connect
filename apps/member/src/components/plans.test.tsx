@@ -79,6 +79,10 @@ const fakeApi = (over: Partial<PlansApi> = {}): PlansApi => ({
   markDone: vi.fn().mockResolvedValue("ok"),
   confirm: vi.fn().mockResolvedValue("ok"),
   end: vi.fn().mockResolvedValue("ok"),
+  documents: vi.fn().mockResolvedValue({ list: [], canUpload: true }),
+  pickPdf: vi.fn().mockResolvedValue(null),
+  upload: vi.fn().mockResolvedValue("ok"),
+  documentUrl: vi.fn().mockResolvedValue("https://files.test/signed"),
   ...over,
 });
 
@@ -246,5 +250,46 @@ describe("PlanScreen (S33)", () => {
     ).toBeTruthy();
     expect(screen.queryByRole("button", { name: "Mark as done" })).toBeNull();
     expect(screen.queryByRole("button", { name: "End plan" })).toBeNull();
+  });
+});
+
+describe("SignedAgreement (S34)", () => {
+  const allConfirmed = () => {
+    const p = plan({ status: "active", stage1AgreedAt: "2026-11-01T09:00:00Z" });
+    p.milestoneList = p.milestoneList.map((m) => ({ ...m, status: "confirmed" as const }));
+    return p;
+  };
+
+  it("appears only once every stage is confirmed", async () => {
+    await show(
+      <PlanScreen
+        api={fakeApi({ load: vi.fn().mockResolvedValue(plan({ status: "active" })) })}
+        planId="p1"
+      />,
+    );
+    expect(screen.queryByText("Signed agreement")).toBeNull();
+  });
+
+  it("states a wrong file before sending, then uploads a PDF", async () => {
+    const pickPdf = vi.fn().mockResolvedValue({
+      uri: "file:///big.pdf",
+      name: "big.pdf",
+      mime: "application/pdf",
+      size: 11 * 1024 * 1024,
+    });
+    const api = fakeApi({ load: vi.fn().mockResolvedValue(allConfirmed()), pickPdf });
+    await show(<PlanScreen api={api} planId="p1" />);
+    expect(screen.getByText("Asha Mwita hasn't uploaded theirs yet.")).toBeTruthy();
+    await click("button", "Upload my signed agreement");
+    expect(screen.getByText("The file is larger than 10 MB.")).toBeTruthy();
+    expect(api.upload).not.toHaveBeenCalled();
+    pickPdf.mockResolvedValue({
+      uri: "file:///a.pdf",
+      name: "a.pdf",
+      mime: "application/pdf",
+      size: 1000,
+    });
+    await click("button", "Upload my signed agreement");
+    expect(api.upload).toHaveBeenCalledWith("p1", expect.objectContaining({ name: "a.pdf" }));
   });
 });

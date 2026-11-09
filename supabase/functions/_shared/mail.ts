@@ -1,19 +1,23 @@
-import { platformName } from "./db.ts";
+import { platformName, sql } from "./db.ts";
 import type { Email } from "./emails.ts";
+import { mailRequest } from "./mail-request.ts";
 
 export async function sendEmail(to: string, email: Email): Promise<void> {
-  const res = await fetch(Deno.env.get("MAIL_API_URL")!, {
+  const request = mailRequest(
+    to,
+    email,
+    { email: Deno.env.get("MAIL_FROM") ?? "noreply@example.test", name: await platformName() },
+    { brevoKey: Deno.env.get("BREVO_API_KEY"), catcherUrl: Deno.env.get("MAIL_API_URL") },
+  );
+  const res = await fetch(request.url, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      From: {
-        Email: Deno.env.get("MAIL_FROM") ?? "noreply@example.test",
-        Name: await platformName(),
-      },
-      To: [{ Email: to }],
-      Subject: email.subject,
-      Text: email.text,
-    }),
+    headers: request.headers,
+    body: request.body,
   });
   if (!res.ok) throw new Error(`email failed: ${res.status}`);
+  try {
+    await sql`select private.count_email_sent()`;
+  } catch (error) {
+    console.error("could not count the email", error);
+  }
 }

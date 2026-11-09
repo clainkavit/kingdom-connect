@@ -1,6 +1,6 @@
--- I05 fixes: the idea details are reachable only through open_idea_details() and the idea-file function, so
--- every open is logged; blocks and idea status apply to details and files alike; staff opens and member opens
--- are both written to the audit log, which outlives a deleted member; the file size comes from the stored object.
+-- Idea details are reachable only through open_idea_details() and the idea-file function, so every open is
+-- logged. Blocks and idea status apply to details and files alike. Staff opens and member opens are both
+-- written to the audit log, which outlives a deleted member. The file size is the stored object's.
 
 -- A requester no longer reads idea_details directly. Only the owner and staff keep the table policy.
 drop policy "requesters past the NDA" on public.idea_details;
@@ -96,7 +96,7 @@ end;
 $$;
 
 -- The owner records an uploaded file. The size is the stored object's, never the one the app reports, so the
--- 20 MB total per idea holds. The size argument is kept so the app's call keeps working and is not used.
+-- 20 MB total per idea holds. The size argument is ignored.
 create or replace function access.add_idea_file(idea uuid, file_name text, storage_path text, size int)
 returns table (result text, file_id uuid)
 language plpgsql volatile security definer set search_path = '' as $$

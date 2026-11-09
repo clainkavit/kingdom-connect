@@ -1,5 +1,5 @@
 -- O03: responses. A member applies to a job or expresses interest in any other type; both are one record in
--- responses (decided 19 Oct). A member responds once to a post. The poster sees each response as New,
+-- responses. A member responds once to a post. The poster sees each response as New,
 -- Shortlisted or Declined and the member sees the same status; the member can withdraw while it is New. A tender
 -- takes Level 2 and up. Responding opens a message thread between the two, open to send while the response is New
 -- or Shortlisted. The poster reads the responder's profile for as long as that is so, even when it is hidden from

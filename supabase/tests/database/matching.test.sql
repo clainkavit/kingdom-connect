@@ -129,7 +129,7 @@ select is(public.scan_missing_fields(), '{}'::text[], 'a full profile has none m
 
 select is((select count(*)::int from public.matching_settings_list()), 0, 'members cannot read the weights');
 select pg_temp.login('a1');
-select is((select count(*)::int from public.matching_settings_list()), 8, 'staff read them');
+select is((select count(*)::int from public.matching_settings_list() where feature = 'scan'), 8, 'staff read them');
 select is(public.set_matching_setting('scan', 'sector', 30), 'not_super_admin', 'an Administrator cannot change them');
 select pg_temp.login('a2');
 select is(public.set_matching_setting('scan', 'skill_max', 11), 'invalid_points', 'the skill count is 1 to 10');

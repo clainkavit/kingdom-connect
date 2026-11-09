@@ -918,10 +918,26 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 - To renew, the member sends only the new licence: number, expiry date and the document, within 30 days of the end date or after it. BRELA, TIN and the Level 3 documents stay as approved. Staff approve, or reject with a Level 2 reason; a rejected renewal leaves the business as it was.
 - Staff see expired licences and licences ending in the next 30 days on Re-verification (A08), and renewals in the verification queue.
 
+**Decided on 7 November 2026 (post an opportunity, O01)**
+- Opportunity Posters (Level 3) and staff post through the same rules: type (job, partnership, collaboration or investment; tenders come with O04), a title of 5 to 120 characters, an employment type for jobs only, a region or "remote", a sector, a description of 100 to 5000 characters, and a closing date after today and within 90 days. Up to 5 skills; at least one for jobs and collaborations.
+- Phone numbers and emails anywhere in the post are refused. A post with a link always goes to review. A poster's posts go to review until 3 have been approved; after that they publish at once. A poster must tick the no-fee declaration.
+- Staff posts (A15) publish at once, without the tick or review, and are marked as staff posts.
+- Staff review a post (A05): Approve (O5), Send back to Draft with a reason the poster sees (O6), or Remove with a reason (O8). Reasons: not clear enough, asks applicants for money, misleading or fake, wrong type, or other with a note. Every decision is audit logged.
+- The poster can edit a Draft and close a Published post. A daily job marks Published posts Expired after their closing date.
+
 **Decided on 8 November 2026 (colours, F06b, [#184](https://github.com/clainkavit/kingdom-connect/issues/184))**
 - Both apps change from navy and blue to maroon and cream: maroon `#4A0E1A` for the menu, header and main buttons, cream `#F7F1EA` for the page, `#F3E6D0` for the selected menu item and highlights. Dark mode has its own maroon steps.
 - Every text colour keeps at least 4.5:1 contrast and input borders at least 3:1, checked by a test.
 - The Cormorant Garamond headings of the designs follow in a separate ticket, because the member app needs a font package for them.
+
+**Decided on 9 November 2026 (opportunities, database side, O02 to O08)**
+- Reporting a published opportunity hides it at once for every member (O06). A hidden post can still be reported, so reports on it add up. The administrator's decision settles it: no action restores the post, any upheld action (a warning or a suspension) removes it, and restoring it from the moderation item closes its open reports. A poster with a report upheld against one of their posts in the last 12 months has every later post reviewed first; lifting a pause or reinstating the account resets that. Admin posts and a poster's own posts cannot be reported.
+- A tender stays open until its closing time on its closing date; every other type stays open through its closing date (O04).
+- Responding to a post opens a message thread that is open to send while the response is New or Shortlisted. The poster reads the responder's profile for that time even when it is hidden from the directory; the responder gains no sight of a hidden poster profile (O03).
+- Scan counts a sector match when the post's sector is the member's approved business sector or equals their profession, and gives study points only to internships, because entry-level jobs are not a field yet (O07).
+- A tender that is sent needs its tender document; a draft may still lack it (O04).
+- "Viewed by N investors" shows a number only from 3 investors up and 0 below that, so an owner with one anonymous request cannot tell who looked (I03).
+- People you may know gives study points only when the institution and the course both match (O08).
 
 **Open.** Every open question is a ticket on the [wayfinder map](https://github.com/clainkavit/kingdom-connect/issues/1) and is linked where it applies above.
 
@@ -986,10 +1002,12 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | 6 Nov 2026 | Licence expiry pauses Level 2 and 3 until a new licence is approved; B3 reminders, B4, renewal and Re-verification | 13, 18 |
 | 6 Nov 2026 | Businesses tab on People: approved Level 2 and up, following the owner's profile rules | 8, 18 |
 | 6 Nov 2026 | Level 3 Opportunity Poster verification: directorship or authorisation proof, address with proof, review in the verification queue | 6, 18 |
+| 7 Nov 2026 | Posting opportunities: shared posting rules, review of a poster's posts until 3 are approved and of any post with a link, staff posts publish at once, staff review with Approve, Send back or Remove | 10, 18 |
 | 8 Nov 2026 | Colours: maroon and cream in both apps, replacing navy and blue (F06b) | 5, 18 |
 | 8 Nov 2026 | Proposed, awaiting Champion: admin dashboard line chart of new verified members per week; it needs approvals counted by week | 7 |
 | 8 Nov 2026 | Proposed, awaiting Champion (#180): S06 Under review drops the expected time and the next-step list, and says a notification follows the review | 6, 18 |
 | 8 Nov 2026 | Proposed, awaiting Champion (#161): registration categories become tick all that apply from Professional, Businessperson and Other; Entrepreneur and Student removed | 6, 18 |
+| 9 Nov 2026 | Reporting an opportunity hides it at once; the decision restores or removes it; an upheld report puts a poster back on review | 13, 18 |
 
 ## Appendix B: Source documents
 

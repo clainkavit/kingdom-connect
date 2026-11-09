@@ -3,10 +3,12 @@ import { useState } from "react";
 import { Text, View } from "react-native";
 import type { IdeaAccessApi } from "../lib/idea-access";
 import { POOL_PAGE, type IdeaSummary, type IdeasApi } from "../lib/ideas";
+import type { InvestorApi } from "../lib/investor";
 import { useLanguage } from "../lib/language";
 import { useLoad } from "./events";
 import { Button } from "./form";
-import { AccessManager, IdeaInterest } from "./idea-access";
+import { AccessManager, DetailsLink, IdeaInterest } from "./idea-access";
+import { InvestorPool } from "./investor";
 import { seekingLabel, stageLabel } from "./ideas";
 import { LinkButton } from "./link-button";
 import { ScreenTitle } from "./screens";
@@ -22,7 +24,7 @@ export function rangeLine(t: Strings, idea: IdeaSummary): string | null {
   return null;
 }
 
-function IdeaCard({ idea }: { idea: IdeaSummary }) {
+export function IdeaCard({ idea, children }: { idea: IdeaSummary; children?: React.ReactNode }) {
   const { t, language } = useLanguage();
   const facts = [
     language === "sw" ? idea.sectorSw : idea.sectorEn,
@@ -32,7 +34,7 @@ function IdeaCard({ idea }: { idea: IdeaSummary }) {
   ]
     .filter(Boolean)
     .join(" · ");
-  return (
+  const card = (
     <LinkButton
       href={`/ideas/${idea.id}`}
       label={idea.title}
@@ -49,10 +51,26 @@ function IdeaCard({ idea }: { idea: IdeaSummary }) {
       </Text>
     </LinkButton>
   );
+  if (!children) return card;
+  return (
+    <View className="gap-2">
+      {card}
+      {children}
+    </View>
+  );
 }
 
-/** S22: the ideas pool, newest first, 20 at a time. Investor filters and Saved arrive with I06. */
-export function IdeasPool({ api }: { api: IdeasApi }) {
+/** S22: the ideas pool, newest first, 20 at a time. A flag holder gets the investor pool instead (I06). */
+export function IdeasPool({ api, investor }: { api: IdeasApi; investor: InvestorApi }) {
+  const status = useLoad(() => investor.status().catch(() => "none" as const), 0);
+  if (status.state === "loading") return <LoadingRows />;
+  if (status.state === "ready" && status.value === "investor") {
+    return <InvestorPool ideas={api} investor={investor} />;
+  }
+  return <MemberPool api={api} showApply={status.state === "ready" && status.value !== "none"} />;
+}
+
+function MemberPool({ api, showApply }: { api: IdeasApi; showApply: boolean }) {
   const { t } = useLanguage();
   const [attempt, setAttempt] = useState(0);
   const first = useLoad(() => api.pool(0), attempt);
@@ -94,6 +112,13 @@ export function IdeasPool({ api }: { api: IdeasApi }) {
         >
           <Text className="font-figtree-semibold text-[15px] text-ink">{t.ideasMine}</Text>
         </LinkButton>
+        <LinkButton
+          href="/plans"
+          label={t.plansTitle}
+          className="min-h-[48px] items-center justify-center rounded-[10px] border border-line bg-surface px-4"
+        >
+          <Text className="font-figtree-semibold text-[15px] text-ink">{t.plansTitle}</Text>
+        </LinkButton>
       </View>
       {first.state === "failed" ? (
         <ErrorState message={t.ideasPoolLoadFailed} onRetry={() => setAttempt((a) => a + 1)} />
@@ -117,6 +142,15 @@ export function IdeasPool({ api }: { api: IdeasApi }) {
           ) : null}
         </>
       )}
+      {showApply ? (
+        <LinkButton
+          href="/ideas/investor"
+          label={t.investorToolsLink}
+          className="min-h-[44px] justify-center"
+        >
+          <Text className="font-figtree-semibold text-sm text-blue">{t.investorToolsLink}</Text>
+        </LinkButton>
+      ) : null}
     </View>
   );
 }
@@ -175,6 +209,7 @@ export function IdeaSummaryScreen({
       </View>
       {idea.isMine ? (
         <>
+          <DetailsLink ideaId={idea.id} />
           <AccessManager api={access} ideaId={idea.id} />
           <LinkButton
             href="/ideas/mine"

@@ -350,3 +350,37 @@ export async function pendingBusiness(memberId: string, name: string) {
   await db`insert into public.businesses (member_id, name, sector_id, size, status)
     select ${memberId}, ${name}, id, 'small', 'pending' from public.sectors order by name_en limit 1`;
 }
+
+/** Makes a member an Opportunity Poster: a verified business at Level 3 (B02), as O01's tests need. */
+export async function makePoster(memberId: string, businessName: string) {
+  await verifyBusiness(memberId, businessName);
+  await db`update public.businesses set level = 3 where member_id = ${memberId}`;
+  await db`insert into public.verification_requests (member_id, level, status, business_id, decided_at)
+    select ${memberId}, 3, 'approved', id, now() from public.businesses where member_id = ${memberId}`;
+}
+
+/** The status of an opportunity found by its title, and whether staff posted it. */
+export async function opportunityByTitle(title: string) {
+  const [row] = await db`select status, poster_staff_id is not null as by_staff
+    from public.opportunities where title = ${title}`;
+  return row as { status: string; by_staff: boolean } | undefined;
+}
+
+/**
+ * A new Administrator account for one test. Sign-in codes are limited per account per hour, so tests
+ * that sign in to the admin app often should not all share the seeded Test Administrator.
+ */
+export async function createStaff(name: string): Promise<string> {
+  const email = `${name.toLowerCase().replace(/[^a-z0-9]+/g, ".")}@example.test`;
+  const user = await fetch(`${LOCAL_SUPABASE.url}/auth/v1/admin/users`, {
+    method: "POST",
+    headers: {
+      apikey: LOCAL_SERVICE_ROLE_KEY,
+      Authorization: `Bearer ${LOCAL_SERVICE_ROLE_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ email, password: TEST_PASSWORD, email_confirm: true }),
+  }).then((r) => r.json());
+  await db`insert into public.staff (id, full_name, role) values (${user.id}, ${name}, 'admin')`;
+  return email;
+}

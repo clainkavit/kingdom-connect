@@ -72,7 +72,7 @@ type Row = {
   } | null;
 };
 
-type SummaryRow = {
+export type SummaryRow = {
   id: string;
   title: string;
   problem: string;
@@ -91,7 +91,7 @@ type SummaryRow = {
 const SUMMARY_COLUMNS =
   "id, title, problem, sector_en, sector_sw, stage, seeking, investment_min_tzs, investment_max_tzs, owner_id, owner_name, interest_count, is_mine";
 
-const toSummary = (r: SummaryRow): IdeaSummary => ({
+export const toSummary = (r: SummaryRow): IdeaSummary => ({
   id: r.id,
   title: r.title,
   problem: r.problem,

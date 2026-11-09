@@ -2,7 +2,7 @@ begin;
 create extension if not exists pgtap with schema extensions;
 -- Members here have accepted the current legal texts; that rule is tested in legal_on_server.test.sql.
 create or replace function access.accepted_terms_and_privacy() returns boolean language sql stable as 'select true';
-select plan(26);
+select plan(28);
 
 insert into auth.users (id, email)
 select ('00000000-0000-0000-0000-0000000034' || k)::uuid, 'td' || k || '@test.invalid'
@@ -28,7 +28,7 @@ create function pg_temp.login(who text) returns void language sql as $$
     'sub', '00000000-0000-0000-0000-0000000034' || who, 'role', 'authenticated', 'otp_verified', true)::text, true);
 $$;
 create function pg_temp.fields(scope text default repeat('Build and equip a cold room for the fish market. ', 2),
-                               reference text default 'TZ-MW-2026-014', path text default null,
+                               reference text default 'TZ-MW-2026-014', path text default '00000000-0000-0000-0000-000000003401/00000000-0000-0000-0000-0000000f3401.pdf',
                                value bigint default 25000000, docs jsonb default '["Business licence", "Tax clearance"]')
 returns jsonb language sql as $$
   select jsonb_build_object('reference_no', reference, 'scope', scope, 'eligibility', 'Registered in Tanzania',
@@ -49,6 +49,9 @@ $$;
 
 set local role authenticated;
 select pg_temp.login('01');
+select lives_ok($$insert into storage.objects (bucket_id, name)
+                  values ('tender-documents', '00000000-0000-0000-0000-000000003401/00000000-0000-0000-0000-0000000f3401.pdf')$$,
+  'a Level 3 poster uploads the tender document');
 select is((select result from public.save_opportunity(null, 'tender', 'Tender without fields', null, null,
              current_setting('test.region')::uuid, null, false, current_setting('test.sector')::uuid,
              repeat('Details of the work and what a bidder needs to know. ', 3),
@@ -60,11 +63,9 @@ select is(pg_temp.tender(fields => pg_temp.fields(docs => '["a","b","c","d","e",
 select is(pg_temp.tender(fields => pg_temp.fields(scope => repeat('Call 0712345678 about this tender please. ', 3))),
   'contact_details', 'phone numbers in the fields are refused');
 select is(pg_temp.tender(no_fee => false), 'no_fee_required', 'a tender carries the no-fee declaration too');
+select is(pg_temp.tender(fields => pg_temp.fields(path => null)), 'invalid_tender_file', 'a tender that is sent needs its document');
 select is(pg_temp.tender(fields => pg_temp.fields(path => '00000000-0000-0000-0000-000000003402/00000000-0000-0000-0000-0000000f3402.pdf')),
   'invalid_tender_file', 'a document must be in the poster''s own folder');
-select lives_ok($$insert into storage.objects (bucket_id, name)
-                  values ('tender-documents', '00000000-0000-0000-0000-000000003401/00000000-0000-0000-0000-0000000f3401.pdf')$$,
-  'a Level 3 poster uploads the tender document');
 select is(pg_temp.tender(fields => pg_temp.fields(
   path => '00000000-0000-0000-0000-000000003401/00000000-0000-0000-0000-0000000f3401.pdf')), 'ok', 'a complete tender is accepted');
 select is((select status from public.opportunities where title = 'Cold room for the fish market'), 'pending_review',
@@ -96,17 +97,22 @@ select is((select count(*)::int from storage.objects where bucket_id = 'tender-d
 select throws_ok($$delete from storage.objects where bucket_id = 'tender-documents'$$, '42501', null, 'but cannot remove it');
 
 select pg_temp.login('a1');
+select lives_ok($$insert into storage.objects (bucket_id, name)
+                  values ('tender-documents', '00000000-0000-0000-0000-0000000034a1/00000000-0000-0000-0000-0000000f34a1.pdf')$$,
+  'staff upload a tender document');
 select is((select result from public.save_opportunity(null, 'tender', 'Admin tender for a clinic', null, null,
              current_setting('test.region')::uuid, null, false, current_setting('test.sector')::uuid,
              repeat('Details of the work and what a bidder needs to know. ', 3),
-             current_setting('test.today')::date + 30, '{}', false, true, pg_temp.fields())), 'ok',
+             current_setting('test.today')::date + 30, '{}', false, true,
+             pg_temp.fields(path => '00000000-0000-0000-0000-0000000034a1/00000000-0000-0000-0000-0000000f34a1.pdf'))), 'ok',
   'staff post a tender without the no-fee tick');
 select is((select row(o.status, d.issuing_org)::text from public.opportunities o
            join public.tender_details d on d.opportunity_id = o.id where o.title = 'Admin tender for a clinic'),
   '(published,"Kingdom Connect")', 'it publishes at once, issued by the platform');
 
 select pg_temp.login('01');
-select is(pg_temp.tender(title => 'Tender draft to change', send => false), 'ok', 'a poster saves a tender draft');
+select is(pg_temp.tender(title => 'Tender draft to change', send => false, fields => pg_temp.fields(path => null)), 'ok',
+  'a poster saves a tender draft without its document');
 select is(pg_temp.tender(title => 'Tender draft to change', send => false, kind => 'job',
                          existing => pg_temp.post_id('Tender draft to change')), 'ok', 'and turns it into a job');
 select is((select count(*)::int from public.tender_details where opportunity_id = pg_temp.post_id('Tender draft to change')), 0,

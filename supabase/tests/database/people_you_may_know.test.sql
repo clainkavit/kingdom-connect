@@ -33,7 +33,7 @@ insert into public.profiles (member_id, full_name, region_id, district_id, profe
   ('00000000-0000-0000-0000-000000003903', 'Candidate P1', current_setting('test.region')::uuid, current_setting('test.district')::uuid,
    null, null, null, false, now() - interval '5 days'),
   -- 04: same profession and same institution
-  ('00000000-0000-0000-0000-000000003904', 'Candidate P2', null, null, 'Nurse', 'shihezi university', 'Law', false, now() - interval '3 days'),
+  ('00000000-0000-0000-0000-000000003904', 'Candidate P2', null, null, 'Nurse', 'shihezi university', 'Medicine', false, now() - interval '3 days'),
   -- 05: same region only, under the minimum
   ('00000000-0000-0000-0000-000000003905', 'Candidate P3', current_setting('test.region')::uuid, null, null, null, null, false, now()),
   -- 06: hidden from the directory, two shared skills

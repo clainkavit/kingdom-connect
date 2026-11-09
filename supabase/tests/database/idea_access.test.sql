@@ -74,7 +74,7 @@ select is((select row(requester_id, requester_name, requester_headline, ticket_b
   '(,,,10m_to_50m)', 'an anonymous card has no id, name or headline, only the band');
 select ok((select sector_focus_en is not null from public.requests_for_my_idea(pg_temp.idea()) where anonymous),
   'and the sector focus');
-select is(public.investor_view_count(pg_temp.idea()), 1, 'Viewed by 1 investor: the partner is not counted');
+select is(public.investor_view_count(pg_temp.idea()), 0, 'one investor looked, which is under the minimum of 3, so the owner sees 0');
 select is((select count(*)::int from public.idea_views), 0, 'the owner never reads who viewed');
 
 reset role;

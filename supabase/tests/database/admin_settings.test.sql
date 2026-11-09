@@ -2,7 +2,7 @@ begin;
 create extension if not exists pgtap with schema extensions;
 -- Members here have accepted the current legal texts; that rule is tested in legal_on_server.test.sql.
 create or replace function access.accepted_terms_and_privacy() returns boolean language sql stable as 'select true';
-select plan(18);
+select plan(19);
 
 insert into auth.users (id, email)
 select ('00000000-0000-0000-0000-0000000044' || k)::uuid, 'as' || k || '@test.invalid' from unnest(array['01', 'a1', 'a2']) k;
@@ -14,6 +14,10 @@ values ('00000000-0000-0000-0000-000000004401', 1, 'approved', now(), now());
 insert into public.staff (id, full_name, role, active) values
   ('00000000-0000-0000-0000-0000000044a1', 'Plain Admin', 'admin', true),
   ('00000000-0000-0000-0000-0000000044a2', 'Super Admin', 'super_admin', true);
+
+insert into public.legal_texts (kind, version, body_en, body_sw, approved_at, effective_at) values
+  ('handoff', '98.0', 'Older text', 'Maandishi ya zamani', now(), now() - interval '2 days'),
+  ('handoff', '98.1', 'Newer text', 'Maandishi mapya', now(), now() - interval '1 day');
 
 create function pg_temp.login(who text) returns void language sql as $$
   select set_config('request.jwt.claims', json_build_object(
@@ -42,8 +46,10 @@ select is(public.set_platform_setting('daily_application_cap', '0'), 'invalid_va
 select is(public.set_platform_setting('daily_application_cap', '50'), 'ok', 'and can be set');
 select is(public.set_platform_setting('real_registrations_open', 'true'), 'unknown_setting',
   'a setting this screen does not manage is refused');
-select ok((select bool_and(version ~ '^[0-9]+\.[0-9]+$') and count(*) >= 5 from public.legal_text_versions()),
-  'the legal text versions list the loaded texts');
+select is((select string_agg(version || ':' || is_current, ',' order by version desc) from public.legal_text_versions()
+           where kind = 'handoff' and version like '98.%'), '98.1:true,98.0:false',
+  'the legal text versions list each version and which one is in force');
+select ok((select bool_and(version ~ '^[0-9]+\.[0-9]+$') from public.legal_text_versions()), 'with well-formed version numbers');
 
 reset role;
 select is((select (before ->> 'value') || '>' || (after ->> 'value') from private.audit_log

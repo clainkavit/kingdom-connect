@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Get back into your account on a phone</title>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&amp;family=Figtree:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#4A0E1A}a:hover{color:#2A0610}
+input::placeholder{color:#7A6A6E}
+</style>
+</helmet>
+<div style="width: 430px; height: 900px; box-sizing: border-box; padding: 28px 20px; border-radius: 64px; background: #1E1416; font-family: Figtree, system-ui, sans-serif; color: #2A1A1E">
+<div style="position: relative; width: 390px; height: 844px; border-radius: 44px; overflow: hidden; background: #F7F1EA; display: flex; flex-direction: column">
+<span style="position: absolute; top: 12px; left: 140px; width: 110px; height: 30px; border-radius: 999px; background: #1E1416; z-index: 2"></span>
+
+<div style="display: flex; align-items: center; justify-content: space-between; padding: 58px 20px 0">
+<a href="Phone-Code.dc.html" aria-label="Back to the email code" style="width: 44px; height: 44px; border-radius: 999px; background: #FFFFFF; border: 1px solid #E4D9CC; color: #4A0E1A; display: flex; align-items: center; justify-content: center; box-sizing: border-box">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg>
+</a>
+<img src="logo.jpg" alt="Kingdom Connect" style="width: 56px; height: 50px; object-fit: cover; border-radius: 12px; display: block">
+</div>
+
+<form style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 12px; padding: 22px 22px 24px" aria-labelledby="r-title">
+<div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 4px">
+<h1 id="r-title" style="margin: 0; font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 600; font-size: 34px; line-height: 1.05; color: #4A0E1A">Get back into your account</h1>
+<p style="margin: 0; font-size: 14px; line-height: 1.5; color: #5A4A4E">If you can no longer open the email on your account, ask to move it to a new email. An Administrator compares your new photo with the ID and face photo you registered with.</p>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 5px">
+<label for="r-username" style="font-size: 13px; font-weight: 600; color: #5A4A4E; padding-left: 18px">Username</label>
+<input id="r-username" type="text" placeholder="e.g. neema.joseph" style="min-height: 50px; box-sizing: border-box; width: 100%; border: 1px solid #D9CBBB; border-radius: 999px; background: #FFFFFF; padding: 0 20px; font: 400 15px Figtree, sans-serif; color: #2A1A1E">
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 5px">
+<label for="r-email" style="font-size: 13px; font-weight: 600; color: #5A4A4E; padding-left: 18px">New email</label>
+<input id="r-email" type="email" placeholder="you@example.com" style="min-height: 50px; box-sizing: border-box; width: 100%; border: 1px solid #D9CBBB; border-radius: 999px; background: #FFFFFF; padding: 0 20px; font: 400 15px Figtree, sans-serif; color: #2A1A1E">
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 5px">
+<label for="r-digits" style="font-size: 13px; font-weight: 600; color: #5A4A4E; padding-left: 18px">Last 4 digits of your ID number</label>
+<input id="r-digits" type="text" inputmode="numeric" maxlength="4" placeholder="0000" style="min-height: 50px; box-sizing: border-box; width: 100%; border: 1px solid #D9CBBB; border-radius: 999px; background: #FFFFFF; padding: 0 20px; font: 400 15px Figtree, sans-serif; color: #2A1A1E; letter-spacing: 0.2em">
+</div>
+
+<button type="button" style="min-height: 64px; display: flex; align-items: center; gap: 14px; border: 1.5px dashed #B9A79A; border-radius: 18px; background: #FFFFFF; padding: 0 18px; color: #4A0E1A; font: 600 15px Figtree, sans-serif; text-align: left">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"></path><circle cx="12" cy="13" r="3.5"></circle></svg>
+Take or choose a new photo of your face
+</button>
+
+<button type="submit" style="min-height: 56px; margin-top: 6px; border: 0; border-radius: 999px; background: #4A0E1A; color: #FFFFFF; font: 600 16px Figtree, sans-serif">Send request</button>
+</form>
+
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":430,"height":900}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

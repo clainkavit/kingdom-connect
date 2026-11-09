@@ -90,8 +90,8 @@
   --radius: var(--kc-radius);
   --sidebar: var(--kc-navy);
   --sidebar-foreground: var(--kc-navy-ink);
-  --sidebar-primary: var(--kc-blue);
-  --sidebar-primary-foreground: var(--kc-blue-ink);
+  --sidebar-primary: var(--kc-blue-soft);
+  --sidebar-primary-foreground: var(--kc-blue);
   --sidebar-accent: var(--kc-navy-2);
   --sidebar-accent-foreground: var(--kc-blue-ink);
   --sidebar-border: var(--kc-navy-2);

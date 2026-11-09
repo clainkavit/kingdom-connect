@@ -110,7 +110,7 @@ Members and administrators get different menus; a member never sees admin items,
 
 **On phones** the menu becomes a bottom tab bar: Home, People, Opportunities, Messages, More for members, shown as icons with their names read out by screen readers; Home, Verify, Moderate, Reports, More for admins. More lists the remaining menu items.
 
-**Visual direction.** The [Kingdom Connect Screens canvas](https://claude.ai/artifact/7pbedM5rqr67UUbxncHx8X) sets the look and the layout of every screen. It replaces the earlier mockup ([context/design/dashboard-mockup.jpg](../context/design/dashboard-mockup.jpg)) and prototype ([context/design/dashboard-prototype.html](../context/design/dashboard-prototype.html)). Where the canvas conflicts with this PRD, the PRD wins.
+**Visual direction.** The [Kingdom Connect Screens canvas](https://claude.ai/artifact/7pbedM5rqr67UUbxncHx8X) sets the look and the layout of every screen. It replaces the earlier mockup ([context/design/dashboard-mockup.jpg](../context/design/dashboard-mockup.jpg)) and prototype ([context/design/dashboard-prototype.html](../context/design/dashboard-prototype.html)). Where the canvas conflicts with this PRD, the PRD wins. **Colours changed 8 Nov:** both apps use the maroon and cream look of the screens in [context/design/signin-screens/](../context/design/signin-screens/README.md) (maroon `#4A0E1A`, cream `#F7F1EA`); the layout still follows the canvas.
 
 **Key screens**
 
@@ -925,6 +925,11 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 - Staff review a post (A05): Approve (O5), Send back to Draft with a reason the poster sees (O6), or Remove with a reason (O8). Reasons: not clear enough, asks applicants for money, misleading or fake, wrong type, or other with a note. Every decision is audit logged.
 - The poster can edit a Draft and close a Published post. A daily job marks Published posts Expired after their closing date.
 
+**Decided on 8 November 2026 (colours, F06b, [#184](https://github.com/clainkavit/kingdom-connect/issues/184))**
+- Both apps change from navy and blue to maroon and cream: maroon `#4A0E1A` for the menu, header and main buttons, cream `#F7F1EA` for the page, `#F3E6D0` for the selected menu item and highlights. Dark mode has its own maroon steps.
+- Every text colour keeps at least 4.5:1 contrast and input borders at least 3:1, checked by a test.
+- The Cormorant Garamond headings of the designs follow in a separate ticket, because the member app needs a font package for them.
+
 **Decided on 9 November 2026 (opportunities, database side, O02 to O08)**
 - Reporting a published opportunity hides it at once for every member (O06). A hidden post can still be reported, so reports on it add up. The administrator's decision settles it: no action restores the post, any upheld action (a warning or a suspension) removes it, and restoring it from the moderation item closes its open reports. A poster with a report upheld against one of their posts in the last 12 months has every later post reviewed first; lifting a pause or reinstating the account resets that. Admin posts and a poster's own posts cannot be reported.
 - A tender stays open until its closing time on its closing date; every other type stays open through its closing date (O04).
@@ -998,6 +1003,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | 6 Nov 2026 | Businesses tab on People: approved Level 2 and up, following the owner's profile rules | 8, 18 |
 | 6 Nov 2026 | Level 3 Opportunity Poster verification: directorship or authorisation proof, address with proof, review in the verification queue | 6, 18 |
 | 7 Nov 2026 | Posting opportunities: shared posting rules, review of a poster's posts until 3 are approved and of any post with a link, staff posts publish at once, staff review with Approve, Send back or Remove | 10, 18 |
+| 8 Nov 2026 | Colours: maroon and cream in both apps, replacing navy and blue (F06b) | 5, 18 |
 | 8 Nov 2026 | Proposed, awaiting Champion: admin dashboard line chart of new verified members per week; it needs approvals counted by week | 7 |
 | 8 Nov 2026 | Proposed, awaiting Champion (#180): S06 Under review drops the expected time and the next-step list, and says a notification follows the review | 6, 18 |
 | 8 Nov 2026 | Proposed, awaiting Champion (#161): registration categories become tick all that apply from Professional, Businessperson and Other; Entrepreneur and Student removed | 6, 18 |

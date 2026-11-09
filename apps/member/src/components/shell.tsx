@@ -46,10 +46,10 @@ function TopBar({
               key={item.href}
               href={item.href}
               current={current}
-              className={`rounded-[9px] px-3 py-2.5 ${current ? "bg-blue" : ""}`}
+              className={`rounded-[9px] px-3 py-2.5 ${current ? "bg-blue-soft" : ""}`}
             >
               <Text
-                className={`text-sm ${current ? "font-figtree-bold text-white" : "font-figtree text-navy-ink"}`}
+                className={`text-sm ${current ? "font-figtree-bold text-blue" : "font-figtree text-navy-ink"}`}
               >
                 {t[item.key]}
               </Text>

@@ -1,6 +1,6 @@
 import { useLocalSearchParams } from "expo-router";
 import { ProposePlan } from "../../../src/components/plans";
-import { plansApi } from "../../../src/lib/plans";
+import { plansApi } from "../../../src/lib/plans-api";
 
 export default function ProposePlanScreen() {
   const { idea, with: other } = useLocalSearchParams<{ idea?: string; with?: string }>();

@@ -375,6 +375,20 @@ export const sw: Strings = {
   planEndConfirm: "Sitisha mpango",
   planEndedBy: (who: string, date: string, reason: string) =>
     `Umesitishwa na ${who} tarehe ${date}. Sababu: ${reason}`,
+  planDocHeading: "Makubaliano yaliyosainiwa",
+  planDocHint:
+    "Kila hatua imethibitishwa. Kila mmoja wenu apakie makubaliano aliyosaini, kama PDF ya hadi MB 10. Jukwaa linayahifadhi tu.",
+  planDocUpload: "Pakia makubaliano yangu yaliyosainiwa",
+  planDocYours: (date: string) => `Ulipakia yako tarehe ${date}.`,
+  planDocYoursMissing: "Bado hujapakia yako.",
+  planDocTheirs: (name: string, date: string) => `${name} alipakia yake tarehe ${date}.`,
+  planDocTheirsMissing: (name: string) => `${name} bado hajapakia yake.`,
+  planDocOpenMine: "Fungua yangu",
+  planDocOpenTheirs: "Fungua yake",
+  planDocWrongType: "Chagua faili la PDF.",
+  planDocTooLarge: "Faili ni kubwa kuliko MB 10.",
+  planCompletedMessage:
+    "Mpango huu umekamilika. Makubaliano yote mawili yaliyosainiwa yamehifadhiwa.",
   language: "Lugha",
 
   navDashboard: "Dashibodi",

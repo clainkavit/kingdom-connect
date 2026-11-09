@@ -366,6 +366,19 @@ export const en = {
   planEndConfirm: "End the plan",
   planEndedBy: (who: string, date: string, reason: string) =>
     `Ended by ${who} on ${date}. Reason: ${reason}`,
+  planDocHeading: "Signed agreement",
+  planDocHint:
+    "Every stage is confirmed. Each of you uploads the agreement you signed, as a PDF of up to 10 MB. The platform only stores it.",
+  planDocUpload: "Upload my signed agreement",
+  planDocYours: (date: string) => `You uploaded yours on ${date}.`,
+  planDocYoursMissing: "You haven't uploaded yours yet.",
+  planDocTheirs: (name: string, date: string) => `${name} uploaded theirs on ${date}.`,
+  planDocTheirsMissing: (name: string) => `${name} hasn't uploaded theirs yet.`,
+  planDocOpenMine: "Open mine",
+  planDocOpenTheirs: "Open theirs",
+  planDocWrongType: "Choose a PDF file.",
+  planDocTooLarge: "The file is larger than 10 MB.",
+  planCompletedMessage: "This plan is complete. Both signed agreements are saved.",
   language: "Language",
 
   navDashboard: "Dashboard",

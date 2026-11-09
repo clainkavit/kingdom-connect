@@ -44,6 +44,10 @@ export type StepDraft = {
   responsible: "me" | "other";
 };
 
+export type PlanDocument = { mine: boolean; storagePath: string; uploadedAt: string };
+export type PickedPdf = { uri: string; name: string; mime: string; size: number };
+export const PLAN_DOCUMENT_MAX_BYTES = 10 * 1024 * 1024;
+
 export type PlansApi = {
   mine: () => Promise<PlanSummary[]>;
   load: (planId: string) => Promise<Plan | null>;
@@ -64,6 +68,11 @@ export type PlansApi = {
   markDone: (milestoneId: string) => Promise<string>;
   confirm: (milestoneId: string) => Promise<string>;
   end: (planId: string, reason: string) => Promise<string>;
+  /** S34: the signed agreements uploaded so far, and whether the caller may upload now (P03). */
+  documents: (planId: string) => Promise<{ list: PlanDocument[]; canUpload: boolean }>;
+  pickPdf: () => Promise<PickedPdf | null>;
+  upload: (planId: string, file: PickedPdf) => Promise<string>;
+  documentUrl: (path: string) => Promise<string | null>;
 };
 
 type SummaryRow = {
@@ -100,138 +109,191 @@ const first = (data: unknown) =>
     plan_id: null,
   };
 
-/** S30 to S32: milestone plans (P01). */
-export const plansApi: PlansApi = {
-  async mine() {
-    const { data, error } = await supabase.rpc("my_plans");
-    if (error) throw error;
-    return (data as SummaryRow[]).map(toSummary);
-  },
+/** S30 to S34: milestone plans (P01 to P03). The PDF picker is passed in, so tests need no device. */
+export function plansApiWith(pickPdf: () => Promise<PickedPdf | null>): PlansApi {
+  const api: PlansApi = {
+    async mine() {
+      const { data, error } = await supabase.rpc("my_plans");
+      if (error) throw error;
+      return (data as SummaryRow[]).map(toSummary);
+    },
 
-  async load(planId) {
-    const plan = (await plansApi.mine()).find((p) => p.id === planId);
-    if (!plan) return null;
-    const [{ data, error }, closed] = await Promise.all([
-      supabase
-        .from("milestones")
-        .select("id, position, title, description, target_date, responsible_member_id, status")
-        .eq("plan_id", planId)
-        .order("position"),
-      supabase
-        .from("milestone_plans")
-        .select("withdrawn_by, withdrawn_at, ended_by, ended_at, ended_reason")
-        .eq("id", planId)
-        .maybeSingle(),
-    ]);
-    if (error) throw error;
-    const c = closed.data as {
-      withdrawn_by: string | null;
-      withdrawn_at: string | null;
-      ended_by: string | null;
-      ended_at: string | null;
-      ended_reason: string | null;
-    } | null;
-    const by = c?.ended_by ?? c?.withdrawn_by ?? null;
-    return {
-      ...plan,
-      closedByMe: by === null ? null : by !== plan.otherId,
-      closedAt: c?.ended_at ?? c?.withdrawn_at ?? null,
-      endedReason: c?.ended_reason ?? null,
-      milestoneList: (
-        data as {
-          id: string;
-          position: number;
-          title: string;
-          description: string;
-          target_date: string | null;
-          responsible_member_id: string;
-          status: Milestone["status"];
-        }[]
-      ).map((m) => ({
-        id: m.id,
-        position: m.position,
-        title: m.title,
-        description: m.description,
-        targetDate: m.target_date,
-        responsibleIsMe: m.responsible_member_id !== plan.otherId,
-        status: m.status,
-      })),
-    };
-  },
+    async load(planId) {
+      const plan = (await api.mine()).find((p) => p.id === planId);
+      if (!plan) return null;
+      const [{ data, error }, closed] = await Promise.all([
+        supabase
+          .from("milestones")
+          .select("id, position, title, description, target_date, responsible_member_id, status")
+          .eq("plan_id", planId)
+          .order("position"),
+        supabase
+          .from("milestone_plans")
+          .select("withdrawn_by, withdrawn_at, ended_by, ended_at, ended_reason")
+          .eq("id", planId)
+          .maybeSingle(),
+      ]);
+      if (error) throw error;
+      const c = closed.data as {
+        withdrawn_by: string | null;
+        withdrawn_at: string | null;
+        ended_by: string | null;
+        ended_at: string | null;
+        ended_reason: string | null;
+      } | null;
+      const by = c?.ended_by ?? c?.withdrawn_by ?? null;
+      return {
+        ...plan,
+        closedByMe: by === null ? null : by !== plan.otherId,
+        closedAt: c?.ended_at ?? c?.withdrawn_at ?? null,
+        endedReason: c?.ended_reason ?? null,
+        milestoneList: (
+          data as {
+            id: string;
+            position: number;
+            title: string;
+            description: string;
+            target_date: string | null;
+            responsible_member_id: string;
+            status: Milestone["status"];
+          }[]
+        ).map((m) => ({
+          id: m.id,
+          position: m.position,
+          title: m.title,
+          description: m.description,
+          targetDate: m.target_date,
+          responsibleIsMe: m.responsible_member_id !== plan.otherId,
+          status: m.status,
+        })),
+      };
+    },
 
-  async partners() {
-    const { data, error } = await supabase.rpc("plan_partners");
-    if (error) throw error;
-    return (
-      data as { idea_id: string; idea_title: string; other_id: string; other_name: string }[]
-    ).map((r) => ({
-      ideaId: r.idea_id,
-      ideaTitle: r.idea_title,
-      otherId: r.other_id,
-      otherName: r.other_name,
-    }));
-  },
+    async partners() {
+      const { data, error } = await supabase.rpc("plan_partners");
+      if (error) throw error;
+      return (
+        data as { idea_id: string; idea_title: string; other_id: string; other_name: string }[]
+      ).map((r) => ({
+        ideaId: r.idea_id,
+        ideaTitle: r.idea_title,
+        otherId: r.other_id,
+        otherName: r.other_name,
+      }));
+    },
 
-  async handoff() {
-    const { data, error } = await supabase.rpc("handoff_text");
-    if (error) throw error;
-    return ((data as PendingText[] | null) ?? [])[0] ?? null;
-  },
+    async handoff() {
+      const { data, error } = await supabase.rpc("handoff_text");
+      if (error) throw error;
+      return ((data as PendingText[] | null) ?? [])[0] ?? null;
+    },
 
-  async propose(ideaId, otherId, steps, handoffId) {
-    const { data, error } = await supabase.rpc("propose_plan", {
-      idea: ideaId,
-      other: otherId,
-      steps: steps.map((s) => ({
-        title: s.title,
-        description: s.description,
-        target_date: s.targetDate,
-        responsible: s.responsible,
-      })),
-      handoff: handoffId,
-    });
-    if (error) throw error;
-    const row = first(data);
-    return { result: row.result, planId: row.plan_id };
-  },
+    async propose(ideaId, otherId, steps, handoffId) {
+      const { data, error } = await supabase.rpc("propose_plan", {
+        idea: ideaId,
+        other: otherId,
+        steps: steps.map((s) => ({
+          title: s.title,
+          description: s.description,
+          target_date: s.targetDate,
+          responsible: s.responsible,
+        })),
+        handoff: handoffId,
+      });
+      if (error) throw error;
+      const row = first(data);
+      return { result: row.result, planId: row.plan_id };
+    },
 
-  async restart(planId, handoffId) {
-    const { data, error } = await supabase.rpc("restart_plan", {
-      plan: planId,
-      handoff: handoffId,
-    });
-    if (error) throw error;
-    const row = first(data);
-    return { result: row.result, planId: row.plan_id };
-  },
+    async restart(planId, handoffId) {
+      const { data, error } = await supabase.rpc("restart_plan", {
+        plan: planId,
+        handoff: handoffId,
+      });
+      if (error) throw error;
+      const row = first(data);
+      return { result: row.result, planId: row.plan_id };
+    },
 
-  async accept(planId, handoffId) {
-    const { data, error } = await supabase.rpc("accept_plan", { plan: planId, handoff: handoffId });
-    if (error) throw error;
-    return data as string;
-  },
+    async accept(planId, handoffId) {
+      const { data, error } = await supabase.rpc("accept_plan", {
+        plan: planId,
+        handoff: handoffId,
+      });
+      if (error) throw error;
+      return data as string;
+    },
 
-  async withdraw(planId) {
-    const { data, error } = await supabase.rpc("withdraw_plan", { plan: planId });
-    if (error) throw error;
-    return data as string;
-  },
+    async withdraw(planId) {
+      const { data, error } = await supabase.rpc("withdraw_plan", { plan: planId });
+      if (error) throw error;
+      return data as string;
+    },
 
-  async markDone(milestoneId) {
-    const { data, error } = await supabase.rpc("mark_milestone_done", { milestone: milestoneId });
-    if (error) throw error;
-    return data as string;
-  },
+    async markDone(milestoneId) {
+      const { data, error } = await supabase.rpc("mark_milestone_done", { milestone: milestoneId });
+      if (error) throw error;
+      return data as string;
+    },
 
-  async confirm(milestoneId) {
-    const { data, error } = await supabase.rpc("confirm_milestone", { milestone: milestoneId });
-    if (error) throw error;
-    return data as string;
-  },
+    async confirm(milestoneId) {
+      const { data, error } = await supabase.rpc("confirm_milestone", { milestone: milestoneId });
+      if (error) throw error;
+      return data as string;
+    },
 
-  async end(planId, reason) {
-    const { data, error } = await supabase.rpc("end_plan", { plan: planId, reason });
-    if (error) throw error;
-    return data as string;
-  },
-};
+    async end(planId, reason) {
+      const { data, error } = await supabase.rpc("end_plan", { plan: planId, reason });
+      if (error) throw error;
+      return data as string;
+    },
+
+    async documents(planId) {
+      const me = (await supabase.auth.getUser()).data.user?.id;
+      const [{ data, error }, can] = await Promise.all([
+        supabase
+          .from("plan_documents")
+          .select("uploaded_by, storage_path, uploaded_at")
+          .eq("plan_id", planId),
+        supabase.rpc("can_upload_plan_document", { plan: planId }),
+      ]);
+      if (error) throw error;
+      return {
+        list: (data as { uploaded_by: string; storage_path: string; uploaded_at: string }[]).map(
+          (d) => ({
+            mine: d.uploaded_by === me,
+            storagePath: d.storage_path,
+            uploadedAt: d.uploaded_at,
+          }),
+        ),
+        canUpload: can.data === true,
+      };
+    },
+
+    pickPdf,
+
+    async upload(planId, file) {
+      const me = (await supabase.auth.getUser()).data.user?.id;
+      if (!me) return "error";
+      const path = `${planId}/${me}.pdf`;
+      const blob = await (await fetch(file.uri)).blob();
+      const upload = await supabase.storage
+        .from("plan-documents")
+        .upload(path, blob, { contentType: "application/pdf" });
+      if (upload.error) throw upload.error;
+      const { data, error } = await supabase.rpc("record_plan_document", {
+        plan: planId,
+        storage_path: path,
+        size: file.size,
+      });
+      if (error) throw error;
+      return data as string;
+    },
+
+    async documentUrl(path) {
+      const { data } = await supabase.storage.from("plan-documents").createSignedUrl(path, 300);
+      return data?.signedUrl ?? null;
+    },
+  };
+  return api;
+}

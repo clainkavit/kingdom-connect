@@ -59,7 +59,7 @@ select pg_temp.login('01');
 select throws_ok($$insert into public.opportunities (poster_member_id, type, title, sector_id, description, closing_at)
                    values (auth.uid(), 'job', 'Direct', current_setting('test.sector')::uuid, repeat('x', 120), current_date + 5)$$,
   '42501', null, 'an opportunity cannot be written directly');
-select is(pg_temp.post(kind => 'tender'), 'invalid_type', 'tenders wait for their own ticket');
+select is(pg_temp.post(kind => 'tender', employment => null, skills => '{}'), 'invalid_tender', 'a tender needs its own fields');
 select is(pg_temp.post(description => 'Too short'), 'too_short', 'the description is at least 100 characters');
 select is(pg_temp.post(closing => 91), 'invalid_closing', 'the closing date is at most 90 days ahead');
 select is(pg_temp.post(closing => 0), 'invalid_closing', 'and after today');

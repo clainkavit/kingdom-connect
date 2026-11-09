@@ -389,6 +389,20 @@ export const sw: Strings = {
   planDocTooLarge: "Faili ni kubwa kuliko MB 10.",
   planCompletedMessage:
     "Mpango huu umekamilika. Makubaliano yote mawili yaliyosainiwa yamehifadhiwa.",
+  adminPlansIntro:
+    "Majina, wazo, hali ya hatua, tarehe na maelezo. Mawasiliano na makubaliano yaliyosainiwa hayaonyeshwi hapa.",
+  adminPlanItem: "Wazo",
+  adminPlanStatus: "Hali",
+  adminPlanProgress: "Maendeleo",
+  adminPlanDates: "Tarehe",
+  adminPlanStartedBy: "Amependekezwa na",
+  adminPlanShow: "Onyesha hatua na maelezo",
+  adminPlanHide: "Ficha hatua na maelezo",
+  adminPlanEndedNote: (who: string, reason: string) => `Umesitishwa na ${who}: ${reason}`,
+  adminPlanAnnotation: (who: string, note: string) => `${who}: ${note}`,
+  adminPlanAddNote: "Ongeza maelezo",
+  adminPlanNoteFinal: "Maelezo hayawezi kuhaririwa wala kufutwa.",
+  adminPlanSaveNote: "Hifadhi maelezo",
   language: "Lugha",
 
   navDashboard: "Dashibodi",

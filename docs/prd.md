@@ -147,7 +147,7 @@ No one reaches member content until an administrator has verified their identity
 - **REG-5** As a business owner, I want to upgrade to Verified Business, then Opportunity Poster, so that I can list my business and post opportunities. (FR-32, UC-28–29)
 
 **Acceptance criteria**
-1. The wizard collects full name, username, a Tanzanian address chosen from the region and district lists, email, a Tanzanian phone number (+255), one accepted ID (NIDA, passport, driving licence or voter's ID) with its type and number, occupation category (Professional, Businessperson, Entrepreneur, Other), optional study info, a face photo (required), and a photo of the ID (see Member verification below).
+1. The wizard collects full name, username, a Tanzanian address chosen from the region and district lists, email, a Tanzanian phone number (+255), one accepted ID (NIDA, passport, driving licence or voter's ID) with its type and number, occupation category (Professional, Businessperson, Entrepreneur, Other; **Proposed 8 Nov, awaiting Champion in [#161](https://github.com/clainkavit/kingdom-connect/issues/161):** tick all that apply from Professional, Businessperson and Other, with Entrepreneur and Student removed), optional study info, a face photo (required), and a photo of the ID (see Member verification below).
 2. Category-specific fields appear based on the category (for example, CPA number for auditors; CISSP, CISM, CEH for cybersecurity).
 3. An ID number must be unique for its ID type, and a NIDA number must be 20 digits. A duplicate blocks submission and alerts admins (duplicate-profile detection). Because one person could register twice with two different IDs, admins also compare face photos. In Phase 1 an admin checks the ID manually; a connection to NIDA's verification service for NIDA holders may follow (ticket [#30](https://github.com/clainkavit/kingdom-connect/issues/30)).
 4. On submit, status = Pending and the applicant receives an email and SMS confirmation.
@@ -179,7 +179,7 @@ No one reaches member content until an administrator has verified their identity
 14. NIDA's verification service may be connected after the pilot, for NIDA holders, once the company exists and the production hosting is decided (NIDA asks where the server is; ticket [#30](https://github.com/clainkavit/kingdom-connect/issues/30)). Passports, driving licences and voter's IDs stay manual, and Persona is deferred until the company exists.
 15. **Sign-up is open from day one (decided 22 Oct, ticket [#30](https://github.com/clainkavit/kingdom-connect/issues/30)),** so review volume is managed in four ways:
     - The sign-up form checks what it can before an admin sees the application: a NIDA number must be 20 digits, the phone must start with +255, the address must come from the region and district lists, a duplicate ID is flagged automatically, and the face photo and ID photo are required.
-    - Applications are reviewed oldest first. The admin dashboard shows queue size and the age of the oldest application, with an alert when an application has waited 2 working days. Applicants see "Your application is being reviewed" with the expected time.
+    - Applications are reviewed oldest first. The admin dashboard shows queue size and the age of the oldest application, with an alert when an application has waited 2 working days. Applicants see "Your application is being reviewed" with the expected time. **Proposed 8 Nov, awaiting Champion in [#180](https://github.com/clainkavit/kingdom-connect/issues/180):** drop the expected time; the screen says "You will get a notification when the review is done".
     - A daily cap on new applications is a Super Administrator setting, off by default. When it is on, people over the cap see "We're reviewing a high number of applications, please try again tomorrow".
     - The pilot starts with at least 3 staff accounts, including trusted volunteers, not one admin.
 
@@ -205,6 +205,7 @@ The member dashboard shows community activity and the member's own to-dos; every
 | Moderation queue counts (opportunities, ideas, training, events, tenders) | ✗ | ✓ |
 | Re-verifications due in 30 days | ✗ | ✓ |
 | Investor count and activity | ✗ | ✓ |
+| New verified members per week, last 8 weeks, as a line chart (**Proposed 8 Nov**, design in `context/design/signin-screens/`) | ✗ | ✓ |
 
 **Acceptance criteria**
 1. The member dashboard API never returns pending, rejected or investor counts, or any platform-wide count (members, businesses, opportunities, ideas), so they cannot appear even through a client bug.
@@ -728,7 +729,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 **Decided on 2 November 2026 (registration, R01)**
 - Sign-up works when real registrations are open, or when the environment is marked test-data-only (local and staging). Production shows "Registration opens soon" until the launch gate opens.
 - The face photo is for verification only, kept with the ID photo in the admin-only store. A public profile photo is optional and comes with the profile (R06).
-- Category details are a small fixed set for now: a Professional gives a profession and optional certifications and licence numbers; a Businessperson a business name and sector; an Entrepreneur what they are building and a sector; Other a short description. Per-profession fields can follow.
+- Category details are a small fixed set for now: a Professional gives a profession and optional certifications and licence numbers; a Businessperson a business name and sector; an Entrepreneur what they are building and a sector; Other a short description. Per-profession fields can follow. (If #161's proposal of 8 Nov is accepted, the Entrepreneur details go; posting an idea stays open to every member, IDEA-1.)
 - A duplicate ID is refused with "This ID is already registered", written to the audit log and flagged for the admin queue (R03).
 - A starter list of 16 sectors in English and Kiswahili is loaded; Champion and the collaborator can rename or add.
 - The ID number is never kept in the saved draft: it is encrypted the moment step 4 is saved.
@@ -742,7 +743,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 - Staff decide only through the audited decision function, never by editing the application directly. Approving, rejecting, marking a duplicate and revealing an ID number are each written to the audit log with the admin and their IP address.
 
 **Decided on 2 November 2026 (registration status, R02)**
-- Under review, the Applicant sees an expected time worked out from the queue: their place in it, divided by the decisions staff made per working day over the last 14 days, rounded up, at least 1 working day. With no decisions in that window it says "We usually decide within 2 working days". The Applicant sees only the days, never their place or the queue size (section 7, criterion 1).
+- Under review, the Applicant sees an expected time worked out from the queue: their place in it, divided by the decisions staff made per working day over the last 14 days, rounded up, at least 1 working day. With no decisions in that window it says "We usually decide within 2 working days". The Applicant sees only the days, never their place or the queue size (section 7, criterion 1). (If [#180](https://github.com/clainkavit/kingdom-connect/issues/180) is accepted, this expected time is no longer shown.)
 - Fix and resubmit reopens the whole wizard on the review step with the earlier answers, so any detail, the ID or either photo can be changed. Starting it uses the one resubmission. Each submitted application keeps its own copy of the photos, so a replaced photo never changes what an earlier decision was based on.
 - An Administrator can reopen a final rejection on A03, with a note for the audit log. The Applicant is told by the new notification A6 and can send the application once more; a rejection after that is final again.
 - A rejection still ends the Applicant's sessions (decided with F09). They sign in again to read the reason.
@@ -917,6 +918,13 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 - To renew, the member sends only the new licence: number, expiry date and the document, within 30 days of the end date or after it. BRELA, TIN and the Level 3 documents stay as approved. Staff approve, or reject with a Level 2 reason; a rejected renewal leaves the business as it was.
 - Staff see expired licences and licences ending in the next 30 days on Re-verification (A08), and renewals in the verification queue.
 
+**Decided on 7 November 2026 (post an opportunity, O01)**
+- Opportunity Posters (Level 3) and staff post through the same rules: type (job, partnership, collaboration or investment; tenders come with O04), a title of 5 to 120 characters, an employment type for jobs only, a region or "remote", a sector, a description of 100 to 5000 characters, and a closing date after today and within 90 days. Up to 5 skills; at least one for jobs and collaborations.
+- Phone numbers and emails anywhere in the post are refused. A post with a link always goes to review. A poster's posts go to review until 3 have been approved; after that they publish at once. A poster must tick the no-fee declaration.
+- Staff posts (A15) publish at once, without the tick or review, and are marked as staff posts.
+- Staff review a post (A05): Approve (O5), Send back to Draft with a reason the poster sees (O6), or Remove with a reason (O8). Reasons: not clear enough, asks applicants for money, misleading or fake, wrong type, or other with a note. Every decision is audit logged.
+- The poster can edit a Draft and close a Published post. A daily job marks Published posts Expired after their closing date.
+
 **Open.** Every open question is a ticket on the [wayfinder map](https://github.com/clainkavit/kingdom-connect/issues/1) and is linked where it applies above.
 
 **Outside this spec**
@@ -980,6 +988,10 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | 6 Nov 2026 | Licence expiry pauses Level 2 and 3 until a new licence is approved; B3 reminders, B4, renewal and Re-verification | 13, 18 |
 | 6 Nov 2026 | Businesses tab on People: approved Level 2 and up, following the owner's profile rules | 8, 18 |
 | 6 Nov 2026 | Level 3 Opportunity Poster verification: directorship or authorisation proof, address with proof, review in the verification queue | 6, 18 |
+| 7 Nov 2026 | Posting opportunities: shared posting rules, review of a poster's posts until 3 are approved and of any post with a link, staff posts publish at once, staff review with Approve, Send back or Remove | 10, 18 |
+| 8 Nov 2026 | Proposed, awaiting Champion: admin dashboard line chart of new verified members per week; it needs approvals counted by week | 7 |
+| 8 Nov 2026 | Proposed, awaiting Champion (#180): S06 Under review drops the expected time and the next-step list, and says a notification follows the review | 6, 18 |
+| 8 Nov 2026 | Proposed, awaiting Champion (#161): registration categories become tick all that apply from Professional, Businessperson and Other; Entrepreneur and Student removed | 6, 18 |
 
 ## Appendix B: Source documents
 

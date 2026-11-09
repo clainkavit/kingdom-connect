@@ -1,6 +1,6 @@
 ---
-version: 0.1
-effective: 2026-11-02
+version: 0.2
+effective: 2026-11-06
 approved:
 ---
 # Taarifa ya faragha na ridhaa ya data
@@ -26,7 +26,7 @@ Hatuuzi data yako na hatuitumii kwa matangazo.
 
 ## Nani anaweza kuiona
 
-- **Wanachama wengine** wanaona wasifu wako. Hawaoni kamwe namba yako ya simu wala barua pepe isipokuwa mmeunganishwa na umewasha kushiriki taarifa hiyo. [TO CONFIRM: kama anwani yako inaweza pia kushirikishwa kwa njia hii]
+- **Wanachama wengine** wanaona wasifu wako. Hawaoni kamwe namba yako ya simu, barua pepe wala anwani isipokuwa mmeunganishwa na umewasha kushiriki taarifa hiyo.
 - **Wasimamizi** wanaona kile wanachohitaji ili kukuthibitisha na kushughulikia ripoti. Picha ya kitambulisho chako na picha ya uso wako huhifadhiwa mahali tofauti ambapo wasimamizi pekee wanaweza kufungua. Kuangalia namba yako kamili ya kitambulisho kunarekodiwa.
 - **Watoa huduma** wanaohifadhi {platform_name} na kutuma barua pepe zetu wanashughulikia data kwa niaba yetu chini ya mkataba. [TO CONFIRM: mtoa huduma wa uhifadhi na nchi ambako data inahifadhiwa]
 - **Mamlaka**, pale sheria inapotaka.
@@ -37,7 +37,7 @@ Tunahifadhi data yako wakati akaunti yako iko wazi. Ukituomba tufute data yako, 
 
 ## Haki zako
 
-Unaweza kuona na kupakua data yako, kuirekebisha, kutuomba tuifute, na kuondoa ridhaa hii, kupitia Mipangilio au kwa kuwasiliana nasi. [TO CONFIRM: jinsi ridhaa inavyoondolewa na kinachotokea kwa akaunti] Unaweza kuwasilisha malalamiko kwa Tume ya Ulinzi wa Taarifa Binafsi.
+Unaweza kuona na kupakua data yako, kuirekebisha, kutuomba tuifute, na kuondoa ridhaa hii, kupitia Mipangilio au kwa kuwasiliana nasi. Ukiondoa ridhaa hii, akaunti yako inafungwa, kwa sababu hatuwezi kukuthibitisha wala kuendesha akaunti yako bila kushughulikia data yako. Unaweza kuwasilisha malalamiko kwa Tume ya Ulinzi wa Taarifa Binafsi.
 
 ## Ridhaa yako
 
@@ -49,4 +49,6 @@ Tukibadilisha taarifa hii, tunakuonyesha toleo jipya unapoingia tena na kukuomba
 
 ## Mawasiliano
 
-[TO CONFIRM: barua pepe na anwani ya posta ya {entity_name}]
+Barua pepe: kingdomconnect@global.co.tz
+
+Anwani ya posta: [TO CONFIRM: anwani ya posta ya {entity_name}]

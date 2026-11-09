@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Registration other category on a phone</title>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&amp;family=Figtree:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F7F1EA}
+a{color:#4A0E1A}a:hover{color:#2A0610}
+textarea::placeholder{color:#7A6A6E}
+</style>
+</helmet>
+<div style="width: 430px; height: 900px; box-sizing: border-box; padding: 28px 20px; border-radius: 64px; background: #1E1416; font-family: Figtree, system-ui, sans-serif; color: #2A1A1E">
+<div style="position: relative; width: 390px; height: 844px; border-radius: 44px; overflow: hidden; background: #F7F1EA; display: flex; flex-direction: column">
+<span style="position: absolute; top: 12px; left: 140px; width: 110px; height: 30px; border-radius: 999px; background: #1E1416; z-index: 2"></span>
+<div style="display: flex; flex-direction: column; gap: 10px; padding: 58px 22px 0">
+<div style="display: flex; align-items: center; justify-content: space-between">
+<a href="Phone-Category.dc.html" aria-label="Back to category" style="width: 44px; height: 44px; border-radius: 999px; background: #FFFFFF; border: 1px solid #E4D9CC; color: #4A0E1A; display: flex; align-items: center; justify-content: center; box-sizing: border-box"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg></a>
+<span style="font-size: 13px; font-weight: 700; color: #5A4A4E">Step 3 of 6</span>
+</div>
+<div role="progressbar" aria-label="Registration progress" aria-valuemin="1" aria-valuemax="6" aria-valuenow="3" style="display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px"><span style="height: 6px; border-radius: 999px; background: #4A0E1A"></span><span style="height: 6px; border-radius: 999px; background: #4A0E1A"></span><span style="height: 6px; border-radius: 999px; background: #4A0E1A"></span><span style="height: 6px; border-radius: 999px; background: #E4D9CC"></span><span style="height: 6px; border-radius: 999px; background: #E4D9CC"></span><span style="height: 6px; border-radius: 999px; background: #E4D9CC"></span></div>
+</div>
+<form style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 12px; padding: 16px 22px 22px" aria-labelledby="o-title">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<h1 id="o-title" style="margin: 0; font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 600; font-size: 32px; line-height: 1.05; color: #4A0E1A">What are you hoping to find?</h1>
+<p style="margin: 0; font-size: 14px; line-height: 1.45; color: #5A4A4E">You ticked Other. Tell us what you would like from Kingdom Connect, so we can show you the right people and ideas.</p>
+</div>
+<fieldset style="border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px">
+<legend style="font-size: 13px; font-weight: 700; color: #5A4A4E; margin-bottom: 8px">Tick all that apply</legend>
+<label style="display: flex; gap: 14px; align-items: flex-start; background: #FFFFFF; border: 2px solid #4A0E1A; border-radius: 18px; padding: 13px 14px">
+<input type="checkbox" checked style="width: 22px; height: 22px; margin: 2px 0 0; flex-shrink: 0; accent-color: #4A0E1A">
+<span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 16px; font-weight: 700; color: #2A1A1E">I have a business idea</span><span style="font-size: 13px; line-height: 1.4; color: #5A4A4E">Share it in the Ideas pool and find people to build it with</span></span>
+</label>
+<label style="display: flex; gap: 14px; align-items: flex-start; background: #FFFFFF; border: 2px solid #4A0E1A; border-radius: 18px; padding: 13px 14px">
+<input type="checkbox" checked style="width: 22px; height: 22px; margin: 2px 0 0; flex-shrink: 0; accent-color: #4A0E1A">
+<span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 16px; font-weight: 700; color: #2A1A1E">I'm looking for investors</span><span style="font-size: 13px; line-height: 1.4; color: #5A4A4E">Find investors or partners for my idea or business</span></span>
+</label>
+<label style="display: flex; gap: 14px; align-items: flex-start; background: #FFFFFF; border: 1px solid #D9CBBB; border-radius: 18px; padding: 13px 14px">
+<input type="checkbox" style="width: 22px; height: 22px; margin: 2px 0 0; flex-shrink: 0; accent-color: #4A0E1A">
+<span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 16px; font-weight: 700; color: #2A1A1E">Something else</span></span>
+</label>
+</fieldset>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="o-text" style="font-size: 13px; font-weight: 600; color: #5A4A4E; padding-left: 18px">Tell us in a few words</label>
+<textarea id="o-text" rows="3" placeholder="e.g. I want to start a poultry farm in Morogoro and need an investor" style="box-sizing: border-box; width: 100%; border: 1px solid #D9CBBB; border-radius: 22px; background: #FFFFFF; padding: 14px 18px; font: 400 15px/1.5 Figtree, sans-serif; color: #2A1A1E; resize: vertical"></textarea>
+</div>
+<div style="flex: 1 1 auto"></div>
+<a href="Phone-ID.dc.html" style="min-height: 56px; border-radius: 999px; background: #4A0E1A; color: #FFFFFF; font-weight: 600; font-size: 16px; text-decoration: none; display: flex; align-items: center; justify-content: center">Continue</a>
+</form>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":430,"height":900}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

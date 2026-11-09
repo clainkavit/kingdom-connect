@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Admin dashboard on a computer</title>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&amp;family=Figtree:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F7F1EA}
+a{color:#4A0E1A}a:hover{color:#2A0610}
+</style>
+</helmet>
+<div style="min-height: 1800px; box-sizing: border-box; padding: 24px; background: #F7F1EA; font-family: Figtree, system-ui, sans-serif; color: #2A1A1E; display: flex; flex-wrap: wrap; gap: 24px; align-items: stretch">
+<aside style="flex: 1 1 260px; max-width: 100%; min-width: 0; box-sizing: border-box; background: #4A0E1A; border-radius: 28px; padding: 24px 16px; display: flex; flex-direction: column; gap: 22px">
+<div style="display: flex; align-items: center; gap: 12px; padding: 0 8px">
+<img src="logo.jpg" alt="Kingdom Connect" style="width: 56px; height: 50px; object-fit: cover; border-radius: 12px; display: block">
+<span style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-family: 'Cormorant Garamond', Georgia, serif; font-size: 22px; font-weight: 700; color: #FFFFFF; line-height: 1">Kingdom Connect</span>
+<span style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #E7C36A">Admin</span>
+</span>
+</div>
+<nav aria-label="Admin menu" style="display: flex; flex-direction: column; gap: 2px">
+<a href="#" aria-current="page" style="min-height: 44px; display: flex; align-items: center; gap: 12px; padding: 0 12px; border-radius: 12px; background: #F7F1EA; color: #4A0E1A; font-size: 15px; font-weight: 700; text-decoration: none"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1.5"></rect><rect x="14" y="3" width="7" height="5" rx="1.5"></rect><rect x="14" y="12" width="7" height="9" rx="1.5"></rect><rect x="3" y="16" width="7" height="5" rx="1.5"></rect></svg>Dashboard</a>
+<a href="#" style="min-height: 44px; display: flex; align-items: center; gap: 12px; padding: 0 12px; border-radius: 12px; color: #F3E6D0; font-size: 15px; font-weight: 500; text-decoration: none"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="M9 12l2 2 4-4"></path></svg><span>Verification queue</span><span style="margin-left: auto; min-width: 24px; height: 22px; padding: 0 7px; box-sizing: border-box; border-radius: 999px; background: #E7C36A; color: #2A0610; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center">31</span></a>
+<a href="#" style="min-height: 44px; display: flex; align-items: center; gap: 12px; padding: 0 12px; border-radius: 12px; color: #F3E6D0; font-size: 15px; font-weight: 500; text-decoration: none"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg><span>Moderation queue</span><span style="margin-left: auto; min-width: 24px; height: 22px; padding: 0 7px; box-sizing: border-box; border-radius: 999px; background: #E7C36A; color: #2A0610; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center">16</span></a>
+<a href="#" style="min-height: 44px; display: flex; align-items: center; gap: 12px; padding: 0 12px; border-radius: 12px; color: #F3E6D0; font-size: 15px; font-weight: 500; text-decoration: none"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 22V4"></path><path d="M4 4h12l-2 4 2 4H4"></path></svg><span>Reports</span><span style="margin-left: auto; min-width: 24px; height: 22px; padding: 0 7px; box-sizing: border-box; border-radius: 999px; background: #E7C36A; color: #2A0610; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center">7</span></a>
+<a href="#" style="min-height: 44px; display: flex; align-items: center; gap: 12px; padding: 0 12px; border-radius: 12px; color: #F3E6D0; font-size: 15px; font-weight: 500; text-decoration: none"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7"></path><path d="M21 3v6h-6"></path></svg><span>Re-verification</span><span style="margin-left: auto; min-width: 24px; height: 22px; padding: 0 7px; box-sizing: border-box; border-radius: 999px; background: #E7C36A; color: #2A0610; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center">4</span></a>
+<a href="#" style="min-height: 44px; display: flex; align-items: center; gap: 12px; padding: 0 12px; border-radius: 12px; color: #F3E6D0; font-size: 15px; font-weight: 500; text-decoration: none"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.9"></path><path d="M16 3.1a4 4 0 0 1 0 7.8"></path></svg><span>Members and investors</span></a>
+<a href="#" style="min-height: 44px; display: flex; align-items: center; gap: 12px; padding: 0 12px; border-radius: 12px; color: #F3E6D0; font-size: 15px; font-weight: 500; text-decoration: none"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"></rect><path d="M7 8h10"></path><path d="M7 12h10"></path><path d="M7 16h6"></path></svg><span>News and featured</span></a>
+<a href="#" style="min-height: 44px; display: flex; align-items: center; gap: 12px; padding: 0 12px; border-radius: 12px; color: #F3E6D0; font-size: 15px; font-weight: 500; text-decoration: none"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="19" r="2"></circle><circle cx="18" cy="5" r="2"></circle><path d="M8 19h6a4 4 0 0 0 0-8h-4a4 4 0 0 1 0-8h6"></path></svg><span>Milestone plans</span></a>
+<a href="#" style="min-height: 44px; display: flex; align-items: center; gap: 12px; padding: 0 12px; border-radius: 12px; color: #F3E6D0; font-size: 15px; font-weight: 500; text-decoration: none"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"></rect><path d="M12 8v8"></path><path d="M8 12h8"></path></svg><span>Post as admin</span></a>
+<a href="#" style="min-height: 44px; display: flex; align-items: center; gap: 12px; padding: 0 12px; border-radius: 12px; color: #F3E6D0; font-size: 15px; font-weight: 500; text-decoration: none"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><path d="M14 3v6h6"></path><path d="M8 13h8"></path><path d="M8 17h5"></path></svg><span>Audit log <span style="font-size: 11px; font-weight: 600; color: #E9C9A6">Super Admin</span></span></a>
+<a href="#" style="min-height: 44px; display: flex; align-items: center; gap: 12px; padding: 0 12px; border-radius: 12px; color: #F3E6D0; font-size: 15px; font-weight: 500; text-decoration: none"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M12 2v3"></path><path d="M12 19v3"></path><path d="M4.9 4.9l2.1 2.1"></path><path d="M17 17l2.1 2.1"></path><path d="M2 12h3"></path><path d="M19 12h3"></path><path d="M4.9 19.1L7 17"></path><path d="M17 7l2.1-2.1"></path></svg><span>Settings</span></a>
+</nav>
+<div style="flex: 1 1 auto"></div>
+<p style="margin: 0; padding: 0 8px; font-size: 13px; line-height: 1.5; color: #E9DCCB">Staff accounts cannot connect with or message members.</p>
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 0 8px">
+<div role="group" aria-label="Language" style="display: flex; gap: 4px; background: rgba(255,255,255,0.12); border-radius: 999px; padding: 4px">
+<button type="button" aria-pressed="true" style="min-height: 36px; min-width: 44px; border: 0; border-radius: 999px; background: #F7F1EA; color: #4A0E1A; font: 700 13px Figtree, sans-serif">EN</button>
+<button type="button" aria-pressed="false" style="min-height: 36px; min-width: 44px; border: 0; border-radius: 999px; background: transparent; color: #F3E6D0; font: 600 13px Figtree, sans-serif">SW</button>
+</div>
+<a href="Admin-Login.dc.html" style="min-height: 44px; display: flex; align-items: center; color: #FFFFFF; font-size: 14px; font-weight: 600">Log out</a>
+</div>
+</aside>
+<main style="flex: 999 1 640px; min-width: 0; display: flex; flex-direction: column; gap: 20px; padding: 8px 8px 24px">
+<div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<span style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px; font-size: 14px; color: #5A4A4E">Sunday, 8 November 2026 <span style="display: flex; align-items: center; gap: 4px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"></path><circle cx="12" cy="9.5" r="2.5"></circle></svg>Dar es Salaam</span></span>
+<h1 style="margin: 0; font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 600; font-size: 44px; line-height: 1.05; color: #4A0E1A">Good morning, Susan</h1>
+</div>
+<span style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #5A4A4E"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7"></path><path d="M21 3v6h-6"></path></svg>Counts refresh every 15 minutes · Updated 09:45</span>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 10px">
+<a href="#" style="min-height: 48px; display: flex; align-items: center; gap: 10px; padding: 0 18px; border-radius: 999px; background: #FFFFFF; border: 1px solid #D9CBBB; color: #4A0E1A; font-size: 15px; font-weight: 600; text-decoration: none"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"></rect><path d="M12 8v8"></path><path d="M8 12h8"></path></svg>Post opportunity</a><a href="#" style="min-height: 48px; display: flex; align-items: center; gap: 10px; padding: 0 18px; border-radius: 999px; background: #FFFFFF; border: 1px solid #D9CBBB; color: #4A0E1A; font-size: 15px; font-weight: 600; text-decoration: none"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"></rect><path d="M12 8v8"></path><path d="M8 12h8"></path></svg>Post tender</a><a href="#" style="min-height: 48px; display: flex; align-items: center; gap: 10px; padding: 0 18px; border-radius: 999px; background: #FFFFFF; border: 1px solid #D9CBBB; color: #4A0E1A; font-size: 15px; font-weight: 600; text-decoration: none"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"></rect><path d="M7 8h10"></path><path d="M7 12h10"></path><path d="M7 16h6"></path></svg>Post news</a><a href="#" style="min-height: 48px; display: flex; align-items: center; gap: 10px; padding: 0 18px; border-radius: 999px; background: #FFFFFF; border: 1px solid #D9CBBB; color: #4A0E1A; font-size: 15px; font-weight: 600; text-decoration: none"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9z"></path></svg>Feature an opportunity</a>
+</div>
+
+<a href="#" role="alert" style="display: flex; align-items: center; gap: 12px; background: #FDF1DC; color: #5E3A00; border-radius: 18px; padding: 14px 18px; font-size: 15px; font-weight: 600; text-decoration: none"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>3 applications have waited more than 2 working days. Open the verification queue<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg></a>
+
+<section aria-label="Security alerts" style="background: #FFFFFF; border: 1px solid #F0C4C4; border-radius: 22px; padding: 16px 20px; display: flex; flex-direction: column; gap: 4px">
+<h2 style="margin: 0 0 6px; display: flex; align-items: center; gap: 8px; font-size: 17px; font-weight: 700; color: #7D1F1F"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg>Security alerts</h2>
+<ul style="list-style: none; margin: 0; padding: 0"><li style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 10px 0; border-top: 1px solid #F3D3D3">
+<span style="flex: 1 1 260px; font-size: 14px; color: #2A1A1E">20 failed sign-ins across the platform in 10 minutes <span style="color: #5A4A4E">· Today 08:52</span></span>
+<button type="button" style="min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid #D9CBBB; background: #FFFFFF; color: #4A0E1A; font: 600 13px Figtree, sans-serif">Mark as seen</button>
+</li><li style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 10px 0; border-top: 1px solid #F3D3D3">
+<span style="flex: 1 1 260px; font-size: 14px; color: #2A1A1E">A duplicate ID was attempted at registration <span style="color: #5A4A4E">· Today 07:15</span></span>
+<button type="button" style="min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid #D9CBBB; background: #FFFFFF; color: #4A0E1A; font: 600 13px Figtree, sans-serif">Mark as seen</button>
+</li></ul>
+</section>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px">
+<a href="#" style="display: flex; flex-direction: column; gap: 6px; background: #FFFFFF; border: 1px solid #E4D9CC; border-radius: 22px; padding: 18px 20px; text-decoration: none; color: #2A1A1E; min-width: 0">
+<span style="display: flex; align-items: center; justify-content: space-between; gap: 8px"><span style="font-size: 14px; font-weight: 600; color: #5A4A4E">Verified members</span><span style="width: 36px; height: 36px; border-radius: 12px; background: #F3E6D0; color: #4A0E1A; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.9"></path><path d="M16 3.1a4 4 0 0 1 0 7.8"></path></svg></span></span>
+<span style="font-size: 34px; font-weight: 800; letter-spacing: -0.02em; color: #2A1A1E; line-height: 1.05">1,248</span>
+<span style="font-size: 13px; color: #5A4A4E">+36 this week</span>
+</a>
+<a href="#" style="display: flex; flex-direction: column; gap: 6px; background: #FFFFFF; border: 1px solid #E4D9CC; border-radius: 22px; padding: 18px 20px; text-decoration: none; color: #2A1A1E; min-width: 0">
+<span style="display: flex; align-items: center; justify-content: space-between; gap: 8px"><span style="font-size: 14px; font-weight: 600; color: #5A4A4E">Registered businesses</span><span style="width: 36px; height: 36px; border-radius: 12px; background: #F3E6D0; color: #4A0E1A; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="M9 12l2 2 4-4"></path></svg></span></span>
+<span style="font-size: 34px; font-weight: 800; letter-spacing: -0.02em; color: #2A1A1E; line-height: 1.05">186</span>
+<span style="font-size: 13px; color: #5A4A4E">Level 2 and up</span>
+</a>
+<a href="#" style="display: flex; flex-direction: column; gap: 6px; background: #FFFFFF; border: 1px solid #E4D9CC; border-radius: 22px; padding: 18px 20px; text-decoration: none; color: #2A1A1E; min-width: 0">
+<span style="display: flex; align-items: center; justify-content: space-between; gap: 8px"><span style="font-size: 14px; font-weight: 600; color: #5A4A4E">Open opportunities</span><span style="width: 36px; height: 36px; border-radius: 12px; background: #F3E6D0; color: #4A0E1A; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"></rect><path d="M12 8v8"></path><path d="M8 12h8"></path></svg></span></span>
+<span style="font-size: 34px; font-weight: 800; letter-spacing: -0.02em; color: #2A1A1E; line-height: 1.05">74</span>
+<span style="font-size: 13px; color: #5A4A4E">Jobs, partnerships, tenders and more</span>
+</a>
+<a href="#" style="display: flex; flex-direction: column; gap: 6px; background: #FFFFFF; border: 1px solid #E4D9CC; border-radius: 22px; padding: 18px 20px; text-decoration: none; color: #2A1A1E; min-width: 0">
+<span style="display: flex; align-items: center; justify-content: space-between; gap: 8px"><span style="font-size: 14px; font-weight: 600; color: #5A4A4E">Ideas in the pool</span><span style="width: 36px; height: 36px; border-radius: 12px; background: #F3E6D0; color: #4A0E1A; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="19" r="2"></circle><circle cx="18" cy="5" r="2"></circle><path d="M8 19h6a4 4 0 0 0 0-8h-4a4 4 0 0 1 0-8h6"></path></svg></span></span>
+<span style="font-size: 34px; font-weight: 800; letter-spacing: -0.02em; color: #2A1A1E; line-height: 1.05">52</span>
+<span style="font-size: 13px; color: #5A4A4E">+4 this week</span>
+</a>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 14px; align-items: start">
+<section style="background: #FFFFFF; border: 1px solid #E4D9CC; border-radius: 22px; padding: 18px 20px; display: flex; flex-direction: column; gap: 12px; min-width: 0">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px">
+<h2 style="margin: 0; font-size: 17px; font-weight: 700; color: #2A1A1E">New verified members per week</h2>
+<a href="#" style="min-height: 44px; display: flex; align-items: center; gap: 4px; font-size: 14px; font-weight: 600; text-decoration: none">Open members<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg></a>
+</div>
+<svg viewBox="0 0 620 220" width="100%" role="img" aria-label="New verified members per week, from 18 to 36" style="display: block; height: auto">
+<line x1="36" x2="604" y1="190.0" y2="190.0" stroke="#EFE7DE" stroke-width="1"></line><text x="28" y="194.0" text-anchor="end" style="font: 500 11px Figtree, sans-serif; fill: #5A4A4E">0</text><line x1="36" x2="604" y1="146.0" y2="146.0" stroke="#EFE7DE" stroke-width="1"></line><text x="28" y="150.0" text-anchor="end" style="font: 500 11px Figtree, sans-serif; fill: #5A4A4E">10</text><line x1="36" x2="604" y1="102.0" y2="102.0" stroke="#EFE7DE" stroke-width="1"></line><text x="28" y="106.0" text-anchor="end" style="font: 500 11px Figtree, sans-serif; fill: #5A4A4E">20</text><line x1="36" x2="604" y1="58.0" y2="58.0" stroke="#EFE7DE" stroke-width="1"></line><text x="28" y="62.0" text-anchor="end" style="font: 500 11px Figtree, sans-serif; fill: #5A4A4E">30</text><line x1="36" x2="604" y1="14.0" y2="14.0" stroke="#EFE7DE" stroke-width="1"></line><text x="28" y="18.0" text-anchor="end" style="font: 500 11px Figtree, sans-serif; fill: #5A4A4E">40</text>
+<polygon points="36.0,190.0 36.0,110.8 117.1,93.2 198.3,80.0 279.4,97.6 360.6,58.0 441.7,66.8 522.9,40.4 604.0,31.6 604.0,190.0" fill="#9B2C45" fill-opacity="0.10"></polygon>
+<polyline points="36.0,110.8 117.1,93.2 198.3,80.0 279.4,97.6 360.6,58.0 441.7,66.8 522.9,40.4 604.0,31.6" fill="none" stroke="#9B2C45" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"></polyline>
+<circle cx="604.0" cy="31.6" r="5" fill="#9B2C45" stroke="#FFFFFF" stroke-width="2"></circle>
+<text x="594.0" y="19.6" text-anchor="end" style="font: 800 13px Figtree, sans-serif; fill: #2A1A1E">36 this week</text>
+<text x="36.0" y="212" text-anchor="middle" style="font: 500 11px Figtree, sans-serif; fill: #5A4A4E">14 Sep</text><text x="117.1" y="212" text-anchor="middle" style="font: 500 11px Figtree, sans-serif; fill: #5A4A4E">21 Sep</text><text x="198.3" y="212" text-anchor="middle" style="font: 500 11px Figtree, sans-serif; fill: #5A4A4E">28 Sep</text><text x="279.4" y="212" text-anchor="middle" style="font: 500 11px Figtree, sans-serif; fill: #5A4A4E">5 Oct</text><text x="360.6" y="212" text-anchor="middle" style="font: 500 11px Figtree, sans-serif; fill: #5A4A4E">12 Oct</text><text x="441.7" y="212" text-anchor="middle" style="font: 500 11px Figtree, sans-serif; fill: #5A4A4E">19 Oct</text><text x="522.9" y="212" text-anchor="middle" style="font: 500 11px Figtree, sans-serif; fill: #5A4A4E">26 Oct</text><text x="604.0" y="212" text-anchor="middle" style="font: 500 11px Figtree, sans-serif; fill: #5A4A4E">2 Nov</text><circle cx="36.0" cy="110.8" r="12" fill="transparent"><title>Week of 14 Sep: 18 new members</title></circle><circle cx="117.1" cy="93.2" r="12" fill="transparent"><title>Week of 21 Sep: 22 new members</title></circle><circle cx="198.3" cy="80.0" r="12" fill="transparent"><title>Week of 28 Sep: 25 new members</title></circle><circle cx="279.4" cy="97.6" r="12" fill="transparent"><title>Week of 5 Oct: 21 new members</title></circle><circle cx="360.6" cy="58.0" r="12" fill="transparent"><title>Week of 12 Oct: 30 new members</title></circle><circle cx="441.7" cy="66.8" r="12" fill="transparent"><title>Week of 19 Oct: 28 new members</title></circle><circle cx="522.9" cy="40.4" r="12" fill="transparent"><title>Week of 26 Oct: 34 new members</title></circle><circle cx="604.0" cy="31.6" r="12" fill="transparent"><title>Week of 2 Nov: 36 new members</title></circle>
+</svg><span style="font-size: 13px; color: #5A4A4E">Last 8 weeks. Hover a point for the week.</span>
+</section>
+<section style="background: #FFFFFF; border: 1px solid #E4D9CC; border-radius: 22px; padding: 18px 20px; display: flex; flex-direction: column; gap: 12px; min-width: 0">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px">
+<h2 style="margin: 0; font-size: 17px; font-weight: 700; color: #2A1A1E">Open opportunities by type</h2>
+<a href="#" style="min-height: 44px; display: flex; align-items: center; gap: 4px; font-size: 14px; font-weight: 600; text-decoration: none">Open opportunities<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg></a>
+</div>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 20px"><svg width="150" height="150" viewBox="0 0 150 150" role="img" aria-label="open: Jobs 32, Partnerships 14, Tenders 12, Other types 16" style="flex-shrink: 0">
+<circle cx="75.0" cy="75.0" r="58" fill="none" stroke="#EFE7DE" stroke-width="20"></circle>
+<circle cx="75.0" cy="75.0" r="58" fill="none" stroke="#9B2C45" stroke-width="20" stroke-dasharray="155.09 364.42" stroke-dashoffset="-0.00" transform="rotate(-90 75.0 75.0)"><title>Jobs: 32</title></circle><circle cx="75.0" cy="75.0" r="58" fill="none" stroke="#B97A10" stroke-width="20" stroke-dasharray="66.45 364.42" stroke-dashoffset="-157.59" transform="rotate(-90 75.0 75.0)"><title>Partnerships: 14</title></circle><circle cx="75.0" cy="75.0" r="58" fill="none" stroke="#0F8F7F" stroke-width="20" stroke-dasharray="56.60 364.42" stroke-dashoffset="-226.53" transform="rotate(-90 75.0 75.0)"><title>Tenders: 12</title></circle><circle cx="75.0" cy="75.0" r="58" fill="none" stroke="#5B5BD6" stroke-width="20" stroke-dasharray="76.29 364.42" stroke-dashoffset="-285.63" transform="rotate(-90 75.0 75.0)"><title>Other types: 16</title></circle>
+<text x="75.0" y="73.0" text-anchor="middle" style="font: 800 30px Figtree, sans-serif; fill: #2A1A1E">74</text>
+<text x="75.0" y="95.0" text-anchor="middle" style="font: 600 12px Figtree, sans-serif; fill: #5A4A4E">open</text>
+</svg><div style="flex: 1 1 160px; min-width: 0; display: flex; flex-direction: column"><a href="#" style="min-height: 40px; display: flex; align-items: center; gap: 10px; border-top: 1px solid #EFE7DE; text-decoration: none; color: #2A1A1E">
+<span style="width: 12px; height: 12px; border-radius: 4px; background: #9B2C45; flex-shrink: 0"></span>
+<span style="font-size: 14px">Jobs</span><span style="flex: 1 1 auto"></span>
+<span style="font-size: 16px; font-weight: 800; min-width: 24px; text-align: right">32</span></a><a href="#" style="min-height: 40px; display: flex; align-items: center; gap: 10px; border-top: 1px solid #EFE7DE; text-decoration: none; color: #2A1A1E">
+<span style="width: 12px; height: 12px; border-radius: 4px; background: #B97A10; flex-shrink: 0"></span>
+<span style="font-size: 14px">Partnerships</span><span style="flex: 1 1 auto"></span>
+<span style="font-size: 16px; font-weight: 800; min-width: 24px; text-align: right">14</span></a><a href="#" style="min-height: 40px; display: flex; align-items: center; gap: 10px; border-top: 1px solid #EFE7DE; text-decoration: none; color: #2A1A1E">
+<span style="width: 12px; height: 12px; border-radius: 4px; background: #0F8F7F; flex-shrink: 0"></span>
+<span style="font-size: 14px">Tenders</span><span style="flex: 1 1 auto"></span>
+<span style="font-size: 16px; font-weight: 800; min-width: 24px; text-align: right">12</span></a><a href="#" style="min-height: 40px; display: flex; align-items: center; gap: 10px; border-top: 1px solid #EFE7DE; text-decoration: none; color: #2A1A1E">
+<span style="width: 12px; height: 12px; border-radius: 4px; background: #5B5BD6; flex-shrink: 0"></span>
+<span style="font-size: 14px">Other types</span><span style="flex: 1 1 auto"></span>
+<span style="font-size: 16px; font-weight: 800; min-width: 24px; text-align: right">16</span></a></div></div>
+</section>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 14px; align-items: start">
+<section style="background: #FFFFFF; border: 1px solid #E4D9CC; border-radius: 22px; padding: 18px 20px; display: flex; flex-direction: column; gap: 12px; min-width: 0">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px">
+<h2 style="margin: 0; font-size: 17px; font-weight: 700; color: #2A1A1E">Waiting for verification</h2>
+<a href="#" style="min-height: 44px; display: flex; align-items: center; gap: 4px; font-size: 14px; font-weight: 600; text-decoration: none">Open queue<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg></a>
+</div>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 20px"><svg width="150" height="150" viewBox="0 0 150 150" role="img" aria-label="waiting: Members 23, Business, Level 2 5, Business, Level 3 2, Investor applications 1" style="flex-shrink: 0">
+<circle cx="75.0" cy="75.0" r="58" fill="none" stroke="#EFE7DE" stroke-width="20"></circle>
+<circle cx="75.0" cy="75.0" r="58" fill="none" stroke="#9B2C45" stroke-width="20" stroke-dasharray="267.88 364.42" stroke-dashoffset="-0.00" transform="rotate(-90 75.0 75.0)"><title>Members: 23</title></circle><circle cx="75.0" cy="75.0" r="58" fill="none" stroke="#B97A10" stroke-width="20" stroke-dasharray="56.28 364.42" stroke-dashoffset="-270.38" transform="rotate(-90 75.0 75.0)"><title>Business, Level 2: 5</title></circle><circle cx="75.0" cy="75.0" r="58" fill="none" stroke="#0F8F7F" stroke-width="20" stroke-dasharray="21.01 364.42" stroke-dashoffset="-329.16" transform="rotate(-90 75.0 75.0)"><title>Business, Level 3: 2</title></circle><circle cx="75.0" cy="75.0" r="58" fill="none" stroke="#5B5BD6" stroke-width="20" stroke-dasharray="9.26 364.42" stroke-dashoffset="-352.67" transform="rotate(-90 75.0 75.0)"><title>Investor applications: 1</title></circle>
+<text x="75.0" y="73.0" text-anchor="middle" style="font: 800 30px Figtree, sans-serif; fill: #2A1A1E">31</text>
+<text x="75.0" y="95.0" text-anchor="middle" style="font: 600 12px Figtree, sans-serif; fill: #5A4A4E">waiting</text>
+</svg><div style="flex: 1 1 160px; min-width: 0; display: flex; flex-direction: column"><a href="#" style="min-height: 40px; display: flex; align-items: center; gap: 10px; border-top: 1px solid #EFE7DE; text-decoration: none; color: #2A1A1E">
+<span style="width: 12px; height: 12px; border-radius: 4px; background: #9B2C45; flex-shrink: 0"></span>
+<span style="font-size: 14px">Members</span><span style="flex: 1 1 auto"></span><span style="display: flex; align-items: center; gap: 4px; background: #FDF1DC; color: #5E3A00; border-radius: 999px; padding: 3px 10px; font-size: 12px; font-weight: 700"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>Oldest 3 days</span>
+<span style="font-size: 16px; font-weight: 800; min-width: 24px; text-align: right">23</span></a><a href="#" style="min-height: 40px; display: flex; align-items: center; gap: 10px; border-top: 1px solid #EFE7DE; text-decoration: none; color: #2A1A1E">
+<span style="width: 12px; height: 12px; border-radius: 4px; background: #B97A10; flex-shrink: 0"></span>
+<span style="font-size: 14px">Business, Level 2</span><span style="flex: 1 1 auto"></span>
+<span style="font-size: 16px; font-weight: 800; min-width: 24px; text-align: right">5</span></a><a href="#" style="min-height: 40px; display: flex; align-items: center; gap: 10px; border-top: 1px solid #EFE7DE; text-decoration: none; color: #2A1A1E">
+<span style="width: 12px; height: 12px; border-radius: 4px; background: #0F8F7F; flex-shrink: 0"></span>
+<span style="font-size: 14px">Business, Level 3</span><span style="flex: 1 1 auto"></span>
+<span style="font-size: 16px; font-weight: 800; min-width: 24px; text-align: right">2</span></a><a href="#" style="min-height: 40px; display: flex; align-items: center; gap: 10px; border-top: 1px solid #EFE7DE; text-decoration: none; color: #2A1A1E">
+<span style="width: 12px; height: 12px; border-radius: 4px; background: #5B5BD6; flex-shrink: 0"></span>
+<span style="font-size: 14px">Investor applications</span><span style="flex: 1 1 auto"></span>
+<span style="font-size: 16px; font-weight: 800; min-width: 24px; text-align: right">1</span></a></div></div>
+</section>
+<section style="background: #FFFFFF; border: 1px solid #E4D9CC; border-radius: 22px; padding: 18px 20px; display: flex; flex-direction: column; gap: 12px; min-width: 0">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px">
+<h2 style="margin: 0; font-size: 17px; font-weight: 700; color: #2A1A1E">Waiting for moderation</h2>
+<a href="#" style="min-height: 44px; display: flex; align-items: center; gap: 4px; font-size: 14px; font-weight: 600; text-decoration: none">Open queue<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg></a>
+</div>
+<div role="img" aria-label="Waiting for moderation: Opportunities 6, Ideas 4, Tenders 3, Training 2, Events 1" style="display: flex; flex-direction: column; gap: 2px"><a href="#" title="Opportunities: 6 waiting" style="min-height: 40px; display: grid; grid-template-columns: 104px minmax(0, 1fr) 28px; align-items: center; gap: 10px; text-decoration: none; color: #2A1A1E">
+<span style="font-size: 14px">Opportunities</span>
+<span style="height: 16px; border-radius: 0 4px 4px 0; background: #9B2C45; width: 100%"></span>
+<span style="font-size: 15px; font-weight: 800; text-align: right">6</span></a><a href="#" title="Ideas: 4 waiting" style="min-height: 40px; display: grid; grid-template-columns: 104px minmax(0, 1fr) 28px; align-items: center; gap: 10px; text-decoration: none; color: #2A1A1E">
+<span style="font-size: 14px">Ideas</span>
+<span style="height: 16px; border-radius: 0 4px 4px 0; background: #9B2C45; width: 67%"></span>
+<span style="font-size: 15px; font-weight: 800; text-align: right">4</span></a><a href="#" title="Tenders: 3 waiting" style="min-height: 40px; display: grid; grid-template-columns: 104px minmax(0, 1fr) 28px; align-items: center; gap: 10px; text-decoration: none; color: #2A1A1E">
+<span style="font-size: 14px">Tenders</span>
+<span style="height: 16px; border-radius: 0 4px 4px 0; background: #9B2C45; width: 50%"></span>
+<span style="font-size: 15px; font-weight: 800; text-align: right">3</span></a><a href="#" title="Training: 2 waiting" style="min-height: 40px; display: grid; grid-template-columns: 104px minmax(0, 1fr) 28px; align-items: center; gap: 10px; text-decoration: none; color: #2A1A1E">
+<span style="font-size: 14px">Training</span>
+<span style="height: 16px; border-radius: 0 4px 4px 0; background: #9B2C45; width: 33%"></span>
+<span style="font-size: 15px; font-weight: 800; text-align: right">2</span></a><a href="#" title="Events: 1 waiting" style="min-height: 40px; display: grid; grid-template-columns: 104px minmax(0, 1fr) 28px; align-items: center; gap: 10px; text-decoration: none; color: #2A1A1E">
+<span style="font-size: 14px">Events</span>
+<span style="height: 16px; border-radius: 0 4px 4px 0; background: #9B2C45; width: 17%"></span>
+<span style="font-size: 15px; font-weight: 800; text-align: right">1</span></a></div>
+</section>
+<section style="background: #FFFFFF; border: 1px solid #E4D9CC; border-radius: 22px; padding: 18px 20px; display: flex; flex-direction: column; gap: 12px; min-width: 0">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px">
+<h2 style="margin: 0; font-size: 17px; font-weight: 700; color: #2A1A1E">Sign-ups today</h2>
+
+</div>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 20px"><svg width="150" height="150" viewBox="0 0 150 150" role="img" aria-label="37 sign-ups today of a limit of 100" style="flex-shrink: 0">
+<circle cx="75.0" cy="75.0" r="56" fill="none" stroke="#EFE7DE" stroke-width="14"></circle>
+<circle cx="75.0" cy="75.0" r="56" fill="none" stroke="#9B2C45" stroke-width="14" stroke-linecap="round" stroke-dasharray="130.19 351.86" transform="rotate(-90 75.0 75.0)"></circle>
+<text x="75.0" y="77.0" text-anchor="middle" style="font: 800 32px Figtree, sans-serif; fill: #2A1A1E">37</text>
+<text x="75.0" y="97.0" text-anchor="middle" style="font: 600 12px Figtree, sans-serif; fill: #5A4A4E">of 100 today</text>
+</svg><div style="display: flex; flex-direction: column; gap: 6px"><span style="font-size: 15px; font-weight: 600">63 places left today</span><span style="font-size: 13px; color: #5A4A4E">The daily limit stops new sign-ups when the queue is too long.</span><a href="#" style="min-height: 44px; display: flex; align-items: center; font-size: 14px; font-weight: 600">Change in Settings</a><span style="font-size: 12px; color: #5A4A4E">Only Super Admins see this link.</span></div></div>
+</section>
+<section style="background: #FFFFFF; border: 1px solid #E4D9CC; border-radius: 22px; padding: 18px 20px; display: flex; flex-direction: column; gap: 12px; min-width: 0">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px">
+<h2 style="margin: 0; font-size: 17px; font-weight: 700; color: #2A1A1E">Reports and hidden items</h2>
+<a href="#" style="min-height: 44px; display: flex; align-items: center; gap: 4px; font-size: 14px; font-weight: 600; text-decoration: none">Open reports<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg></a>
+</div>
+<div style="display: flex; flex-direction: column"><a href="#" style="min-height: 48px; display: flex; align-items: center; gap: 10px; padding: 0 4px; border-top: 1px solid #EFE7DE; text-decoration: none; color: #2A1A1E">
+<span style="font-size: 15px; font-weight: 500">Open reports</span>
+<span style="flex: 1 1 auto"></span><span style="font-size: 13px; color: #5A4A4E">Oldest 2 days</span>
+<span style="min-width: 32px; text-align: right; font-size: 18px; font-weight: 800">7</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg>
+</a><a href="#" style="min-height: 48px; display: flex; align-items: center; gap: 10px; padding: 0 4px; border-top: 1px solid #EFE7DE; text-decoration: none; color: #2A1A1E">
+<span style="font-size: 15px; font-weight: 500">Items hidden pending review</span>
+<span style="flex: 1 1 auto"></span><span style="background: #FBE7E7; color: #7D1F1F; border-radius: 999px; padding: 3px 10px; font-size: 12px; font-weight: 700">Hidden</span>
+<span style="min-width: 32px; text-align: right; font-size: 18px; font-weight: 800">2</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg>
+</a><a href="#" style="min-height: 48px; display: flex; align-items: center; gap: 10px; padding: 0 4px; border-top: 1px solid #EFE7DE; text-decoration: none; color: #2A1A1E">
+<span style="font-size: 15px; font-weight: 500">Rejected members</span>
+<span style="flex: 1 1 auto"></span>
+<span style="min-width: 32px; text-align: right; font-size: 18px; font-weight: 800">12</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg>
+</a></div>
+</section>
+<section style="background: #FFFFFF; border: 1px solid #E4D9CC; border-radius: 22px; padding: 18px 20px; display: flex; flex-direction: column; gap: 12px; min-width: 0">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px">
+<h2 style="margin: 0; font-size: 17px; font-weight: 700; color: #2A1A1E">Re-verifications due in 30 days</h2>
+<a href="#" style="min-height: 44px; display: flex; align-items: center; gap: 4px; font-size: 14px; font-weight: 600; text-decoration: none">Open list<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg></a>
+</div>
+<div style="display: flex; flex-direction: column"><a href="#" style="min-height: 48px; display: flex; align-items: center; gap: 10px; padding: 0 4px; border-top: 1px solid #EFE7DE; text-decoration: none; color: #2A1A1E">
+<span style="font-size: 15px; font-weight: 500">Licences expired</span>
+<span style="flex: 1 1 auto"></span><span style="background: #FBE7E7; color: #7D1F1F; border-radius: 999px; padding: 3px 10px; font-size: 12px; font-weight: 700">Paused</span>
+<span style="min-width: 32px; text-align: right; font-size: 18px; font-weight: 800">1</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg>
+</a><a href="#" style="min-height: 48px; display: flex; align-items: center; gap: 10px; padding: 0 4px; border-top: 1px solid #EFE7DE; text-decoration: none; color: #2A1A1E">
+<span style="font-size: 15px; font-weight: 500">Licences ending soon</span>
+<span style="flex: 1 1 auto"></span><span style="font-size: 13px; color: #5A4A4E">Soonest 14 Nov</span>
+<span style="min-width: 32px; text-align: right; font-size: 18px; font-weight: 800">3</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg>
+</a></div>
+</section>
+<section style="background: #FFFFFF; border: 1px solid #E4D9CC; border-radius: 22px; padding: 18px 20px; display: flex; flex-direction: column; gap: 12px; min-width: 0">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px">
+<h2 style="margin: 0; font-size: 17px; font-weight: 700; color: #2A1A1E">Featured opportunities</h2>
+<a href="#" style="min-height: 44px; display: flex; align-items: center; gap: 4px; font-size: 14px; font-weight: 600; text-decoration: none">Feature an opportunity<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg></a>
+</div>
+<div role="img" aria-label="3 of 5 featured slots used" style="display: flex; align-items: center; gap: 10px"><span title="Slot 1: in use" style="width: 40px; height: 40px; border-radius: 999px; background: #F6E7BE; color: #5A3D00; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9z"></path></svg></span><span title="Slot 2: in use" style="width: 40px; height: 40px; border-radius: 999px; background: #F6E7BE; color: #5A3D00; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9z"></path></svg></span><span title="Slot 3: in use" style="width: 40px; height: 40px; border-radius: 999px; background: #F6E7BE; color: #5A3D00; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9z"></path></svg></span><span title="Slot 4: free" style="width: 40px; height: 40px; box-sizing: border-box; border-radius: 999px; border: 2px dashed #D9CBBB"></span><span title="Slot 5: free" style="width: 40px; height: 40px; box-sizing: border-box; border-radius: 999px; border: 2px dashed #D9CBBB"></span><span style="margin-left: 6px; font-size: 14px; color: #5A4A4E">3 of 5 slots used</span></div><div style="display: flex; align-items: center; gap: 12px; padding: 10px 0; border-top: 1px solid #EFE7DE">
+<span style="width: 36px; height: 36px; border-radius: 12px; background: #F6E7BE; color: #5A3D00; display: flex; align-items: center; justify-content: center; flex-shrink: 0"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9z"></path></svg></span>
+<span style="display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1 1 auto"><span style="font-size: 15px; font-weight: 600">[OPPORTUNITY TITLE]</span><span style="font-size: 13px; color: #5A4A4E">Job · Dar es Salaam</span></span>
+<button type="button" style="min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid #D9CBBB; background: #FFFFFF; color: #4A0E1A; font: 600 13px Figtree, sans-serif">Remove</button>
+</div><div style="display: flex; align-items: center; gap: 12px; padding: 10px 0; border-top: 1px solid #EFE7DE">
+<span style="width: 36px; height: 36px; border-radius: 12px; background: #F6E7BE; color: #5A3D00; display: flex; align-items: center; justify-content: center; flex-shrink: 0"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9z"></path></svg></span>
+<span style="display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1 1 auto"><span style="font-size: 15px; font-weight: 600">[TENDER TITLE]</span><span style="font-size: 13px; color: #5A4A4E">Tender · Dodoma</span></span>
+<button type="button" style="min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid #D9CBBB; background: #FFFFFF; color: #4A0E1A; font: 600 13px Figtree, sans-serif">Remove</button>
+</div><div style="display: flex; align-items: center; gap: 12px; padding: 10px 0; border-top: 1px solid #EFE7DE">
+<span style="width: 36px; height: 36px; border-radius: 12px; background: #F6E7BE; color: #5A3D00; display: flex; align-items: center; justify-content: center; flex-shrink: 0"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9z"></path></svg></span>
+<span style="display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1 1 auto"><span style="font-size: 15px; font-weight: 600">[OPPORTUNITY TITLE]</span><span style="font-size: 13px; color: #5A4A4E">Partnership · Arusha</span></span>
+<button type="button" style="min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid #D9CBBB; background: #FFFFFF; color: #4A0E1A; font: 600 13px Figtree, sans-serif">Remove</button>
+</div>
+</section>
+<section style="background: #FFFFFF; border: 1px solid #E4D9CC; border-radius: 22px; padding: 18px 20px; display: flex; flex-direction: column; gap: 12px; min-width: 0">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px">
+<h2 style="margin: 0; font-size: 17px; font-weight: 700; color: #2A1A1E">Investors</h2>
+<a href="#" style="min-height: 44px; display: flex; align-items: center; gap: 4px; font-size: 14px; font-weight: 600; text-decoration: none">Members and investors<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg></a>
+</div>
+<div style="display: flex; flex-direction: column"><a href="#" style="min-height: 48px; display: flex; align-items: center; gap: 10px; padding: 0 4px; border-top: 1px solid #EFE7DE; text-decoration: none; color: #2A1A1E">
+<span style="font-size: 15px; font-weight: 500">Investor flag holders</span>
+<span style="flex: 1 1 auto"></span>
+<span style="min-width: 32px; text-align: right; font-size: 18px; font-weight: 800">9</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg>
+</a><a href="#" style="min-height: 48px; display: flex; align-items: center; gap: 10px; padding: 0 4px; border-top: 1px solid #EFE7DE; text-decoration: none; color: #2A1A1E">
+<span style="font-size: 15px; font-weight: 500">Interest in ideas this month</span>
+<span style="flex: 1 1 auto"></span>
+<span style="min-width: 32px; text-align: right; font-size: 18px; font-weight: 800">14</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg>
+</a><a href="#" style="min-height: 48px; display: flex; align-items: center; gap: 10px; padding: 0 4px; border-top: 1px solid #EFE7DE; text-decoration: none; color: #2A1A1E">
+<span style="font-size: 15px; font-weight: 500">NDAs accepted this month</span>
+<span style="flex: 1 1 auto"></span>
+<span style="min-width: 32px; text-align: right; font-size: 18px; font-weight: 800">3</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg>
+</a><a href="#" style="min-height: 48px; display: flex; align-items: center; gap: 10px; padding: 0 4px; border-top: 1px solid #EFE7DE; text-decoration: none; color: #2A1A1E">
+<span style="font-size: 15px; font-weight: 500">Invitations waiting</span>
+<span style="flex: 1 1 auto"></span>
+<span style="min-width: 32px; text-align: right; font-size: 18px; font-weight: 800">2</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg>
+</a></div><p style="margin: 0; display: flex; align-items: center; gap: 6px; font-size: 13px; color: #5A4A4E"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg>Staff only. Members never see who is an investor.</p>
+</section>
+<section style="background: #FFFFFF; border: 1px solid #E4D9CC; border-radius: 22px; padding: 18px 20px; display: flex; flex-direction: column; gap: 12px; min-width: 0">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px">
+<h2 style="margin: 0; font-size: 17px; font-weight: 700; color: #2A1A1E">Latest news and updates</h2>
+<a href="#" style="min-height: 44px; display: flex; align-items: center; gap: 4px; font-size: 14px; font-weight: 600; text-decoration: none">Open news<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg></a>
+</div>
+<a href="#" style="display: flex; align-items: center; gap: 12px; padding: 10px 0; border-top: 1px solid #EFE7DE; text-decoration: none; color: #2A1A1E">
+<span style="display: flex; flex-direction: column; gap: 2px; flex: 1 1 auto; min-width: 0"><span style="font-size: 15px; font-weight: 600">[NEWS TITLE]</span><span style="font-size: 13px; color: #5A4A4E">Published 6 Nov</span></span>
+<span style="background: #F3E6D0; color: #4A0E1A; border-radius: 999px; padding: 3px 10px; font-size: 12px; font-weight: 700">Pinned</span>
+</a><a href="#" style="display: flex; align-items: center; gap: 12px; padding: 10px 0; border-top: 1px solid #EFE7DE; text-decoration: none; color: #2A1A1E">
+<span style="display: flex; flex-direction: column; gap: 2px; flex: 1 1 auto; min-width: 0"><span style="font-size: 15px; font-weight: 600">[NEWS TITLE]</span><span style="font-size: 13px; color: #5A4A4E">Saved 7 Nov</span></span>
+<span style="background: #EFE7DE; color: #5A4A4E; border-radius: 999px; padding: 3px 10px; font-size: 12px; font-weight: 700">Draft</span>
+</a>
+</section>
+</div>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1800}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

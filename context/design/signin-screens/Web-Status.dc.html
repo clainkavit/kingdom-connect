@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Registration status on a computer</title>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&amp;family=Figtree:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F7F1EA}
+a{color:#4A0E1A}a:hover{color:#2A0610}
+input::placeholder{color:#7A6A6E}
+</style>
+</helmet>
+<div style="min-height: 900px; box-sizing: border-box; padding: 24px; background: #F7F1EA; font-family: Figtree, system-ui, sans-serif; color: #2A1A1E; display: flex; flex-wrap: wrap; gap: 24px; align-items: stretch">
+<div style="flex: 1 1 420px; min-width: 0; display: flex; flex-direction: column; padding: 8px 24px 8px 16px; box-sizing: border-box">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 16px">
+<img src="logo.jpg" alt="Kingdom Connect" style="width: 96px; height: 88px; object-fit: cover; border-radius: 14px; display: block">
+<a href="Web-Landing.dc.html" style="min-height: 44px; display: flex; align-items: center; padding: 0 18px; border-radius: 999px; background: #FFFFFF; font-weight: 600; font-size: 15px; text-decoration: none">Log out</a>
+</div>
+<div style="flex: 1 1 auto; display: flex; align-items: center; justify-content: center; padding: 40px 0">
+<div style="width: 100%; max-width: 420px; display: flex; flex-direction: column; gap: 18px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 13px; font-weight: 700; color: #5A4A4E">Registration status</span>
+<h1 style="margin: 0; font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 600; font-size: 44px; line-height: 1.05; color: #4A0E1A">Welcome, Neema</h1>
+</div><div style="background: #FFFFFF; border: 1px solid #E4D9CC; border-radius: 22px; padding: 18px 20px; display: flex; flex-direction: column; gap: 14px"><span style="align-self: flex-start; background: #F6E7BE; color: #5A3D00; border-radius: 999px; padding: 6px 12px; font-size: 13px; font-weight: 700">Under review</span>
+<p style="margin: 0; font-size: 16px; line-height: 1.5; font-weight: 600">Your application is being reviewed. You will get a notification when the review is done.</p>
+</div><ol aria-label="What happens next" style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px">
+<li style="display: flex; gap: 14px; align-items: center"><span style="width: 30px; height: 30px; border-radius: 999px; background: #4A0E1A; color: #FFFFFF; display: flex; align-items: center; justify-content: center; flex-shrink: 0"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg></span><span style="font-size: 15px; color: #2A1A1E">Account created</span></li><li style="display: flex; gap: 14px; align-items: center"><span style="width: 30px; height: 30px; border-radius: 999px; background: #4A0E1A; color: #FFFFFF; display: flex; align-items: center; justify-content: center; flex-shrink: 0"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg></span><span style="font-size: 15px; color: #2A1A1E">Details and ID sent</span></li>
+</ol>
+</div>
+</div>
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; font-size: 14px; color: #5A4A4E">
+<span>Questions? Email <a href="mailto:kingdomconnect@global.co.tz" style="font-weight: 600">kingdomconnect@global.co.tz</a></span>
+<span style="display: flex; gap: 16px"><a href="#terms">Terms of use</a><a href="#privacy">Privacy notice</a></span>
+</div>
+</div>
+<div style="flex: 999 1 560px; min-width: 0; min-height: 852px; position: relative; border-radius: 28px; overflow: hidden; background: #4A0E1A">
+<img src="hands-photo.jpg" alt="Hands of people of different skin tones joined together in a circle" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 45%; display: block">
+<div style="position: absolute; top: 48px; right: 48px; max-width: 300px; background: #4A0E1A; border-radius: 18px; padding: 14px 20px; text-align: right; color: #F3E6D0; font-family: 'Cormorant Garamond', Georgia, serif; font-size: 28px; font-weight: 700; line-height: 1.15">People · Opportunities · Growth</div>
+<span style="position: absolute; bottom: 56px; right: 48px; display: flex; align-items: center; gap: 6px; background: #FFFFFF; color: #4A0E1A; border-radius: 999px; padding: 8px 14px; font-size: 13px; font-weight: 700"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="M9 12l2 2 4-4"></path></svg>Every member verified</span>
+
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

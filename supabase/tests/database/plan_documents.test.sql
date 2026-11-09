@@ -2,7 +2,7 @@ begin;
 create extension if not exists pgtap with schema extensions;
 -- Members here have accepted the current legal texts; that rule is tested in legal_on_server.test.sql.
 create or replace function access.accepted_terms_and_privacy() returns boolean language sql stable as 'select true';
-select plan(19);
+select plan(20);
 
 insert into auth.users (id, email)
 select ('00000000-0000-0000-0000-0000000032' || k)::uuid, 'pd' || k || '@test.invalid'
@@ -44,8 +44,9 @@ create function pg_temp.plan() returns uuid language sql as $$ select '00000000-
 create function pg_temp.path(who text) returns text language sql as $$
   select '00000000-0000-0000-0000-0000000a3201/00000000-0000-0000-0000-0000000032' || who || '.pdf';
 $$;
-create function pg_temp.upload(who text) returns void language sql as $$
-  insert into storage.objects (bucket_id, name) values ('plan-documents', pg_temp.path(who));
+create function pg_temp.upload(who text, size int default 1000) returns void language sql as $$
+  insert into storage.objects (bucket_id, name, metadata)
+  values ('plan-documents', pg_temp.path(who), jsonb_build_object('size', size));
 $$;
 
 set local role authenticated;
@@ -60,9 +61,17 @@ set local role authenticated;
 select pg_temp.login('02');
 select ok(public.can_upload_plan_document(pg_temp.plan()), 'once every stage is confirmed, a member may upload');
 select ok(not access.plan_document_path_ok(pg_temp.path('01')), 'only to their own path');
-select lives_ok($$select pg_temp.upload('02')$$, 'the member uploads their signed PDF');
-select is(public.record_plan_document(pg_temp.plan(), pg_temp.path('02'), 20000000), 'too_large', 'up to 10 MB');
-select is(public.record_plan_document(pg_temp.plan(), pg_temp.path('02'), 1000), 'ok', 'and records it');
+select lives_ok($$select pg_temp.upload('02', 20000000)$$, 'the member uploads their signed PDF');
+select is(public.record_plan_document(pg_temp.plan(), pg_temp.path('02'), 1000), 'too_large',
+  'up to 10 MB, by the stored size and not the size the app reports');
+reset role;
+update storage.objects set metadata = '{"size": 1000}' where bucket_id = 'plan-documents' and name = pg_temp.path('02');
+set local role authenticated;
+select pg_temp.login('02');
+select is(public.record_plan_document(pg_temp.plan(), pg_temp.path('02'), 20000000), 'ok',
+  'and records it, whatever size the app reports');
+select is((select size from public.plan_documents where uploaded_by = '00000000-0000-0000-0000-000000003202'), 1000,
+  'with the stored size');
 select is(public.record_plan_document(pg_temp.plan(), pg_temp.path('02'), 1000), 'not_allowed', 'once per member');
 select is((select status from public.milestone_plans where id = pg_temp.plan()), 'active', 'the plan waits for the other');
 

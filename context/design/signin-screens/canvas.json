@@ -1,0 +1,674 @@
+{
+  "v": 3,
+  "attachments": {},
+  "boards": {
+    "Admin-Dashboard.dc.html": {
+      "x": 3040,
+      "y": 1820,
+      "w": 1440,
+      "h": 1800,
+      "title": "A01 Admin dashboard · computer",
+      "page": "admin",
+      "expand": "fill",
+      "is_interactive": true
+    },
+    "Admin-Phone-Dashboard.dc.html": {
+      "x": 2550,
+      "y": 5360,
+      "w": 430,
+      "h": 900,
+      "title": "A01 Admin dashboard · phone",
+      "page": "admin",
+      "is_interactive": true
+    },
+    "Main.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "is_interactive": true,
+      "page": "signin",
+      "title": "S02 Sign up · computer",
+      "w": 1440,
+      "x": 1520,
+      "y": 0
+    },
+    "Phone-CatDetails.dc.html": {
+      "h": 900,
+      "is_interactive": true,
+      "page": "signin",
+      "title": "S05 Wizard · 3 Category details",
+      "w": 430,
+      "x": 2550,
+      "y": 2900
+    },
+    "Phone-CatOther.dc.html": {
+      "h": 900,
+      "is_interactive": true,
+      "page": "signin",
+      "title": "S05 Wizard · 3 If Other is ticked (proposed)",
+      "w": 430,
+      "x": 3060,
+      "y": 2900
+    },
+    "Phone-Category.dc.html": {
+      "h": 900,
+      "is_interactive": true,
+      "page": "signin",
+      "title": "S05 Wizard · 2 Category (proposed, #161)",
+      "w": 430,
+      "x": 2040,
+      "y": 2900
+    },
+    "Phone-Code.dc.html": {
+      "h": 900,
+      "is_interactive": true,
+      "page": "signin",
+      "title": "S04 Email code",
+      "w": 430,
+      "x": 1020,
+      "y": 2900
+    },
+    "Phone-Details.dc.html": {
+      "h": 900,
+      "is_interactive": true,
+      "page": "signin",
+      "title": "S05 Wizard · 1 About you",
+      "w": 430,
+      "x": 1530,
+      "y": 2900
+    },
+    "Phone-Forgot.dc.html": {
+      "h": 900,
+      "is_interactive": true,
+      "page": "signin",
+      "title": "Forgot password (new, not in the PRD)",
+      "w": 430,
+      "x": 1020,
+      "y": 4220
+    },
+    "Phone-ID.dc.html": {
+      "h": 900,
+      "is_interactive": true,
+      "page": "signin",
+      "title": "S05 Wizard · 4 ID and photos",
+      "w": 430,
+      "x": 3570,
+      "y": 2900
+    },
+    "Phone-Landing.dc.html": {
+      "h": 900,
+      "is_interactive": true,
+      "page": "signin",
+      "title": "S01 Landing",
+      "w": 430,
+      "x": 0,
+      "y": 2900
+    },
+    "Phone-Legal.dc.html": {
+      "h": 900,
+      "is_interactive": true,
+      "page": "signin",
+      "title": "S05 Wizard · 5 Terms and privacy",
+      "w": 430,
+      "x": 4080,
+      "y": 2900
+    },
+    "Phone-Locked.dc.html": {
+      "h": 900,
+      "is_interactive": true,
+      "page": "signin",
+      "title": "S03 Log in · locked",
+      "w": 430,
+      "x": 510,
+      "y": 4220
+    },
+    "Phone-Login.dc.html": {
+      "h": 900,
+      "is_interactive": true,
+      "page": "signin",
+      "title": "S03 Log in",
+      "w": 430,
+      "x": 0,
+      "y": 4220
+    },
+    "Phone-Privacy.dc.html": {
+      "h": 900,
+      "is_interactive": true,
+      "page": "signin",
+      "title": "Privacy notice (draft 0.1)",
+      "w": 430,
+      "x": 5100,
+      "y": 2900
+    },
+    "Phone-Recover.dc.html": {
+      "h": 900,
+      "is_interactive": true,
+      "page": "signin",
+      "title": "S04 Can't get the code?",
+      "w": 430,
+      "x": 2040,
+      "y": 4220
+    },
+    "Phone-Reset.dc.html": {
+      "h": 900,
+      "is_interactive": true,
+      "page": "signin",
+      "title": "New password (new, not in the PRD)",
+      "w": 430,
+      "x": 1530,
+      "y": 4220
+    },
+    "Phone-Review.dc.html": {
+      "h": 900,
+      "is_interactive": true,
+      "page": "signin",
+      "title": "S05 Wizard · 6 Check and send",
+      "w": 430,
+      "x": 5610,
+      "y": 2900
+    },
+    "Phone-Signup.dc.html": {
+      "h": 900,
+      "is_interactive": true,
+      "page": "signin",
+      "title": "S02 Sign up",
+      "w": 430,
+      "x": 510,
+      "y": 2900
+    },
+    "Phone-Status.dc.html": {
+      "h": 900,
+      "is_interactive": true,
+      "page": "signin",
+      "title": "S06 Registration status",
+      "w": 430,
+      "x": 6120,
+      "y": 2900
+    },
+    "Phone-Terms.dc.html": {
+      "h": 900,
+      "is_interactive": true,
+      "page": "signin",
+      "title": "Terms of use (draft 0.1)",
+      "w": 430,
+      "x": 4590,
+      "y": 2900
+    },
+    "Web-CatDetails.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "is_interactive": true,
+      "page": "signin",
+      "title": "S05 Wizard · 3 Category details · computer",
+      "w": 1440,
+      "x": 7600,
+      "y": 0
+    },
+    "Web-CatOther.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "is_interactive": true,
+      "page": "signin",
+      "title": "S05 Wizard · 3 If Other is ticked · computer (proposed)",
+      "w": 1440,
+      "x": 9120,
+      "y": 0
+    },
+    "Web-Category.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "is_interactive": true,
+      "page": "signin",
+      "title": "S05 Wizard · 2 Category (proposed, #161) · computer",
+      "w": 1440,
+      "x": 6080,
+      "y": 0
+    },
+    "Web-Code.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "is_interactive": true,
+      "page": "signin",
+      "title": "S04 Email code · computer",
+      "w": 1440,
+      "x": 3040,
+      "y": 0
+    },
+    "Web-Details.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "is_interactive": true,
+      "page": "signin",
+      "title": "S05 Wizard · 1 About you · computer",
+      "w": 1440,
+      "x": 4560,
+      "y": 0
+    },
+    "Web-Forgot.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "is_interactive": true,
+      "page": "signin",
+      "title": "Forgot password · computer (new, not in the PRD)",
+      "w": 1440,
+      "x": 3040,
+      "y": 1320
+    },
+    "Web-ID.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "is_interactive": true,
+      "page": "signin",
+      "title": "S05 Wizard · 4 ID and photos · computer",
+      "w": 1440,
+      "x": 10640,
+      "y": 0
+    },
+    "Web-Landing.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "is_interactive": true,
+      "page": "signin",
+      "title": "S01 Landing · computer",
+      "w": 1440,
+      "x": 0,
+      "y": 0
+    },
+    "Web-Legal.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "is_interactive": true,
+      "page": "signin",
+      "title": "S05 Wizard · 5 Terms and privacy · computer",
+      "w": 1440,
+      "x": 12160,
+      "y": 0
+    },
+    "Web-Locked.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "is_interactive": true,
+      "page": "signin",
+      "title": "S03 Log in · locked · computer",
+      "w": 1440,
+      "x": 1520,
+      "y": 1320
+    },
+    "Web-Login.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "is_interactive": true,
+      "page": "signin",
+      "title": "S03 Log in · computer",
+      "w": 1440,
+      "x": 0,
+      "y": 1320
+    },
+    "Web-Privacy.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "is_interactive": true,
+      "page": "signin",
+      "title": "Privacy notice (draft 0.1) · computer",
+      "w": 1440,
+      "x": 15200,
+      "y": 0
+    },
+    "Web-Recover.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "is_interactive": true,
+      "page": "signin",
+      "title": "S04 Can't get the code? · computer",
+      "w": 1440,
+      "x": 6080,
+      "y": 1320
+    },
+    "Web-Reset.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "is_interactive": true,
+      "page": "signin",
+      "title": "New password · computer (new, not in the PRD)",
+      "w": 1440,
+      "x": 4560,
+      "y": 1320
+    },
+    "Web-Review.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "is_interactive": true,
+      "page": "signin",
+      "title": "S05 Wizard · 6 Check and send · computer",
+      "w": 1440,
+      "x": 16720,
+      "y": 0
+    },
+    "Web-Status.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "is_interactive": true,
+      "page": "signin",
+      "title": "S06 Registration status · computer",
+      "w": 1440,
+      "x": 18240,
+      "y": 0
+    },
+    "Web-Terms.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "is_interactive": true,
+      "page": "signin",
+      "title": "Terms of use (draft 0.1) · computer",
+      "w": 1440,
+      "x": 13680,
+      "y": 0
+    },
+    "Admin-Staff.dc.html": {
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 1400,
+      "title": "A16 Settings · Staff accounts: resets, unlocks, invites · computer",
+      "page": "admin",
+      "expand": "fill",
+      "is_interactive": true
+    },
+    "Admin-Email.dc.html": {
+      "x": 1520,
+      "y": 0,
+      "w": 760,
+      "h": 760,
+      "title": "Invite email to the new staff member",
+      "page": "admin",
+      "is_interactive": true
+    },
+    "Admin-SetPassword.dc.html": {
+      "x": 2360,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "title": "Set your password (from the invite) · computer",
+      "page": "admin",
+      "expand": "fill",
+      "is_interactive": true
+    },
+    "Admin-PasswordSet.dc.html": {
+      "x": 3880,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "title": "Password set · computer",
+      "page": "admin",
+      "expand": "fill",
+      "is_interactive": true
+    },
+    "Admin-Login.dc.html": {
+      "x": 0,
+      "y": 1820,
+      "w": 1440,
+      "h": 900,
+      "title": "Admin log in · computer",
+      "page": "admin",
+      "expand": "fill",
+      "is_interactive": true
+    },
+    "Admin-Code.dc.html": {
+      "x": 1520,
+      "y": 1820,
+      "w": 1440,
+      "h": 900,
+      "title": "Admin email code · computer",
+      "page": "admin",
+      "expand": "fill",
+      "is_interactive": true
+    },
+    "Admin-Phone-Staff.dc.html": {
+      "x": 0,
+      "y": 5360,
+      "w": 430,
+      "h": 900,
+      "title": "Staff accounts: resets, unlocks, invites · phone",
+      "page": "admin",
+      "is_interactive": true
+    },
+    "Admin-Phone-SetPassword.dc.html": {
+      "x": 510,
+      "y": 5360,
+      "w": 430,
+      "h": 900,
+      "title": "Set your password · phone",
+      "page": "admin",
+      "is_interactive": true
+    },
+    "Admin-Phone-PasswordSet.dc.html": {
+      "x": 1020,
+      "y": 5360,
+      "w": 430,
+      "h": 900,
+      "title": "Password set · phone",
+      "page": "admin",
+      "is_interactive": true
+    },
+    "Admin-Phone-Login.dc.html": {
+      "x": 1530,
+      "y": 5360,
+      "w": 430,
+      "h": 900,
+      "title": "Admin log in · phone",
+      "page": "admin",
+      "is_interactive": true
+    },
+    "Admin-Phone-Code.dc.html": {
+      "x": 2040,
+      "y": 5360,
+      "w": 430,
+      "h": 900,
+      "title": "Admin email code · phone",
+      "page": "admin",
+      "is_interactive": true
+    },
+    "Admin-Forgot.dc.html": {
+      "x": 0,
+      "y": 4040,
+      "w": 1440,
+      "h": 900,
+      "title": "Staff forgot password · computer (proposed, #182)",
+      "page": "admin",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "Admin-ForgotSent.dc.html": {
+      "x": 1520,
+      "y": 4040,
+      "w": 1440,
+      "h": 900,
+      "title": "Reset request sent · computer (proposed, #182)",
+      "page": "admin",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "Admin-NewPassword.dc.html": {
+      "x": 3040,
+      "y": 4040,
+      "w": 1440,
+      "h": 900,
+      "title": "Choose a new password (link from a Super Admin) · computer (proposed, #182)",
+      "page": "admin",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "Admin-Phone-Forgot.dc.html": {
+      "w": 430,
+      "h": 900,
+      "page": "admin",
+      "is_interactive": true,
+      "title": "Staff forgot password · phone (proposed, #182)",
+      "x": 3060,
+      "y": 5360
+    },
+    "Admin-Phone-ForgotSent.dc.html": {
+      "w": 430,
+      "h": 900,
+      "page": "admin",
+      "is_interactive": true,
+      "title": "Reset request sent · phone (proposed, #182)",
+      "x": 3570,
+      "y": 5360
+    },
+    "Admin-Phone-NewPassword.dc.html": {
+      "w": 430,
+      "h": 900,
+      "page": "admin",
+      "is_interactive": true,
+      "title": "Choose a new password · phone (proposed, #182)",
+      "x": 4080,
+      "y": 5360
+    }
+  },
+  "createdOnFiles": {
+    "at": "2026-11-08T13:20:00Z",
+    "v": 1
+  },
+  "designSystems": [],
+  "launch": {
+    "view": "canvas"
+  },
+  "notes": {
+    "rowDesktop": {
+      "kind": "title1",
+      "maxW": 8000,
+      "page": "signin",
+      "text": "Joining, on a computer",
+      "w": 240,
+      "x": 0,
+      "y": -300
+    },
+    "rowDesktopBack": {
+      "kind": "title1",
+      "maxW": 7520,
+      "page": "signin",
+      "text": "Coming back, on a computer",
+      "w": 240,
+      "x": 0,
+      "y": 1020
+    },
+    "rowPhone": {
+      "kind": "title1",
+      "maxW": 6550,
+      "page": "signin",
+      "text": "Joining, on a phone",
+      "w": 240,
+      "x": 0,
+      "y": 2600
+    },
+    "rowReturn": {
+      "kind": "title1",
+      "maxW": 2470,
+      "page": "signin",
+      "text": "Coming back, on a phone",
+      "w": 240,
+      "x": 0,
+      "y": 3920
+    },
+    "adminInvite": {
+      "x": 0,
+      "y": -300,
+      "text": "Adding a staff member, on a computer",
+      "kind": "title1",
+      "maxW": 5320,
+      "page": "admin"
+    },
+    "adminLogin": {
+      "x": 0,
+      "y": 1520,
+      "text": "Staff log in, on a computer",
+      "kind": "title1",
+      "maxW": 4480,
+      "page": "admin"
+    },
+    "adminPhone": {
+      "x": 0,
+      "y": 5060,
+      "text": "Admin on a phone",
+      "kind": "title1",
+      "maxW": 4510,
+      "page": "admin"
+    },
+    "adminForgot": {
+      "x": 0,
+      "y": 3740,
+      "text": "Staff forgot password, approved by a Super Admin, on a computer",
+      "kind": "title1",
+      "maxW": 4480,
+      "page": "admin"
+    }
+  },
+  "order": [
+    "Web-Landing.dc.html",
+    "Main.dc.html",
+    "Web-Code.dc.html",
+    "Web-Details.dc.html",
+    "Web-Category.dc.html",
+    "Web-CatDetails.dc.html",
+    "Web-CatOther.dc.html",
+    "Web-ID.dc.html",
+    "Web-Legal.dc.html",
+    "Web-Terms.dc.html",
+    "Web-Privacy.dc.html",
+    "Web-Review.dc.html",
+    "Web-Status.dc.html",
+    "Web-Login.dc.html",
+    "Web-Locked.dc.html",
+    "Web-Forgot.dc.html",
+    "Web-Reset.dc.html",
+    "Web-Recover.dc.html",
+    "Phone-Landing.dc.html",
+    "Phone-Signup.dc.html",
+    "Phone-Code.dc.html",
+    "Phone-Details.dc.html",
+    "Phone-Category.dc.html",
+    "Phone-CatDetails.dc.html",
+    "Phone-CatOther.dc.html",
+    "Phone-ID.dc.html",
+    "Phone-Legal.dc.html",
+    "Phone-Terms.dc.html",
+    "Phone-Privacy.dc.html",
+    "Phone-Review.dc.html",
+    "Phone-Status.dc.html",
+    "Phone-Login.dc.html",
+    "Phone-Locked.dc.html",
+    "Phone-Forgot.dc.html",
+    "Phone-Reset.dc.html",
+    "Phone-Recover.dc.html",
+    "Admin-Staff.dc.html",
+    "Admin-Email.dc.html",
+    "Admin-SetPassword.dc.html",
+    "Admin-PasswordSet.dc.html",
+    "Admin-Login.dc.html",
+    "Admin-Code.dc.html",
+    "Admin-Dashboard.dc.html",
+    "Admin-Phone-Staff.dc.html",
+    "Admin-Phone-SetPassword.dc.html",
+    "Admin-Phone-PasswordSet.dc.html",
+    "Admin-Phone-Login.dc.html",
+    "Admin-Phone-Code.dc.html",
+    "Admin-Phone-Dashboard.dc.html",
+    "Admin-Forgot.dc.html",
+    "Admin-ForgotSent.dc.html",
+    "Admin-NewPassword.dc.html",
+    "Admin-Phone-Forgot.dc.html",
+    "Admin-Phone-ForgotSent.dc.html",
+    "Admin-Phone-NewPassword.dc.html"
+  ],
+  "pages": [
+    {
+      "id": "signin",
+      "name": "Sign in and registration"
+    },
+    {
+      "id": "admin",
+      "name": "Admin"
+    }
+  ],
+  "title": "Kingdom Connect sign-in screens"
+}

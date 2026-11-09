@@ -930,7 +930,9 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 - A tender stays open until its closing time on its closing date; every other type stays open through its closing date (O04).
 - Responding to a post opens a message thread that is open to send while the response is New or Shortlisted. The poster reads the responder's profile for that time even when it is hidden from the directory; the responder gains no sight of a hidden poster profile (O03).
 - Scan counts a sector match when the post's sector is the member's approved business sector or equals their profession, and gives study points only to internships, because entry-level jobs are not a field yet (O07).
-- The tender document is optional in the database for now; the posting form decides whether to require it (O04).
+- A tender that is sent needs its tender document; a draft may still lack it (O04).
+- "Viewed by N investors" shows a number only from 3 investors up and 0 below that, so an owner with one anonymous request cannot tell who looked (I03).
+- People you may know gives study points only when the institution and the course both match (O08).
 
 **Open.** Every open question is a ticket on the [wayfinder map](https://github.com/clainkavit/kingdom-connect/issues/1) and is linked where it applies above.
 

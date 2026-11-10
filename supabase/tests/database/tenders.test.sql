@@ -63,7 +63,7 @@ select is(pg_temp.tender(fields => pg_temp.fields(docs => '["a","b","c","d","e",
 select is(pg_temp.tender(fields => pg_temp.fields(scope => repeat('Call 0712345678 about this tender please. ', 3))),
   'contact_details', 'phone numbers in the fields are refused');
 select is(pg_temp.tender(no_fee => false), 'no_fee_required', 'a tender carries the no-fee declaration too');
-select is(pg_temp.tender(fields => pg_temp.fields(path => null)), 'invalid_tender_file', 'a tender that is sent needs its document');
+select is(pg_temp.tender(title => 'Tender with no document', fields => pg_temp.fields(path => null)), 'ok', 'a tender can be sent without a document');
 select is(pg_temp.tender(fields => pg_temp.fields(path => '00000000-0000-0000-0000-000000003402/00000000-0000-0000-0000-0000000f3402.pdf')),
   'invalid_tender_file', 'a document must be in the poster''s own folder');
 select is(pg_temp.tender(fields => pg_temp.fields(

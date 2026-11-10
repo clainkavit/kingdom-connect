@@ -88,6 +88,24 @@ describe("wizard steps (S05)", () => {
     expect(firstIncompleteStep({ ...complete, acceptPrivacy: false })).toBe(5);
   });
 
+  it("lets a member tick several categories and asks for the details of each (#161)", () => {
+    expect(stepProblems(2, { categories: ["professional", "businessperson"] })).toEqual({});
+    expect(
+      stepProblems(3, {
+        categories: ["professional", "businessperson"],
+        categoryDetails: { profession: "Accountant" },
+      }),
+    ).toEqual({
+      "categoryDetails.businessName": "required",
+      "categoryDetails.sectorId": "required",
+    });
+  });
+
+  it("no longer offers Entrepreneur to a new registration (#161)", () => {
+    expect(stepProblems(2, { categories: ["entrepreneur"] })).toEqual({ category: "required" });
+    expect(stepProblems(2, { categories: [] })).toEqual({ category: "required" });
+  });
+
   it("asks for the details that fit the category", () => {
     expect(stepProblems(3, { category: "businessperson", categoryDetails: {} })).toEqual({
       "categoryDetails.businessName": "required",

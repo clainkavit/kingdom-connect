@@ -11,6 +11,13 @@ export const memberCategories = [
 ] as const;
 export type MemberCategory = (typeof memberCategories)[number];
 
+/** The categories a new registration ticks, as many as apply (decided 10 Nov 2026, #161). Entrepreneur stays only for members who registered before. */
+export const selectableCategories: readonly MemberCategory[] = [
+  "professional",
+  "businessperson",
+  "other",
+];
+
 export type FieldProblem =
   "required" | "username" | "email" | "phone" | "password" | "nida" | "id_number" | "study_year";
 
@@ -79,6 +86,7 @@ export type RegistrationDraft = {
   address?: string;
   study?: { institution?: string; course?: string; year?: number };
   category?: MemberCategory;
+  categories?: MemberCategory[];
   categoryDetails?: CategoryDetails;
   idType?: IdType;
   idExpiresOn?: string;
@@ -113,6 +121,12 @@ export const categoryFields: Record<
   other: [{ field: "description", required: true }],
 };
 
+/** The categories a draft ticks: its list, or the one category of a draft saved before 10 Nov 2026. */
+export function draftCategories(draft: RegistrationDraft): MemberCategory[] {
+  if (draft.categories && draft.categories.length > 0) return [...new Set(draft.categories)];
+  return draft.category ? [draft.category] : [];
+}
+
 /** What still blocks a wizard step: field name to problem. An empty object means the step is done. */
 export function stepProblems(step: number, draft: RegistrationDraft): Record<string, FieldProblem> {
   const problems: Record<string, FieldProblem> = {};
@@ -127,11 +141,16 @@ export function stepProblems(step: number, draft: RegistrationDraft): Record<str
     if (study?.year !== undefined && !(study.year >= 1 && study.year <= 10))
       problems["study.year"] = "study_year";
   }
-  if (step === 2 && !draft.category) problems.category = "required";
+  const categories = draftCategories(draft);
+  if (
+    step === 2 &&
+    (categories.length === 0 || categories.some((c) => !selectableCategories.includes(c)))
+  )
+    problems.category = "required";
   if (step === 3) {
-    if (!draft.category) problems.category = "required";
-    else
-      for (const { field, required } of categoryFields[draft.category])
+    if (categories.length === 0) problems.category = "required";
+    for (const category of categories)
+      for (const { field, required } of categoryFields[category])
         if (required && blank(draft.categoryDetails?.[field]))
           problems[`categoryDetails.${field}`] = "required";
   }

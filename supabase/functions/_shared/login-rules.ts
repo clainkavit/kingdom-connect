@@ -61,6 +61,11 @@ export function skipsCode(email: string, demoAccounts: boolean): boolean {
   return demoAccounts && /^test\.[a-z0-9.]+@example\.test$/.test(email);
 }
 
+/** The code for resetting a forgotten password (REG-6). */
+export function resetCodeEmail(language: Language, platformName: string, code: string): Email {
+  return notificationEmail(notificationCopy.A7, language, { platform_name: platformName, code });
+}
+
 export function lockedEmail(language: Language): Email {
   return notificationEmail(notificationCopy.L1, language, {});
 }

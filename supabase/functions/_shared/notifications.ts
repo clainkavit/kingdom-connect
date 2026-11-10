@@ -69,7 +69,7 @@ export function categoryOfCode(code: string): NotificationCategory {
 /** docs/screens.md, Notification to screen, as member app paths. */
 const opensByCode: [RegExp, string][] = [
   [/^A5$/, "/verify"],
-  [/^(L1|X1)$/, "/login"],
+  [/^(L1|X1|A7)$/, "/login"],
   [/^A\d+$/, "/registration"],
   [/^B\d+$/, "/settings"],
   [/^C[12]$/, "/connections"],
@@ -216,6 +216,23 @@ export const notificationCopy = {
       title: "Ombi lako limefunguliwa tena",
       message:
         "Msimamizi amefungua tena ombi lako. Ingia, rekebisha kinachohitajika na ulitume tena.",
+    },
+  },
+  A7: {
+    category: "account",
+    inApp: false,
+    email: "yes",
+    push: false,
+    opens: "/login",
+    en: {
+      title: "Reset your {platform_name} password",
+      message:
+        "Your code is {code}. It works for 10 minutes. Do not share it with anyone. If you did not ask to reset your password, ignore this email.",
+    },
+    sw: {
+      title: "Badilisha nenosiri lako la {platform_name}",
+      message:
+        "Msimbo wako ni {code}. Unatumika kwa dakika 10. Usimpe mtu yeyote. Kama hukuomba kubadilisha nenosiri lako, puuza barua pepe hii.",
     },
   },
   B1: {
@@ -993,6 +1010,23 @@ export const notificationCopy = {
       title: "Namba yako ya simu imebadilishwa",
       message:
         "Namba ya simu kwenye {platform_name} imebadilishwa. Kama si wewe, wasiliana na timu ya jukwaa mara moja.",
+    },
+  },
+  E7: {
+    category: "security",
+    inApp: true,
+    email: "yes",
+    push: false,
+    opens: "/settings/privacy",
+    en: {
+      title: "Your password was changed",
+      message:
+        "The password of your {platform_name} account was changed, and you were signed out on your other devices. If you did not do this, contact the platform team at once.",
+    },
+    sw: {
+      title: "Nenosiri lako limebadilishwa",
+      message:
+        "Nenosiri la akaunti yako ya {platform_name} limebadilishwa, na umetolewa kwenye vifaa vyako vingine. Kama si wewe, wasiliana na timu ya jukwaa mara moja.",
     },
   },
   Y1: {

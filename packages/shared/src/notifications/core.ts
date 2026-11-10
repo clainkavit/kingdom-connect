@@ -69,7 +69,7 @@ export function categoryOfCode(code: string): NotificationCategory {
 /** docs/screens.md, Notification to screen, as member app paths. */
 const opensByCode: [RegExp, string][] = [
   [/^A5$/, "/verify"],
-  [/^(L1|X1)$/, "/login"],
+  [/^(L1|X1|A7)$/, "/login"],
   [/^A\d+$/, "/registration"],
   [/^B\d+$/, "/settings"],
   [/^C[12]$/, "/connections"],

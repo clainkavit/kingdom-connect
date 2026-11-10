@@ -421,6 +421,12 @@ enabled = true
 [functions.login]
 verify_jwt = false
 
+[functions.forgot-password]
+verify_jwt = false
+
+[functions.reset-password]
+verify_jwt = false
+
 [functions.sign-up]
 verify_jwt = false
 

@@ -2,7 +2,7 @@ begin;
 create extension if not exists pgtap with schema extensions;
 -- Members here have accepted the current legal texts; that rule is tested in legal_on_server.test.sql.
 create or replace function access.accepted_terms_and_privacy() returns boolean language sql stable as 'select true';
-select plan(30);
+select plan(29);
 
 insert into auth.users (id, email) values
   ('00000000-0000-0000-0000-0000000000b1', 'status@test.invalid'),
@@ -34,17 +34,15 @@ insert into public.verification_requests (id, member_id, level, submitted_at) va
 
 select is(private.application_status('00000000-0000-0000-0000-0000000000b1') ->> 'state', 'under_review',
   'a submitted application is under review');
-select is(private.application_status('00000000-0000-0000-0000-0000000000b1') -> 'expectedWorkingDays', 'null'::jsonb,
-  'with no decisions in 14 days, there is no estimate');
 insert into public.verification_requests (member_id, level, status, submitted_at, decided_at)
 select '00000000-0000-0000-0000-0000000000b3', 1, 'approved', now() - interval '3 days', now() - interval '1 day'
 from generate_series(1, 5);
-select is((private.application_status('00000000-0000-0000-0000-0000000000b1') ->> 'expectedWorkingDays')::int, 4,
-  'second in line at half a decision a working day: about 4 working days');
+select is(private.application_status('00000000-0000-0000-0000-0000000000b1') -> 'expectedWorkingDays', null,
+  'there is no expected review time, even with recent decisions (decided 10 Nov, #180)');
 select is(
   (select array_agg(k order by k) from jsonb_object_keys(private.application_status('00000000-0000-0000-0000-0000000000b1')) k),
-  array['expectedWorkingDays', 'state'],
-  'the status carries no reviewer, queue position or queue size');
+  array['state'],
+  'the status carries only its state: no expected time, reviewer, queue position or queue size');
 
 select is(
   private.decide_application('00000000-0000-0000-0000-0000000000b4', '00000000-0000-0000-0000-0000000000c1', 'rejected', 'id_expired'),

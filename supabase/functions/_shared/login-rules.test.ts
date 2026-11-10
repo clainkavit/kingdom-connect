@@ -9,6 +9,7 @@ import {
   hashCode,
   lockedEmail,
   loginCodeEmail,
+  resetCodeEmail,
   resendSecondsLeft,
   secondsUntil,
 } from "./login-rules.ts";
@@ -57,6 +58,18 @@ describe("codes", () => {
     expect(await hashCode("123456", "session-a", "secret-1")).toBe(a);
     expect(await hashCode("123456", "session-b", "secret-1")).not.toBe(a);
     expect(await hashCode("123456", "session-a", "secret-2")).not.toBe(a);
+  });
+});
+
+describe("password reset code (docs/notifications.md A7, REG-6)", () => {
+  it("sends the code in the member's language, and says it is for a password reset", () => {
+    const en = resetCodeEmail("en", "Kingdom Connect", "123456");
+    expect(en.subject).toBe("Reset your Kingdom Connect password");
+    expect(en.text).toContain("123456");
+    expect(en.text).toContain("reset your password");
+    const sw = resetCodeEmail("sw", "Kingdom Connect", "123456");
+    expect(sw.subject).toBe("Badilisha nenosiri lako la Kingdom Connect");
+    expect(sw.text).toContain("123456");
   });
 });
 

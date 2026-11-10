@@ -68,6 +68,11 @@ To: applicant. Channels: in-app, email, push.
 - **EN** Title: Your application is open again. Message: An administrator reopened your application. Sign in, fix what is needed and send it again.
 - **SW** Title: Ombi lako limefunguliwa tena. Message: Msimamizi amefungua tena ombi lako. Ingia, rekebisha kinachohitajika na ulitume tena.
 
+### A7 Password reset code
+To: member who asked to reset a forgotten password (REG-6). Channels: email only.
+- **EN** Title: Reset your {platform_name} password. Message: Your code is {code}. It works for 10 minutes. Do not share it with anyone. If you did not ask to reset your password, ignore this email.
+- **SW** Title: Badilisha nenosiri lako la {platform_name}. Message: Msimbo wako ni {code}. Unatumika kwa dakika 10. Usimpe mtu yeyote. Kama hukuomba kubadilisha nenosiri lako, puuza barua pepe hii.
+
 ## 2. Business levels
 
 ### B1 Business level approved
@@ -335,6 +340,11 @@ To: the new address. Channels: email only.
 To: member. Channels: in-app, email.
 - **EN** Title: Your phone number was changed. Message: The phone number on {platform_name} was changed. If you did not do this, contact the platform team at once.
 - **SW** Title: Namba yako ya simu imebadilishwa. Message: Namba ya simu kwenye {platform_name} imebadilishwa. Kama si wewe, wasiliana na timu ya jukwaa mara moja.
+
+### E7 Password changed
+To: member. Channels: in-app, email. Always sent, with no switch (REG-6).
+- **EN** Title: Your password was changed. Message: The password of your {platform_name} account was changed, and you were signed out on your other devices. If you did not do this, contact the platform team at once.
+- **SW** Title: Nenosiri lako limebadilishwa. Message: Nenosiri la akaunti yako ya {platform_name} limebadilishwa, na umetolewa kwenye vifaa vyako vingine. Kama si wewe, wasiliana na timu ya jukwaa mara moja.
 
 ## 11. Staff
 

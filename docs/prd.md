@@ -106,7 +106,7 @@ Members and administrators get different menus; a member never sees admin items,
 
 **Investor additions (inside Ideas only):** investor filters, Saved ideas, anonymous "Express interest" option. No separate menu item.
 
-**Admin sidebar:** Dashboard · Verification queue (members, businesses, investors) · Moderation queue (opportunities, ideas, training, events, tenders) · Reports · Re-verification · Members and investors · News and featured · Milestone plans · Post as admin · Audit log. Platform settings are on the Super Administrator's pages.
+**Admin sidebar:** Dashboard · Verification queue (members, businesses, investors) · Moderation queue (opportunities, ideas, training, events, tenders) · Ideas (decided 10 Nov, [#186](https://github.com/clainkavit/kingdom-connect/issues/186)) · Reports · Re-verification · Members and investors · News and featured · Milestone plans · Post as admin · Audit log. Platform settings are on the Super Administrator's pages.
 
 **On phones** the menu becomes a bottom tab bar: Home, People, Opportunities, Messages, More for members, shown as icons with their names read out by screen readers; Home, Verify, Moderate, Reports, More for admins. More lists the remaining menu items.
 
@@ -145,9 +145,10 @@ No one reaches member content until an administrator has verified their identity
 - **REG-3** As an admin, I want to review pending profiles and approve or reject them so that only real members get in. (FR-03, UC-07–08)
 - **REG-4** As a member, I want to log in with password and OTP so that my account is protected. (FR-02, UC-09–10)
 - **REG-5** As a business owner, I want to upgrade to Verified Business, then Opportunity Poster, so that I can list my business and post opportunities. (FR-32, UC-28–29)
+- **REG-6** As a member, I want to reset a forgotten password so that I can get back into my account without an administrator. (FR-02, UC-09–10; decided 10 Nov, [#182](https://github.com/clainkavit/kingdom-connect/issues/182))
 
 **Acceptance criteria**
-1. The wizard collects full name, username, a Tanzanian address chosen from the region and district lists, email, a Tanzanian phone number (+255), one accepted ID (NIDA, passport, driving licence or voter's ID) with its type and number, occupation category (Professional, Businessperson, Entrepreneur, Other; **Proposed 8 Nov, awaiting Champion in [#161](https://github.com/clainkavit/kingdom-connect/issues/161):** tick all that apply from Professional, Businessperson and Other, with Entrepreneur and Student removed), optional study info, a face photo (required), and a photo of the ID (see Member verification below).
+1. The wizard collects full name, username, a Tanzanian address chosen from the region and district lists, email, a Tanzanian phone number (+255), one accepted ID (NIDA, passport, driving licence or voter's ID) with its type and number, occupation categories, ticked as many as apply from Professional, Businessperson and Other (decided 10 Nov, [#161](https://github.com/clainkavit/kingdom-connect/issues/161); Entrepreneur and Student are not categories), optional study info, a face photo (required), and a photo of the ID (see Member verification below).
 2. Category-specific fields appear based on the category (for example, CPA number for auditors; CISSP, CISM, CEH for cybersecurity).
 3. An ID number must be unique for its ID type, and a NIDA number must be 20 digits. A duplicate blocks submission and alerts admins (duplicate-profile detection). Because one person could register twice with two different IDs, admins also compare face photos. In Phase 1 an admin checks the ID manually; a connection to NIDA's verification service for NIDA holders may follow (ticket [#30](https://github.com/clainkavit/kingdom-connect/issues/30)).
 4. On submit, status = Pending and the applicant receives an email and SMS confirmation.
@@ -179,7 +180,7 @@ No one reaches member content until an administrator has verified their identity
 14. NIDA's verification service may be connected after the pilot, for NIDA holders, once the company exists and the production hosting is decided (NIDA asks where the server is; ticket [#30](https://github.com/clainkavit/kingdom-connect/issues/30)). Passports, driving licences and voter's IDs stay manual, and Persona is deferred until the company exists.
 15. **Sign-up is open from day one (decided 22 Oct, ticket [#30](https://github.com/clainkavit/kingdom-connect/issues/30)),** so review volume is managed in four ways:
     - The sign-up form checks what it can before an admin sees the application: a NIDA number must be 20 digits, the phone must start with +255, the address must come from the region and district lists, a duplicate ID is flagged automatically, and the face photo and ID photo are required.
-    - Applications are reviewed oldest first. The admin dashboard shows queue size and the age of the oldest application, with an alert when an application has waited 2 working days. Applicants see "Your application is being reviewed" with the expected time. **Proposed 8 Nov, awaiting Champion in [#180](https://github.com/clainkavit/kingdom-connect/issues/180):** drop the expected time; the screen says "You will get a notification when the review is done".
+    - Applications are reviewed oldest first. The admin dashboard shows queue size and the age of the oldest application, with an alert when an application has waited 2 working days. Applicants see "Your application is being reviewed. You will get a notification when the review is done.", with no expected time (decided 10 Nov, [#180](https://github.com/clainkavit/kingdom-connect/issues/180)).
     - A daily cap on new applications is a Super Administrator setting, off by default. When it is on, people over the cap see "We're reviewing a high number of applications, please try again tomorrow".
     - The pilot starts with at least 3 staff accounts, including trusted volunteers, not one admin.
 
@@ -205,7 +206,7 @@ The member dashboard shows community activity and the member's own to-dos; every
 | Moderation queue counts (opportunities, ideas, training, events, tenders) | ✗ | ✓ |
 | Re-verifications due in 30 days | ✗ | ✓ |
 | Investor count and activity | ✗ | ✓ |
-| New verified members per week, last 8 weeks, as a line chart (**Proposed 8 Nov**, design in `context/design/signin-screens/`) | ✗ | ✓ |
+| New verified members per week, last 8 weeks, as a line chart (decided 10 Nov; design in `context/design/signin-screens/`) | ✗ | ✓ |
 
 **Acceptance criteria**
 1. The member dashboard API never returns pending, rejected or investor counts, or any platform-wide count (members, businesses, opportunities, ideas), so they cannot appear even through a client bug.
@@ -729,7 +730,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 **Decided on 2 November 2026 (registration, R01)**
 - Sign-up works when real registrations are open, or when the environment is marked test-data-only (local and staging). Production shows "Registration opens soon" until the launch gate opens.
 - The face photo is for verification only, kept with the ID photo in the admin-only store. A public profile photo is optional and comes with the profile (R06).
-- Category details are a small fixed set for now: a Professional gives a profession and optional certifications and licence numbers; a Businessperson a business name and sector; an Entrepreneur what they are building and a sector; Other a short description. Per-profession fields can follow. (If #161's proposal of 8 Nov is accepted, the Entrepreneur details go; posting an idea stays open to every member, IDEA-1.)
+- Category details are a small fixed set for now: a Professional gives a profession and optional certifications and licence numbers; a Businessperson a business name and sector; an Entrepreneur what they are building and a sector; Other a short description. Per-profession fields can follow. Since 10 Nov (#161) the Entrepreneur details are gone; posting an idea stays open to every member, IDEA-1.
 - A duplicate ID is refused with "This ID is already registered", written to the audit log and flagged for the admin queue (R03).
 - A starter list of 16 sectors in English and Kiswahili is loaded; Champion and the collaborator can rename or add.
 - The ID number is never kept in the saved draft: it is encrypted the moment step 4 is saved.
@@ -743,7 +744,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 - Staff decide only through the audited decision function, never by editing the application directly. Approving, rejecting, marking a duplicate and revealing an ID number are each written to the audit log with the admin and their IP address.
 
 **Decided on 2 November 2026 (registration status, R02)**
-- Under review, the Applicant sees an expected time worked out from the queue: their place in it, divided by the decisions staff made per working day over the last 14 days, rounded up, at least 1 working day. With no decisions in that window it says "We usually decide within 2 working days". The Applicant sees only the days, never their place or the queue size (section 7, criterion 1). (If [#180](https://github.com/clainkavit/kingdom-connect/issues/180) is accepted, this expected time is no longer shown.)
+- Under review, the Applicant sees an expected time worked out from the queue: their place in it, divided by the decisions staff made per working day over the last 14 days, rounded up, at least 1 working day. With no decisions in that window it says "We usually decide within 2 working days". The Applicant sees only the days, never their place or the queue size (section 7, criterion 1). Since 10 Nov ([#180](https://github.com/clainkavit/kingdom-connect/issues/180)) the expected time is no longer shown.
 - Fix and resubmit reopens the whole wizard on the review step with the earlier answers, so any detail, the ID or either photo can be changed. Starting it uses the one resubmission. Each submitted application keeps its own copy of the photos, so a replaced photo never changes what an earlier decision was based on.
 - An Administrator can reopen a final rejection on A03, with a note for the audit log. The Applicant is told by the new notification A6 and can send the application once more; a rejection after that is final again.
 - A rejection still ends the Applicant's sessions (decided with F09). They sign in again to read the reason.
@@ -935,9 +936,19 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 - A tender stays open until its closing time on its closing date; every other type stays open through its closing date (O04).
 - Responding to a post opens a message thread that is open to send while the response is New or Shortlisted. The poster reads the responder's profile for that time even when it is hidden from the directory; the responder gains no sight of a hidden poster profile (O03).
 - Scan counts a sector match when the post's sector is the member's approved business sector or equals their profession, and gives study points only to internships, because entry-level jobs are not a field yet (O07).
-- A tender that is sent needs its tender document; a draft may still lack it (O04).
+- The tender document is optional: a tender can be sent and published without it (decided 10 Nov).
 - "Viewed by N investors" shows a number only from 3 investors up and 0 below that, so an owner with one anonymous request cannot tell who looked (I03).
 - People you may know gives study points only when the institution and the course both match (O08).
+
+**Decided on 10 November 2026 (Champion's answers)**
+- Registration categories (#161): a member ticks every category that applies from Professional, Businessperson and Other. The identity check stays the only gate to get in; each category unlocks its own badge only after its proof is checked (Businessperson through Level 2, Professional through certificates). Entrepreneur and Student are not categories. The investor flag is never a category.
+- Registration status (#180): Under review says "Your application is being reviewed. You will get a notification when the review is done." with no expected time. Staff keep the queue age and the 2-working-day alert.
+- Forgot password (#182, REG-6): "Forgot password?" on S03 and on its locked state. The member types the username and always gets the same answer, then a 6-digit email code with the login code's rules, then a new password typed twice with the sign-up rules, then a normal log in with the email code. Saving signs the member out on every other device, ends a running lockout and always sends a "Your password was changed" email, with no switch. Forgot password never changes the email; without access to it the member uses the lost-email recovery (R08c).
+- Admin Ideas overview (#186): an Ideas page after the Moderation queue, with counts, ideas by stage and industry, interest to NDA, the ideas waiting for moderation and a list of all ideas with search and filters. Staff see summaries and who posted them, never the confidential details (those stay in moderation or after a report) and never investor names. No export for now.
+- Weekly members chart: the admin dashboard shows new verified members per week for the last 8 weeks. Staff only.
+- Confirmed as built on 9 Nov: the response thread and profile rule (O03), an upheld report removes the post and no action restores it (O06), and study points for internships only (O07).
+- Store accounts (M04): the Google Play and App Store developer accounts are registered as organisation accounts of the company once it exists (L01), so nothing has to be transferred later.
+- The tender document is optional (O04), replacing the 9 Nov rule.
 
 **Open.** Every open question is a ticket on the [wayfinder map](https://github.com/clainkavit/kingdom-connect/issues/1) and is linked where it applies above.
 
@@ -1004,10 +1015,11 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | 6 Nov 2026 | Level 3 Opportunity Poster verification: directorship or authorisation proof, address with proof, review in the verification queue | 6, 18 |
 | 7 Nov 2026 | Posting opportunities: shared posting rules, review of a poster's posts until 3 are approved and of any post with a link, staff posts publish at once, staff review with Approve, Send back or Remove | 10, 18 |
 | 8 Nov 2026 | Colours: maroon and cream in both apps, replacing navy and blue (F06b) | 5, 18 |
-| 8 Nov 2026 | Proposed, awaiting Champion: admin dashboard line chart of new verified members per week; it needs approvals counted by week | 7 |
-| 8 Nov 2026 | Proposed, awaiting Champion (#180): S06 Under review drops the expected time and the next-step list, and says a notification follows the review | 6, 18 |
-| 8 Nov 2026 | Proposed, awaiting Champion (#161): registration categories become tick all that apply from Professional, Businessperson and Other; Entrepreneur and Student removed | 6, 18 |
+| 8 Nov 2026 | Admin dashboard line chart of new verified members per week (decided 10 Nov) | 7 |
+| 8 Nov 2026 | S06 Under review drops the expected time and says a notification follows the review (#180, decided 10 Nov) | 6, 18 |
+| 8 Nov 2026 | Registration categories become tick all that apply from Professional, Businessperson and Other (#161, decided 10 Nov) | 6, 18 |
 | 9 Nov 2026 | Reporting an opportunity hides it at once; the decision restores or removes it; an upheld report puts a poster back on review | 13, 18 |
+| 10 Nov 2026 | Forgot password (REG-6), admin Ideas page, store accounts under the company, tender document optional; the 9 Nov opportunity rules confirmed | 5, 6, 10, 18 |
 
 ## Appendix B: Source documents
 

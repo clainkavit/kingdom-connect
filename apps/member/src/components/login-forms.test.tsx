@@ -2,13 +2,16 @@ import "../test-router";
 import type { LoginClient } from "@kingdom-connect/shared";
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { CodeForm, LoginForm } from "./login-forms";
+import { CodeForm, ForgotPasswordForm, LoginForm } from "./login-forms";
 
 const fakeClient = (overrides: Partial<LoginClient>): LoginClient => ({
   requestEmailRecovery: vi.fn(),
   logIn: vi.fn(),
   verifyCode: vi.fn(),
   resendCode: vi.fn(),
+  startPasswordReset: vi.fn(),
+  checkResetCode: vi.fn(),
+  saveNewPassword: vi.fn(),
   ...overrides,
 });
 
@@ -172,5 +175,134 @@ describe("CodeForm (S04)", () => {
     await act(async () => fireEvent.click(screen.getByRole("button", { name: "Send a new code" })));
     expect(resendCode).toHaveBeenCalledWith("tok");
     expect(screen.getByText("Send a new code in 60s")).toBeTruthy();
+  });
+});
+
+describe("ForgotPasswordForm (S04a)", () => {
+  const press = async (name: string) =>
+    act(async () => fireEvent.click(screen.getByRole("button", { name })));
+  const started = vi
+    .fn()
+    .mockResolvedValue({ kind: "sent", resetId: "r-1", resendAfterSeconds: 60 });
+
+  it("sends the username, then gives the same answer whether or not it exists", async () => {
+    const startPasswordReset = started;
+    render(<ForgotPasswordForm client={fakeClient({ startPasswordReset })} onLogIn={vi.fn()} />);
+    type("Username", " neema ");
+    await press("Send code");
+    expect(startPasswordReset).toHaveBeenCalledWith("neema");
+    expect(
+      screen.getByText(
+        "If the username is right, we sent a 6-digit code to its email. It works for 10 minutes.",
+      ),
+    ).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Send a new code in 60s" })).toBeTruthy();
+    expect(screen.getByText("No access to that email?")).toBeTruthy();
+  });
+
+  it("checks the code, then saves the new password typed twice", async () => {
+    const checkResetCode = vi.fn().mockResolvedValue({ kind: "verified" });
+    const saveNewPassword = vi.fn().mockResolvedValue({ kind: "verified" });
+    const onLogIn = vi.fn();
+    render(
+      <ForgotPasswordForm
+        client={fakeClient({ startPasswordReset: started, checkResetCode, saveNewPassword })}
+        onLogIn={onLogIn}
+      />,
+    );
+    type("Username", "neema");
+    await press("Send code");
+    type("Email code", "123456");
+    await press("Verify");
+    expect(checkResetCode).toHaveBeenCalledWith("r-1", "123456");
+
+    type("New password", "newpass12");
+    type("Type the new password again", "newpass13");
+    await press("Save password");
+    expect(screen.getByText("The two passwords are not the same.")).toBeTruthy();
+    expect(saveNewPassword).not.toHaveBeenCalled();
+
+    type("Type the new password again", "newpass12");
+    await press("Save password");
+    expect(saveNewPassword).toHaveBeenCalledWith("r-1", "123456", "newpass12");
+    expect(
+      screen.getByText(/Your password was changed\. You are signed out on every other device/),
+    ).toBeTruthy();
+    await press("Log in");
+    expect(onLogIn).toHaveBeenCalled();
+  });
+
+  it("refuses a weak password before sending it", async () => {
+    const saveNewPassword = vi.fn();
+    render(
+      <ForgotPasswordForm
+        client={fakeClient({
+          startPasswordReset: started,
+          checkResetCode: vi.fn().mockResolvedValue({ kind: "verified" }),
+          saveNewPassword,
+        })}
+        onLogIn={vi.fn()}
+      />,
+    );
+    type("Username", "neema");
+    await press("Send code");
+    type("Email code", "123456");
+    await press("Verify");
+    type("New password", "short");
+    type("Type the new password again", "short");
+    await press("Save password");
+    expect(screen.getByText("Use at least 8 characters, with a number.")).toBeTruthy();
+    expect(saveNewPassword).not.toHaveBeenCalled();
+  });
+
+  it("says how many tries are left after a wrong code", async () => {
+    render(
+      <ForgotPasswordForm
+        client={fakeClient({
+          startPasswordReset: started,
+          checkResetCode: vi.fn().mockResolvedValue({ kind: "wrong_code", attemptsLeft: 2 }),
+        })}
+        onLogIn={vi.fn()}
+      />,
+    );
+    type("Username", "neema");
+    await press("Send code");
+    type("Email code", "111111");
+    await press("Verify");
+    expect(screen.getByText("That code is not right. 2 tries left.")).toBeTruthy();
+  });
+
+  it("goes back to the code step when the code ran out while typing the password", async () => {
+    render(
+      <ForgotPasswordForm
+        client={fakeClient({
+          startPasswordReset: started,
+          checkResetCode: vi.fn().mockResolvedValue({ kind: "verified" }),
+          saveNewPassword: vi.fn().mockResolvedValue({ kind: "expired" }),
+        })}
+        onLogIn={vi.fn()}
+      />,
+    );
+    type("Username", "neema");
+    await press("Send code");
+    type("Email code", "123456");
+    await press("Verify");
+    type("New password", "newpass12");
+    type("Type the new password again", "newpass12");
+    await press("Save password");
+    expect(screen.getByText("This code has expired. Send a new code.")).toBeTruthy();
+    expect(screen.getByLabelText("Email code")).toBeTruthy();
+  });
+
+  it("says when the server cannot be reached", async () => {
+    render(
+      <ForgotPasswordForm
+        client={fakeClient({ startPasswordReset: vi.fn().mockResolvedValue({ kind: "network" }) })}
+        onLogIn={vi.fn()}
+      />,
+    );
+    type("Username", "neema");
+    await press("Send code");
+    expect(screen.getByText(/couldn't reach the server/)).toBeTruthy();
   });
 });

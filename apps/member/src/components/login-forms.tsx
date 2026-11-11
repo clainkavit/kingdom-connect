@@ -2,6 +2,7 @@ import {
   codeMessage,
   loginMessage,
   minutesAndSeconds,
+  passwordProblem,
   type LoginClient,
   type Session,
 } from "@kingdom-connect/shared";
@@ -158,6 +159,118 @@ export function CodeForm({
       <LinkButton href="/recover" label={t.cantGetCode} className="items-center py-2">
         <Text className="font-figtree-semibold text-sm text-blue">{t.cantGetCode}</Text>
       </LinkButton>
+    </View>
+  );
+}
+
+type ResetStep = "username" | "code" | "password" | "saved";
+
+/** S04a (REG-6): username, then the email code, then the new password typed twice. */
+export function ForgotPasswordForm({
+  client,
+  onLogIn,
+}: {
+  client: LoginClient;
+  onLogIn: () => void;
+}) {
+  const { t } = useLanguage();
+  const [step, setStep] = useState<ResetStep>("username");
+  const [username, setUsername] = useState("");
+  const [resetId, setResetId] = useState("");
+  const [code, setCode] = useState("");
+  const [password, setPassword] = useState("");
+  const [repeat, setRepeat] = useState("");
+  const [message, setMessage] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  const resend = useCountdown(0);
+
+  const sendCode = async () => {
+    setBusy(true);
+    const result = await client.startPasswordReset(username.trim());
+    setBusy(false);
+    if (result.kind === "network") return setMessage(t.network);
+    setResetId(result.resetId);
+    resend.restart(result.resendAfterSeconds);
+    setCode("");
+    setMessage(null);
+    setStep("code");
+  };
+
+  const checkCode = async () => {
+    setBusy(true);
+    const result = await client.checkResetCode(resetId, code);
+    setBusy(false);
+    if (result.kind === "verified") {
+      setMessage(null);
+      return setStep("password");
+    }
+    setMessage(codeMessage(result, t));
+  };
+
+  const save = async () => {
+    if (passwordProblem(password)) return setMessage(t.problemPassword);
+    if (password !== repeat) return setMessage(t.passwordsDiffer);
+    setBusy(true);
+    const result = await client.saveNewPassword(resetId, code, password);
+    setBusy(false);
+    if (result.kind === "verified") return setStep("saved");
+    if (result.kind === "weak_password") return setMessage(t.problemPassword);
+    setMessage(codeMessage(result, t));
+    if (result.kind !== "network") {
+      setCode("");
+      setStep("code");
+    }
+  };
+
+  if (step === "saved")
+    return (
+      <View className="gap-3">
+        <Message tone="info" text={t.passwordChanged} />
+        <Button label={t.logIn} onPress={onLogIn} />
+      </View>
+    );
+
+  if (step === "password")
+    return (
+      <View className="gap-3">
+        <Field
+          label={t.newPassword}
+          value={password}
+          onChange={setPassword}
+          secure
+          hint={t.passwordHint}
+        />
+        <Field label={t.repeatPassword} value={repeat} onChange={setRepeat} secure />
+        <Message text={message} />
+        <Button label={t.savePassword} onPress={save} disabled={busy || !password || !repeat} />
+      </View>
+    );
+
+  if (step === "code")
+    return (
+      <View className="gap-3">
+        <Text className="font-figtree text-sm leading-5 text-ink-2">{t.resetCodeSent}</Text>
+        <CodeBoxes value={code} onChange={setCode} />
+        <Message text={message} />
+        <Button label={t.verify} onPress={checkCode} disabled={busy || code.length !== 6} />
+        <Button
+          secondary
+          label={resend.secondsLeft > 0 ? t.resendIn(resend.secondsLeft) : t.resend}
+          onPress={sendCode}
+          disabled={busy || resend.secondsLeft > 0}
+        />
+        <LinkButton href="/recover" label={t.noEmailAccess} className="items-center py-2">
+          <Text className="font-figtree-semibold text-sm text-blue">{t.noEmailAccess}</Text>
+        </LinkButton>
+      </View>
+    );
+
+  return (
+    <View className="gap-3">
+      <Text className="font-figtree text-sm leading-5 text-ink-2">{t.forgotIntro}</Text>
+      <Field label={t.username} value={username} onChange={setUsername} />
+      <Message text={message} />
+      <Button label={t.sendCode} onPress={sendCode} disabled={busy || !username.trim()} />
     </View>
   );
 }

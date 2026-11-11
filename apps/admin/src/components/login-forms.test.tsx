@@ -8,6 +8,9 @@ const fakeClient = (overrides: Partial<LoginClient>): LoginClient => ({
   logIn: vi.fn(),
   verifyCode: vi.fn(),
   resendCode: vi.fn(),
+  startPasswordReset: vi.fn(),
+  checkResetCode: vi.fn(),
+  saveNewPassword: vi.fn(),
   ...overrides,
 });
 

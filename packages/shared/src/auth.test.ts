@@ -139,6 +139,60 @@ describe("createLoginClient", () => {
       retryAfterSeconds: 12,
     });
   });
+
+  it("starts a password reset with the username only, and no token (S04a)", async () => {
+    const fetchImpl = respond(200, { reset_id: "r-1", resend_after_seconds: 60 });
+    expect(await client(fetchImpl).startPasswordReset("neema")).toEqual({
+      kind: "sent",
+      resetId: "r-1",
+      resendAfterSeconds: 60,
+    });
+    const [url, init] = fetchImpl.mock.calls[0]!;
+    expect(url).toBe("http://api.test/functions/v1/forgot-password");
+    expect(JSON.parse(init.body)).toEqual({ username: "neema" });
+    expect(init.headers.Authorization).toBeUndefined();
+    const offline = vi.fn().mockRejectedValue(new TypeError("Failed to fetch"));
+    expect(await client(offline).startPasswordReset("neema")).toEqual({ kind: "network" });
+  });
+
+  it("checks the reset code, then saves the new password with it (S04a)", async () => {
+    const check = respond(200, { ok: true });
+    expect(await client(check).checkResetCode("r-1", "123456")).toEqual({ kind: "verified" });
+    expect(JSON.parse(check.mock.calls[0]![1].body)).toEqual({ reset_id: "r-1", code: "123456" });
+
+    const save = respond(200, { ok: true });
+    expect(await client(save).saveNewPassword("r-1", "123456", "newpass12")).toEqual({
+      kind: "verified",
+    });
+    const [url, init] = save.mock.calls[0]!;
+    expect(url).toBe("http://api.test/functions/v1/reset-password");
+    expect(JSON.parse(init.body)).toEqual({
+      reset_id: "r-1",
+      code: "123456",
+      password: "newpass12",
+    });
+  });
+
+  it("maps reset refusals like the login code's", async () => {
+    expect(
+      await client(respond(400, { error: "wrong_code", attempts_left: 1 })).checkResetCode(
+        "r",
+        "1",
+      ),
+    ).toEqual({ kind: "wrong_code", attemptsLeft: 1 });
+    expect(await client(respond(400, { error: "too_many" })).checkResetCode("r", "1")).toEqual({
+      kind: "too_many",
+    });
+    expect(await client(respond(400, { error: "expired" })).checkResetCode("r", "1")).toEqual({
+      kind: "expired",
+    });
+    expect(
+      await client(respond(400, { error: "weak_password" })).saveNewPassword("r", "1", "short"),
+    ).toEqual({ kind: "weak_password" });
+    expect(
+      await client(respond(500, { error: "failed" })).saveNewPassword("r", "1", "newpass12"),
+    ).toEqual({ kind: "network" });
+  });
 });
 
 describe("too many codes", () => {

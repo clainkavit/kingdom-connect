@@ -73,6 +73,21 @@ export type ResendResult =
   | { kind: "too_many_codes" }
   | { kind: "network" };
 
+export type PasswordResetStart =
+  { kind: "sent"; resetId: string; resendAfterSeconds: number } | { kind: "network" };
+
+export type SavePasswordResult = VerifyResult | { kind: "weak_password" };
+
+function resetCodeResult(r: Record<string, unknown> | null): VerifyResult {
+  if (!r || r.error === "failed") return { kind: "network" };
+  if (r.ok) return { kind: "verified" };
+  if (r.error === "wrong_code")
+    return { kind: "wrong_code", attemptsLeft: Number(r.attempts_left) };
+  if (r.error === "too_many") return { kind: "too_many" };
+  if (r.error === "expired") return { kind: "expired" };
+  return { kind: "no_code" };
+}
+
 export type FunctionOptions = { url: string; anonKey: string; fetch?: typeof fetch };
 
 export function functionCaller({ url, anonKey, fetch: fetchImpl = fetch }: FunctionOptions) {
@@ -153,6 +168,33 @@ export function createLoginClient(options: FunctionOptions) {
         return { kind: "too_soon", retryAfterSeconds: Number(r.retry_after_seconds) };
       if (r.error === "too_many_codes") return { kind: "too_many_codes" };
       return { kind: "sent", resendAfterSeconds: Number(r.resend_after_seconds ?? 60) };
+    },
+
+    /** S04a step 1. The answer is the same whether or not the username exists. */
+    async startPasswordReset(username: string): Promise<PasswordResetStart> {
+      const r = await call("forgot-password", { username });
+      if (typeof r?.reset_id !== "string") return { kind: "network" };
+      return {
+        kind: "sent",
+        resetId: r.reset_id,
+        resendAfterSeconds: Number(r.resend_after_seconds ?? 60),
+      };
+    },
+
+    /** S04a step 2: confirms the code without using it up. */
+    async checkResetCode(resetId: string, code: string): Promise<VerifyResult> {
+      return resetCodeResult(await call("reset-password", { reset_id: resetId, code }));
+    },
+
+    /** S04a step 3: saves the new password; every other device is signed out. */
+    async saveNewPassword(
+      resetId: string,
+      code: string,
+      password: string,
+    ): Promise<SavePasswordResult> {
+      const r = await call("reset-password", { reset_id: resetId, code, password });
+      if (r?.error === "weak_password") return { kind: "weak_password" };
+      return resetCodeResult(r);
     },
   };
 }

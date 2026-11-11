@@ -13,6 +13,7 @@ export default function LoginScreen() {
     <Guard route="login">
       <AuthCard title={platformName ? t.loginTitle(platformName) : t.logIn}>
         <LoginForm client={loginClient} onCodeSent={startSession} />
+        <TextButton label={t.forgotPassword} onPress={() => router.push("/forgot-password")} />
         <TextButton label={t.createAccount} onPress={() => router.push("/sign-up")} />
       </AuthCard>
     </Guard>

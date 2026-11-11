@@ -489,14 +489,9 @@ export const sw: Strings = {
 
   statusTitle: "Hali ya usajili",
   pendingStatusTitle: "Inakaguliwa",
-  pendingStatus: "Maombi yako yanakaguliwa. Tutakutumia barua pepe uamuzi ukishafanywa.",
+  pendingStatus: "Maombi yako yanakaguliwa. Utapata taarifa ukaguzi utakapokamilika.",
   rejectedStatusTitle: "Hayajaidhinishwa",
   rejectedStatus: "Maombi yako hayakuidhinishwa.",
-  expectedDecision: (days: number) =>
-    days === 1
-      ? "Tunatarajia uamuzi ndani ya takriban siku 1 ya kazi."
-      : `Tunatarajia uamuzi ndani ya takriban siku ${days} za kazi.`,
-  usualDecision: "Kwa kawaida tunaamua ndani ya siku 2 za kazi.",
   statusReason: (reason: string) => `Sababu: ${reason}`,
   resubmitOnce: "Unaweza kurekebisha na kutuma tena mara moja.",
   fixAndResubmit: "Rekebisha na utume tena",

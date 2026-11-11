@@ -2,6 +2,7 @@ import { act, cleanup, fireEvent, render, screen } from "@testing-library/react"
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { STATS_REFRESH_MS, type AdminStats, type AdminStatsApi } from "@/lib/admin-dashboard";
 import { AdminDashboard } from "./admin-dashboard";
+import { gridStep } from "./weekly-members-chart";
 
 afterEach(() => {
   cleanup();
@@ -24,6 +25,7 @@ const fakeApi = (s: AdminStats = stats(), over: Partial<AdminStatsApi> = {}): Ad
   stats: vi.fn().mockResolvedValue(s),
   alerts: vi.fn().mockResolvedValue([]),
   acknowledge: vi.fn().mockResolvedValue(true),
+  weeklyNewMembers: vi.fn().mockResolvedValue([]),
   ...over,
 });
 
@@ -109,5 +111,37 @@ describe("AdminDashboard (A01)", () => {
       vi.advanceTimersByTime(STATS_REFRESH_MS);
     });
     expect(api.stats).toHaveBeenCalledTimes(2);
+  });
+
+  it("draws new verified members per week, with this week's count and each week named (D06)", async () => {
+    const weeks = [0, 22, 25, 21, 30, 28, 34, 36].map((newMembers, i) => ({
+      weekStart: `2026-${i < 3 ? "09" : i < 7 ? "10" : "11"}-0${(i % 9) + 1}`,
+      newMembers,
+    }));
+    weeks[0]!.weekStart = "2026-10-05";
+    weeks[7]!.weekStart = "2026-11-02";
+    await show(fakeApi(stats(), { weeklyNewMembers: vi.fn().mockResolvedValue(weeks) }));
+    expect(
+      screen.getByRole("img", { name: "New verified members per week, from 0 to 36" }),
+    ).toBeTruthy();
+    expect(screen.getByText("36 this week")).toBeTruthy();
+    expect(screen.getAllByText("Week of 2 Nov: 36 new members").length).toBeGreaterThan(0);
+    expect(link(/Open members/)).toBe("/members?status=approved");
+  });
+
+  it("keeps the dashboard when the weekly chart cannot load", async () => {
+    await show(
+      fakeApi(stats(), { weeklyNewMembers: vi.fn().mockRejectedValue(new Error("offline")) }),
+    );
+    expect(link(/Verified members.*42/)).toBe("/members?status=approved");
+    expect(screen.getByText(/couldn't load the weekly chart/)).toBeTruthy();
+  });
+
+  it("picks gridlines of 1, 2 or 5 times a power of ten", () => {
+    expect(gridStep(0)).toBe(1);
+    expect(gridStep(4)).toBe(1);
+    expect(gridStep(36)).toBe(10);
+    expect(gridStep(7)).toBe(2);
+    expect(gridStep(180)).toBe(50);
   });
 });

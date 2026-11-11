@@ -13,10 +13,14 @@ export type AdminStats = {
 
 export type SecurityAlert = { id: string; summary: string; raisedAt: Date };
 
+/** One week, Monday to Sunday in Tanzania time; weekStart is the Monday as YYYY-MM-DD. */
+export type WeekCount = { weekStart: string; newMembers: number };
+
 export type AdminStatsApi = {
   stats: () => Promise<AdminStats>;
   alerts: () => Promise<SecurityAlert[]>;
   acknowledge: (id: string) => Promise<boolean>;
+  weeklyNewMembers: () => Promise<WeekCount[]>;
 };
 
 type StatsRow = {
@@ -61,5 +65,14 @@ export const adminStatsApi: AdminStatsApi = {
   async acknowledge(id) {
     const { error } = await supabase.rpc("acknowledge_security_alert", { alert: id });
     return !error;
+  },
+
+  async weeklyNewMembers() {
+    const { data, error } = await supabase.rpc("weekly_new_members", { weeks: 8 });
+    if (error) throw error;
+    return (data as { week_start: string; new_members: number }[]).map((w) => ({
+      weekStart: w.week_start,
+      newMembers: w.new_members,
+    }));
   },
 };

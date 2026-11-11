@@ -9,7 +9,7 @@ import {
   type Strings,
 } from "@kingdom-connect/shared";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { buttonVariants } from "@/components/ui/button";
 import {
   IDEA_LIST_STATUSES,
@@ -122,19 +122,16 @@ function StageDonut({ byStage, total }: { byStage: IdeasOverview["byStage"]; tot
   const n = (v: number) => formatNumber(v, language);
   const r = 58;
   const circumference = 2 * Math.PI * r;
-  let offset = 0;
-  const parts = IDEA_STAGES.map((stage, i) => {
-    const count = byStage[stage] ?? 0;
-    const part = {
-      stage,
-      count,
-      shade: STAGE_SHADES[i]!,
-      offset,
-      length: total ? (count / total) * circumference : 0,
-    };
-    offset += part.length;
-    return part;
-  });
+  const lengths = IDEA_STAGES.map((stage) =>
+    total ? ((byStage[stage] ?? 0) / total) * circumference : 0,
+  );
+  const parts = IDEA_STAGES.map((stage, i) => ({
+    stage,
+    count: byStage[stage] ?? 0,
+    shade: STAGE_SHADES[i]!,
+    length: lengths[i]!,
+    offset: lengths.slice(0, i).reduce((sum, l) => sum + l, 0),
+  }));
   return (
     <div className="flex flex-wrap items-center gap-5">
       <svg
@@ -320,24 +317,28 @@ function AllIdeas({
   setPage: (update: (p: number) => number) => void;
 }) {
   const { t, language } = useLanguage();
-  const [rows, setRows] = useState<IdeaRow[] | null>(null);
-  const [failed, setFailed] = useState(false);
+  const [result, setResult] = useState<{ key: string; rows: IdeaRow[] | null } | null>(null);
   const [sectors, setSectors] = useState<Sector[]>([]);
   const [attempt, setAttempt] = useState(0);
-  const request = useRef(0);
+  const key = JSON.stringify([filters, page, attempt]);
+  const answered = result?.key === key ? result : null;
+  const rows = answered?.rows ?? null;
+  const failed = answered !== null && answered.rows === null;
 
   useEffect(() => {
     api.sectors().then(setSectors, () => undefined);
   }, [api]);
 
   useEffect(() => {
-    const mine = ++request.current;
-    setRows(null);
-    setFailed(false);
+    let live = true;
+    const asked = JSON.stringify([filters, page, attempt]);
     api.list(filters, page).then(
-      (loaded) => mine === request.current && setRows(loaded),
-      () => mine === request.current && setFailed(true),
+      (loaded) => live && setResult({ key: asked, rows: loaded }),
+      () => live && setResult({ key: asked, rows: null }),
     );
+    return () => {
+      live = false;
+    };
   }, [api, filters, page, attempt]);
 
   const n = (v: number) => formatNumber(v, language);

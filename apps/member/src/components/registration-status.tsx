@@ -46,17 +46,7 @@ export function RegistrationStatus({
           {rejected ? t.rejectedStatusTitle : t.pendingStatusTitle}
         </Text>
         {status.kind === "under_review" ? (
-          <>
-            <Line tone={tone} text={t.pendingStatus} />
-            <Line
-              tone={tone}
-              text={
-                status.expectedWorkingDays === null
-                  ? t.usualDecision
-                  : t.expectedDecision(status.expectedWorkingDays)
-              }
-            />
-          </>
+          <Line tone={tone} text={t.pendingStatus} />
         ) : (
           <>
             <Line tone={tone} text={t.rejectedStatus} />

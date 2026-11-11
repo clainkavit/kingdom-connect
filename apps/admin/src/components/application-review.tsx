@@ -184,19 +184,23 @@ function ProfileCard({ app }: { app: Application }) {
         <Row label={t.reviewUsername} value={`@${app.username}`} />
         <Row
           label={t.reviewCategory}
-          value={app.category ? t[categoryLabel[app.category]] : t.notGiven}
+          value={
+            app.categories.length > 0
+              ? app.categories.map((c) => t[categoryLabel[c]]).join(", ")
+              : t.notGiven
+          }
         />
-        {app.category
-          ? categoryFields[app.category].map(({ field }) => (
-              <Row
-                key={field}
-                label={t[detailLabel[field]] as string}
-                value={
-                  (field === "sectorId" ? app.sectorName : app.categoryDetails[field]) || t.notGiven
-                }
-              />
-            ))
-          : null}
+        {[
+          ...new Set(app.categories.flatMap((c) => categoryFields[c].map(({ field }) => field))),
+        ].map((field) => (
+          <Row
+            key={field}
+            label={t[detailLabel[field]] as string}
+            value={
+              (field === "sectorId" ? app.sectorName : app.categoryDetails[field]) || t.notGiven
+            }
+          />
+        ))}
         <Row label={t.region} value={app.region} />
         <Row label={t.district} value={app.district} />
         <Row label={t.addressLabel} value={app.address} />

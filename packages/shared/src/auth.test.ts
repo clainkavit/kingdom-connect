@@ -252,27 +252,8 @@ describe("createRegistrationClient (S02, S05)", () => {
   });
 
   it("reads the Applicant's status (S06)", async () => {
-    expect(
-      await client(
-        respond(200, {
-          state: "under_review",
-          expectedWorkingDays: 3,
-        }),
-      ).status("tok"),
-    ).toEqual({
+    expect(await client(respond(200, { state: "under_review" })).status("tok")).toEqual({
       kind: "under_review",
-      expectedWorkingDays: 3,
-    });
-    expect(
-      await client(
-        respond(200, {
-          state: "under_review",
-          expectedWorkingDays: null,
-        }),
-      ).status("tok"),
-    ).toEqual({
-      kind: "under_review",
-      expectedWorkingDays: null,
     });
     expect(
       await client(respond(200, { state: "rejected", reason: "The ID has expired" })).status("tok"),

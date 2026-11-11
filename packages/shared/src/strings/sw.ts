@@ -487,6 +487,20 @@ export const sw: Strings = {
   resend: "Omba msimbo mpya",
   resendIn: (seconds: number) => `Omba msimbo mpya baada ya sekunde ${seconds}`,
 
+  forgotPassword: "Umesahau nenosiri?",
+  forgotTitle: "Weka nenosiri jipya",
+  forgotIntro:
+    "Andika jina lako la mtumiaji. Tutatuma msimbo wa tarakimu 6 kwenye barua pepe ya akaunti yako.",
+  sendCode: "Tuma msimbo",
+  resetCodeSent:
+    "Kama jina la mtumiaji ni sahihi, tumetuma msimbo wa tarakimu 6 kwenye barua pepe yake. Unafanya kazi kwa dakika 10.",
+  repeatPassword: "Andika nenosiri jipya tena",
+  passwordsDiffer: "Manenosiri mawili hayafanani.",
+  savePassword: "Hifadhi nenosiri",
+  passwordChanged:
+    "Nenosiri lako limebadilishwa. Umetolewa kwenye vifaa vingine vyote. Ingia kwa nenosiri jipya na msimbo tutakaokutumia kwa barua pepe.",
+  noEmailAccess: "Huwezi kufikia barua pepe hiyo?",
+
   statusTitle: "Hali ya usajili",
   pendingStatusTitle: "Inakaguliwa",
   pendingStatus: "Maombi yako yanakaguliwa. Tutakutumia barua pepe uamuzi ukishafanywa.",

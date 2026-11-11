@@ -477,6 +477,19 @@ export const en = {
   resend: "Send a new code",
   resendIn: (seconds: number) => `Send a new code in ${seconds}s`,
 
+  forgotPassword: "Forgot password?",
+  forgotTitle: "Reset your password",
+  forgotIntro: "Type your username. We will send a 6-digit code to the email on your account.",
+  sendCode: "Send code",
+  resetCodeSent:
+    "If the username is right, we sent a 6-digit code to its email. It works for 10 minutes.",
+  repeatPassword: "Type the new password again",
+  passwordsDiffer: "The two passwords are not the same.",
+  savePassword: "Save password",
+  passwordChanged:
+    "Your password was changed. You are signed out on every other device. Log in with the new password and the code we email you.",
+  noEmailAccess: "No access to that email?",
+
   statusTitle: "Registration status",
   pendingStatusTitle: "Under review",
   pendingStatus: "Your application is being reviewed. We'll email you when there is a decision.",

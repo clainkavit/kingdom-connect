@@ -6,25 +6,15 @@ import { RegistrationStatus } from "./registration-status";
 afterEach(cleanup);
 
 describe("RegistrationStatus (S06)", () => {
-  it("says the application is under review, with the expected time", () => {
-    render(
-      <RegistrationStatus
-        status={{ kind: "under_review", expectedWorkingDays: 3 }}
-        onResubmit={vi.fn()}
-      />,
-    );
+  it("says the application is under review, with no expected time (#180)", () => {
+    render(<RegistrationStatus status={{ kind: "under_review" }} onResubmit={vi.fn()} />);
     expect(screen.getByText("Under review")).toBeTruthy();
-    expect(screen.getByText("We expect a decision in about 3 working days.")).toBeTruthy();
-  });
-
-  it("falls back to the usual time when there is no estimate", () => {
-    render(
-      <RegistrationStatus
-        status={{ kind: "under_review", expectedWorkingDays: null }}
-        onResubmit={vi.fn()}
-      />,
-    );
-    expect(screen.getByText("We usually decide within 2 working days.")).toBeTruthy();
+    expect(
+      screen.getByText(
+        "Your application is being reviewed. You will get a notification when the review is done.",
+      ),
+    ).toBeTruthy();
+    expect(screen.queryByText(/working day/)).toBeNull();
   });
 
   it("shows the reason after a first rejection and lets the applicant fix and resubmit", async () => {

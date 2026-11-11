@@ -42,7 +42,8 @@ test("a rejected Applicant fixes and resubmits once, an Administrator reopens th
 
   await signInAsApplicant(page, username, email);
   await expect(page.getByText("Under review")).toBeVisible();
-  await expect(page.getByText(/working days?\.$/)).toBeVisible();
+  await expect(page.getByText(/notification when the review is done\.$/)).toBeVisible();
+  await expect(page.getByText(/working days?/)).toHaveCount(0);
 
   await reject(admin, username, "The ID has expired");
   await page.reload();

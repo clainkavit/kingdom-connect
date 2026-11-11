@@ -13,7 +13,7 @@ const application = (over: Partial<Application> = {}): Application => ({
   submittedAt: new Date("2026-11-09T09:00:00+03:00"),
   username: "test_applicant",
   fullName: "Test Applicant",
-  category: "professional",
+  categories: ["professional"],
   categoryDetails: { profession: "Nurse" },
   sectorName: null,
   region: "Mwanza",
@@ -54,6 +54,28 @@ const click = (name: string) =>
   act(async () => fireEvent.click(screen.getByRole("button", { name })));
 
 describe("ApplicationReview (A03)", () => {
+  it("shows every category the applicant ticked, with each one's details (R19)", async () => {
+    await show(
+      fakeApi({
+        application: vi.fn().mockResolvedValue(
+          application({
+            categories: ["professional", "businessperson"],
+            categoryDetails: {
+              profession: "Nurse",
+              businessName: "Neema Tailoring",
+              sectorId: "s1",
+            },
+            sectorName: "Trade",
+          }),
+        ),
+      }),
+    );
+    expect(screen.getByText("Professional, Businessperson")).toBeTruthy();
+    expect(screen.getByText("Nurse")).toBeTruthy();
+    expect(screen.getByText("Neema Tailoring")).toBeTruthy();
+    expect(screen.getByText("Trade")).toBeTruthy();
+  });
+
   it("shows the face photo and ID photo side by side with the form details", async () => {
     await show(fakeApi());
     expect(screen.getByRole("img", { name: "Face photo" }).getAttribute("src")).toBe(

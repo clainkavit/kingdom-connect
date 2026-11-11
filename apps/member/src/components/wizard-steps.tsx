@@ -1,12 +1,13 @@
 import {
   categoryFields,
   type CategoryDetails,
+  draftCategories,
   type FieldProblem,
   idTypes,
   type IdType,
-  memberCategories,
   type MemberCategory,
   type RegistrationDraft,
+  selectableCategories,
   type Strings,
   type TextKey,
 } from "@kingdom-connect/shared";
@@ -112,16 +113,41 @@ export function PersonalStep({
   );
 }
 
+/** The details fields of the ticked categories, each field once. */
+const fieldsFor = (categories: MemberCategory[]): (keyof CategoryDetails)[] => [
+  ...new Set(categories.flatMap((c) => categoryFields[c].map(({ field }) => field))),
+];
+
+/** S05 step 2 (R19, #161): tick every category that applies, at least one. */
 export function CategoryStep({ draft, update, problems }: StepProps) {
   const { t } = useLanguage();
+  const chosen = draftCategories(draft).filter((c) => selectableCategories.includes(c));
+  const toggle = (category: MemberCategory, on: boolean) => {
+    const categories = selectableCategories.filter((c) =>
+      c === category ? on : chosen.includes(c),
+    );
+    const keep = new Set(fieldsFor(categories));
+    const details = Object.fromEntries(
+      Object.entries(draft.categoryDetails ?? {}).filter(([field]) =>
+        keep.has(field as keyof CategoryDetails),
+      ),
+    ) as CategoryDetails;
+    update({ categories, category: undefined, categoryDetails: details });
+  };
   return (
-    <Chips
-      label={t.stepCategory}
-      options={memberCategories.map((value) => ({ value, label: t[categoryLabel[value]] }))}
-      value={draft.category}
-      onChange={(category) => update({ category, categoryDetails: {} })}
-      problem={say(t, problems, "category")}
-    />
+    <View role="group" aria-label={t.stepCategory} className="gap-1.5">
+      <Text className="font-figtree-bold text-sm text-ink">{t.stepCategory}</Text>
+      <Text className="font-figtree text-sm leading-5 text-ink-2">{t.categoryHint}</Text>
+      {selectableCategories.map((category) => (
+        <Checkbox
+          key={category}
+          label={t[categoryLabel[category]]}
+          checked={chosen.includes(category)}
+          onChange={(on) => toggle(category, on)}
+        />
+      ))}
+      <Message text={say(t, problems, "category")} />
+    </View>
   );
 }
 
@@ -132,11 +158,12 @@ export function DetailsStep({
   sectors,
 }: StepProps & { sectors: Option[] }) {
   const { t } = useLanguage();
-  if (!draft.category) return <Message text={t.problemRequired} />;
+  const categories = draftCategories(draft);
+  if (categories.length === 0) return <Message text={t.problemRequired} />;
   const details = draft.categoryDetails ?? {};
   return (
     <View className="gap-3">
-      {categoryFields[draft.category].map(({ field }) =>
+      {fieldsFor(categories).map((field) =>
         field === "sectorId" ? (
           <ChoiceList
             key={field}
@@ -335,7 +362,13 @@ export function ReviewStep({
     { step: 1, label: t.region, value: labelOf("region", draft.regionId) },
     { step: 1, label: t.district, value: labelOf("district", draft.districtId) },
     { step: 1, label: t.addressLabel, value: draft.address },
-    { step: 2, label: t.stepCategory, value: draft.category && t[categoryLabel[draft.category]] },
+    {
+      step: 2,
+      label: t.stepCategory,
+      value: draftCategories(draft)
+        .map((c) => t[categoryLabel[c]])
+        .join(", "),
+    },
     { step: 4, label: t.idType, value: draft.idType && t[idTypeLabel[draft.idType]] },
     { step: 4, label: t.facePhoto, value: draft.facePhoto ? t.photoAdded : undefined },
     { step: 4, label: t.idPhoto, value: draft.idPhoto ? t.photoAdded : undefined },

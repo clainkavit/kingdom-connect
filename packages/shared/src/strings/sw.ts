@@ -565,6 +565,7 @@ export const sw: Strings = {
   stepOf: (step: number, total: number) => `Hatua ${step} kati ya ${total}`,
   stepPersonal: "Taarifa binafsi",
   stepCategory: "Kundi",
+  categoryHint: "Weka alama kwenye kila kundi linalokuhusu.",
   stepCategoryDetails: "Taarifa za kundi",
   stepIdentity: "Picha na kitambulisho",
   stepLegal: "Masharti na faragha",

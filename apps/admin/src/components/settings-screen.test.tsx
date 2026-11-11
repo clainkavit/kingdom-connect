@@ -17,6 +17,35 @@ const fakeApi = (over: Partial<SettingsApi> = {}): SettingsApi => ({
   synonyms: vi.fn().mockResolvedValue([{ id: "y1", fromName: "js", skillName: "javascript" }]),
   addSynonym: vi.fn().mockResolvedValue("done"),
   removeSynonym: vi.fn().mockResolvedValue(true),
+  platform: vi.fn().mockResolvedValue({
+    platformName: "Kingdom Connect",
+    legalEntityName: "Test Entity Ltd",
+    featuredSlotLimit: 5,
+  }),
+  savePlatform: vi.fn().mockResolvedValue("ok"),
+  weights: vi.fn().mockResolvedValue([
+    { feature: "people", signal: "minimum", points: 20 },
+    { feature: "people", signal: "mutual_max", points: 5 },
+    { feature: "scan", signal: "minimum", points: 20 },
+    { feature: "scan", signal: "skill_each", points: 20 },
+  ]),
+  saveWeight: vi.fn().mockResolvedValue("ok"),
+  legalVersions: vi.fn().mockResolvedValue([
+    {
+      kind: "terms",
+      version: "0.2",
+      approvedAt: new Date("2026-11-08T09:00:00+03:00"),
+      effectiveAt: new Date("2026-11-09T00:00:00+03:00"),
+      current: true,
+    },
+    {
+      kind: "terms",
+      version: "0.1",
+      approvedAt: null,
+      effectiveAt: new Date("2026-11-02T00:00:00+03:00"),
+      current: false,
+    },
+  ]),
   ...over,
 });
 
@@ -128,5 +157,66 @@ describe("SettingsScreen (A16)", () => {
       fireEvent.click(screen.getByRole("button", { name: "Deactivate Test Super Administrator" })),
     );
     expect(screen.getByText(/You cannot deactivate yourself/)).toBeTruthy();
+  });
+
+  it("keeps the platform, weights and legal versions from an Administrator (D02)", async () => {
+    const api = fakeApi();
+    await show(api, false);
+    expect(api.platform).not.toHaveBeenCalled();
+    expect(api.weights).not.toHaveBeenCalled();
+    expect(api.legalVersions).not.toHaveBeenCalled();
+    expect(screen.queryByRole("heading", { name: "Matching weights" })).toBeNull();
+  });
+
+  it("saves only the platform settings that changed (D02)", async () => {
+    const api = fakeApi();
+    await show(api);
+    expect((screen.getByLabelText("Platform name") as HTMLInputElement).value).toBe(
+      "Kingdom Connect",
+    );
+    fireEvent.change(screen.getByLabelText("Featured slots"), { target: { value: "8" } });
+    await click("Save platform settings");
+    expect(api.savePlatform).toHaveBeenCalledTimes(1);
+    expect(api.savePlatform).toHaveBeenCalledWith("featured_slot_limit", 8);
+    expect(screen.getByText("Saved.")).toBeTruthy();
+  });
+
+  it("says when the server refuses a platform value", async () => {
+    await show(fakeApi({ savePlatform: vi.fn().mockResolvedValue("invalid_value") }));
+    fireEvent.change(screen.getByLabelText("Platform name"), { target: { value: "K" } });
+    await click("Save platform settings");
+    expect(screen.getByText(/Check the values/)).toBeTruthy();
+  });
+
+  it("changes a matching weight and checks the ranges first (D02)", async () => {
+    const api = fakeApi();
+    await show(api);
+    const scan = screen.getByRole("group", { name: "Scan for Opportunities" });
+    expect(scan.textContent).toContain("Points for each matching skill");
+    fireEvent.change(screen.getByLabelText("Most mutual connections counted"), {
+      target: { value: "12" },
+    });
+    await click("Save weights");
+    expect(api.saveWeight).not.toHaveBeenCalled();
+    expect(screen.getByText(/Check "Most mutual connections counted"/)).toBeTruthy();
+
+    fireEvent.change(screen.getByLabelText("Most mutual connections counted"), {
+      target: { value: "4" },
+    });
+    await click("Save weights");
+    expect(api.saveWeight).toHaveBeenCalledTimes(1);
+    expect(api.saveWeight).toHaveBeenCalledWith({
+      feature: "people",
+      signal: "mutual_max",
+      points: 4,
+    });
+  });
+
+  it("lists the legal text versions and marks the one in force (D02)", async () => {
+    await show(fakeApi());
+    const table = screen.getByRole("table");
+    expect(table.textContent).toContain("Terms of use");
+    expect(table.textContent).toContain("0.2In force");
+    expect(table.textContent).toContain("0.1");
   });
 });

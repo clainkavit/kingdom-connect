@@ -37,13 +37,13 @@ test("a Super Administrator turns on the daily application cap and sign-up stops
   await page.getByRole("link", { name: "Settings" }).first().click();
   await page.getByRole("checkbox", { name: "Limit sign-ups each day" }).check();
   await page.getByLabel("Sign-ups a day").fill(String(await signUpsToday()));
-  await page.getByRole("button", { name: "Save" }).click();
+  await page.getByRole("button", { name: "Save", exact: true }).click();
   await expect(page.getByText("Saved.")).toBeVisible();
 
   expect(await signUp(`e2e_cap_${Date.now()}`)).toEqual({ error: "cap_reached" });
 
   await page.getByRole("checkbox", { name: "Limit sign-ups each day" }).uncheck();
-  await page.getByRole("button", { name: "Save" }).click();
+  await page.getByRole("button", { name: "Save", exact: true }).click();
   await expect(page.getByText("Saved.")).toBeVisible();
   expect(await signUp(`e2e_cap_${Date.now()}`)).toEqual({ ok: true });
 });

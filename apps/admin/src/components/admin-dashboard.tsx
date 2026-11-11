@@ -15,6 +15,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { Notice } from "./cards";
 import { ScreenTitle } from "./screens";
 import { ErrorState, LoadingRows } from "./states";
+import { WeeklyMembersChart } from "./weekly-members-chart";
 
 function StatTile({
   label,
@@ -183,6 +184,7 @@ export function AdminDashboard({
           />
           <StatTile label={t.adminStatReports} value={n(stats.openReportCases)} href="/reports" />
         </div>
+        <WeeklyMembersChart api={api} />
         <section className="flex flex-col gap-1 rounded-lg border bg-card p-4 shadow-card">
           <h2 className="text-sm font-semibold text-ink-2">{t.adminCapTitle}</h2>
           <p className="text-[15px] font-semibold text-foreground">

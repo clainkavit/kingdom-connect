@@ -492,14 +492,10 @@ export const en = {
 
   statusTitle: "Registration status",
   pendingStatusTitle: "Under review",
-  pendingStatus: "Your application is being reviewed. We'll email you when there is a decision.",
+  pendingStatus:
+    "Your application is being reviewed. You will get a notification when the review is done.",
   rejectedStatusTitle: "Not approved",
   rejectedStatus: "Your application was not approved.",
-  expectedDecision: (days: number) =>
-    days === 1
-      ? "We expect a decision in about 1 working day."
-      : `We expect a decision in about ${days} working days.`,
-  usualDecision: "We usually decide within 2 working days.",
   statusReason: (reason: string) => `Reason: ${reason}`,
   resubmitOnce: "You can fix this and send it again once.",
   fixAndResubmit: "Fix and resubmit",
@@ -567,6 +563,7 @@ export const en = {
   stepOf: (step: number, total: number) => `Step ${step} of ${total}`,
   stepPersonal: "Personal details",
   stepCategory: "Category",
+  categoryHint: "Tick every one that applies to you.",
   stepCategoryDetails: "Category details",
   stepIdentity: "Photos and ID",
   stepLegal: "Terms and privacy",

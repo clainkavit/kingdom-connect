@@ -30,7 +30,7 @@ export type Application = {
   submittedAt: Date;
   username: string;
   fullName: string;
-  category: MemberCategory | null;
+  categories: MemberCategory[];
   categoryDetails: CategoryDetails;
   sectorName: string | null;
   region: string;
@@ -121,7 +121,7 @@ export const verificationApi: VerificationApi = {
       .from("verification_requests")
       .select(
         `id, member_id, status, reason, submitted_at, duplicate_suspected_of,
-         member:members!verification_requests_member_id_fkey(username, category, status, resubmissions_used,
+         member:members!verification_requests_member_id_fkey(username, categories, status, resubmissions_used,
            requests:verification_requests!verification_requests_member_id_fkey(submitted_at),
            profile:profiles(full_name, category_details, study_institution, study_course, study_year,
              region:regions(name_en, name_sw), district:districts(name_en, name_sw)),
@@ -135,7 +135,7 @@ export const verificationApi: VerificationApi = {
 
     const member = data.member as unknown as {
       username: string;
-      category: MemberCategory | null;
+      categories: MemberCategory[] | null;
       status: string;
       resubmissions_used: number;
       requests: { submitted_at: string }[];
@@ -213,7 +213,7 @@ export const verificationApi: VerificationApi = {
       submittedAt: new Date(data.submitted_at),
       username: member.username,
       fullName: member.profile?.full_name ?? "",
-      category: member.category,
+      categories: member.categories ?? [],
       categoryDetails: details,
       sectorName,
       region: nameIn(member.profile?.region ?? null, language),

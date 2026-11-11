@@ -38,7 +38,7 @@ describe("member navigation", () => {
   });
 
   it("never contains an admin item", () => {
-    const shared = ["Dashboard", "Reports", "Settings"];
+    const shared = ["Dashboard", "Ideas", "Reports", "Settings"];
     const adminOnly = labels(adminNav).filter((l) => !shared.includes(l));
     for (const label of adminOnly) expect(labels(memberNav)).not.toContain(label);
   });
@@ -64,6 +64,7 @@ describe("admin navigation", () => {
       "Dashboard",
       "Verification queue",
       "Moderation queue",
+      "Ideas",
       "Reports",
       "Re-verification",
       "Members and investors",

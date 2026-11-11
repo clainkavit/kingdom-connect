@@ -221,12 +221,7 @@ export function createRegistrationClient(options: FunctionOptions) {
 
     async status(accessToken: string): Promise<ApplicationStatus> {
       const r = await call("application-status", {}, accessToken);
-      if (r?.state === "under_review")
-        return {
-          kind: "under_review",
-          expectedWorkingDays:
-            typeof r.expectedWorkingDays === "number" ? r.expectedWorkingDays : null,
-        };
+      if (r?.state === "under_review") return { kind: "under_review" };
       if (r?.state === "rejected" || r?.state === "rejected_final")
         return {
           kind: "rejected",
@@ -246,10 +241,10 @@ export function createRegistrationClient(options: FunctionOptions) {
   };
 }
 
-/** Where an application stands (S06). Never carries reviewer details or queue numbers. */
+/** Where an application stands (S06). Never carries reviewer details, queue numbers or an expected time (#180). */
 export type ApplicationStatus =
   | { kind: "drafting" }
-  | { kind: "under_review"; expectedWorkingDays: number | null }
+  | { kind: "under_review" }
   | { kind: "rejected"; reason: string; final: boolean }
   | { kind: "approved" }
   | { kind: "signed_out" }

@@ -48,10 +48,14 @@ test("a Super Administrator turns on the daily application cap and sign-up stops
   expect(await signUp(`e2e_cap_${Date.now()}`)).toEqual({ ok: true });
 });
 
-test("an Administrator cannot change the cap or create staff", async ({ page }) => {
+test("an Administrator cannot change the cap, create staff or see the platform settings (A16, D02)", async ({
+  page,
+}) => {
   await signInToAdmin(page);
   await page.goto(`${ADMIN_URL}/settings`);
   await expect(page.getByRole("checkbox", { name: "Limit sign-ups each day" })).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "Matching weights" })).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "Platform" })).toHaveCount(0);
   await expect(
     page.getByText("Only Super Administrators can change these settings."),
   ).toBeVisible();

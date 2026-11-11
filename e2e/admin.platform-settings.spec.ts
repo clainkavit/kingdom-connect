@@ -40,12 +40,3 @@ test("a Super Administrator changes a matching weight and sees the legal version
       fullPage: true,
     });
 });
-
-test("an Administrator does not see the platform settings (A16)", async ({ page }) => {
-  await signInToAdmin(page);
-  await page.goto(`${ADMIN_URL}/settings`);
-  await expect(
-    page.getByText("Only Super Administrators can change these settings."),
-  ).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Matching weights" })).toHaveCount(0);
-});

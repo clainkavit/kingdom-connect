@@ -550,6 +550,7 @@ export const en = {
   stepOf: (step: number, total: number) => `Step ${step} of ${total}`,
   stepPersonal: "Personal details",
   stepCategory: "Category",
+  categoryHint: "Tick every one that applies to you.",
   stepCategoryDetails: "Category details",
   stepIdentity: "Photos and ID",
   stepLegal: "Terms and privacy",

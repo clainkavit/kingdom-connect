@@ -70,10 +70,13 @@ test("a person signs up, completes the six steps and is approved (REG-1, S02, S0
   await expect(page.getByText("Step 2 of 6")).toBeVisible();
   await page.reload();
   await expect(page.getByText("Step 2 of 6")).toBeVisible();
-  await page.getByRole("radio", { name: "Businessperson" }).click();
+  await expect(page.getByRole("checkbox", { name: "Entrepreneur" })).toHaveCount(0);
+  await page.getByRole("checkbox", { name: "Businessperson" }).click();
+  await page.getByRole("checkbox", { name: "Professional" }).click();
   await page.getByRole("button", { name: "Next" }).click();
 
   await expect(page.getByText("Step 3 of 6")).toBeVisible();
+  await page.getByLabel("Profession", { exact: true }).fill("Accountant");
   await page.getByLabel("Business name", { exact: true }).fill("Test Traders");
   await choose(page, "Sector", "Trade");
   await page.getByRole("button", { name: "Next" }).click();
@@ -94,6 +97,7 @@ test("a person signs up, completes the six steps and is approved (REG-1, S02, S0
 
   await expect(page.getByText("Step 6 of 6")).toBeVisible();
   await expect(page.getByText("Test Applicant")).toBeVisible();
+  await expect(page.getByText("Professional, Businessperson")).toBeVisible();
   await page.getByRole("button", { name: "Submit application" }).click();
   await expect(page.getByRole("heading", { name: "Registration status" })).toBeVisible();
   await expect(page.getByText("Under review")).toBeVisible();
@@ -129,7 +133,7 @@ test("an ID that is already registered is refused (PRD section 6, criterion 3)",
   await choose(first, "District", "Arusha");
   await first.getByLabel("Address (street, area or plot)").fill("Plot 2");
   await first.getByRole("button", { name: "Next" }).click();
-  await first.getByRole("radio", { name: "Other" }).click();
+  await first.getByRole("checkbox", { name: "Other" }).click();
   await first.getByRole("button", { name: "Next" }).click();
   await first.getByLabel("Describe what you do").fill("Farmer");
   await first.getByRole("button", { name: "Next" }).click();
@@ -146,7 +150,7 @@ test("an ID that is already registered is refused (PRD section 6, criterion 3)",
   await choose(second, "District", "Arusha");
   await second.getByLabel("Address (street, area or plot)").fill("Plot 3");
   await second.getByRole("button", { name: "Next" }).click();
-  await second.getByRole("radio", { name: "Other" }).click();
+  await second.getByRole("checkbox", { name: "Other" }).click();
   await second.getByRole("button", { name: "Next" }).click();
   await second.getByLabel("Describe what you do").fill("Teacher");
   await second.getByRole("button", { name: "Next" }).click();

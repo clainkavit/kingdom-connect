@@ -66,6 +66,60 @@ describe("RegistrationWizard (S05)", () => {
     expect(screen.queryByLabelText("Profession")).toBeNull();
   });
 
+  it("lets the applicant tick several categories, and no longer offers Entrepreneur (R19)", async () => {
+    const api = fakeApi();
+    await show(2, {}, api);
+    expect(screen.queryByRole("checkbox", { name: "Entrepreneur" })).toBeNull();
+    expect(screen.queryByRole("checkbox", { name: "Student" })).toBeNull();
+    await click("Next");
+    expect(screen.getByText("This is needed.")).toBeTruthy();
+    expect(api.saveDraft).not.toHaveBeenCalled();
+
+    await act(async () =>
+      fireEvent.click(screen.getByRole("checkbox", { name: "Businessperson" })),
+    );
+    await act(async () => fireEvent.click(screen.getByRole("checkbox", { name: "Professional" })));
+    expect(
+      screen.getByRole("checkbox", { name: "Professional" }).getAttribute("aria-checked"),
+    ).toBe("true");
+    await click("Next");
+    expect(api.saveDraft).toHaveBeenCalledWith(
+      3,
+      expect.objectContaining({ categories: ["professional", "businessperson"] }),
+    );
+    expect(screen.getByLabelText("Profession")).toBeTruthy();
+    expect(screen.getByLabelText("Business name")).toBeTruthy();
+  });
+
+  it("drops the details of a category that is unticked", async () => {
+    const api = fakeApi();
+    await show(
+      2,
+      {
+        categories: ["professional", "businessperson"],
+        categoryDetails: { profession: "Accountant", businessName: "Neema Tailoring" },
+      },
+      api,
+    );
+    await act(async () =>
+      fireEvent.click(screen.getByRole("checkbox", { name: "Businessperson" })),
+    );
+    await click("Next");
+    const saved = vi.mocked(api.saveDraft).mock.calls[0]![1];
+    expect(saved).toMatchObject({
+      categories: ["professional"],
+      categoryDetails: { profession: "Accountant" },
+    });
+    expect(saved.categoryDetails).not.toHaveProperty("businessName");
+  });
+
+  it("shows a draft saved with one category as that box ticked", async () => {
+    await show(2, { category: "other" }, fakeApi());
+    expect(screen.getByRole("checkbox", { name: "Other" }).getAttribute("aria-checked")).toBe(
+      "true",
+    );
+  });
+
   it("saves the ID through the server and says when it is already registered", async () => {
     const api = fakeApi({ saveIdentity: vi.fn().mockResolvedValue({ kind: "duplicate" }) });
     await show(4, { idType: "nida" }, api);

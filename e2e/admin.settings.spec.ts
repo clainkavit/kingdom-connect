@@ -37,21 +37,25 @@ test("a Super Administrator turns on the daily application cap and sign-up stops
   await page.getByRole("link", { name: "Settings" }).first().click();
   await page.getByRole("checkbox", { name: "Limit sign-ups each day" }).check();
   await page.getByLabel("Sign-ups a day").fill(String(await signUpsToday()));
-  await page.getByRole("button", { name: "Save" }).click();
+  await page.getByRole("button", { name: "Save", exact: true }).click();
   await expect(page.getByText("Saved.")).toBeVisible();
 
   expect(await signUp(`e2e_cap_${Date.now()}`)).toEqual({ error: "cap_reached" });
 
   await page.getByRole("checkbox", { name: "Limit sign-ups each day" }).uncheck();
-  await page.getByRole("button", { name: "Save" }).click();
+  await page.getByRole("button", { name: "Save", exact: true }).click();
   await expect(page.getByText("Saved.")).toBeVisible();
   expect(await signUp(`e2e_cap_${Date.now()}`)).toEqual({ ok: true });
 });
 
-test("an Administrator cannot change the cap or create staff", async ({ page }) => {
+test("an Administrator cannot change the cap, create staff or see the platform settings (A16, D02)", async ({
+  page,
+}) => {
   await signInToAdmin(page);
   await page.goto(`${ADMIN_URL}/settings`);
   await expect(page.getByRole("checkbox", { name: "Limit sign-ups each day" })).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "Matching weights" })).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "Platform" })).toHaveCount(0);
   await expect(
     page.getByText("Only Super Administrators can change these settings."),
   ).toBeVisible();

@@ -13,6 +13,27 @@ export type ActiveResult = "done" | "refused" | "failed";
 export type Synonym = { id: string; fromName: string; skillName: string };
 export type SynonymResult = "done" | "same" | "exists" | "invalid" | "failed";
 
+export type PlatformSettings = {
+  platformName: string;
+  legalEntityName: string;
+  featuredSlotLimit: number;
+};
+export type PlatformKey = "platform_name" | "legal_entity_name" | "featured_slot_limit";
+export type PlatformResult = "ok" | "unchanged" | "invalid_value" | "not_super_admin" | "failed";
+
+export type MatchingFeature = "scan" | "people";
+export type Weight = { feature: MatchingFeature; signal: string; points: number };
+export type WeightResult = "ok" | "invalid_points" | "not_super_admin" | "not_found" | "failed";
+
+export type LegalKind = "terms" | "privacy" | "nda" | "ip" | "handoff";
+export type LegalVersion = {
+  kind: LegalKind;
+  version: string;
+  approvedAt: Date | null;
+  effectiveAt: Date | null;
+  current: boolean;
+};
+
 export type SettingsApi = {
   cap: () => Promise<number | null>;
   saveCap: (cap: number | null) => Promise<boolean>;
@@ -22,6 +43,11 @@ export type SettingsApi = {
   synonyms: () => Promise<Synonym[]>;
   addSynonym: (variant: string, skill: string) => Promise<SynonymResult>;
   removeSynonym: (id: string) => Promise<boolean>;
+  platform: () => Promise<PlatformSettings>;
+  savePlatform: (key: PlatformKey, value: string | number) => Promise<PlatformResult>;
+  weights: () => Promise<Weight[]>;
+  saveWeight: (weight: Weight) => Promise<WeightResult>;
+  legalVersions: () => Promise<LegalVersion[]>;
 };
 
 const staffClient = createStaffClient({ url, anonKey });
@@ -118,5 +144,56 @@ export const settingsApi: SettingsApi = {
       .eq("id", id)
       .select("id");
     return !error && data.length === 1;
+  },
+
+  async platform() {
+    const { data, error } = await supabase.rpc("platform_settings_list");
+    if (error) throw error;
+    const value = (key: string) =>
+      (data as { key: string; value: unknown }[]).find((row) => row.key === key)?.value;
+    return {
+      platformName: String(value("platform_name") ?? ""),
+      legalEntityName: String(value("legal_entity_name") ?? ""),
+      featuredSlotLimit: Number(value("featured_slot_limit") ?? 0),
+    };
+  },
+
+  async savePlatform(key, value) {
+    const { data, error } = await supabase.rpc("set_platform_setting", {
+      setting: key,
+      new_value: value,
+    });
+    return error ? "failed" : (data as PlatformResult);
+  },
+
+  async weights() {
+    const { data, error } = await supabase.rpc("matching_settings_list");
+    if (error) throw error;
+    return data as Weight[];
+  },
+
+  async saveWeight({ feature, signal, points }) {
+    const { data, error } = await supabase.rpc("set_matching_setting", { feature, signal, points });
+    return error ? "failed" : (data as WeightResult);
+  },
+
+  async legalVersions() {
+    const { data, error } = await supabase.rpc("legal_text_versions");
+    if (error) throw error;
+    return (
+      data as {
+        kind: LegalKind;
+        version: string;
+        approved_at: string | null;
+        effective_at: string | null;
+        is_current: boolean;
+      }[]
+    ).map((v) => ({
+      kind: v.kind,
+      version: v.version,
+      approvedAt: v.approved_at ? new Date(v.approved_at) : null,
+      effectiveAt: v.effective_at ? new Date(v.effective_at) : null,
+      current: v.is_current,
+    }));
   },
 };

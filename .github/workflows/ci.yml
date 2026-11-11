@@ -90,7 +90,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm exec supabase start -x studio,imgproxy,vector,logflare,supavisor,postgres-meta
       - run: pnpm legal:load
-      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm exec playwright install chromium
       - run: pnpm exec playwright test
       - if: always() && (failure() || hashFiles('test-results/**/trace.zip') != '')
         uses: actions/upload-artifact@v4

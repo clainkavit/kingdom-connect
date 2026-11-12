@@ -166,6 +166,58 @@ export function opportunityProblem(
   return null;
 }
 
+/**
+ * The first problem with a draft, which needs only a type and a title. Whatever else it holds is checked the way
+ * the server checks it; the rest waits until the post is sent.
+ */
+export function draftProblem(
+  input: OpportunityInput,
+  { today }: { today: string },
+): OpportunityProblem | null {
+  const title = input.title.trim();
+  const tender = input.tender;
+  if (!input.type) return "invalid_type";
+  if (title.length < opportunityLimits.titleMin || title.length > opportunityLimits.titleMax)
+    return "invalid_title";
+  if (input.type !== "job" && input.employmentType !== "") return "invalid_employment";
+  if (input.description.trim().length > opportunityLimits.descriptionMax) return "too_long";
+  if (input.closingOn !== "") {
+    const closingDays = (Date.parse(input.closingOn) - Date.parse(today)) / DAY_MS;
+    if (
+      !/^\d{4}-\d{2}-\d{2}$/.test(input.closingOn) ||
+      !(closingDays > 0 && closingDays <= opportunityLimits.maxClosingDays)
+    )
+      return "invalid_closing";
+  }
+  if (input.skills.length > opportunityLimits.maxSkills) return "too_many_skills";
+  if (
+    input.type === "tender" &&
+    (tender.referenceNo.trim().length > tenderLimits.referenceMax ||
+      tender.scope.trim().length > tenderLimits.scopeMax ||
+      tender.eligibility.trim().length > tenderLimits.eligibilityMax)
+  )
+    return "invalid_tender";
+  return null;
+}
+
+const problemStep: Record<OpportunityProblem, number> = {
+  invalid_type: 0,
+  invalid_title: 0,
+  invalid_employment: 0,
+  invalid_location: 1,
+  invalid_sector: 1,
+  too_short: 2,
+  too_long: 2,
+  invalid_closing: 2,
+  skills_required: 2,
+  too_many_skills: 2,
+  invalid_tender: 2,
+  no_fee_required: 3,
+};
+
+/** Which step of the posting form (0 to 3) holds the field a problem is about. */
+export const postStepOf = (problem: OpportunityProblem): number => problemStep[problem];
+
 /** Skill tags typed as a comma-separated list: lowercased, trimmed, without repeats. */
 export function parseSkills(text: string): string[] {
   const tags = text

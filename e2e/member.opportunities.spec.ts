@@ -32,11 +32,14 @@ test("a new poster sends a post, an Administrator approves it, and it is Publish
   await expect(page).toHaveURL(/\/opportunities\/new$/);
   await page.getByRole("radio", { name: "Partnership" }).click();
   await page.getByRole("textbox", { name: "Title" }).fill(title);
+  await page.getByRole("button", { name: "Next" }).click();
   await page.getByRole("switch", { name: "The work is remote" }).click();
   await page.getByRole("button", { name: "Sector: Choose" }).click();
   await page.getByRole("option", { name: "Agriculture", exact: true }).click();
+  await page.getByRole("button", { name: "Next" }).click();
   await page.getByRole("textbox", { name: "Description and requirements" }).fill(description);
   await page.getByRole("textbox", { name: "Closing date" }).fill(addDays(tanzaniaDate(), 30));
+  await page.getByRole("button", { name: "Next" }).click();
   await page
     .getByRole("checkbox", { name: "No fee will be charged to applicants at any stage" })
     .click();

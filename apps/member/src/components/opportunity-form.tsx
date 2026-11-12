@@ -1,13 +1,16 @@
 import {
+  draftProblem,
   emptyTender,
   employmentTypes,
   opportunityProblem,
   parseSkills,
+  postStepOf,
   postTypes,
   tanzaniaDate,
   tenderLimits,
   type EmploymentType,
   type OpportunityInput,
+  type OpportunityProblem,
   type OpportunityResult,
   type PostType,
   type TenderInput,
@@ -65,6 +68,9 @@ const sentText: Partial<Record<PostStatus, TextKey>> = {
   pending_review: "postSentReview",
   published: "postPublished",
 };
+
+/** S20 in four short steps (12 Nov 2026): what it is, where, the details, then the no-fee tick and Send. */
+const postSteps: TextKey[] = ["postStepWhat", "postStepWhere", "postStepDetails", "postStepSend"];
 
 const emptyPost: OpportunityInput = {
   type: "",
@@ -191,6 +197,7 @@ export function OpportunityFormScreen({ api, id }: { api: OpportunitiesApi; id?:
   const [problem, setProblem] = useState<string | null>(null);
   const [done, setDone] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [step, setStep] = useState(0);
 
   useEffect(() => {
     api.sectors(language).then(setSectors, () => undefined);
@@ -220,11 +227,18 @@ export function OpportunityFormScreen({ api, id }: { api: OpportunitiesApi; id?:
 
   const set = <K extends keyof OpportunityInput>(key: K, value: OpportunityInput[K]) =>
     setForm((f) => (f ? { ...f, [key]: value } : f));
+  const input = { ...form, skills: parseSkills(skillsText) };
+  const today = tanzaniaDate();
+  const show = (p: OpportunityProblem) => setProblem(t[resultText[p]] as string);
 
-  const submit = async (send: boolean) => {
-    const input = { ...form, skills: parseSkills(skillsText) };
-    const local = opportunityProblem(input, { staff: false, today: tanzaniaDate() });
-    if (local) return setProblem(t[resultText[local]] as string);
+  const save = async (send: boolean) => {
+    const local = send
+      ? opportunityProblem(input, { staff: false, today })
+      : draftProblem(input, { today });
+    if (local) {
+      if (send) setStep(postStepOf(local));
+      return show(local);
+    }
     setProblem(null);
     setBusy(true);
     const saved = await api
@@ -234,6 +248,16 @@ export function OpportunityFormScreen({ api, id }: { api: OpportunitiesApi; id?:
     if (saved.result !== "ok") return setProblem(t[resultText[saved.result]] as string);
     const key = saved.status ? sentText[saved.status] : undefined;
     setDone(key ? (t[key] as string) : t.postSavedDraft);
+  };
+
+  const next = () => {
+    const local = opportunityProblem(input, { staff: false, today });
+    if (local && postStepOf(local) <= step) {
+      setStep(postStepOf(local));
+      return show(local);
+    }
+    setProblem(null);
+    setStep(step + 1);
   };
 
   if (done)
@@ -247,90 +271,138 @@ export function OpportunityFormScreen({ api, id }: { api: OpportunitiesApi; id?:
       </View>
     );
 
+  const last = step === postSteps.length - 1;
   return (
     <View className="gap-4">
       <ScreenTitle>{id ? t.editPostTitle : t.postTitle}</ScreenTitle>
       <LinkButton href="/opportunities/mine" label={t.myPostsTitle} className="py-1">
         <Text className="font-figtree-semibold text-sm text-blue">{t.myPostsTitle}</Text>
       </LinkButton>
-      <Section title={t.postTitle}>
-        <Chips
-          label={t.fieldType}
-          options={postTypes.map((k) => ({ value: k, label: t[typeLabel[k]] as string }))}
-          value={form.type || undefined}
-          onChange={(v) =>
-            setForm((f) =>
-              f ? { ...f, type: v, employmentType: v === "job" ? f.employmentType : "" } : f,
-            )
-          }
-        />
-        <Field label={t.fieldPostTitle} value={form.title} onChange={(v) => set("title", v)} />
-        <Field label={t.fieldRole} value={form.role} onChange={(v) => set("role", v)} />
-        {form.type === "job" ? (
-          <Chips
-            label={t.fieldEmployment}
-            options={employmentTypes.map((k) => ({
-              value: k,
-              label: t[employmentLabel[k]] as string,
-            }))}
-            value={form.employmentType || undefined}
-            onChange={(v) => set("employmentType", v)}
-          />
-        ) : null}
-        <Switch label={t.fieldRemote} checked={form.remote} onChange={(v) => set("remote", v)} />
-        {!form.remote ? (
+      <Section title={t[postSteps[step]!] as string}>
+        <Text className="font-figtree text-[13px] text-ink-2">
+          {t.stepOf(step + 1, postSteps.length)}
+        </Text>
+        {step === 0 ? (
           <>
-            <ChoiceList
-              label={t.region}
-              options={regions}
-              value={form.regionId || undefined}
-              onChange={(v) => setForm((f) => (f ? { ...f, regionId: v, districtId: "" } : f))}
+            <Chips
+              label={t.fieldType}
+              options={postTypes.map((k) => ({ value: k, label: t[typeLabel[k]] as string }))}
+              value={form.type || undefined}
+              onChange={(v) =>
+                setForm((f) =>
+                  f
+                    ? {
+                        ...f,
+                        type: v,
+                        role: v === "job" ? f.role : "",
+                        employmentType: v === "job" ? f.employmentType : "",
+                      }
+                    : f,
+                )
+              }
             />
+            <Field label={t.fieldPostTitle} value={form.title} onChange={(v) => set("title", v)} />
+            {form.type === "job" ? (
+              <>
+                <Field label={t.fieldRole} value={form.role} onChange={(v) => set("role", v)} />
+                <Chips
+                  label={t.fieldEmployment}
+                  options={employmentTypes.map((k) => ({
+                    value: k,
+                    label: t[employmentLabel[k]] as string,
+                  }))}
+                  value={form.employmentType || undefined}
+                  onChange={(v) => set("employmentType", v)}
+                />
+              </>
+            ) : null}
+          </>
+        ) : null}
+        {step === 1 ? (
+          <>
+            <Switch
+              label={t.fieldRemote}
+              checked={form.remote}
+              onChange={(v) => set("remote", v)}
+            />
+            {!form.remote ? (
+              <>
+                <ChoiceList
+                  label={t.region}
+                  options={regions}
+                  value={form.regionId || undefined}
+                  onChange={(v) => setForm((f) => (f ? { ...f, regionId: v, districtId: "" } : f))}
+                />
+                <ChoiceList
+                  label={t.district}
+                  options={districts}
+                  value={form.districtId || undefined}
+                  onChange={(v) => set("districtId", v)}
+                  disabled={!form.regionId}
+                />
+              </>
+            ) : null}
             <ChoiceList
-              label={t.district}
-              options={districts}
-              value={form.districtId || undefined}
-              onChange={(v) => set("districtId", v)}
-              disabled={!form.regionId}
+              label={t.businessSector}
+              options={sectors}
+              value={form.sectorId || undefined}
+              onChange={(v) => set("sectorId", v)}
             />
           </>
         ) : null}
-        <ChoiceList
-          label={t.businessSector}
-          options={sectors}
-          value={form.sectorId || undefined}
-          onChange={(v) => set("sectorId", v)}
-        />
-        <Field
-          label={t.fieldDescription}
-          value={form.description}
-          onChange={(v) => set("description", v)}
-          hint={t.descriptionHint}
-          multiline
-        />
-        <Field
-          label={t.fieldClosing}
-          value={form.closingOn}
-          onChange={(v) => set("closingOn", v.trim())}
-          hint={t.closingHint}
-        />
-        {form.type === "tender" ? (
-          <TenderFields api={api} tender={form.tender} onChange={(v) => set("tender", v)} />
+        {step === 2 ? (
+          <>
+            <Field
+              label={t.fieldDescription}
+              value={form.description}
+              onChange={(v) => set("description", v)}
+              hint={t.descriptionHint}
+              multiline
+            />
+            <Field
+              label={t.fieldClosing}
+              value={form.closingOn}
+              onChange={(v) => set("closingOn", v.trim())}
+              hint={t.closingHint}
+            />
+            {form.type === "tender" ? (
+              <TenderFields api={api} tender={form.tender} onChange={(v) => set("tender", v)} />
+            ) : null}
+            <Field
+              label={t.fieldSkills}
+              value={skillsText}
+              onChange={setSkillsText}
+              hint={t.postSkillsHint}
+            />
+          </>
         ) : null}
-        <Field
-          label={t.fieldSkills}
-          value={skillsText}
-          onChange={setSkillsText}
-          hint={t.postSkillsHint}
-        />
-        <Checkbox label={t.noFeeTick} checked={form.noFee} onChange={(v) => set("noFee", v)} />
+        {last ? (
+          <Checkbox label={t.noFeeTick} checked={form.noFee} onChange={(v) => set("noFee", v)} />
+        ) : null}
         <Message text={problem} />
         <View className="flex-row flex-wrap gap-2">
-          <View className="min-w-[140px] flex-1">
-            <Button secondary label={t.saveDraft} onPress={() => submit(false)} disabled={busy} />
+          {step > 0 ? (
+            <View className="min-w-[100px] flex-1">
+              <Button
+                secondary
+                label={t.back}
+                onPress={() => {
+                  setProblem(null);
+                  setStep(step - 1);
+                }}
+                disabled={busy}
+              />
+            </View>
+          ) : null}
+          <View className="min-w-[120px] flex-1">
+            <Button secondary label={t.saveDraft} onPress={() => save(false)} disabled={busy} />
           </View>
-          <View className="min-w-[140px] flex-1">
-            <Button label={t.sendPost} onPress={() => submit(true)} disabled={busy} />
+          <View className="min-w-[120px] flex-1">
+            {last ? (
+              <Button label={t.sendPost} onPress={() => save(true)} disabled={busy} />
+            ) : (
+              <Button label={t.next} onPress={next} disabled={busy} />
+            )}
           </View>
         </View>
       </Section>

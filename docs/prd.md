@@ -983,6 +983,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | 20 Oct 2026 | Tech stack decided; pilot launches web first, mobile apps follow; push notifications scoped | 4, 14, 15, 16, 18 |
 | 1 Nov 2026 | CI on every pull request; nobody merges a pull request with a failing check (an agreed rule, without branch protection) | 17 |
 | 12 Nov 2026 | Member menu cut to five sections everywhere (Home, People, Opportunities, Growth, Messages), the rest under My account; phone tabs get words; members may log in with phone or email as well as username | 5, 18 |
+| 12 Nov 2026 | Posting form in four steps (what, where, details, check and send), Role only for jobs; a draft can be saved from any step with only a type and a title, and the full rules apply on Send | 10, 18 |
 | 2 Nov 2026 | The design canvas becomes the visual direction; member menu across the top, new member and admin menu items, icon-only member phone tabs | 5, 18 |
 | 2 Nov 2026 | Both apps bilingual; visitors read the platform name; language switch placement until Settings | 18 |
 | 2 Nov 2026 | Critical notifications always emailed; daily message digest; copy generated from docs/notifications.md; queued email | 14, 18 |

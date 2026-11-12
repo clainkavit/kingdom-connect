@@ -49,19 +49,67 @@ const click = async (role: string, name: string) => {
   await act(async () => fireEvent.click(screen.getByRole(role, { name })));
 };
 
+async function nextStep(times = 1) {
+  for (let i = 0; i < times; i++)
+    await act(async () => fireEvent.click(screen.getByRole("button", { name: "Next" })));
+}
+
 describe("OpportunityFormScreen (S20)", () => {
-  it("opens a draft for editing with its fields filled in", async () => {
+  it("opens a draft for editing on step 1 with its fields filled in", async () => {
     const api = fakeApi();
     await show(api, "p1");
     expect(api.load).toHaveBeenCalledWith("p1");
     expect(screen.getByText("Edit your post")).toBeTruthy();
+    expect(screen.getByText("Step 1 of 4")).toBeTruthy();
     expect(screen.getByDisplayValue("Accountant for a farm cooperative")).toBeTruthy();
+    await nextStep(2);
+    expect(screen.getByText("Step 3 of 4")).toBeTruthy();
     expect(screen.getByDisplayValue("bookkeeping")).toBeTruthy();
   });
 
-  it("asks for the no-fee tick before sending", async () => {
+  it("asks for the role and employment type only for a job", async () => {
+    const api = fakeApi();
+    await show(api);
+    await click("radio", "Job");
+    expect(screen.getByLabelText("Role (optional)")).toBeTruthy();
+    await click("radio", "Partnership");
+    expect(screen.queryByLabelText("Role (optional)")).toBeNull();
+    expect(screen.queryByRole("radio", { name: "Full-time" })).toBeNull();
+  });
+
+  it("stays on a step until its fields are right", async () => {
+    const api = fakeApi();
+    await show(api);
+    await nextStep();
+    expect(screen.getByText("Choose a type.")).toBeTruthy();
+    expect(screen.getByText("Step 1 of 4")).toBeTruthy();
+  });
+
+  it("saves a draft from the first step with only a type and a title", async () => {
+    const api = fakeApi({ save: vi.fn().mockResolvedValue({ result: "ok", status: "draft" }) });
+    await show(api);
+    await click("radio", "Partnership");
+    fireEvent.change(screen.getByLabelText("Title"), {
+      target: { value: "Partner for a cold store" },
+    });
+    await click("button", "Save draft");
+    expect(api.save).toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: "partnership",
+        title: "Partner for a cold store",
+        sectorId: "",
+      }),
+      null,
+      false,
+    );
+    expect(screen.getByText("Saved as a draft.")).toBeTruthy();
+  });
+
+  it("asks for the no-fee tick on the last step before sending", async () => {
     const api = fakeApi();
     await show(api, "p1");
+    await nextStep(3);
+    expect(screen.getByText("Step 4 of 4")).toBeTruthy();
     await click("button", "Send");
     expect(screen.getByText("Tick the no-fee declaration to post.")).toBeTruthy();
     expect(api.save).not.toHaveBeenCalled();
@@ -70,6 +118,7 @@ describe("OpportunityFormScreen (S20)", () => {
   it("sends a ticked post, which a new poster's goes to review", async () => {
     const api = fakeApi();
     await show(api, "p1");
+    await nextStep(3);
     await click("checkbox", "No fee will be charged to applicants at any stage");
     await click("button", "Send");
     expect(api.save).toHaveBeenCalledWith(expect.objectContaining({ noFee: true }), "p1", true);
@@ -79,12 +128,24 @@ describe("OpportunityFormScreen (S20)", () => {
     );
   });
 
+  it("goes back to the step with the problem when Send finds one", async () => {
+    const api = fakeApi({ load: vi.fn().mockResolvedValue(draft({ noFee: true })) });
+    await show(api, "p1");
+    await nextStep(3);
+    await click("button", "Back");
+    fireEvent.change(screen.getByLabelText("Description and requirements"), {
+      target: { value: "Too short" },
+    });
+    await nextStep();
+    expect(screen.getByText("Step 3 of 4")).toBeTruthy();
+    expect(api.save).not.toHaveBeenCalled();
+  });
+
   it("says what the server refused, such as a phone number in the text", async () => {
     const api = fakeApi({
       save: vi.fn().mockResolvedValue({ result: "contact_details", status: null }),
     });
     await show(api, "p1");
-    await click("checkbox", "No fee will be charged to applicants at any stage");
     await click("button", "Save draft");
     expect(api.save).toHaveBeenCalledWith(expect.anything(), "p1", false);
     expect(
@@ -94,12 +155,12 @@ describe("OpportunityFormScreen (S20)", () => {
     ).toBeTruthy();
   });
 
-  it("starts empty for a new post and checks the type first", async () => {
+  it("starts empty for a new post", async () => {
     const api = fakeApi();
     await show(api);
     expect(screen.getAllByText("Post an opportunity").length).toBeGreaterThan(0);
     expect(api.load).not.toHaveBeenCalled();
-    await click("button", "Send");
+    await click("button", "Save draft");
     expect(screen.getByText("Choose a type.")).toBeTruthy();
   });
 
@@ -115,21 +176,23 @@ describe("OpportunityFormScreen (S20)", () => {
       },
     });
 
-  it("asks for a tender's own fields and checks them before sending (O04)", async () => {
+  it("asks for a tender's own fields on the details step and checks them (O04)", async () => {
     const api = fakeApi({ load: vi.fn().mockResolvedValue(tenderDraft()) });
     await show(api, "p1");
+    await nextStep(2);
     expect(screen.getByDisplayValue("DCC/PR/2026/114")).toBeTruthy();
     expect(screen.getByDisplayValue("17:00")).toBeTruthy();
     fireEvent.change(screen.getByLabelText("Closing time"), { target: { value: "5pm" } });
-    await click("checkbox", "No fee will be charged to applicants at any stage");
-    await click("button", "Send");
+    await nextStep();
     expect(screen.getByText(/Check the tender details/)).toBeTruthy();
-    expect(api.save).not.toHaveBeenCalled();
+    expect(screen.getByText("Step 3 of 4")).toBeTruthy();
 
     fireEvent.change(screen.getByLabelText("Closing time"), { target: { value: "16:00" } });
     fireEvent.change(screen.getByLabelText("Documents a bidder must hold (optional)"), {
       target: { value: "BRELA certificate\nTRA TIN certificate" },
     });
+    await nextStep();
+    await click("checkbox", "No fee will be charged to applicants at any stage");
     await click("button", "Send");
     expect(api.save).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -156,12 +219,12 @@ describe("OpportunityFormScreen (S20)", () => {
       .mockResolvedValue({ uri: "f", name: "t.pdf", mime: "application/pdf", size: 1000 });
     const api = fakeApi({ load: vi.fn().mockResolvedValue(tenderDraft()), pickPdf });
     await show(api, "p1");
+    await nextStep(2);
     await click("button", "Add the tender document (PDF)");
     expect(screen.getByText("Choose a PDF of up to 10 MB.")).toBeTruthy();
     expect(api.uploadTenderDocument).not.toHaveBeenCalled();
     await click("button", "Add the tender document (PDF)");
     expect(screen.getByText("Document added.")).toBeTruthy();
-    await click("checkbox", "No fee will be charged to applicants at any stage");
     await click("button", "Save draft");
     expect(api.save).toHaveBeenCalledWith(
       expect.objectContaining({ tender: expect.objectContaining({ documentPath: "u/doc.pdf" }) }),

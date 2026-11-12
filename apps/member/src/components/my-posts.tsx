@@ -37,8 +37,12 @@ function PostRow({
         {[
           t[typeLabel[post.type]] as string,
           t[statusLabel[post.status]] as string,
-          t.postClosesOn(formatDate(new Date(`${post.closingAt}T12:00:00+03:00`), language)),
-        ].join(" · ")}
+          post.closingAt
+            ? t.postClosesOn(formatDate(new Date(`${post.closingAt}T12:00:00+03:00`), language))
+            : null,
+        ]
+          .filter(Boolean)
+          .join(" · ")}
       </Text>
       {post.reason && post.status === "draft" ? (
         <Text className="font-figtree text-sm text-ink">{t.postSentBack(post.reason)}</Text>

@@ -155,8 +155,8 @@ export const opportunityModerationApi: OpportunityModerationApi = {
       role: string | null;
       employment_type: EmploymentType | null;
       remote: boolean;
-      description: string;
-      closing_at: string;
+      description: string | null;
+      closing_at: string | null;
       status: PostStatus;
       reason: string | null;
       poster_member_id: string | null;
@@ -176,8 +176,8 @@ export const opportunityModerationApi: OpportunityModerationApi = {
       region: named(row.region, language),
       district: named(row.district, language),
       sector: named(row.sector, language) ?? "",
-      description: row.description,
-      closingOn: row.closing_at,
+      description: row.description ?? "",
+      closingOn: row.closing_at ?? "",
       skills: row.skills.flatMap((s) => (s.skill ? [s.skill.name] : [])),
       status: row.status,
       ...posterOf(who, row.poster_member_id),

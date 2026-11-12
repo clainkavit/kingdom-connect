@@ -26,7 +26,7 @@ export const typeLabel: Record<OpportunityType | "tender", TextKey> = {
   partnership: "typePartnership",
   collaboration: "typeCollaboration",
   investment: "typeInvestment",
-  tender: "typeInvestment",
+  tender: "typeTender",
 };
 
 const employmentLabel: Record<EmploymentType, TextKey> = {

@@ -384,3 +384,21 @@ export async function createStaff(name: string): Promise<string> {
   await db`insert into public.staff (id, full_name, role) values (${user.id}, ${name}, 'admin')`;
   return email;
 }
+
+/** A published, open post by a member, as if it had passed review (O02 browsing tests). */
+export async function publishOpportunity(posterId: string, title: string) {
+  const [row] = await db`insert into public.opportunities
+      (poster_member_id, type, title, role, employment_type, remote, sector_id, description, closing_at,
+       no_fee_declared, status, published_at)
+    select ${posterId}, 'job', ${title}, 'Accountant', 'full_time', true, id,
+           ${"Keep the books for a growing trading business, prepare monthly reports and work with the tax office."},
+           current_date + 30, true, 'published', now()
+    from public.sectors order by name_en limit 1
+    returning id`;
+  return row!.id as string;
+}
+
+/** Hides a post as a report does while staff review it. */
+export async function hideOpportunity(id: string) {
+  await db`update public.opportunities set status = 'hidden' where id = ${id}`;
+}

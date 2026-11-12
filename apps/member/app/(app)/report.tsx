@@ -11,7 +11,7 @@ export default function ReportScreen() {
     id?: string;
     member?: string;
   }>();
-  if ((type !== "profile" && type !== "thread") || !UUID.test(id ?? ""))
+  if ((type !== "profile" && type !== "thread" && type !== "opportunity") || !UUID.test(id ?? ""))
     return <Redirect href="/" />;
   return (
     <ReportForm

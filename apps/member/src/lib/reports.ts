@@ -8,7 +8,7 @@ export const MAX_REPORTS_PER_DAY = 10;
 export const MAX_SCREENSHOT_BYTES = 5 * 1024 * 1024;
 export const SCREENSHOT_TYPES = ["image/jpeg", "image/png", "image/webp"] as const;
 
-export type ReportTarget = { type: "profile" | "thread"; id: string };
+export type ReportTarget = { type: "profile" | "thread" | "opportunity"; id: string };
 
 export type Screenshot = { uri: string; mime: string; size: number };
 

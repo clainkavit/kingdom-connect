@@ -1,6 +1,6 @@
 import { isCurrent, memberNav, memberPhoneTabs } from "@kingdom-connect/shared";
 import { usePathname } from "expo-router";
-import { Pressable, ScrollView, Text, useWindowDimensions, View } from "react-native";
+import { ScrollView, Text, useWindowDimensions, View } from "react-native";
 import { useLanguage } from "../lib/language";
 import { LanguageSwitch } from "./language-switch";
 import { LinkButton } from "./link-button";
@@ -20,15 +20,7 @@ function Wordmark({ phone }: { phone?: boolean }) {
   );
 }
 
-function TopBar({
-  pathname,
-  onSignOut,
-  unread,
-}: {
-  pathname: string;
-  onSignOut?: () => void;
-  unread: number;
-}) {
+function TopBar({ pathname, unread }: { pathname: string; unread: number }) {
   const { t } = useLanguage();
   const palette = usePalette();
   return (
@@ -59,16 +51,6 @@ function TopBar({
         <NotificationBell count={unread} color={palette.navyInk} />
         <ProfileLink color={palette.navyInk} />
         <LanguageSwitch onNavy />
-        {onSignOut ? (
-          <Pressable
-            role="button"
-            aria-label={t.logOut}
-            onPress={onSignOut}
-            className="rounded-[9px] px-3 py-2.5"
-          >
-            <Text className="font-figtree text-sm text-navy-ink">{t.logOut}</Text>
-          </Pressable>
-        ) : null}
       </View>
     </View>
   );
@@ -91,9 +73,15 @@ function TabBar({ pathname }: { pathname: string }) {
             href={item.href}
             current={current}
             label={t[item.key]}
-            className="min-h-[52px] flex-1 items-center justify-center"
+            className="min-h-[56px] flex-1 items-center justify-center gap-0.5"
           >
-            <NavIcon name={item.icon} size={26} color={current ? palette.blue : palette.ink2} />
+            <NavIcon name={item.icon} size={24} color={current ? palette.blue : palette.ink2} />
+            <Text
+              numberOfLines={1}
+              className={`text-[11px] ${current ? "font-figtree-bold text-blue" : "font-figtree text-ink-2"}`}
+            >
+              {t[item.key]}
+            </Text>
           </LinkButton>
         );
       })}
@@ -103,11 +91,9 @@ function TabBar({ pathname }: { pathname: string }) {
 
 export function MemberShell({
   children,
-  onSignOut,
   unread = 0,
 }: {
   children: React.ReactNode;
-  onSignOut?: () => void;
   unread?: number;
 }) {
   const { width } = useWindowDimensions();
@@ -116,7 +102,7 @@ export function MemberShell({
   return (
     <View className="flex-1 bg-bg">
       {wide ? (
-        <TopBar pathname={pathname} onSignOut={onSignOut} unread={unread} />
+        <TopBar pathname={pathname} unread={unread} />
       ) : (
         <View className="flex-row items-center justify-between bg-navy px-5 py-2.5">
           <Wordmark phone />

@@ -17,6 +17,7 @@ import Newspaper from "lucide-react-native/icons/newspaper";
 import RefreshCw from "lucide-react-native/icons/refresh-cw";
 import Shield from "lucide-react-native/icons/shield";
 import SlidersHorizontal from "lucide-react-native/icons/sliders-horizontal";
+import Sprout from "lucide-react-native/icons/sprout";
 import Users from "lucide-react-native/icons/users";
 import type { LucideIcon } from "lucide-react-native";
 
@@ -39,6 +40,7 @@ const icons: Record<NavIconName, LucideIcon> = {
   "refresh-cw": RefreshCw,
   shield: Shield,
   "sliders-horizontal": SlidersHorizontal,
+  sprout: Sprout,
   users: Users,
 };
 

@@ -407,6 +407,13 @@ export function DirectoryScreen({ api }: { api: DirectoryApi }) {
   return (
     <View className="gap-4">
       <ScreenTitle>{t.navPeople}</ScreenTitle>
+      <LinkButton
+        href="/connections"
+        label={t.myConnections}
+        className="mb-3 min-h-[44px] justify-center self-start"
+      >
+        <Text className="font-figtree-semibold text-sm text-blue">{t.myConnections}</Text>
+      </LinkButton>
       <Tabs value={tab} onChange={setTab} />
       {tab === "professionals" ? <ProfessionalsPanel api={api} /> : <BusinessesPanel api={api} />}
     </View>

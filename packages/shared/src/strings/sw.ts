@@ -419,6 +419,15 @@ export const sw: Strings = {
   tabMore: "Zaidi",
   memberMenu: "Menyu ya mwanachama",
   memberTabs: "Vichupo vya mwanachama",
+  navGrowth: "Ukuaji",
+  navPlans: "Mipango ya hatua",
+  growthIntro:
+    "Mawazo, mafunzo, matukio na mipango ya hatua: kila kitu cha kukuza kazi na ujuzi wako.",
+  growthIdeasHint: "Shiriki wazo, au tafuta la kuwekeza au kujiunga nalo.",
+  growthTrainingHint: "Kozi na warsha kutoka kwa wanachama na washirika.",
+  growthEventsHint: "Mikutano na matukio ya kuhudhuria.",
+  growthPlansHint: "Mipango ya hatua kwa hatua mnayokubaliana na mshirika.",
+  myAccount: "Akaunti yangu",
 
   adminLabel: "Wasimamizi",
   adminTitle: (platformName: string) => `Wasimamizi wa ${platformName}`,

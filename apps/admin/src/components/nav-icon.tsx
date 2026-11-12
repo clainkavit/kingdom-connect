@@ -18,6 +18,7 @@ import {
   RefreshCw,
   Shield,
   SlidersHorizontal,
+  Sprout,
   Users,
   type LucideIcon,
 } from "lucide-react";
@@ -41,6 +42,7 @@ const icons: Record<NavIconName, LucideIcon> = {
   "refresh-cw": RefreshCw,
   shield: Shield,
   "sliders-horizontal": SlidersHorizontal,
+  sprout: Sprout,
   users: Users,
 };
 

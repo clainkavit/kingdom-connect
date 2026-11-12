@@ -6,6 +6,8 @@ import {
   isCurrent,
   memberNav,
   memberPhoneTabs,
+  accountItems,
+  growthSections,
   moreItems,
   type NavItem,
 } from "./navigation";
@@ -22,39 +24,38 @@ describe("admin navigation by role", () => {
 });
 
 describe("member navigation", () => {
-  it("lists the member top bar from PRD section 5, in order", () => {
-    expect(labels(memberNav)).toEqual([
-      "Dashboard",
-      "People",
-      "Opportunities",
-      "Ideas",
-      "Training",
-      "Events",
-      "Messages",
-      "Connections",
+  it("has five sections, the same on a computer and a phone (decided 12 Nov 2026)", () => {
+    expect(labels(memberNav)).toEqual(["Home", "People", "Opportunities", "Growth", "Messages"]);
+    expect(memberPhoneTabs).toEqual(memberNav);
+  });
+
+  it("keeps Ideas, Training, Events and plans under Growth, and the rest on the account page", () => {
+    expect(labels(growthSections)).toEqual(["Ideas", "Training", "Events", "Milestone plans"]);
+    expect(labels(accountItems)).toEqual([
+      "My profile",
+      "News and updates",
       "Reports & Safety",
       "Settings",
     ]);
   });
 
+  it("marks Growth current inside its sections, and People on My connections", () => {
+    const growth = memberNav.find((i) => i.href === "/growth")!;
+    const people = memberNav.find((i) => i.href === "/people")!;
+    for (const path of ["/growth", "/ideas/i1", "/training", "/events/e1", "/plans/p1"])
+      expect(isCurrent(path, growth)).toBe(true);
+    expect(isCurrent("/opportunities", growth)).toBe(false);
+    expect(isCurrent("/connections", people)).toBe(true);
+  });
+
   it("never contains an admin item", () => {
-    const shared = ["Dashboard", "Ideas", "Reports", "Settings"];
+    const shared = ["Dashboard", "Home", "Ideas", "Reports", "Settings"];
     const adminOnly = labels(adminNav).filter((l) => !shared.includes(l));
     for (const label of adminOnly) expect(labels(memberNav)).not.toContain(label);
   });
 
   it("has no investor item: investor tools live inside Ideas only", () => {
     expect(labels(memberNav).some((l) => /investor/i.test(l))).toBe(false);
-  });
-
-  it("uses the phone tabs Home, People, Opportunities, Messages, More", () => {
-    expect(labels(memberPhoneTabs)).toEqual([
-      "Home",
-      "People",
-      "Opportunities",
-      "Messages",
-      "More",
-    ]);
   });
 });
 
@@ -110,14 +111,8 @@ describe("isCurrent", () => {
 });
 
 describe("moreItems", () => {
-  it("lists the menu items that have no phone tab", () => {
-    expect(labels(moreItems(memberNav, memberPhoneTabs))).toEqual([
-      "Ideas",
-      "Training",
-      "Events",
-      "Connections",
-      "Reports & Safety",
-      "Settings",
-    ]);
+  it("lists the admin menu items that have no phone tab", () => {
+    expect(moreItems(adminNav, adminPhoneTabs).map((i) => i.href)).not.toContain("/verification");
+    expect(moreItems(adminNav, adminPhoneTabs).map((i) => i.href)).toContain("/settings");
   });
 });

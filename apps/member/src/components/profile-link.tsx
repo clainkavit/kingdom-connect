@@ -6,8 +6,8 @@ export function ProfileLink({ color }: { color: string }) {
   const { t } = useLanguage();
   return (
     <LinkButton
-      href="/profile"
-      label={t.myProfile}
+      href="/account"
+      label={t.myAccount}
       className="h-11 w-11 items-center justify-center rounded-xl"
     >
       <CircleUser size={22} color={color} aria-hidden />

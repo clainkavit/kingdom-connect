@@ -48,27 +48,26 @@ describe("MemberShell on a wide screen", () => {
     render(<MemberShell>content</MemberShell>);
     const menu = within(screen.getByLabelText("Member menu"));
     expect(menu.getByText("Messages").closest("a")?.getAttribute("aria-current")).toBe("page");
-    expect(menu.getByText("Events").closest("a")?.getAttribute("aria-current")).toBeNull();
+    expect(menu.getByText("Growth").closest("a")?.getAttribute("aria-current")).toBeNull();
   });
 
-  it("logs out from the top bar", () => {
+  it("opens the account page from the person icon, with Log out there instead of the bar", () => {
     width(1280);
-    const onSignOut = vi.fn();
-    render(<MemberShell onSignOut={onSignOut}>content</MemberShell>);
-    fireEvent.click(screen.getByRole("button", { name: "Log out" }));
-    expect(onSignOut).toHaveBeenCalled();
+    render(<MemberShell>content</MemberShell>);
+    expect(screen.getByRole("link", { name: "My account" }).getAttribute("href")).toBe("/account");
+    expect(screen.queryByRole("button", { name: "Log out" })).toBeNull();
   });
 });
 
 describe("MemberShell on a phone", () => {
-  it("shows the five tabs as named icons instead of the top bar menu", () => {
+  it("shows the five tabs with a word under each icon instead of the top bar menu", () => {
     width(390);
     render(<MemberShell>content</MemberShell>);
     const tabs = within(screen.getByLabelText("Member tabs"));
     expect(memberPhoneTabs.map((t) => tabs.getByLabelText(en[t.key]).getAttribute("href"))).toEqual(
       memberPhoneTabs.map((t) => t.href),
     );
-    for (const t of memberPhoneTabs) expect(tabs.queryByText(en[t.key])).toBeNull();
+    for (const t of memberPhoneTabs) expect(tabs.getByText(en[t.key])).toBeTruthy();
     expect(screen.queryByLabelText("Member menu")).toBeNull();
   });
 
@@ -85,13 +84,13 @@ describe("MemberShell on a phone", () => {
 describe("MemberShell in Kiswahili (F07)", () => {
   it("shows every menu item, tab name and button in Kiswahili", () => {
     width(1280);
-    inLanguage("sw", <MemberShell onSignOut={vi.fn()}>content</MemberShell>);
+    inLanguage("sw", <MemberShell>content</MemberShell>);
     const menu = within(screen.getByLabelText(sw.memberMenu));
     for (const item of memberNav) {
       expect(menu.getByText(sw[item.key])).toBeTruthy();
       if (sw[item.key] !== en[item.key]) expect(menu.queryByText(en[item.key])).toBeNull();
     }
-    expect(screen.getByRole("button", { name: sw.logOut })).toBeTruthy();
+    expect(screen.getByRole("link", { name: sw.myAccount })).toBeTruthy();
   });
 
   it("names the phone tabs in Kiswahili", () => {

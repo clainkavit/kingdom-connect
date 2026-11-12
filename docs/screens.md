@@ -30,7 +30,7 @@ The tables below list only a screen's **special states**: the ones beyond these 
 ### Everywhere
 
 - **Languages.** Every screen is English and Kiswahili, in both apps. Visitors switch from the sign-in header or the landing footer; signed-in members from Settings. Until Settings is built, the switch is in the member top bar, the phone More screen and the admin sidebar. A Member's choice is saved to their account; everyone else's to the device.
-- **Phone layout.** The menu becomes a bottom tab bar (member: Home, People, Opportunities, Messages, More, as icons; admin: Home, Verify, Moderate, Reports, More). Tables become cards and filters open in a sheet.
+- **Phone layout.** The menu becomes a bottom tab bar (member: Home, People, Opportunities, Growth, Messages, each icon with its word, the same five as the computer top bar, decided 12 Nov 2026; admin: Home, Verify, Moderate, Reports, More). The person icon opens My account (`/account`): My profile, News and updates, Reports & Safety, Settings, language and Log out. Growth (`/growth`) lists Ideas, Training, Events and Milestone plans. Tables become cards and filters open in a sheet.
 - **The investor flag is never visible.** An investor's menu looks the same as any member's. Investor tools (filters, Saved ideas, anonymous interest) appear inside Ideas only, and are absent, not locked, for everyone else.
 - **Report.** Profiles, opportunities, ideas and message threads each carry a Report action that opens S42.
 

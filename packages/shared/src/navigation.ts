@@ -21,6 +21,7 @@ export const navIcons = [
   "refresh-cw",
   "shield",
   "sliders-horizontal",
+  "sprout",
   "users",
 ] as const;
 
@@ -30,27 +31,44 @@ export type NavItem = {
   key: TextKey;
   href: string;
   icon: NavIcon;
+  /** Other pages this section holds; the item shows as current on them too. */
+  also?: readonly string[];
 };
 
+/**
+ * The member app's five sections, the same on a computer and a phone (decided 12 Nov 2026). Growth holds Ideas,
+ * Training, Events and Milestone plans; People holds the directory and My connections. My profile, News, Reports &
+ * Safety, Settings, language and Log out sit on the account page behind the person icon.
+ */
 export const memberNav: readonly NavItem[] = [
-  { key: "navDashboard", href: "/", icon: "home" },
-  { key: "navPeople", href: "/people", icon: "users" },
+  { key: "tabHome", href: "/", icon: "home" },
+  { key: "navPeople", href: "/people", icon: "users", also: ["/connections"] },
   { key: "navOpportunities", href: "/opportunities", icon: "briefcase" },
-  { key: "navIdeas", href: "/ideas", icon: "lightbulb" },
-  { key: "navTraining", href: "/training", icon: "book-open" },
-  { key: "navEvents", href: "/events", icon: "calendar" },
+  {
+    key: "navGrowth",
+    href: "/growth",
+    icon: "sprout",
+    also: ["/ideas", "/training", "/events", "/plans"],
+  },
   { key: "navMessages", href: "/messages", icon: "message-square" },
-  { key: "navConnections", href: "/connections", icon: "link" },
-  { key: "navReports", href: "/reports", icon: "shield" },
-  { key: "navSettings", href: "/settings", icon: "sliders-horizontal" },
 ];
 
-export const memberPhoneTabs: readonly NavItem[] = [
-  { key: "tabHome", href: "/", icon: "home" },
-  { key: "navPeople", href: "/people", icon: "users" },
-  { key: "navOpportunities", href: "/opportunities", icon: "briefcase" },
-  { key: "navMessages", href: "/messages", icon: "message-square" },
-  { key: "tabMore", href: "/more", icon: "ellipsis" },
+export const memberPhoneTabs: readonly NavItem[] = memberNav;
+
+/** The Growth page's sections, each with a one-line hint. */
+export const growthSections: readonly (NavItem & { hint: TextKey })[] = [
+  { key: "navIdeas", href: "/ideas", icon: "lightbulb", hint: "growthIdeasHint" },
+  { key: "navTraining", href: "/training", icon: "book-open", hint: "growthTrainingHint" },
+  { key: "navEvents", href: "/events", icon: "calendar", hint: "growthEventsHint" },
+  { key: "navPlans", href: "/plans", icon: "milestone", hint: "growthPlansHint" },
+];
+
+/** The account page behind the person icon. */
+export const accountItems: readonly NavItem[] = [
+  { key: "myProfile", href: "/profile", icon: "users" },
+  { key: "newsTitle", href: "/news", icon: "newspaper" },
+  { key: "navReports", href: "/reports", icon: "shield" },
+  { key: "navSettings", href: "/settings", icon: "sliders-horizontal" },
 ];
 
 export const adminNav: readonly NavItem[] = [
@@ -80,7 +98,7 @@ const under = (pathname: string, href: string) =>
   href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`);
 
 export function isCurrent(pathname: string, item: NavItem): boolean {
-  return under(pathname, item.href);
+  return under(pathname, item.href) || (item.also ?? []).some((href) => under(pathname, href));
 }
 
 const superAdminOnly = new Set(["/audit-log"]);

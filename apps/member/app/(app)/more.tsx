@@ -1,37 +1,5 @@
-import { Text, View } from "react-native";
-import { TextButton } from "../../src/components/auth-card";
-import { LanguageSwitch } from "../../src/components/language-switch";
-import { LinkButton } from "../../src/components/link-button";
-import { MoreList, ScreenTitle } from "../../src/components/screens";
-import { useAuth } from "../../src/lib/auth";
-import { useLanguage } from "../../src/lib/language";
+import { Redirect } from "expo-router";
 
 export default function MoreScreen() {
-  const { signOut } = useAuth();
-  const { t } = useLanguage();
-  return (
-    <>
-      <ScreenTitle>{t.tabMore}</ScreenTitle>
-      <MoreList />
-      <View className="mt-4 rounded-card border border-line bg-surface">
-        <LinkButton
-          href="/news"
-          label={t.newsTitle}
-          className="min-h-[52px] flex-row items-center justify-between px-4"
-        >
-          <Text className="font-figtree text-[15px] text-ink">{t.newsTitle}</Text>
-          <Text aria-hidden className="font-figtree text-[15px] text-ink-2">
-            ›
-          </Text>
-        </LinkButton>
-      </View>
-      <View className="mt-4 flex-row items-center justify-between rounded-card border border-line bg-surface px-4">
-        <Text className="font-figtree text-[15px] text-ink">{t.language}</Text>
-        <LanguageSwitch />
-      </View>
-      <View className="mt-4">
-        <TextButton label={t.logOut} onPress={signOut} />
-      </View>
-    </>
-  );
+  return <Redirect href="/account" />;
 }

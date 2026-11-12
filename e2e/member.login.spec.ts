@@ -11,10 +11,14 @@ test("a Member logs in with the email code and logs out again (REG-4)", async ({
 
   await enterCode(page, await nextCode("test.level1@example.test", sentAfter));
   await expect(page.getByRole("heading", { name: "Dashboard" })).toBeVisible();
-  await expect(
-    page.getByRole("navigation", { name: "Member menu" }).getByText("Reports & Safety"),
-  ).toBeVisible();
+  const menu = page.getByRole("navigation", { name: "Member menu" });
+  for (const section of ["Home", "People", "Opportunities", "Growth", "Messages"])
+    await expect(menu.getByText(section, { exact: true })).toBeVisible();
+  await menu.getByText("Growth", { exact: true }).click();
+  await expect(page.getByRole("link", { name: "Ideas" }).first()).toBeVisible();
 
+  await page.getByRole("link", { name: "My account" }).click();
+  await expect(page.getByRole("link", { name: "Reports & Safety" })).toBeVisible();
   await page.getByRole("button", { name: "Log out" }).click();
   await expect(page).toHaveURL(/\/login$/);
 });

@@ -1,5 +1,6 @@
 import { type Email, notificationEmail } from "./emails.ts";
 import { notificationCopy } from "./notifications.ts";
+import { normalizePhone } from "./registration-rules.ts";
 
 /** Login rules from PRD section 6 (criteria 7 and 8) and docs/screens.md S03 and S04. */
 
@@ -69,3 +70,21 @@ export function resetCodeEmail(language: Language, platformName: string, code: s
 export function lockedEmail(language: Language): Email {
   return notificationEmail(notificationCopy.L1, language, {});
 }
+
+export type LoginName = { kind: "username" | "email" | "phone"; value: string };
+
+/**
+ * What a member typed in the first login box (decided 12 Nov 2026): an email if it holds "@", a phone number if
+ * it reads as a Tanzanian one, otherwise a username.
+ */
+export function loginName(typed: string): LoginName {
+  const value = typed.trim().toLowerCase();
+  if (value.includes("@")) return { kind: "email", value };
+  const phone = normalizePhone(value);
+  if (phone) return { kind: "phone", value: phone };
+  return { kind: "username", value };
+}
+
+/** The lock key: one per account, so a username, email and phone share the 5 tries; per typed name otherwise. */
+export const lockKey = (name: LoginName, accountId: string | null) =>
+  accountId ? `member:${accountId}` : `${name.kind}:${name.value}`;

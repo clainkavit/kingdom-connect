@@ -143,7 +143,7 @@ No one reaches member content until an administrator has verified their identity
 - **REG-1** As a person in Tanzania, I want to register on web or mobile so that I can join the platform. (FR-01, UC-01–06)
 - **REG-2** As an applicant, I want to see my registration status so that I know when I can log in. (FR-04, FR-05)
 - **REG-3** As an admin, I want to review pending profiles and approve or reject them so that only real members get in. (FR-03, UC-07–08)
-- **REG-4** As a member, I want to log in with password and OTP so that my account is protected. (FR-02, UC-09–10)
+- **REG-4** As a member, I want to log in with password and OTP so that my account is protected. (FR-02, UC-09–10) The first box takes a username, phone number or email (12 Nov 2026); a phone number shared by two members logs neither in, and the 5-try lock counts per account.
 - **REG-5** As a business owner, I want to upgrade to Verified Business, then Opportunity Poster, so that I can list my business and post opportunities. (FR-32, UC-28–29)
 - **REG-6** As a member, I want to reset a forgotten password so that I can get back into my account without an administrator. (FR-02, UC-09–10; decided 10 Nov, [#182](https://github.com/clainkavit/kingdom-connect/issues/182))
 

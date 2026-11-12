@@ -49,6 +49,23 @@ export async function accountByUsername(username: string): Promise<Account | nul
   return (row as Account | undefined) ?? null;
 }
 
+/** A member by username, email or phone. A phone number shared by more than one member matches no one. */
+export async function memberAccountByLogin(name: {
+  kind: "username" | "email" | "phone";
+  value: string;
+}): Promise<Account | null> {
+  if (name.kind === "username") return accountByUsername(name.value);
+  const rows =
+    name.kind === "email"
+      ? await sql`
+          select ${accountColumns} ${accountJoins}
+          where m.id is not null and lower(p.email) = ${name.value} limit 2`
+      : await sql`
+          select ${accountColumns} ${accountJoins}
+          where m.id is not null and p.phone = ${name.value} limit 2`;
+  return rows.length === 1 ? (rows[0] as Account) : null;
+}
+
 export async function staffAccountByEmail(email: string): Promise<Account | null> {
   const [row] = await sql`
     select ${accountColumns} ${accountJoins} where s.id is not null and lower(u.email) = ${email}`;

@@ -89,7 +89,7 @@ export function LoginForm({
   const locked = lock.secondsLeft > 0;
   return (
     <View className="gap-3">
-      <Field label={t.username} value={username} onChange={setUsername} />
+      <Field label={t.loginName} value={username} onChange={setUsername} />
       <Field label={t.password} value={password} onChange={setPassword} secure />
       {locked ? (
         <Message tone="info" text={t.locked(minutesAndSeconds(lock.secondsLeft))} />

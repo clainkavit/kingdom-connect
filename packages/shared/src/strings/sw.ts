@@ -521,6 +521,7 @@ export const sw: Strings = {
     "Wasimamizi hawaungani na wanachama wala kutuma ujumbe. Maudhui ya ujumbe hufunguliwa kwa mazungumzo yaliyoripotiwa pekee.",
 
   username: "Jina la mtumiaji",
+  loginName: "Jina la mtumiaji, simu au barua pepe",
   email: "Barua pepe",
   password: "Nenosiri",
   logIn: "Ingia",
@@ -532,7 +533,7 @@ export const sw: Strings = {
   locked: (time: string) => `Umekosea mara nyingi mno. Jaribu tena baada ya ${time}.`,
   suspended: "Akaunti yako imesimamishwa. Msimamizi ataipitia.",
   network: "Hatukuweza kufikia seva. Angalia mtandao wako kisha ujaribu tena.",
-  needLogin: "Weka jina la mtumiaji na nenosiri.",
+  needLogin: "Weka jina la mtumiaji, simu au barua pepe, na nenosiri.",
   needCode: "Weka namba 6 kutoka kwenye barua pepe.",
   needNewPassword: "Andika nenosiri jipya kwenye visanduku vyote viwili.",
   needUsername: "Weka jina lako la mtumiaji.",

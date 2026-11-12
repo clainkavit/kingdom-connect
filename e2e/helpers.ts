@@ -70,13 +70,24 @@ export async function createMember(
   return { email, id: user.id };
 }
 
+/** The first box of the member login form, which takes a username, phone or email (12 Nov 2026). */
+export const memberLoginLabel = {
+  en: "Username, phone or email",
+  sw: "Jina la mtumiaji, simu au barua pepe",
+} as const;
+
 export async function logIn(
   page: Page,
   field: "Username" | "Email" | "Jina la mtumiaji",
   value: string,
   password = TEST_PASSWORD,
 ) {
-  await page.getByLabel(field, { exact: true }).fill(value);
+  const label = {
+    Username: memberLoginLabel.en,
+    "Jina la mtumiaji": memberLoginLabel.sw,
+    Email: "Email",
+  }[field];
+  await page.getByLabel(label, { exact: true }).fill(value);
   await page.getByLabel(/^(Password|Nenosiri)$/).fill(password);
   await page.getByRole("button", { name: /^(Log in|Ingia)$/ }).click();
 }
@@ -456,4 +467,8 @@ export async function ideaPartners(ownerId: string, partnerId: string, title: st
   await db`insert into public.idea_access_requests (idea_id, requester_id, role, status, decided_at)
     values (${ideaId}, ${partnerId}, 'partner', 'nda_accepted', now())`;
   return ideaId;
+}
+
+export async function setPhone(memberId: string, phone: string) {
+  await db`update public.member_private set phone = ${phone} where member_id = ${memberId}`;
 }

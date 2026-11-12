@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {
   afterPasswordAccepted,
+  lockKey,
+  loginName,
   CODE_MINUTES,
   skipsCode,
   LOCK_AFTER_FAILURES,
@@ -109,5 +111,25 @@ describe("skipsCode", () => {
     expect(skipsCode("test.level2@example.test", false)).toBe(false);
     expect(skipsCode("asha@test.invalid", true)).toBe(false);
     expect(skipsCode("nottest.level2@example.test", true)).toBe(false);
+  });
+});
+
+describe("loginName (12 Nov 2026)", () => {
+  it("reads an email, a Tanzanian phone number or a username", () => {
+    expect(loginName(" Neema@Example.test ")).toEqual({
+      kind: "email",
+      value: "neema@example.test",
+    });
+    expect(loginName("0712 345 678")).toEqual({ kind: "phone", value: "+255712345678" });
+    expect(loginName("+255712345678")).toEqual({ kind: "phone", value: "+255712345678" });
+    expect(loginName("Neema_K")).toEqual({ kind: "username", value: "neema_k" });
+    expect(loginName("12345")).toEqual({ kind: "username", value: "12345" });
+  });
+
+  it("locks per account, so the three ways share the 5 tries", () => {
+    const phone = loginName("0712345678");
+    expect(lockKey(phone, "u1")).toBe("member:u1");
+    expect(lockKey(loginName("neema"), "u1")).toBe("member:u1");
+    expect(lockKey(phone, null)).toBe("phone:+255712345678");
   });
 });

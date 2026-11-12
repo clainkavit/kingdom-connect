@@ -26,7 +26,7 @@ afterEach(() => {
 
 describe("LoginForm (S03)", () => {
   const submit = async () => {
-    type("Username", "test_level1");
+    type("Username, phone or email", "test_level1");
     type("Password", "secret");
     await act(async () => fireEvent.click(screen.getByRole("button", { name: "Log in" })));
   };
@@ -44,10 +44,12 @@ describe("LoginForm (S03)", () => {
   it("keeps Log in pressable and says what is missing", async () => {
     const logIn = vi.fn();
     render(<LoginForm client={fakeClient({ logIn })} onCodeSent={vi.fn()} />);
-    type("Username", "test_level1");
+    type("Username, phone or email", "test_level1");
     await act(async () => fireEvent.click(screen.getByRole("button", { name: "Log in" })));
     expect(logIn).not.toHaveBeenCalled();
-    expect(screen.getByText("Enter your username and password.")).toBeTruthy();
+    expect(
+      screen.getByText("Enter your username, phone or email, and your password."),
+    ).toBeTruthy();
   });
 
   it("gives one message for a wrong username or password", async () => {
@@ -96,7 +98,9 @@ describe("LoginForm (S03)", () => {
     );
     await submit();
     expect(screen.getByText(/couldn't reach the server/)).toBeTruthy();
-    expect((screen.getByLabelText("Username") as HTMLInputElement).value).toBe("test_level1");
+    expect((screen.getByLabelText("Username, phone or email") as HTMLInputElement).value).toBe(
+      "test_level1",
+    );
   });
 });
 

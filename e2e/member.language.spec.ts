@@ -1,11 +1,11 @@
 import { expect, test } from "@playwright/test";
-import { createMember, logIn, nextCode } from "./helpers";
+import { createMember, logIn, memberLoginLabel, nextCode } from "./helpers";
 
 test("a visitor switches to Kiswahili and it stays after a reload (F07)", async ({ page }) => {
   await page.goto("/login");
   await page.getByRole("button", { name: "Kiswahili" }).click();
   await expect(page.getByRole("heading", { name: "Ingia kwenye Kingdom Connect" })).toBeVisible();
-  await expect(page.getByLabel("Jina la mtumiaji", { exact: true })).toBeVisible();
+  await expect(page.getByLabel(memberLoginLabel.sw, { exact: true })).toBeVisible();
   await expect(page.locator("html")).toHaveAttribute("lang", "sw");
 
   await page.reload();

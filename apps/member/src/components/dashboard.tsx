@@ -12,7 +12,9 @@ import { ScreenTitle } from "./screens";
 import { EmptyState, ErrorState, LoadingRows } from "./states";
 import type { DashboardWidgetsApi } from "../lib/dashboard-widgets";
 import type { MemberNewsApi } from "../lib/news";
+import type { PeopleYouMayKnowApi } from "../lib/people-you-may-know";
 import { FeaturedOpportunities, LatestItems, NewsPreview } from "./dashboard-widgets";
+import { PeopleYouMayKnow } from "./people-you-may-know";
 
 type QuickAction = { key: TextKey; href: string; minLevel: number; posts: boolean };
 
@@ -111,12 +113,14 @@ export function DashboardScreen({
   connections,
   widgets,
   news,
+  people,
   today = new Date(),
 }: {
   api: DashboardApi;
   connections: ConnectionsApi;
   widgets?: DashboardWidgetsApi;
   news?: MemberNewsApi;
+  people?: PeopleYouMayKnowApi;
   today?: Date;
 }) {
   const { t } = useLanguage();
@@ -184,6 +188,7 @@ export function DashboardScreen({
           />
         )}
       </Section>
+      {people ? <PeopleYouMayKnow api={people} /> : null}
       <Section title={t.myActivity}>
         {loaded.sent.length || loaded.registrations.length ? (
           <>

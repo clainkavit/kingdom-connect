@@ -10,6 +10,9 @@ import { LinkButton } from "./link-button";
 import { Section } from "./profile";
 import { ScreenTitle } from "./screens";
 import { EmptyState, ErrorState, LoadingRows } from "./states";
+import type { DashboardWidgetsApi } from "../lib/dashboard-widgets";
+import type { MemberNewsApi } from "../lib/news";
+import { FeaturedOpportunities, LatestItems, NewsPreview } from "./dashboard-widgets";
 
 type QuickAction = { key: TextKey; href: string; minLevel: number; posts: boolean };
 
@@ -102,14 +105,18 @@ function QuickActions({ welcome }: { welcome: Welcome }) {
   );
 }
 
-/** S08: the Release 1 widgets. No platform-wide figure is ever loaded (PRD section 7, criterion 1). */
+/** S08. No platform-wide figure is ever loaded (PRD section 7, criterion 1); the widgets show items, never counts. */
 export function DashboardScreen({
   api,
   connections,
+  widgets,
+  news,
   today = new Date(),
 }: {
   api: DashboardApi;
   connections: ConnectionsApi;
+  widgets?: DashboardWidgetsApi;
+  news?: MemberNewsApi;
   today?: Date;
 }) {
   const { t } = useLanguage();
@@ -193,7 +200,10 @@ export function DashboardScreen({
           <EmptyState title={t.activityEmptyTitle} message={t.activityEmptyMessage} />
         )}
       </Section>
+      {widgets ? <FeaturedOpportunities api={widgets} /> : null}
+      {widgets ? <LatestItems api={widgets} /> : null}
       <QuickActions welcome={loaded.welcome} />
+      {news ? <NewsPreview api={news} /> : null}
     </View>
   );
 }

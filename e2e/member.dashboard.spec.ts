@@ -18,4 +18,19 @@ test("the dashboard welcomes the Member and answers a request inline, with no co
   await expect(page.getByText("No requests waiting")).toBeVisible();
   await expect(page.getByText("Verify your business to post opportunities.")).toBeVisible();
   await expect(page.getByText(/verified members|registered businesses/i)).toHaveCount(0);
+  await expect(
+    page.getByRole("heading", { name: "Featured opportunities", exact: true }),
+  ).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Latest", exact: true })).toBeVisible();
+  await page.getByRole("radio", { name: "Training" }).click();
+  await expect(page.getByRole("radio", { name: "Training" })).toHaveAttribute(
+    "aria-checked",
+    "true",
+  );
+  await expect(page.getByRole("heading", { name: "News and updates", exact: true })).toBeVisible();
+  if (process.env.SCREENSHOT_DIR)
+    await page.screenshot({
+      path: `${process.env.SCREENSHOT_DIR}/d01-dashboard.png`,
+      fullPage: true,
+    });
 });

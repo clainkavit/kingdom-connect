@@ -15,7 +15,16 @@ import { useState } from "react";
 import { Pressable, Text, View } from "react-native";
 import { useLanguage } from "../lib/language";
 import type { LegalText, Option } from "../lib/registration";
-import { Button, Checkbox, ChoiceList, Chips, Field, Message, problemText } from "./form";
+import {
+  Button,
+  Checkbox,
+  ChoiceList,
+  Chips,
+  Field,
+  Message,
+  PrivacyNote,
+  problemText,
+} from "./form";
 import { LegalTextView } from "./legal";
 
 export type StepProps = {
@@ -257,6 +266,7 @@ export function IdentityStep({
         onChange={setIdNumber}
         hint={draft.identitySaved ? t.idSaved : undefined}
         problem={problemText(t, idProblem ?? undefined) ?? say(t, problems, "idNumber")}
+        privacy={t.privacyIdNumber}
       />
       <Field
         label={t.idExpiresOn}
@@ -270,7 +280,7 @@ export function IdentityStep({
         onPress={() => (ready ? onSaveId(idNumber) : setAskedEarly(true))}
         disabled={busy}
       />
-      <Text className="font-figtree text-[13px] leading-5 text-ink-2">{t.photosPrivate}</Text>
+      <PrivacyNote text={t.photosPrivate} />
       <PhotoPicker
         label={t.facePhoto}
         added={Boolean(draft.facePhoto)}

@@ -687,6 +687,9 @@ export const sw: Strings = {
   replacePhoto: "Badilisha picha",
   photoAdded: "Imeongezwa",
   photosPrivate: "Wasimamizi pekee ndio wanaoona picha hizi. Hazionyeshwi kamwe kwa wanachama.",
+  privacyContact: "Wanachama wengine wanaiona tu mkiunganishwa na ukichagua kuishiriki.",
+  privacyIdNumber:
+    "Inahifadhiwa kwa usimbaji fiche. Wasimamizi pekee wanaweza kuifungua, na kila mara inarekodiwa.",
   readText: "Soma",
   acceptTermsLabel: "Nakubali masharti ya matumizi",
   acceptPrivacyLabel: "Ninaridhia jinsi data yangu inavyotumika (taarifa ya faragha)",

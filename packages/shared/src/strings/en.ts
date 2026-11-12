@@ -674,6 +674,8 @@ export const en = {
   replacePhoto: "Replace photo",
   photoAdded: "Added",
   photosPrivate: "Only administrators see these photos. They are never shown to members.",
+  privacyContact: "Other members see this only if you connect and choose to share it.",
+  privacyIdNumber: "Stored encrypted. Only administrators can open it, and each time is recorded.",
   readText: "Read",
   acceptTermsLabel: "I accept the terms of use",
   acceptPrivacyLabel: "I consent to how my data is used (privacy notice)",

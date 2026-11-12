@@ -129,6 +129,7 @@ export function ContactDetails({
             value={value}
             onChange={setValue}
             hint={t.contactPhoneHint}
+            privacy={t.privacyContact}
           />
           <Button
             label={t.save}
@@ -172,7 +173,12 @@ export function ContactDetails({
       {editing === "email" && !codeSentTo ? (
         <View className="gap-2">
           <Field label={t.password} value={password} onChange={setPassword} secure />
-          <Field label={t.newEmailLabel} value={value} onChange={setValue} />
+          <Field
+            label={t.newEmailLabel}
+            value={value}
+            onChange={setValue}
+            privacy={t.privacyContact}
+          />
           <Button
             label={t.sendEmailCode}
             disabled={busy}

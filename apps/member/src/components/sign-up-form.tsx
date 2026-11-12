@@ -74,6 +74,7 @@ export function SignUpForm({
         onChange={set("email")}
         keyboardType="email-address"
         problem={problemText(t, problems.email)}
+        privacy={t.privacyContact}
       />
       <Field
         label={t.phone}
@@ -82,6 +83,7 @@ export function SignUpForm({
         keyboardType="phone-pad"
         hint={t.phoneHint}
         problem={problemText(t, problems.phone)}
+        privacy={t.privacyContact}
       />
       <Field
         label={t.password}

@@ -43,6 +43,13 @@ const create = () =>
   act(async () => fireEvent.click(screen.getByRole("button", { name: "Create an account" })));
 
 describe("SignUpForm (S02)", () => {
+  it("says under the email and phone that members see them only through a connection", () => {
+    render(<SignUpForm {...clients(vi.fn())} onCodeSent={vi.fn()} />);
+    expect(
+      screen.getAllByText("Other members see this only if you connect and choose to share it."),
+    ).toHaveLength(2);
+  });
+
   it("checks the form before sending anything", async () => {
     const signUp = vi.fn();
     render(<SignUpForm {...clients(signUp)} onCodeSent={vi.fn()} />);

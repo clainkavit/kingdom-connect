@@ -29,12 +29,12 @@ import { ScreenTitle } from "./screens";
 import { ErrorState, LoadingRows } from "./states";
 import { buttonVariants } from "./ui/button";
 
-const typeText: Record<PostDetail["type"], TextKey> = {
+export const typeText: Record<PostDetail["type"], TextKey> = {
   job: "typeJob",
   partnership: "typePartnership",
   collaboration: "typeCollaboration",
   investment: "typeInvestment",
-  tender: "typeInvestment",
+  tender: "typeTender",
 };
 
 const employmentText: Record<(typeof employmentTypes)[number], TextKey> = {

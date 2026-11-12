@@ -60,6 +60,7 @@ const threadCase = (over: Partial<CaseDetail> = {}): CaseDetail => ({
       attachments: [],
     },
   ],
+  post: null,
   ...over,
 });
 
@@ -125,6 +126,31 @@ describe("ReportDetail (A07)", () => {
     expect(screen.getByText("Send me 50,000 first")).toBeTruthy();
     expect(screen.getByRole("link", { name: "invoice.pdf" })).toBeTruthy();
     expect(screen.getByText("This message was deleted")).toBeTruthy();
+  });
+
+  it("shows a reported opportunity, hidden while the report is open, with its moderation item (O06)", async () => {
+    const api = fakeApi({
+      detail: vi.fn().mockResolvedValue(
+        threadCase({
+          targetType: "opportunity",
+          messages: null,
+          post: {
+            id: "o1",
+            title: "Pay a fee to join our sales team",
+            description: "Send 50,000 to reserve your place.",
+            status: "hidden",
+          },
+        }),
+      ),
+    });
+    await showDetail(api);
+    expect(screen.getByText("Opportunity")).toBeTruthy();
+    expect(screen.getByText("Pay a fee to join our sales team")).toBeTruthy();
+    expect(screen.getByText("Hidden from members while this report is open.")).toBeTruthy();
+    expect(
+      screen.getByRole("link", { name: "Open the post's moderation item" }).getAttribute("href"),
+    ).toBe("/moderation/o1");
+    expect(screen.queryByText("Send me 50,000 first")).toBeNull();
   });
 
   it("needs a note, and a message to the member for anything but no action", async () => {

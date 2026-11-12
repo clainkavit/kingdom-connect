@@ -17,6 +17,8 @@ import {
   type CaseDetail,
   type CaseSummary,
   type ModerationAction,
+  type ReportedPost,
+  type ReportTarget,
   type ReportsApi,
   type Subject,
 } from "@/lib/reports";
@@ -44,6 +46,29 @@ function problemText(t: Strings, result: ActionResult): string | null {
     not_suspended: t.memberStateChanged,
     failed: t.decideFailed,
   }[result];
+}
+
+const targetLabel = (t: Strings, target: ReportTarget) =>
+  ({ profile: t.targetProfile, thread: t.targetThread, opportunity: t.targetOpportunity })[target];
+
+/** The reported post (O06): hidden from members while the report is open. */
+function PostCard({ post }: { post: ReportedPost }) {
+  const { t } = useLanguage();
+  return (
+    <section className="flex flex-col gap-2 rounded-lg border bg-card p-4 shadow-card">
+      <h2 className="text-base font-semibold text-foreground">{post.title}</h2>
+      <p className="text-sm font-semibold text-ink-2">
+        {post.status === "hidden" ? t.reportedPostHidden : t.reportedPostStatus(post.status)}
+      </p>
+      <p className="text-sm whitespace-pre-wrap text-foreground">{post.description}</p>
+      <Link
+        href={`/moderation/${post.id}`}
+        className="text-sm font-semibold text-primary underline-offset-2 hover:underline"
+      >
+        {t.reportedPostOpen}
+      </Link>
+    </section>
+  );
 }
 
 /** A06: one row per reported item and member, oldest first. */
@@ -93,7 +118,7 @@ export function ReportsQueue({ api }: { api: ReportsApi }) {
                     {c.reference} · {c.subjectName || t.deletedMember}
                   </span>
                   <span className="text-[13px] text-ink-2">
-                    {c.targetType === "profile" ? t.targetProfile : t.targetThread} ·{" "}
+                    {targetLabel(t, c.targetType)} ·{" "}
                     {c.reasons.map((r) => reasonText(t, r)).join(", ")} ·{" "}
                     {t.caseReportCount(c.reportCount)}
                   </span>
@@ -411,12 +436,11 @@ export function ReportDetail({ id, api }: { id: string; api: ReportsApi }) {
     <>
       <ScreenTitle>{t.reportDetailTitle}</ScreenTitle>
       <div className="flex flex-col gap-4">
-        <p className="text-sm font-semibold text-ink-2">
-          {detail.targetType === "profile" ? t.targetProfile : t.targetThread}
-        </p>
+        <p className="text-sm font-semibold text-ink-2">{targetLabel(t, detail.targetType)}</p>
         <ReportsCard detail={detail} />
         <MemberCard subject={detail.subject} api={api} />
         {detail.messages ? <ConversationCard messages={detail.messages} /> : null}
+        {detail.post ? <PostCard post={detail.post} /> : null}
         {decided ? (
           <Notice tone="good" text={t.caseDecided} />
         ) : detail.open ? (

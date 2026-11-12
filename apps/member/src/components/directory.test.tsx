@@ -1,6 +1,7 @@
 import "../test-router";
+import { COMPUTER, PHONE, setWidth } from "../test-width";
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   noBusinessFilters,
   noFilters,
@@ -10,7 +11,11 @@ import {
 } from "../lib/directory";
 import { DirectoryScreen } from "./directory";
 
-afterEach(cleanup);
+beforeEach(() => setWidth(COMPUTER));
+afterEach(() => {
+  cleanup();
+  vi.restoreAllMocks();
+});
 
 const card = (over: Partial<DirectoryCard> = {}): DirectoryCard => ({
   memberId: "m1",
@@ -164,6 +169,28 @@ describe("DirectoryScreen (S10)", () => {
       0,
       "en",
     );
+  });
+
+  it("on a phone, keeps search open and folds the filters into one button", async () => {
+    setWidth(PHONE);
+    const api = fakeApi();
+    await show(api);
+    fireEvent.change(screen.getByLabelText("Search by name, profession or skill"), {
+      target: { value: "excel" },
+    });
+    expect(screen.queryByRole("button", { name: "Currently studying: Any" })).toBeNull();
+    await click("Filters");
+    await act(async () =>
+      fireEvent.click(screen.getByRole("button", { name: "Currently studying: Any" })),
+    );
+    await act(async () => fireEvent.click(screen.getByRole("option", { name: "Yes" })));
+    await click("Show results");
+    expect(api.search).toHaveBeenLastCalledWith(
+      expect.objectContaining({ q: "excel", studying: true }),
+      0,
+      "en",
+    );
+    expect(screen.getByRole("button", { name: "Filters · 1" })).toBeTruthy();
   });
 
   it("loads the next page", async () => {

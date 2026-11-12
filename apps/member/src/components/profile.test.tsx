@@ -73,6 +73,40 @@ describe("ProfileView (S11)", () => {
     expect(screen.getByText("Add skills to get matched.")).toBeTruthy();
     expect(screen.getByText(/Your profile is hidden from the directory/)).toBeTruthy();
   });
+
+  it("lists the next steps on your own profile, with a link for each missing one and Scan last", () => {
+    render(<ProfileView profile={profile({ own: true, skills: [], districtId: null })} />);
+    expect(screen.getByRole("heading", { name: "Next steps" })).toBeTruthy();
+    expect(screen.getByText("1 of 4 done")).toBeTruthy();
+    for (const name of ["Add a profile photo", "Add your district", "Add your skills"])
+      expect(screen.getByRole("link", { name }).getAttribute("href")).toBe("/profile/edit");
+    expect(screen.queryByRole("link", { name: "Add your profession" })).toBeNull();
+    expect(screen.getByText("Add your profession")).toBeTruthy();
+    expect(screen.getByRole("link", { name: "Add skills" }).getAttribute("href")).toBe(
+      "/profile/edit",
+    );
+    expect(screen.getByRole("link", { name: "Scan for opportunities" }).getAttribute("href")).toBe(
+      "/opportunities/scan",
+    );
+  });
+
+  it("shrinks to one line once the profile is ready", () => {
+    render(<ProfileView profile={profile({ own: true, photoUrl: "https://photos.test/me" })} />);
+    expect(screen.queryByRole("heading", { name: "Next steps" })).toBeNull();
+    expect(screen.getByText("Your profile is ready.")).toBeTruthy();
+    expect(screen.getByRole("link", { name: "Scan for opportunities" })).toBeTruthy();
+  });
+
+  it("offers to add an empty About on your own profile, and says Not given to others", () => {
+    const empty = { profession: "", bio: "", headline: "" };
+    render(<ProfileView profile={profile({ own: true, ...empty })} />);
+    expect(screen.getByRole("link", { name: "Add something about you" })).toBeTruthy();
+    cleanup();
+    render(<ProfileView profile={profile(empty)} />);
+    expect(screen.queryByRole("link", { name: "Add something about you" })).toBeNull();
+    expect(screen.getByText("Not given")).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "Next steps" })).toBeNull();
+  });
 });
 
 describe("ProfileEditor (S12)", () => {

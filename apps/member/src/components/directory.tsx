@@ -15,6 +15,7 @@ import {
 import { useLanguage } from "../lib/language";
 import type { Option } from "../lib/registration";
 import { Button, ChoiceList, Field } from "./form";
+import { FilterSheet, usePhone } from "./filter-sheet";
 import { LinkButton } from "./link-button";
 import { Avatar } from "./profile";
 import { ScreenTitle } from "./screens";
@@ -176,6 +177,51 @@ function SearchActions({ onSearch, onClear }: { onSearch: () => void; onClear: (
   );
 }
 
+/** How many of the directory's filters are on; the search words are not a filter. */
+function activeFilters(f: DirectoryFilters): number {
+  return [f.profession, f.skill, f.sector, f.region, f.district, f.studying].filter(
+    (v) => v !== null && v !== "",
+  ).length;
+}
+
+/**
+ * The filters under the search box. On a computer they stay open with Search and Clear; on a phone they fold
+ * into one Filters button so the results show first, and Search stays beside it.
+ */
+function FilterArea({
+  count,
+  onSearch,
+  onClear,
+  children,
+}: {
+  count: number;
+  onSearch: () => void;
+  onClear: () => void;
+  children: React.ReactNode;
+}) {
+  const { t } = useLanguage();
+  if (usePhone())
+    return (
+      <View className="flex-row flex-wrap items-center gap-2">
+        <View className="min-w-[120px] flex-1">
+          <Button label={t.searchButton} onPress={onSearch} />
+        </View>
+        <FilterSheet count={count} onApply={onSearch} onClear={onClear}>
+          {children}
+        </FilterSheet>
+      </View>
+    );
+  return (
+    <>
+      <Text role="heading" aria-level={2} className="font-figtree-bold text-sm text-ink">
+        {t.filtersTitle}
+      </Text>
+      <View className="gap-3">{children}</View>
+      <SearchActions onSearch={onSearch} onClear={onClear} />
+    </>
+  );
+}
+
 function ResultList<C>({
   failed,
   results,
@@ -229,10 +275,15 @@ function BusinessesPanel({ api }: { api: DirectoryApi }) {
     <>
       <View className="gap-3 rounded-card border border-line bg-surface p-4">
         <Field label={t.businessSearch} value={draft.q} onChange={(q) => update({ q })} />
-        <Text role="heading" aria-level={2} className="font-figtree-bold text-sm text-ink">
-          {t.filtersTitle}
-        </Text>
-        <View className="gap-3">
+        <FilterArea
+          count={[applied.sector, applied.level, applied.region].filter((v) => v !== null).length}
+          onSearch={() => run(draft)}
+          onClear={() => {
+            const next = { ...noBusinessFilters, q: draft.q };
+            setDraft(next);
+            run(next);
+          }}
+        >
           <ChoiceList
             label={t.filterSector}
             options={choices(sectors)}
@@ -254,14 +305,7 @@ function BusinessesPanel({ api }: { api: DirectoryApi }) {
             value={draft.region ?? ""}
             onChange={(region) => update({ region: region || null })}
           />
-        </View>
-        <SearchActions
-          onSearch={() => run(draft)}
-          onClear={() => {
-            setDraft(noBusinessFilters);
-            run(noBusinessFilters);
-          }}
-        />
+        </FilterArea>
       </View>
       <ResultList
         failed={failed}
@@ -302,10 +346,15 @@ function ProfessionalsPanel({ api }: { api: DirectoryApi }) {
     <>
       <View className="gap-3 rounded-card border border-line bg-surface p-4">
         <Field label={t.directorySearch} value={draft.q} onChange={(q) => update({ q })} />
-        <Text role="heading" aria-level={2} className="font-figtree-bold text-sm text-ink">
-          {t.filtersTitle}
-        </Text>
-        <View className="gap-3">
+        <FilterArea
+          count={activeFilters(applied)}
+          onSearch={() => run(draft)}
+          onClear={() => {
+            const next = { ...noFilters, q: draft.q };
+            setDraft(next);
+            run(next);
+          }}
+        >
           <Field
             label={t.filterProfession}
             value={draft.profession}
@@ -345,14 +394,7 @@ function ProfessionalsPanel({ api }: { api: DirectoryApi }) {
             value={draft.studying === null ? "" : draft.studying ? "yes" : "no"}
             onChange={(v) => update({ studying: v === "" ? null : v === "yes" })}
           />
-        </View>
-        <SearchActions
-          onSearch={() => run(draft)}
-          onClear={() => {
-            setDraft(noFilters);
-            run(noFilters);
-          }}
-        />
+        </FilterArea>
       </View>
       <ResultList
         failed={failed}

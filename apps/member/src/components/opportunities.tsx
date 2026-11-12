@@ -20,6 +20,8 @@ import {
 } from "../lib/opportunity-browse";
 import { useLoad } from "./events";
 import { Button, ChoiceList, Chips, Message, Switch } from "./form";
+import { FilterSheet } from "./filter-sheet";
+import { stickToBottom, usePhone } from "./sheet";
 import { LinkButton } from "./link-button";
 import { typeLabel } from "./opportunity-form";
 import { ReportLink } from "./report-link";
@@ -102,10 +104,12 @@ function Filters({
   api,
   filters,
   onChange,
+  bare,
 }: {
   api: OpportunityBrowseApi;
   filters: OpportunityFilters;
   onChange: (next: OpportunityFilters) => void;
+  bare?: boolean;
 }) {
   const { t, language } = useLanguage();
   const sectors = useLoad(() => api.sectors(language).catch(() => []), 0);
@@ -118,10 +122,12 @@ function Filters({
   const set = (change: Partial<OpportunityFilters>) => onChange({ ...filters, ...change });
 
   return (
-    <View className="gap-3 rounded-card border border-line bg-surface p-4">
-      <Text role="heading" aria-level={2} className="font-figtree-bold text-sm text-ink">
-        {t.filtersTitle}
-      </Text>
+    <View className={bare ? "gap-3" : "gap-3 rounded-card border border-line bg-surface p-4"}>
+      {bare ? null : (
+        <Text role="heading" aria-level={2} className="font-figtree-bold text-sm text-ink">
+          {t.filtersTitle}
+        </Text>
+      )}
       <View className="flex-row flex-wrap gap-3">
         <View className="min-w-[220px] flex-1">
           <ChoiceList
@@ -183,6 +189,8 @@ function Filters({
 export function OpportunitiesList({ api }: { api: OpportunityBrowseApi }) {
   const { t } = useLanguage();
   const [filters, setFilters] = useState<OpportunityFilters>({});
+  const [draft, setDraft] = useState<OpportunityFilters>({});
+  const phone = usePhone();
   const [run, setRun] = useState(0);
   const first = useLoad(() => api.list(filters, 0), run);
   const [more, setMore] = useState<OpportunityCard[]>([]);
@@ -193,6 +201,7 @@ export function OpportunitiesList({ api }: { api: OpportunityBrowseApi }) {
 
   const apply = (next: OpportunityFilters) => {
     setFilters(next);
+    setDraft(next);
     setMore([]);
     setPage(1);
     setDone(false);
@@ -258,7 +267,25 @@ export function OpportunitiesList({ api }: { api: OpportunityBrowseApi }) {
           })
         }
       />
-      <Filters api={api} filters={filters} onChange={apply} />
+      {phone ? (
+        <FilterSheet
+          count={
+            [filters.region, filters.sector, filters.employment, filters.postedWithin].filter(
+              (v) => v !== undefined,
+            ).length + (filters.remoteOnly ? 1 : 0)
+          }
+          onApply={() => apply(draft)}
+          onClear={() => {
+            const next = { kind: filters.kind };
+            setDraft(next);
+            apply(next);
+          }}
+        >
+          <Filters api={api} filters={draft} onChange={setDraft} bare />
+        </FilterSheet>
+      ) : (
+        <Filters api={api} filters={filters} onChange={apply} />
+      )}
       {first.state === "failed" ? (
         <ErrorState message={t.oppLoadFailed} onRetry={() => setRun((r) => r + 1)} />
       ) : first.state === "loading" ? (
@@ -368,6 +395,7 @@ export function OpportunityDetailScreen({
   respond?: (post: OpportunityDetail) => React.ReactNode;
 }) {
   const { t, language } = useLanguage();
+  const phone = usePhone();
   const [attempt, setAttempt] = useState(0);
   const loaded = useLoad(async () => {
     const post = await api.detail(id);
@@ -389,6 +417,7 @@ export function OpportunityDetailScreen({
     );
 
   const role = roleLine(t, post);
+  const action = !post.isMine && !post.readOnly && respond ? respond(post) : null;
   return (
     <View className="gap-4">
       <LinkButton href="/opportunities" label={t.oppBack} className="min-h-[40px] justify-center">
@@ -420,7 +449,7 @@ export function OpportunityDetailScreen({
         </LinkButton>
       ) : (
         <>
-          {!post.readOnly && respond ? respond(post) : null}
+          {phone ? null : action}
           <View className="items-start">
             <ReportLink
               target={{ type: "opportunity", id: post.id }}
@@ -430,6 +459,14 @@ export function OpportunityDetailScreen({
         </>
       )}
       <Text className="font-figtree text-[13px] leading-5 text-ink-2">{t.oppNoFeeNote}</Text>
+      {phone && action ? (
+        <View
+          style={stickToBottom}
+          className="-mx-5 -mb-4 border-t border-line bg-surface px-5 pb-4 pt-3"
+        >
+          {action}
+        </View>
+      ) : null}
     </View>
   );
 }

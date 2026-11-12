@@ -1,6 +1,8 @@
 import "../test-router";
+import { COMPUTER, PHONE, setWidth } from "../test-width";
+import { stringsFor } from "@kingdom-connect/shared";
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   OPPORTUNITY_PAGE,
   type OpportunityBrowseApi,
@@ -9,7 +11,13 @@ import {
 } from "../lib/opportunity-browse";
 import { OpportunitiesList, OpportunityDetailScreen } from "./opportunities";
 
-afterEach(cleanup);
+const en = stringsFor("en");
+
+beforeEach(() => setWidth(COMPUTER));
+afterEach(() => {
+  cleanup();
+  vi.restoreAllMocks();
+});
 
 const card = (over: Partial<OpportunityCard> = {}): OpportunityCard => ({
   id: "o1",
@@ -102,6 +110,27 @@ describe("OpportunitiesList (S16)", () => {
     );
   });
 
+  it("on a phone, keeps the filters behind one button and waits for Show results", async () => {
+    setWidth(PHONE);
+    const list = vi.fn().mockResolvedValue([card()]);
+    await show(<OpportunitiesList api={fakeApi({ list })} />);
+    expect(screen.queryByRole("button", { name: "Region: Any" })).toBeNull();
+
+    await press("Filters");
+    await press("Region: Any");
+    await act(async () => fireEvent.click(screen.getByRole("option", { name: "Kilimanjaro" })));
+    expect(list).toHaveBeenLastCalledWith({}, 0);
+
+    await press("Show results");
+    expect(list).toHaveBeenLastCalledWith(expect.objectContaining({ region: "r1" }), 0);
+    expect(screen.getByRole("button", { name: "Filters · 1" })).toBeTruthy();
+
+    await press("Filters · 1");
+    await press("Clear filters");
+    expect(list).toHaveBeenLastCalledWith({ kind: undefined }, 0);
+    expect(screen.getByRole("button", { name: "Filters" })).toBeTruthy();
+  });
+
   it("loads 20 more at a time", async () => {
     const full = Array.from({ length: OPPORTUNITY_PAGE }, (_, i) =>
       card({ id: `o${i}`, title: `Post ${i}` }),
@@ -157,6 +186,20 @@ describe("OpportunityDetailScreen (S17)", () => {
     );
     expect(screen.getByText("This post is closed. You can read it but not respond.")).toBeTruthy();
     expect(respond).not.toHaveBeenCalled();
+  });
+
+  it("on a phone, keeps the way to respond in a bar at the bottom", async () => {
+    setWidth(PHONE);
+    await show(
+      <OpportunityDetailScreen
+        api={fakeApi()}
+        id="o1"
+        respond={() => <button type="button">Apply</button>}
+      />,
+    );
+    const bar = screen.getByRole("button", { name: "Apply" }).parentElement!;
+    expect(bar.style.position).toBe("sticky");
+    expect(bar.previousElementSibling?.textContent).toBe(en.oppNoFeeNote);
   });
 
   it("says a hidden or reported post is not available", async () => {

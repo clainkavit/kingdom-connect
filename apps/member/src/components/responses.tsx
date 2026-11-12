@@ -16,6 +16,7 @@ import {
 import { useLoad } from "./events";
 import { Button, ConfirmButton, Field, Message } from "./form";
 import { LinkButton } from "./link-button";
+import { Sheet, usePhone } from "./sheet";
 import { typeLabel } from "./opportunity-form";
 import { ScreenTitle } from "./screens";
 import { EmptyState, ErrorState, LoadingRows } from "./states";
@@ -101,6 +102,8 @@ export function RespondPanel({ api, post }: { api: ResponsesApi; post: Opportuni
   const [file, setFile] = useState<PickedPdf | null>(null);
   const [problem, setProblem] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [open, setOpen] = useState(false);
+  const phone = usePhone();
   const application = post.type === "job";
 
   if (loaded.state === "failed")
@@ -108,8 +111,8 @@ export function RespondPanel({ api, post }: { api: ResponsesApi; post: Opportuni
   if (loaded.state === "loading") return <LoadingRows rows={1} />;
   const { mine, level } = loaded.value;
 
-  if (mine)
-    return (
+  if (mine) {
+    const card = (
       <View className="gap-3 rounded-card border border-line bg-surface p-4">
         <Text role="heading" aria-level={2} className="font-figtree-bold text-[16px] text-ink">
           {application ? t.respYourApplication : t.respYourInterest}
@@ -134,6 +137,21 @@ export function RespondPanel({ api, post }: { api: ResponsesApi; post: Opportuni
         </View>
       </View>
     );
+    if (!phone) return card;
+    const title = application ? t.respYourApplication : t.respYourInterest;
+    return (
+      <View className="flex-row items-center gap-3">
+        <View className="flex-1 gap-1">
+          <Text className="font-figtree-bold text-sm text-ink">{title}</Text>
+          <StatusBadge status={mine.status} />
+        </View>
+        <Button secondary label={t.respView} onPress={() => setOpen(true)} />
+        <Sheet open={open} title={title} onClose={() => setOpen(false)}>
+          {card}
+        </Sheet>
+      </View>
+    );
+  }
 
   if (post.type === "tender" && level < 2)
     return (
@@ -168,16 +186,14 @@ export function RespondPanel({ api, post }: { api: ResponsesApi; post: Opportuni
     setBusy(false);
     if (result === "ok") {
       setProblem(null);
+      setOpen(false);
       return setAttempt((a) => a + 1);
     }
     setProblem(respondMessage(t, result));
   };
 
-  return (
-    <View className="gap-3 rounded-card border border-line bg-surface p-4">
-      <Text role="heading" aria-level={2} className="font-figtree-bold text-[16px] text-ink">
-        {application ? t.respApplyTitle : t.respInterestTitle}
-      </Text>
+  const fields = (
+    <>
       <Field
         label={application ? t.respNoteApply : t.respNoteInterest}
         value={note}
@@ -204,7 +220,33 @@ export function RespondPanel({ api, post }: { api: ResponsesApi; post: Opportuni
         )}
       </View>
       <Message text={problem} />
-      <Button label={application ? t.respApply : t.respInterest} onPress={send} disabled={busy} />
+    </>
+  );
+  const sendButton = (
+    <Button label={application ? t.respApply : t.respInterest} onPress={send} disabled={busy} />
+  );
+  const formTitle = application ? t.respApplyTitle : t.respInterestTitle;
+
+  if (phone)
+    return (
+      <>
+        <Button
+          label={application ? t.respApplyOpen : t.respInterestOpen}
+          onPress={() => setOpen(true)}
+        />
+        <Sheet open={open} title={formTitle} onClose={() => setOpen(false)} footer={sendButton}>
+          {fields}
+        </Sheet>
+      </>
+    );
+
+  return (
+    <View className="gap-3 rounded-card border border-line bg-surface p-4">
+      <Text role="heading" aria-level={2} className="font-figtree-bold text-[16px] text-ink">
+        {formTitle}
+      </Text>
+      {fields}
+      {sendButton}
     </View>
   );
 }

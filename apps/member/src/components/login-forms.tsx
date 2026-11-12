@@ -77,6 +77,7 @@ export function LoginForm({
   const lock = useCountdown(0);
 
   const submit = async () => {
+    if (!username.trim() || !password) return setMessage(t.needLogin);
     setBusy(true);
     const result = await client.logIn({ username, password });
     setBusy(false);
@@ -95,11 +96,7 @@ export function LoginForm({
       ) : (
         <Message text={message} />
       )}
-      <Button
-        label={t.logIn}
-        onPress={submit}
-        disabled={busy || locked || !username || !password}
-      />
+      <Button label={t.logIn} onPress={submit} disabled={busy || locked} />
     </View>
   );
 }
@@ -122,6 +119,7 @@ export function CodeForm({
   const resend = useCountdown(resendAfterSeconds);
 
   const submit = async () => {
+    if (code.length !== 6) return setMessage(t.needCode);
     setBusy(true);
     const result = await client.verifyCode(accessToken, code);
     setBusy(false);
@@ -149,7 +147,7 @@ export function CodeForm({
       <Text className="font-figtree text-sm leading-5 text-ink-2">{t.codeSent}</Text>
       <CodeBoxes value={code} onChange={setCode} />
       <Message text={message} />
-      <Button label={t.verify} onPress={submit} disabled={busy || code.length !== 6} />
+      <Button label={t.verify} onPress={submit} disabled={busy} />
       <Button
         secondary
         label={resend.secondsLeft > 0 ? t.resendIn(resend.secondsLeft) : t.resend}
@@ -185,6 +183,7 @@ export function ForgotPasswordForm({
   const resend = useCountdown(0);
 
   const sendCode = async () => {
+    if (!username.trim()) return setMessage(t.needUsername);
     setBusy(true);
     const result = await client.startPasswordReset(username.trim());
     setBusy(false);
@@ -197,6 +196,7 @@ export function ForgotPasswordForm({
   };
 
   const checkCode = async () => {
+    if (code.length !== 6) return setMessage(t.needCode);
     setBusy(true);
     const result = await client.checkResetCode(resetId, code);
     setBusy(false);
@@ -208,6 +208,7 @@ export function ForgotPasswordForm({
   };
 
   const save = async () => {
+    if (!password || !repeat) return setMessage(t.needNewPassword);
     if (passwordProblem(password)) return setMessage(t.problemPassword);
     if (password !== repeat) return setMessage(t.passwordsDiffer);
     setBusy(true);
@@ -242,7 +243,7 @@ export function ForgotPasswordForm({
         />
         <Field label={t.repeatPassword} value={repeat} onChange={setRepeat} secure />
         <Message text={message} />
-        <Button label={t.savePassword} onPress={save} disabled={busy || !password || !repeat} />
+        <Button label={t.savePassword} onPress={save} disabled={busy} />
       </View>
     );
 
@@ -252,7 +253,7 @@ export function ForgotPasswordForm({
         <Text className="font-figtree text-sm leading-5 text-ink-2">{t.resetCodeSent}</Text>
         <CodeBoxes value={code} onChange={setCode} />
         <Message text={message} />
-        <Button label={t.verify} onPress={checkCode} disabled={busy || code.length !== 6} />
+        <Button label={t.verify} onPress={checkCode} disabled={busy} />
         <Button
           secondary
           label={resend.secondsLeft > 0 ? t.resendIn(resend.secondsLeft) : t.resend}
@@ -270,7 +271,7 @@ export function ForgotPasswordForm({
       <Text className="font-figtree text-sm leading-5 text-ink-2">{t.forgotIntro}</Text>
       <Field label={t.username} value={username} onChange={setUsername} />
       <Message text={message} />
-      <Button label={t.sendCode} onPress={sendCode} disabled={busy || !username.trim()} />
+      <Button label={t.sendCode} onPress={sendCode} disabled={busy} />
     </View>
   );
 }

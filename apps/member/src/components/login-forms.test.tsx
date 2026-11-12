@@ -41,6 +41,15 @@ describe("LoginForm (S03)", () => {
     expect(onCodeSent).toHaveBeenCalledWith(session, 60);
   });
 
+  it("keeps Log in pressable and says what is missing", async () => {
+    const logIn = vi.fn();
+    render(<LoginForm client={fakeClient({ logIn })} onCodeSent={vi.fn()} />);
+    type("Username", "test_level1");
+    await act(async () => fireEvent.click(screen.getByRole("button", { name: "Log in" })));
+    expect(logIn).not.toHaveBeenCalled();
+    expect(screen.getByText("Enter your username and password.")).toBeTruthy();
+  });
+
   it("gives one message for a wrong username or password", async () => {
     render(
       <LoginForm
@@ -111,6 +120,21 @@ describe("CodeForm (S04)", () => {
     await enter("123456");
     expect(verifyCode).toHaveBeenCalledWith("tok", "123456");
     expect(onVerified).toHaveBeenCalled();
+  });
+
+  it("asks for all 6 numbers instead of sending a short code", async () => {
+    const verifyCode = vi.fn();
+    render(
+      <CodeForm
+        client={fakeClient({ verifyCode })}
+        accessToken="tok"
+        resendAfterSeconds={60}
+        onVerified={vi.fn()}
+      />,
+    );
+    await enter("123");
+    expect(verifyCode).not.toHaveBeenCalled();
+    expect(screen.getByText("Enter the 6 numbers from the email.")).toBeTruthy();
   });
 
   it("shows each digit in its own box and drops anything that is not a digit", () => {
@@ -198,6 +222,14 @@ describe("ForgotPasswordForm (S04a)", () => {
     ).toBeTruthy();
     expect(screen.getByRole("button", { name: "Send a new code in 60s" })).toBeTruthy();
     expect(screen.getByText("No access to that email?")).toBeTruthy();
+  });
+
+  it("asks for the username before sending a code", async () => {
+    const startPasswordReset = vi.fn();
+    render(<ForgotPasswordForm client={fakeClient({ startPasswordReset })} onLogIn={vi.fn()} />);
+    await press("Send code");
+    expect(startPasswordReset).not.toHaveBeenCalled();
+    expect(screen.getByText("Enter your username.")).toBeTruthy();
   });
 
   it("checks the code, then saves the new password typed twice", async () => {

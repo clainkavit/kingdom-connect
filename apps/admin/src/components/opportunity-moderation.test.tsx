@@ -50,6 +50,7 @@ const fakeApi = (over: Partial<OpportunityModerationApi> = {}): OpportunityModer
   }),
   districts: vi.fn().mockResolvedValue([{ value: "d1", label: "Nyamagana" }]),
   post: vi.fn().mockResolvedValue("ok"),
+  uploadTenderDocument: vi.fn().mockResolvedValue("staff/doc.pdf"),
   ...over,
 });
 
@@ -159,5 +160,40 @@ describe("AdminPostForm (A15)", () => {
     await click("Publish");
     expect(screen.getByText("Choose a type.")).toBeTruthy();
     expect(api.post).not.toHaveBeenCalled();
+  });
+
+  it("posts a tender with its own fields, issued in the platform's name (O04)", async () => {
+    const api = fakeApi();
+    await show(<AdminPostForm api={api} />);
+    fireEvent.change(screen.getByLabelText("Type"), { target: { value: "tender" } });
+    fireEvent.change(screen.getByLabelText("Title"), {
+      target: { value: "Supply of chairs for the community hall" },
+    });
+    await act(async () => fireEvent.click(screen.getByLabelText("The work is remote")));
+    fireEvent.change(screen.getByLabelText("Sector"), { target: { value: "s1" } });
+    fireEvent.change(screen.getByLabelText("Description and requirements"), {
+      target: { value: "We invite verified businesses to supply 200 plastic chairs. ".repeat(2) },
+    });
+    fireEvent.change(screen.getByLabelText("Closing date"), {
+      target: { value: addDays(tanzaniaDate(), 20) },
+    });
+    await click("Publish");
+    expect(screen.getByText(/Check the tender details/)).toBeTruthy();
+    expect(api.post).not.toHaveBeenCalled();
+
+    fireEvent.change(screen.getByLabelText("Reference number"), {
+      target: { value: "KC/T/2026/01" },
+    });
+    fireEvent.change(screen.getByLabelText("Scope of the work"), {
+      target: { value: "Supply and deliver 200 plastic chairs to the hall." },
+    });
+    fireEvent.change(screen.getByLabelText("Closing time"), { target: { value: "16:00" } });
+    await click("Publish");
+    expect(api.post).toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: "tender",
+        tender: expect.objectContaining({ referenceNo: "KC/T/2026/01", closingTime: "16:00" }),
+      }),
+    );
   });
 });

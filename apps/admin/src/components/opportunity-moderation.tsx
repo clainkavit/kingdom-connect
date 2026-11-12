@@ -1,13 +1,16 @@
 "use client";
 
 import {
+  emptyTender,
   employmentTypes,
   formatDate,
   opportunityProblem,
-  opportunityTypes,
   parseSkills,
+  postTypes,
   tanzaniaDate,
+  tenderLimits,
   type OpportunityInput,
+  type TenderInput,
   type OpportunityResult,
   type Strings,
   type TextKey,
@@ -283,6 +286,8 @@ const resultText: Partial<Record<OpportunityResult, TextKey>> = {
   skills_required: "postSkillsRequired",
   too_many_skills: "postTooManySkills",
   contact_details: "postHasContact",
+  invalid_tender: "postInvalidTender",
+  invalid_tender_file: "postInvalidTenderFile",
 };
 
 const emptyPost: OpportunityInput = {
@@ -298,6 +303,7 @@ const emptyPost: OpportunityInput = {
   closingOn: "",
   skills: [],
   noFee: false,
+  tender: emptyTender,
 };
 
 const selectClass =
@@ -339,7 +345,94 @@ function Select({
   );
 }
 
-/** A15: an administrator posts an opportunity. It publishes at once, with no no-fee tick (O01). */
+/** A15's tender fields (O04). An admin tender is issued in the platform's name. */
+function AdminTenderFields({
+  api,
+  tender,
+  onChange,
+}: {
+  api: OpportunityModerationApi;
+  tender: TenderInput;
+  onChange: (tender: TenderInput) => void;
+}) {
+  const { t } = useLanguage();
+  const [fileProblem, setFileProblem] = useState<string | null>(null);
+  const set = <K extends keyof TenderInput>(key: K, value: TenderInput[K]) =>
+    onChange({ ...tender, [key]: value });
+  const pick = async (file: File | undefined) => {
+    if (!file) return;
+    if (file.type !== "application/pdf" || file.size > tenderLimits.fileMaxBytes)
+      return setFileProblem(t.tenderFileBad);
+    const path = await api.uploadTenderDocument(file).catch(() => null);
+    if (!path) return setFileProblem(t.postFailed);
+    setFileProblem(null);
+    set("documentPath", path);
+  };
+  return (
+    <fieldset className="flex flex-col gap-3 rounded-lg border p-3">
+      <legend className="px-1 text-sm font-semibold text-foreground">{t.oppTenderTitle}</legend>
+      <Field
+        id="tender-ref"
+        label={t.fieldTenderRef}
+        value={tender.referenceNo}
+        onChange={(v) => set("referenceNo", v)}
+      />
+      <Field
+        id="tender-scope"
+        label={t.fieldTenderScope}
+        value={tender.scope}
+        onChange={(v) => set("scope", v)}
+        multiline
+      />
+      <Field
+        id="tender-eligibility"
+        label={t.fieldTenderEligibility}
+        value={tender.eligibility}
+        onChange={(v) => set("eligibility", v)}
+        multiline
+      />
+      <Field
+        id="tender-docs"
+        label={t.fieldTenderDocs}
+        value={tender.requiredDocuments}
+        onChange={(v) => set("requiredDocuments", v)}
+        multiline
+      />
+      <p className="text-xs text-ink-2">{t.tenderDocsHint}</p>
+      <Field
+        id="tender-time"
+        label={t.fieldTenderTime}
+        type="time"
+        value={tender.closingTime}
+        onChange={(v) => set("closingTime", v)}
+      />
+      <Field
+        id="tender-value"
+        label={t.fieldTenderValue}
+        value={tender.estimatedValue}
+        onChange={(v) => set("estimatedValue", v)}
+      />
+      <div className="flex flex-col gap-1.5">
+        <label htmlFor="tender-file" className="text-sm font-semibold text-foreground">
+          {t.tenderAddDocument}
+        </label>
+        <input
+          id="tender-file"
+          type="file"
+          accept="application/pdf"
+          onChange={(e) => pick(e.target.files?.[0])}
+          className="text-sm"
+        />
+        <p className="text-xs text-ink-2">
+          {tender.documentPath ? t.tenderDocumentAdded : t.tenderDocumentHint}
+        </p>
+      </div>
+      <Notice tone="bad" text={fileProblem} />
+    </fieldset>
+  );
+}
+
+/** A15: an administrator posts an opportunity or a tender. It publishes at once, with no no-fee tick (O01, O04). */
 export function AdminPostForm({ api }: { api: OpportunityModerationApi }) {
   const { t, language } = useLanguage();
   const [form, setForm] = useState<OpportunityInput>(emptyPost);
@@ -395,7 +488,7 @@ export function AdminPostForm({ api }: { api: OpportunityModerationApi }) {
           id="post-type"
           label={t.fieldType}
           value={form.type}
-          options={opportunityTypes.map((k) => ({ value: k, label: t[typeText[k]] as string }))}
+          options={postTypes.map((k) => ({ value: k, label: t[typeText[k]] as string }))}
           onChange={(v) =>
             setForm((f) => ({
               ...f,
@@ -479,6 +572,13 @@ export function AdminPostForm({ api }: { api: OpportunityModerationApi }) {
           value={form.closingOn}
           onChange={(v) => set("closingOn", v)}
         />
+        {form.type === "tender" ? (
+          <AdminTenderFields
+            api={api}
+            tender={form.tender}
+            onChange={(tender) => set("tender", tender)}
+          />
+        ) : null}
         <Field id="post-skills" label={t.fieldSkills} value={skillsText} onChange={setSkillsText} />
         <p className="text-xs text-ink-2">{t.postSkillsHint}</p>
         <Notice tone="bad" text={problem} />

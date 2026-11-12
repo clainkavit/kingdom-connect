@@ -3,6 +3,10 @@
 export const opportunityTypes = ["job", "partnership", "collaboration", "investment"] as const;
 export type OpportunityType = (typeof opportunityTypes)[number];
 
+/** Every type a post can be; a tender has its own fields (O04). */
+export const postTypes = [...opportunityTypes, "tender"] as const;
+export type PostType = (typeof postTypes)[number];
+
 export const employmentTypes = ["full_time", "part_time", "contract", "internship"] as const;
 export type EmploymentType = (typeof employmentTypes)[number];
 
@@ -15,8 +19,83 @@ export const opportunityLimits = {
   maxClosingDays: 90,
 } as const;
 
+/** The tender fields' limits, as the database checks them (O04). */
+export const tenderLimits = {
+  referenceMin: 2,
+  referenceMax: 60,
+  scopeMin: 30,
+  scopeMax: 3000,
+  eligibilityMax: 2000,
+  maxDocuments: 10,
+  documentMax: 120,
+  fileMaxBytes: 10 * 1024 * 1024,
+} as const;
+
+/** A tender's own fields. The issuing organisation is the poster's business, or the platform for an admin post. */
+export type TenderInput = {
+  referenceNo: string;
+  scope: string;
+  eligibility: string;
+  /** One required document per line. */
+  requiredDocuments: string;
+  /** HH:MM, Tanzania time, on the closing date. */
+  closingTime: string;
+  /** Whole Tanzanian shillings, as typed; empty for none. */
+  estimatedValue: string;
+  documentPath: string | null;
+};
+
+export const emptyTender: TenderInput = {
+  referenceNo: "",
+  scope: "",
+  eligibility: "",
+  requiredDocuments: "",
+  closingTime: "17:00",
+  estimatedValue: "",
+  documentPath: null,
+};
+
+export const documentLines = (text: string) =>
+  text
+    .split("\n")
+    .map((d) => d.trim())
+    .filter(Boolean);
+
+/** The tender object save_opportunity() takes. */
+export function tenderPayload(input: { tender: TenderInput }) {
+  const value = input.tender.estimatedValue.replace(/[\s,]/g, "");
+  return {
+    reference_no: input.tender.referenceNo.trim(),
+    scope: input.tender.scope.trim(),
+    eligibility: input.tender.eligibility.trim(),
+    required_documents: documentLines(input.tender.requiredDocuments),
+    closing_time: input.tender.closingTime,
+    estimated_value_tzs: value === "" ? null : Number(value),
+    document_path: input.tender.documentPath,
+  };
+}
+
+/** Whether a tender's fields pass the server's checks. */
+export function tenderValid(tender: TenderInput): boolean {
+  const ref = tender.referenceNo.trim();
+  const scope = tender.scope.trim();
+  const docs = documentLines(tender.requiredDocuments);
+  const value = tender.estimatedValue.replace(/[\s,]/g, "");
+  return (
+    ref.length >= tenderLimits.referenceMin &&
+    ref.length <= tenderLimits.referenceMax &&
+    scope.length >= tenderLimits.scopeMin &&
+    scope.length <= tenderLimits.scopeMax &&
+    tender.eligibility.trim().length <= tenderLimits.eligibilityMax &&
+    docs.length <= tenderLimits.maxDocuments &&
+    docs.every((d) => d.length <= tenderLimits.documentMax) &&
+    /^([01]\d|2[0-3]):[0-5]\d$/.test(tender.closingTime) &&
+    (value === "" || /^\d{1,13}$/.test(value))
+  );
+}
+
 export type OpportunityInput = {
-  type: OpportunityType | "";
+  type: PostType | "";
   title: string;
   role: string;
   employmentType: EmploymentType | "";
@@ -28,6 +107,7 @@ export type OpportunityInput = {
   closingOn: string;
   skills: string[];
   noFee: boolean;
+  tender: TenderInput;
 };
 
 export type OpportunityProblem =
@@ -41,7 +121,8 @@ export type OpportunityProblem =
   | "invalid_closing"
   | "skills_required"
   | "too_many_skills"
-  | "no_fee_required";
+  | "no_fee_required"
+  | "invalid_tender";
 
 export type OpportunityResult =
   | "ok"
@@ -50,10 +131,10 @@ export type OpportunityResult =
   | "posting_paused"
   | "not_editable"
   | "contact_details"
+  | "invalid_tender_file"
   | "failed";
 
-export const skillsRequired = (type: OpportunityType | "") =>
-  type === "job" || type === "collaboration";
+export const skillsRequired = (type: PostType | "") => type === "job" || type === "collaboration";
 
 const DAY_MS = 86_400_000;
 
@@ -80,6 +161,7 @@ export function opportunityProblem(
     return "invalid_closing";
   if (input.skills.length > opportunityLimits.maxSkills) return "too_many_skills";
   if (input.skills.length === 0 && skillsRequired(input.type)) return "skills_required";
+  if (input.type === "tender" && !tenderValid(input.tender)) return "invalid_tender";
   if (!staff && !input.noFee) return "no_fee_required";
   return null;
 }

@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { opportunityProblem, parseSkills, type OpportunityInput } from "./opportunity-rules";
+import {
+  documentLines,
+  emptyTender,
+  opportunityProblem,
+  parseSkills,
+  type OpportunityInput,
+} from "./opportunity-rules";
 
 const input = (over: Partial<OpportunityInput> = {}): OpportunityInput => ({
   type: "job",
@@ -14,6 +20,7 @@ const input = (over: Partial<OpportunityInput> = {}): OpportunityInput => ({
   closingOn: "2026-12-01",
   skills: ["supervision"],
   noFee: true,
+  tender: emptyTender,
   ...over,
 });
 const member = { staff: false, today: "2026-11-06" };
@@ -56,6 +63,49 @@ describe("parseSkills", () => {
     expect(parseSkills(" Civil  Works, supervision,,civil works ")).toEqual([
       "civil works",
       "supervision",
+    ]);
+  });
+});
+
+describe("tenders (O04)", () => {
+  const tender = (over: Partial<OpportunityInput["tender"]> = {}) =>
+    input({
+      type: "tender",
+      employmentType: "",
+      skills: [],
+      tender: {
+        ...emptyTender,
+        referenceNo: "DCC/PR/2026/114",
+        scope: "Supply of 3,000 school uniform sets for twelve primary schools.",
+        ...over,
+      },
+    });
+
+  it("accepts a complete tender", () => {
+    expect(opportunityProblem(tender(), member)).toBeNull();
+  });
+
+  it("needs a reference number and a scope of at least 30 characters", () => {
+    expect(opportunityProblem(tender({ referenceNo: "D" }), member)).toBe("invalid_tender");
+    expect(opportunityProblem(tender({ scope: "Uniforms" }), member)).toBe("invalid_tender");
+  });
+
+  it("checks the closing time, the value and the documents", () => {
+    expect(opportunityProblem(tender({ closingTime: "25:00" }), member)).toBe("invalid_tender");
+    expect(opportunityProblem(tender({ estimatedValue: "about 5M" }), member)).toBe(
+      "invalid_tender",
+    );
+    expect(opportunityProblem(tender({ estimatedValue: "120,000,000" }), member)).toBeNull();
+    const eleven = Array.from({ length: 11 }, (_, i) => `Document ${i}`).join("\n");
+    expect(opportunityProblem(tender({ requiredDocuments: eleven }), member)).toBe(
+      "invalid_tender",
+    );
+  });
+
+  it("reads one required document per line", () => {
+    expect(documentLines(" BRELA certificate \n\nTRA TIN certificate")).toEqual([
+      "BRELA certificate",
+      "TRA TIN certificate",
     ]);
   });
 });

@@ -24,6 +24,8 @@ const fakeApi = (posts: MyPost[], over: Partial<OpportunitiesApi> = {}): Opportu
   sectors: vi.fn(),
   regions: vi.fn(),
   districts: vi.fn(),
+  pickPdf: vi.fn(),
+  uploadTenderDocument: vi.fn(),
   ...over,
 });
 

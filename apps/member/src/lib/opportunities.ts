@@ -1,10 +1,13 @@
-import type {
-  EmploymentType,
-  Language,
-  OpportunityInput,
-  OpportunityResult,
-  OpportunityType,
+import {
+  emptyTender,
+  tenderPayload,
+  type EmploymentType,
+  type Language,
+  type OpportunityInput,
+  type OpportunityResult,
+  type PostType,
 } from "@kingdom-connect/shared";
+import * as DocumentPicker from "expo-document-picker";
 import { districtOptions, regionOptions, sectorOptions, type Option } from "./registration";
 import { supabase } from "./supabase";
 
@@ -13,7 +16,7 @@ export type PostStatus =
 
 export type MyPost = {
   id: string;
-  type: OpportunityType | "tender";
+  type: PostType;
   title: string;
   status: PostStatus;
   reason: string | null;
@@ -21,6 +24,8 @@ export type MyPost = {
 };
 
 export type SavedPost = { result: OpportunityResult; status: PostStatus | null };
+
+export type PickedPdf = { uri: string; name: string; mime: string; size: number };
 
 export type OpportunitiesApi = {
   mine: () => Promise<MyPost[]>;
@@ -30,6 +35,8 @@ export type OpportunitiesApi = {
   sectors: (language: Language) => Promise<Option[]>;
   regions: (language: Language) => Promise<Option[]>;
   districts: (regionId: string, language: Language) => Promise<Option[]>;
+  pickPdf: () => Promise<PickedPdf | null>;
+  uploadTenderDocument: (file: PickedPdf) => Promise<string | null>;
 };
 
 const results: OpportunityResult[] = [
@@ -48,10 +55,12 @@ const results: OpportunityResult[] = [
   "posting_paused",
   "not_editable",
   "contact_details",
+  "invalid_tender",
+  "invalid_tender_file",
 ];
 
 type PostRow = {
-  type: OpportunityType;
+  type: PostType;
   title: string;
   role: string | null;
   employment_type: EmploymentType | null;
@@ -63,6 +72,15 @@ type PostRow = {
   closing_at: string;
   no_fee_declared: boolean;
   skills: { skill: { name: string } | null }[];
+  tender: {
+    reference_no: string;
+    scope: string;
+    eligibility: string;
+    required_documents: string[];
+    closing_time: string;
+    estimated_value_tzs: number | null;
+    document_path: string | null;
+  } | null;
 };
 
 export const opportunitiesApi: OpportunitiesApi = {
@@ -92,7 +110,7 @@ export const opportunitiesApi: OpportunitiesApi = {
     const { data, error } = await supabase
       .from("opportunities")
       .select(
-        "type, title, role, employment_type, remote, region_id, district_id, sector_id, description, closing_at, no_fee_declared, skills:opportunity_skills(skill:skills(name))",
+        "type, title, role, employment_type, remote, region_id, district_id, sector_id, description, closing_at, no_fee_declared, skills:opportunity_skills(skill:skills(name)), tender:tender_details(reference_no, scope, eligibility, required_documents, closing_time, estimated_value_tzs, document_path)",
       )
       .eq("id", id)
       .maybeSingle();
@@ -112,6 +130,18 @@ export const opportunitiesApi: OpportunitiesApi = {
       closingOn: row.closing_at,
       skills: row.skills.flatMap((s) => (s.skill ? [s.skill.name] : [])),
       noFee: row.no_fee_declared,
+      tender: row.tender
+        ? {
+            referenceNo: row.tender.reference_no,
+            scope: row.tender.scope,
+            eligibility: row.tender.eligibility,
+            requiredDocuments: row.tender.required_documents.join("\n"),
+            closingTime: row.tender.closing_time.slice(0, 5),
+            estimatedValue:
+              row.tender.estimated_value_tzs === null ? "" : String(row.tender.estimated_value_tzs),
+            documentPath: row.tender.document_path,
+          }
+        : emptyTender,
     };
   },
 
@@ -131,6 +161,7 @@ export const opportunitiesApi: OpportunitiesApi = {
       skills: input.skills,
       no_fee: input.noFee,
       send,
+      tender: input.type === "tender" ? tenderPayload(input) : null,
     });
     if (error) return { result: "failed", status: null };
     const row = (data as { result: string; opportunity_id: string | null }[] | null)?.[0];
@@ -154,4 +185,24 @@ export const opportunitiesApi: OpportunitiesApi = {
   sectors: sectorOptions,
   regions: regionOptions,
   districts: districtOptions,
+
+  async pickPdf() {
+    const picked = await DocumentPicker.getDocumentAsync({
+      type: ["application/pdf"],
+      copyToCacheDirectory: true,
+    });
+    const file = picked.canceled ? null : picked.assets[0];
+    if (!file) return null;
+    return { uri: file.uri, name: file.name, mime: file.mimeType ?? "", size: file.size ?? 0 };
+  },
+
+  async uploadTenderDocument(file) {
+    const { data } = await supabase.auth.getSession();
+    const path = `${data.session?.user.id ?? ""}/${crypto.randomUUID()}.pdf`;
+    const blob = await (await fetch(file.uri)).blob();
+    const upload = await supabase.storage
+      .from("tender-documents")
+      .upload(path, blob, { contentType: "application/pdf" });
+    return upload.error ? null : path;
+  },
 };

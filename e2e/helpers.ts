@@ -407,3 +407,19 @@ export async function publishOpportunity(posterId: string, title: string, skills
 export async function hideOpportunity(id: string) {
   await db`update public.opportunities set status = 'hidden' where id = ${id}`;
 }
+
+/** A post's tender fields, read straight from the database (O04 tests). */
+export async function tenderOf(title: string) {
+  const [row] =
+    await db`select d.issuing_org, d.reference_no, d.closing_time::text, d.required_documents
+    from public.tender_details d join public.opportunities o on o.id = d.opportunity_id
+    where o.title = ${title}`;
+  return row as
+    | {
+        issuing_org: string;
+        reference_no: string;
+        closing_time: string;
+        required_documents: string[];
+      }
+    | undefined;
+}

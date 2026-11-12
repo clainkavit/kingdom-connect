@@ -1,8 +1,9 @@
-import type {
-  EmploymentType,
-  Language,
-  OpportunityInput,
-  OpportunityType,
+import {
+  tenderPayload,
+  type EmploymentType,
+  type Language,
+  type OpportunityInput,
+  type OpportunityType,
 } from "@kingdom-connect/shared";
 import { supabase } from "./supabase";
 
@@ -56,6 +57,7 @@ export type OpportunityModerationApi = {
   options: (language: Language) => Promise<{ sectors: Option[]; regions: Option[] }>;
   districts: (regionId: string, language: Language) => Promise<Option[]>;
   post: (input: OpportunityInput) => Promise<string>;
+  uploadTenderDocument: (file: File) => Promise<string | null>;
 };
 
 type Named = { name_en: string; name_sw: string } | null;
@@ -233,6 +235,15 @@ export const opportunityModerationApi: OpportunityModerationApi = {
     return toOptions(data, language);
   },
 
+  async uploadTenderDocument(file) {
+    const { data } = await supabase.auth.getSession();
+    const path = `${data.session?.user.id ?? ""}/${crypto.randomUUID()}.pdf`;
+    const upload = await supabase.storage
+      .from("tender-documents")
+      .upload(path, file, { contentType: "application/pdf" });
+    return upload.error ? null : path;
+  },
+
   async post(input) {
     const { data, error } = await supabase.rpc("save_opportunity", {
       opportunity: null,
@@ -249,6 +260,7 @@ export const opportunityModerationApi: OpportunityModerationApi = {
       skills: input.skills,
       no_fee: false,
       send: true,
+      tender: input.type === "tender" ? tenderPayload(input) : null,
     });
     if (error) throw error;
     return (data as { result: string }[] | null)?.[0]?.result ?? "failed";

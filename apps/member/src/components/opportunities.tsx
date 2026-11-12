@@ -228,6 +228,13 @@ export function OpportunitiesList({ api }: { api: OpportunityBrowseApi }) {
         >
           <Text className="font-figtree-semibold text-[15px] text-ink">{t.myPostsTitle}</Text>
         </LinkButton>
+        <LinkButton
+          href="/opportunities/responses"
+          label={t.respMineTitle}
+          className="min-h-[48px] items-center justify-center rounded-[10px] border border-line bg-surface px-4"
+        >
+          <Text className="font-figtree-semibold text-[15px] text-ink">{t.respMineTitle}</Text>
+        </LinkButton>
       </View>
       <Chips
         label={t.fieldType}
@@ -408,7 +415,10 @@ export function OpportunityDetailScreen({
         <>
           {!post.readOnly && respond ? respond(post) : null}
           <View className="items-start">
-            <ReportLink target={{ type: "opportunity", id: post.id }} memberId={post.posterId} />
+            <ReportLink
+              target={{ type: "opportunity", id: post.id }}
+              memberId={post.posterId ?? ""}
+            />
           </View>
         </>
       )}

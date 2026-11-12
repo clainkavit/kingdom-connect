@@ -58,6 +58,15 @@ function PostRow({
             <Text className="font-figtree-semibold text-sm text-ink-2">{t.editPost}</Text>
           </LinkButton>
         ) : null}
+        {post.status === "published" || post.status === "closed" || post.status === "expired" ? (
+          <LinkButton
+            href={`/opportunities/${post.id}/responses`}
+            label={t.respResponses}
+            className="min-h-[44px] items-center justify-center rounded-[9px] border border-line bg-surface px-4"
+          >
+            <Text className="font-figtree-semibold text-sm text-ink-2">{t.respResponses}</Text>
+          </LinkButton>
+        ) : null}
         {post.status === "published" ? (
           <ConfirmButton
             label={t.closePost}
@@ -75,7 +84,7 @@ function PostRow({
   );
 }
 
-/** S21: the poster's own opportunities with their status (O01). Responses arrive with O03. */
+/** S21: the poster's own opportunities with their status (O01) and a way to their responses (O03). */
 export function MyPosts({ api }: { api: OpportunitiesApi }) {
   const { t } = useLanguage();
   const [loaded, setLoaded] = useState<

@@ -13,9 +13,11 @@ test("a verified poster sends a tender with its own fields (O04, S20)", async ({
   await page.goto("/opportunities/new");
   await page.getByRole("radio", { name: "Tender" }).click();
   await page.getByRole("textbox", { name: "Title" }).fill(title);
+  await page.getByRole("button", { name: "Next" }).click();
   await page.getByRole("switch", { name: "The work is remote" }).click();
   await page.getByRole("button", { name: "Sector: Choose" }).click();
   await page.getByRole("option", { name: "Agriculture", exact: true }).click();
+  await page.getByRole("button", { name: "Next" }).click();
   await page
     .getByRole("textbox", { name: "Description and requirements" })
     .fill(
@@ -30,6 +32,7 @@ test("a verified poster sends a tender with its own fields (O04, S20)", async ({
     .getByRole("textbox", { name: "Documents a bidder must hold (optional)" })
     .fill("BRELA certificate\nTRA TIN certificate");
   await page.getByRole("textbox", { name: "Closing time" }).fill("16:00");
+  await page.getByRole("button", { name: "Next" }).click();
   await page.getByRole("checkbox", { name: /No fee will be charged/ }).click();
   await page.getByRole("button", { name: "Send", exact: true }).click();
   await expect(page.getByText(/Sent\. Our team reviews it|Your post is live/)).toBeVisible();

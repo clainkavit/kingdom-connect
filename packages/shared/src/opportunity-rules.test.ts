@@ -1,7 +1,9 @@
 import { describe, expect, it } from "vitest";
 import {
   documentLines,
+  draftProblem,
   emptyTender,
+  postStepOf,
   opportunityProblem,
   parseSkills,
   type OpportunityInput,
@@ -55,6 +57,63 @@ describe("opportunityProblem (S20, PRD section 10)", () => {
   it("needs the no-fee tick from members but not from staff", () => {
     expect(opportunityProblem(input({ noFee: false }), member)).toBe("no_fee_required");
     expect(opportunityProblem(input({ noFee: false }), { ...member, staff: true })).toBeNull();
+  });
+});
+
+describe("draftProblem (S20 in steps, 12 Nov 2026)", () => {
+  const blank = input({
+    employmentType: "",
+    regionId: "",
+    sectorId: "",
+    description: "",
+    closingOn: "",
+    skills: [],
+    noFee: false,
+  });
+
+  it("saves a draft with only a type and a title", () => {
+    expect(draftProblem(blank, member)).toBeNull();
+    expect(opportunityProblem(blank, member)).toBe("invalid_employment");
+  });
+
+  it("still checks what a draft does hold", () => {
+    expect(draftProblem(input({ type: "" }), member)).toBe("invalid_type");
+    expect(draftProblem(input({ title: "Hi" }), member)).toBe("invalid_title");
+    expect(draftProblem(input({ type: "partnership" }), member)).toBe("invalid_employment");
+    expect(draftProblem(input({ description: "x".repeat(5001) }), member)).toBe("too_long");
+    expect(draftProblem(input({ closingOn: "2027-06-01" }), member)).toBe("invalid_closing");
+    expect(draftProblem(input({ closingOn: "soon" }), member)).toBe("invalid_closing");
+    expect(draftProblem(input({ skills: ["a", "b", "c", "d", "e", "f"] }), member)).toBe(
+      "too_many_skills",
+    );
+    expect(
+      draftProblem(
+        input({ type: "tender", employmentType: "", tender: { ...emptyTender, referenceNo: "T" } }),
+        member,
+      ),
+    ).toBeNull();
+    expect(
+      draftProblem(
+        input({
+          type: "tender",
+          employmentType: "",
+          tender: { ...emptyTender, scope: "x".repeat(3001) },
+        }),
+        member,
+      ),
+    ).toBe("invalid_tender");
+  });
+});
+
+describe("postStepOf", () => {
+  it("names the step of the form each problem belongs to", () => {
+    expect(postStepOf("invalid_title")).toBe(0);
+    expect(postStepOf("invalid_employment")).toBe(0);
+    expect(postStepOf("invalid_location")).toBe(1);
+    expect(postStepOf("invalid_sector")).toBe(1);
+    expect(postStepOf("too_short")).toBe(2);
+    expect(postStepOf("invalid_tender")).toBe(2);
+    expect(postStepOf("no_fee_required")).toBe(3);
   });
 });
 

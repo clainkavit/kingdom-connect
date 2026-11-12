@@ -20,7 +20,8 @@ export type MyPost = {
   title: string;
   status: PostStatus;
   reason: string | null;
-  closingAt: string;
+  /** Empty on a draft saved before its closing date was set. */
+  closingAt: string | null;
 };
 
 export type SavedPost = { result: OpportunityResult; status: PostStatus | null };
@@ -67,14 +68,14 @@ type PostRow = {
   remote: boolean;
   region_id: string | null;
   district_id: string | null;
-  sector_id: string;
-  description: string;
-  closing_at: string;
+  sector_id: string | null;
+  description: string | null;
+  closing_at: string | null;
   no_fee_declared: boolean;
   skills: { skill: { name: string } | null }[];
   tender: {
-    reference_no: string;
-    scope: string;
+    reference_no: string | null;
+    scope: string | null;
     eligibility: string;
     required_documents: string[];
     closing_time: string;
@@ -94,7 +95,7 @@ export const opportunitiesApi: OpportunitiesApi = {
         title: string;
         status: PostStatus;
         reason: string | null;
-        closing_at: string;
+        closing_at: string | null;
       }[]
     ).map((r) => ({
       id: r.id,
@@ -125,15 +126,15 @@ export const opportunitiesApi: OpportunitiesApi = {
       remote: row.remote,
       regionId: row.region_id ?? "",
       districtId: row.district_id ?? "",
-      sectorId: row.sector_id,
-      description: row.description,
-      closingOn: row.closing_at,
+      sectorId: row.sector_id ?? "",
+      description: row.description ?? "",
+      closingOn: row.closing_at ?? "",
       skills: row.skills.flatMap((s) => (s.skill ? [s.skill.name] : [])),
       noFee: row.no_fee_declared,
       tender: row.tender
         ? {
-            referenceNo: row.tender.reference_no,
-            scope: row.tender.scope,
+            referenceNo: row.tender.reference_no ?? "",
+            scope: row.tender.scope ?? "",
             eligibility: row.tender.eligibility,
             requiredDocuments: row.tender.required_documents.join("\n"),
             closingTime: row.tender.closing_time.slice(0, 5),

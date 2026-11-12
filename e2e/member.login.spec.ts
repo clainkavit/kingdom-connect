@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { createMember, enterCode, logIn, nextCode, nextEmail } from "./helpers";
+import { createMember, enterCode, logIn, nextCode, nextEmail, setPhone } from "./helpers";
 
 test("a Member logs in with the email code and logs out again (REG-4)", async ({ page }) => {
   await page.goto("/");
@@ -21,6 +21,34 @@ test("a Member logs in with the email code and logs out again (REG-4)", async ({
   await expect(page.getByRole("link", { name: "Reports & Safety" })).toBeVisible();
   await page.getByRole("button", { name: "Log out" }).click();
   await expect(page).toHaveURL(/\/login$/);
+});
+
+test("a Member logs in with their phone number or their email instead of the username (12 Nov 2026)", async ({
+  page,
+}) => {
+  const stamp = Date.now();
+  const member = await createMember(`e2e_phone_login_${stamp}`);
+  const phone = `+2557${String(stamp).slice(-8)}`;
+  await setPhone(member.id, phone);
+
+  await page.goto("/login");
+  let sentAfter = new Date();
+  await logIn(page, "Username", `0${phone.slice(4, 7)} ${phone.slice(7, 10)} ${phone.slice(10)}`);
+  await enterCode(page, await nextCode(member.email, sentAfter));
+  await expect(page.getByRole("heading", { name: "Dashboard" })).toBeVisible();
+  await page.getByRole("link", { name: "My account" }).click();
+  await page.getByRole("button", { name: "Log out" }).click();
+
+  sentAfter = new Date();
+  await logIn(page, "Username", member.email.toUpperCase());
+  await enterCode(page, await nextCode(member.email, sentAfter));
+  await expect(page.getByRole("heading", { name: "Dashboard" })).toBeVisible();
+});
+
+test("a phone number two members share does not log either in", async ({ page }) => {
+  await page.goto("/login");
+  await logIn(page, "Username", "+255700000000");
+  await expect(page.getByText("Wrong username or password.")).toBeVisible();
 });
 
 test("a wrong code says how many tries are left", async ({ page }) => {

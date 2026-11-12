@@ -511,6 +511,7 @@ export const en = {
     "Administrators do not connect or message. Message contents open only for reported threads.",
 
   username: "Username",
+  loginName: "Username, phone or email",
   email: "Email",
   password: "Password",
   logIn: "Log in",
@@ -522,7 +523,7 @@ export const en = {
   locked: (time: string) => `Too many failed attempts. Try again in ${time}.`,
   suspended: "Your account is suspended. An admin will review it.",
   network: "We couldn't reach the server. Check your connection and try again.",
-  needLogin: "Enter your username and password.",
+  needLogin: "Enter your username, phone or email, and your password.",
   needCode: "Enter the 6 numbers from the email.",
   needNewPassword: "Type the new password in both boxes.",
   needUsername: "Enter your username.",

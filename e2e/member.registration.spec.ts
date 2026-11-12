@@ -1,5 +1,5 @@
 import { expect, type Page, test } from "@playwright/test";
-import { enterCode, nextCode, openApplication, signInToAdmin } from "./helpers";
+import { enterCode, memberLoginLabel, nextCode, openApplication, signInToAdmin } from "./helpers";
 
 const PNG = Buffer.from(
   "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=",
@@ -114,7 +114,7 @@ test("a person signs up, completes the six steps and is approved (REG-1, S02, S0
   await page.getByRole("button", { name: "Log out" }).click();
   await expect(page).toHaveURL(/\/login$/);
   const email = `${username.replace(/_/g, ".")}@example.test`;
-  await page.getByLabel("Username", { exact: true }).fill(username);
+  await page.getByLabel(memberLoginLabel.en, { exact: true }).fill(username);
   await page.getByLabel("Password", { exact: true }).fill("kingdom-test-1");
   const sentAfter = new Date();
   await page.getByRole("button", { name: "Log in" }).click();

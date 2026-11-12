@@ -1,7 +1,7 @@
 import {
   type Account,
-  accountByUsername,
   anonClient,
+  memberAccountByLogin,
   serviceClient,
   sql,
   staffAccountByEmail,
@@ -12,6 +12,8 @@ import {
   LOCK_AFTER_FAILURES,
   LOCK_MINUTES,
   lockedEmail,
+  lockKey,
+  loginName,
   RESEND_SECONDS,
   secondsUntil,
   skipsCode,
@@ -63,9 +65,17 @@ Deno.serve(async (req) => {
   const body = await req.json().catch(() => ({}));
   const name: string = (body.username ?? body.email ?? "").toString().trim().toLowerCase();
   if (typeof body.password !== "string" || !name) return invalid();
-  const identifier = `${body.username ? "username" : "email"}:${name}`;
 
-  const account = body.username ? await accountByUsername(name) : await staffAccountByEmail(name);
+  let account: Account | null;
+  let identifier: string;
+  if (body.username) {
+    const typed = loginName(name);
+    account = await memberAccountByLogin(typed);
+    identifier = lockKey(typed, account?.id ?? null);
+  } else {
+    account = await staffAccountByEmail(name);
+    identifier = `email:${name}`;
+  }
   const attempt = await startAttempt(identifier, account);
   if (!attempt.allowed) {
     return attempt.locked_until

@@ -229,6 +229,13 @@ export function OpportunitiesList({ api }: { api: OpportunityBrowseApi }) {
           <Text className="font-figtree-semibold text-[15px] text-ink">{t.myPostsTitle}</Text>
         </LinkButton>
         <LinkButton
+          href="/opportunities/scan"
+          label={t.scanTitle}
+          className="min-h-[48px] items-center justify-center rounded-[10px] bg-blue px-4"
+        >
+          <Text className="font-figtree-bold text-[15px] text-blue-ink">{t.scanTitle}</Text>
+        </LinkButton>
+        <LinkButton
           href="/opportunities/responses"
           label={t.respMineTitle}
           className="min-h-[48px] items-center justify-center rounded-[10px] border border-line bg-surface px-4"

@@ -386,7 +386,7 @@ export async function createStaff(name: string): Promise<string> {
 }
 
 /** A published, open post by a member, as if it had passed review (O02 browsing tests). */
-export async function publishOpportunity(posterId: string, title: string) {
+export async function publishOpportunity(posterId: string, title: string, skills: string[] = []) {
   const [row] = await db`insert into public.opportunities
       (poster_member_id, type, title, role, employment_type, remote, sector_id, description, closing_at,
        no_fee_declared, status, published_at)
@@ -395,6 +395,11 @@ export async function publishOpportunity(posterId: string, title: string) {
            current_date + 30, true, 'published', now()
     from public.sectors order by name_en limit 1
     returning id`;
+  for (const name of skills) {
+    await db`insert into public.skills (name) values (${name}) on conflict (name) do nothing`;
+    await db`insert into public.opportunity_skills (opportunity_id, skill_id)
+      select ${row!.id}, id from public.skills where name = ${name}`;
+  }
   return row!.id as string;
 }
 

@@ -423,3 +423,37 @@ export async function tenderOf(title: string) {
       }
     | undefined;
 }
+
+/** A published idea with confidential details, as if it had passed moderation (D03). */
+export async function publishIdea(ownerId: string, title: string, details: string) {
+  const [row] = await db`insert into public.ideas
+      (owner_id, title, problem, sector_id, stage, seeking, show_owner, status, submitted_at, published_at)
+    select ${ownerId}, ${title}, ${"Traders lose a large share of their stock because they cannot keep it fresh."},
+           id, 'prototype', 'partner', true, 'published', now(), now()
+    from public.sectors order by name_en limit 1
+    returning id`;
+  await db`insert into public.idea_details (idea_id, description) values (${row!.id}, ${details})`;
+  return row!.id as string;
+}
+
+/** A published in-person training with a set number of seats, as if it had passed review (D03). */
+export async function publishTraining(posterId: string, title: string, seats: number) {
+  const [row] = await db`insert into public.trainings
+      (poster_member_id, title, provider, format, venue, seats, status, submitted_at, published_at)
+    values (${posterId}, ${title}, 'Mwanza Business Centre', 'in_person', 'Mkuyuni church hall',
+            ${seats}, 'published', now(), now())
+    returning id`;
+  return row!.id as string;
+}
+
+/** Two members past an idea's NDA, the start a milestone plan needs (D03). */
+export async function ideaPartners(ownerId: string, partnerId: string, title: string) {
+  const ideaId = await publishIdea(
+    ownerId,
+    title,
+    `Details of ${title}, shared under the NDA only.`,
+  );
+  await db`insert into public.idea_access_requests (idea_id, requester_id, role, status, decided_at)
+    values (${ideaId}, ${partnerId}, 'partner', 'nda_accepted', now())`;
+  return ideaId;
+}

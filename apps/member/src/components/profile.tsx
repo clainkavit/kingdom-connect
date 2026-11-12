@@ -92,6 +92,60 @@ function SkillChips({ skills, onRemove }: { skills: string[]; onRemove?: (s: str
   );
 }
 
+function AddLink({ href, label }: { href: string; label: string }) {
+  return (
+    <LinkButton href={href} label={label} className="min-h-[44px] justify-center self-start">
+      <Text className="font-figtree-semibold text-sm text-blue">+ {label}</Text>
+    </LinkButton>
+  );
+}
+
+/** What a member still needs on their own profile to be matched, ending in a scan for opportunities. */
+export function NextSteps({ profile }: { profile: Profile }) {
+  const { t } = useLanguage();
+  const steps = [
+    { done: Boolean(profile.photoUrl), label: t.stepPhoto },
+    { done: Boolean(profile.districtId), label: t.stepDistrict },
+    { done: Boolean(profile.profession), label: t.stepProfession },
+    { done: profile.skills.length > 0, label: t.stepSkills },
+  ];
+  const done = steps.filter((s) => s.done).length;
+  const scan = (
+    <LinkButton
+      href="/opportunities/scan"
+      label={t.actionScan}
+      className="min-h-[44px] justify-center self-start"
+    >
+      <Text className="font-figtree-semibold text-sm text-blue">{t.actionScan}</Text>
+    </LinkButton>
+  );
+  if (done === steps.length)
+    return (
+      <View className="flex-row flex-wrap items-center gap-x-3 rounded-card border border-line bg-surface px-4 py-2">
+        <Text className="font-figtree text-sm text-ink-2">{t.profileReady}</Text>
+        {scan}
+      </View>
+    );
+  return (
+    <Section title={t.nextStepsTitle}>
+      <Muted text={t.stepsDone(done, steps.length)} />
+      {steps.map((step) =>
+        step.done ? (
+          <View key={step.label} className="min-h-[44px] flex-row items-center gap-2">
+            <Text aria-hidden className="font-figtree-bold text-sm text-good-text">
+              ✓
+            </Text>
+            <Text className="font-figtree text-sm text-ink-2">{step.label}</Text>
+          </View>
+        ) : (
+          <AddLink key={step.label} href="/profile/edit" label={step.label} />
+        ),
+      )}
+      <View className="mt-1 border-t border-line pt-1">{scan}</View>
+    </Section>
+  );
+}
+
 /** S11: a member's profile. Contact details show only when the server returns them for a connection. */
 export function ProfileView({
   profile,
@@ -134,6 +188,7 @@ export function ProfileView({
       </View>
       {!profile.own && actions ? actions : null}
       {profile.own && profile.hidden ? <Message tone="info" text={t.hiddenProfileNote} /> : null}
+      {profile.own ? <NextSteps profile={profile} /> : null}
       <Section title={t.aboutTitle}>
         {profile.profession ? <Body text={profile.profession} /> : null}
         {profile.bio ? <Body text={profile.bio} /> : null}
@@ -150,7 +205,11 @@ export function ProfileView({
           </>
         ) : null}
         {!profile.profession && !profile.bio && !profile.experience && !profile.certifications ? (
-          <Muted text={t.notGiven} />
+          profile.own ? (
+            <AddLink href="/profile/edit" label={t.addAbout} />
+          ) : (
+            <Muted text={t.notGiven} />
+          )
         ) : null}
       </Section>
       {profile.contact ? (
@@ -174,8 +233,13 @@ export function ProfileView({
       <Section title={t.skillsTitle}>
         {profile.skills.length ? (
           <SkillChips skills={profile.skills} />
+        ) : profile.own ? (
+          <>
+            <Muted text={t.noSkillsNudge} />
+            <AddLink href="/profile/edit" label={t.addSkills} />
+          </>
         ) : (
-          <Muted text={profile.own ? t.noSkillsNudge : t.notGiven} />
+          <Muted text={t.notGiven} />
         )}
       </Section>
       {study ? (

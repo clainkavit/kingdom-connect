@@ -147,6 +147,14 @@ describe("RegistrationWizard (S05)", () => {
     ).toBeTruthy();
   });
 
+  it("says to choose the ID type and number when Save ID is pressed early", async () => {
+    const api = fakeApi();
+    await show(4, {}, api);
+    await click("Save ID");
+    expect(api.saveIdentity).not.toHaveBeenCalled();
+    expect(screen.getByText("Choose the ID type and enter its number.")).toBeTruthy();
+  });
+
   it("marks a photo as added once it is uploaded", async () => {
     const api = fakeApi();
     await show(4, {}, api);

@@ -44,14 +44,16 @@ describe("AcceptTexts (S07)", () => {
     expect(screen.getAllByText("Be kind.")).toHaveLength(2);
   });
 
-  it("needs every text ticked before Continue, then accepts them all", async () => {
+  it("says to tick every text when Continue is pressed early, then accepts them all", async () => {
     const onAccept = vi.fn().mockResolvedValue(undefined);
     inLanguage("en", <AcceptTexts texts={texts} entityName="E" onAccept={onAccept} />);
     const next = screen.getByRole("button", { name: "Continue" });
-    expect(next.getAttribute("aria-disabled")).toBe("true");
     fireEvent.click(screen.getByRole("checkbox", { name: "I accept the terms of use" }));
-    expect(next.getAttribute("aria-disabled")).toBe("true");
+    await act(async () => fireEvent.click(next));
+    expect(onAccept).not.toHaveBeenCalled();
+    expect(screen.getByText("Tick each box to accept.")).toBeTruthy();
     fireEvent.click(screen.getByRole("checkbox", { name: "I accept the privacy notice" }));
+    expect(screen.queryByText("Tick each box to accept.")).toBeNull();
     await act(async () => fireEvent.click(next));
     expect(onAccept).toHaveBeenCalledWith(["t1", "t2"]);
   });

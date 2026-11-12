@@ -1,8 +1,8 @@
 import "../test-router";
-import { memberNav, memberPhoneTabs, stringsFor } from "@kingdom-connect/shared";
+import { accountItems, growthSections, stringsFor } from "@kingdom-connect/shared";
 import { cleanup, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
-import { ComingSoon, MoreList } from "./screens";
+import { AccountList, ComingSoon, GrowthList } from "./screens";
 
 const en = stringsFor("en");
 
@@ -16,11 +16,21 @@ describe("ComingSoon", () => {
   });
 });
 
-describe("MoreList", () => {
-  it("lists every menu item that has no phone tab", () => {
-    render(<MoreList />);
-    const tabHrefs = new Set(memberPhoneTabs.map((t) => t.href));
-    const expected = memberNav.filter((i) => !tabHrefs.has(i.href)).map((i) => en[i.key]);
-    expect(screen.getAllByRole("link").map((l) => l.getAttribute("aria-label"))).toEqual(expected);
+describe("GrowthList", () => {
+  it("lists Ideas, Training, Events and Milestone plans with what each is for", () => {
+    render(<GrowthList />);
+    expect(screen.getAllByRole("link").map((l) => l.getAttribute("href"))).toEqual(
+      growthSections.map((g) => g.href),
+    );
+    expect(screen.getByText("Share an idea, or find one to invest in or join.")).toBeTruthy();
+  });
+});
+
+describe("AccountList", () => {
+  it("lists My profile, News, Reports & Safety and Settings", () => {
+    render(<AccountList />);
+    expect(screen.getAllByRole("link").map((l) => l.getAttribute("aria-label"))).toEqual(
+      accountItems.map((i) => en[i.key]),
+    );
   });
 });

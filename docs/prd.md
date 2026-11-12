@@ -102,7 +102,7 @@ Phase 1 ships in two releases inside the 12-month plan: Release 1 builds trust a
 
 Members and administrators get different menus; a member never sees admin items, and an investor's menu looks the same as any member's.
 
-**Member menu (a bar across the top):** Dashboard · People (the directory, with Professionals and Businesses tabs) · Opportunities (filtered by type on the page) · Ideas · Training · Events · Messages · Connections · Reports & Safety · Settings. Notifications and My profile open from the dashboard.
+**Member menu (decided 12 Nov 2026, the same on a computer and a phone):** Home · People (the directory, with Professionals and Businesses tabs, and My connections) · Opportunities (filtered by type on the page) · Growth (Ideas, Training, Events, Milestone plans) · Messages. The bell opens Notifications; the person icon opens My account: My profile, News and updates, Reports & Safety, Settings, language and Log out. The phone tabs show a word under each icon. This replaces the ten-item menu of 2 Nov.
 
 **Investor additions (inside Ideas only):** investor filters, Saved ideas, anonymous "Express interest" option. No separate menu item.
 
@@ -982,6 +982,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | 20 Oct 2026 | Database schema and access rules written in docs/schema.md | 16, 18 |
 | 20 Oct 2026 | Tech stack decided; pilot launches web first, mobile apps follow; push notifications scoped | 4, 14, 15, 16, 18 |
 | 1 Nov 2026 | CI on every pull request; nobody merges a pull request with a failing check (an agreed rule, without branch protection) | 17 |
+| 12 Nov 2026 | Member menu cut to five sections everywhere (Home, People, Opportunities, Growth, Messages), the rest under My account; phone tabs get words; members may log in with phone or email as well as username | 5, 18 |
 | 2 Nov 2026 | The design canvas becomes the visual direction; member menu across the top, new member and admin menu items, icon-only member phone tabs | 5, 18 |
 | 2 Nov 2026 | Both apps bilingual; visitors read the platform name; language switch placement until Settings | 18 |
 | 2 Nov 2026 | Critical notifications always emailed; daily message digest; copy generated from docs/notifications.md; queued email | 14, 18 |

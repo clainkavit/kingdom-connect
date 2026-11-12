@@ -16,6 +16,7 @@ test("a Member edits their profile, hides it, and only a connection still sees i
   await addSynonym("js", "javascript");
 
   await signInAs(page, `e2e_owner_${stamp}`, owner.email);
+  await page.getByRole("link", { name: "My account" }).first().click();
   await page.getByRole("link", { name: "My profile" }).first().click();
   await expect(page.getByText("Add skills to get matched.")).toBeVisible();
   await page.getByRole("link", { name: "Edit profile" }).click();

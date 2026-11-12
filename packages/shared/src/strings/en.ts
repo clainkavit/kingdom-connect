@@ -409,6 +409,15 @@ export const en = {
   tabMore: "More",
   memberMenu: "Member menu",
   memberTabs: "Member tabs",
+  navGrowth: "Growth",
+  navPlans: "Milestone plans",
+  growthIntro:
+    "Ideas, training, events and milestone plans: everything for growing your work and skills.",
+  growthIdeasHint: "Share an idea, or find one to invest in or join.",
+  growthTrainingHint: "Courses and workshops from members and partners.",
+  growthEventsHint: "Meetings and gatherings to attend.",
+  growthPlansHint: "Step-by-step plans you agree with a partner.",
+  myAccount: "My account",
 
   adminLabel: "Admin",
   adminTitle: (platformName: string) => `${platformName} Admin`,

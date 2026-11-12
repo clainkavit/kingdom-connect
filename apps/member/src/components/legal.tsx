@@ -70,9 +70,11 @@ export function AcceptTexts({
   const [ticked, setTicked] = useState<Record<string, boolean>>({});
   const [busy, setBusy] = useState(false);
   const [failed, setFailed] = useState(false);
+  const [askedEarly, setAskedEarly] = useState(false);
   const allTicked = texts.every((text) => ticked[text.id]);
 
   const submit = async () => {
+    if (!allTicked) return setAskedEarly(true);
     setBusy(true);
     try {
       await onAccept(texts.map((text) => text.id));
@@ -119,18 +121,20 @@ export function AcceptTexts({
         );
       })}
       <Text className="font-figtree text-xs text-ink-2">{t.englishGoverns}</Text>
-      {failed ? (
+      {failed || (askedEarly && !allTicked) ? (
         <View role="alert" className="rounded-[10px] bg-bad-soft px-3 py-2.5">
-          <Text className="font-figtree text-[13px] text-bad-text">{t.network}</Text>
+          <Text className="font-figtree text-[13px] text-bad-text">
+            {failed ? t.network : t.needTicks}
+          </Text>
         </View>
       ) : null}
       <Pressable
         role="button"
         aria-label={acceptLabel ?? t.continueLabel}
-        aria-disabled={!allTicked || busy}
-        disabled={!allTicked || busy}
+        aria-disabled={busy}
+        disabled={busy}
         onPress={submit}
-        className={`min-h-[48px] items-center justify-center rounded-[10px] bg-blue px-4 ${!allTicked || busy ? "opacity-50" : ""}`}
+        className={`min-h-[48px] items-center justify-center rounded-[10px] bg-blue px-4 ${busy ? "opacity-50" : ""}`}
       >
         <Text className="font-figtree-bold text-[15px] text-blue-ink">
           {acceptLabel ?? t.continueLabel}

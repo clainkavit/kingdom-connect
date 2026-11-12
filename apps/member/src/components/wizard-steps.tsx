@@ -240,6 +240,8 @@ export function IdentityStep({
 }) {
   const { t } = useLanguage();
   const [idNumber, setIdNumber] = useState("");
+  const [askedEarly, setAskedEarly] = useState(false);
+  const ready = Boolean(draft.idType && idNumber.trim());
   return (
     <View className="gap-3">
       <Chips
@@ -261,12 +263,12 @@ export function IdentityStep({
         value={draft.idExpiresOn ?? ""}
         onChange={(idExpiresOn) => update({ idExpiresOn, identitySaved: false })}
       />
-      <Message text={idMessage} />
+      <Message text={askedEarly && !ready ? t.needIdTypeAndNumber : idMessage} />
       <Button
         secondary
         label={t.saveId}
-        onPress={() => onSaveId(idNumber)}
-        disabled={busy || !draft.idType || !idNumber.trim()}
+        onPress={() => (ready ? onSaveId(idNumber) : setAskedEarly(true))}
+        disabled={busy}
       />
       <Text className="font-figtree text-[13px] leading-5 text-ink-2">{t.photosPrivate}</Text>
       <PhotoPicker

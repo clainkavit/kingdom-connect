@@ -157,7 +157,9 @@ describe("IdeaTerms (S25)", () => {
     expect(terms).toHaveBeenCalledWith("r1");
     expect(screen.getByText("The NDA")).toBeTruthy();
     const accept = screen.getByRole("button", { name: "Accept and open the details" });
-    expect(accept.getAttribute("aria-disabled")).toBe("true");
+    await act(async () => fireEvent.click(accept));
+    expect(acceptTerms).not.toHaveBeenCalled();
+    expect(screen.getByText("Tick each box to accept.")).toBeTruthy();
     for (const box of screen.getAllByRole("checkbox")) {
       await act(async () => fireEvent.click(box));
     }

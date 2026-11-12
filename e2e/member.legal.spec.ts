@@ -21,7 +21,8 @@ test("a Member must accept the current terms and privacy notice before the app o
 
   const next = page.getByRole("button", { name: "Continue" });
   await page.getByRole("checkbox", { name: "I accept the terms of use" }).click();
-  await expect(next).toBeDisabled();
+  await next.click();
+  await expect(page.getByText("Tick each box to accept.")).toBeVisible();
   await page.getByRole("checkbox", { name: "I accept the privacy notice" }).click();
   await next.click();
 

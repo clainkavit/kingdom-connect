@@ -1,4 +1,6 @@
 import "../test-router";
+import { COMPUTER, PHONE, setWidth } from "../test-width";
+import { stringsFor } from "@kingdom-connect/shared";
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
@@ -9,12 +11,9 @@ import {
 } from "../lib/opportunity-browse";
 import { OpportunitiesList, OpportunityDetailScreen } from "./opportunities";
 
-function width(w: number) {
-  Object.defineProperty(document.documentElement, "clientWidth", { value: w, configurable: true });
-  window.dispatchEvent(new Event("resize"));
-}
+const en = stringsFor("en");
 
-beforeEach(() => width(1280));
+beforeEach(() => setWidth(COMPUTER));
 afterEach(() => {
   cleanup();
   vi.restoreAllMocks();
@@ -112,7 +111,7 @@ describe("OpportunitiesList (S16)", () => {
   });
 
   it("on a phone, keeps the filters behind one button and waits for Show results", async () => {
-    width(390);
+    setWidth(PHONE);
     const list = vi.fn().mockResolvedValue([card()]);
     await show(<OpportunitiesList api={fakeApi({ list })} />);
     expect(screen.queryByRole("button", { name: "Region: Any" })).toBeNull();
@@ -187,6 +186,20 @@ describe("OpportunityDetailScreen (S17)", () => {
     );
     expect(screen.getByText("This post is closed. You can read it but not respond.")).toBeTruthy();
     expect(respond).not.toHaveBeenCalled();
+  });
+
+  it("on a phone, keeps the way to respond in a bar at the bottom", async () => {
+    setWidth(PHONE);
+    await show(
+      <OpportunityDetailScreen
+        api={fakeApi()}
+        id="o1"
+        respond={() => <button type="button">Apply</button>}
+      />,
+    );
+    const bar = screen.getByRole("button", { name: "Apply" }).parentElement!;
+    expect(bar.style.position).toBe("sticky");
+    expect(bar.previousElementSibling?.textContent).toBe(en.oppNoFeeNote);
   });
 
   it("says a hidden or reported post is not available", async () => {

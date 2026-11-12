@@ -1,4 +1,5 @@
 import "../test-router";
+import { COMPUTER, PHONE, setWidth } from "../test-width";
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
@@ -10,12 +11,7 @@ import {
 } from "../lib/directory";
 import { DirectoryScreen } from "./directory";
 
-function width(w: number) {
-  Object.defineProperty(document.documentElement, "clientWidth", { value: w, configurable: true });
-  window.dispatchEvent(new Event("resize"));
-}
-
-beforeEach(() => width(1280));
+beforeEach(() => setWidth(COMPUTER));
 afterEach(() => {
   cleanup();
   vi.restoreAllMocks();
@@ -176,7 +172,7 @@ describe("DirectoryScreen (S10)", () => {
   });
 
   it("on a phone, keeps search open and folds the filters into one button", async () => {
-    width(390);
+    setWidth(PHONE);
     const api = fakeApi();
     await show(api);
     fireEvent.change(screen.getByLabelText("Search by name, profession or skill"), {

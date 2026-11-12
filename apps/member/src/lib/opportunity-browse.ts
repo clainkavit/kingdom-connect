@@ -29,7 +29,7 @@ export type OpportunityCard = {
   sector: Named;
   closingAt: string;
   featured: boolean;
-  posterId: string;
+  posterId: string | null;
   posterName: string;
   isMine: boolean;
   skills: string[];
@@ -76,7 +76,7 @@ type CardRow = {
   sector_sw: string;
   closing_at: string;
   featured: boolean;
-  poster_id: string;
+  poster_id: string | null;
   poster_name: string;
   is_mine: boolean;
   skills: string[] | null;

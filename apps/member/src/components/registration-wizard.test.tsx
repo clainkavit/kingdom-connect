@@ -135,6 +135,18 @@ describe("RegistrationWizard (S05)", () => {
     expect(api.saveDraft).not.toHaveBeenCalled();
   });
 
+  it("says who can open the ID number and the photos", async () => {
+    await show(4, {}, fakeApi());
+    expect(
+      screen.getByText(
+        "Stored encrypted. Only administrators can open it, and each time is recorded.",
+      ),
+    ).toBeTruthy();
+    expect(
+      screen.getByText("Only administrators see these photos. They are never shown to members."),
+    ).toBeTruthy();
+  });
+
   it("marks a photo as added once it is uploaded", async () => {
     const api = fakeApi();
     await show(4, {}, api);

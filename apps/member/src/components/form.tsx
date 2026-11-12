@@ -1,7 +1,9 @@
+import Lock from "lucide-react-native/icons/lock";
 import type { FieldProblem, Strings } from "@kingdom-connect/shared";
 import { useState } from "react";
 import { Pressable, ScrollView, Text, TextInput, View } from "react-native";
 import { useLanguage } from "../lib/language";
+import { usePalette } from "./palette";
 
 export function problemText(t: Strings, problem: FieldProblem | undefined): string | null {
   if (!problem) return null;
@@ -32,6 +34,8 @@ export function Field(props: {
   onChange: (v: string) => void;
   secure?: boolean;
   hint?: string;
+  /** Who can see what is typed here; shown with a lock, even when the field has a problem. */
+  privacy?: string;
   problem?: string | null;
   keyboardType?: "default" | "email-address" | "phone-pad" | "number-pad";
   multiline?: boolean;
@@ -55,6 +59,7 @@ export function Field(props: {
         <Text className="font-figtree text-[13px] text-ink-2">{props.hint}</Text>
       ) : null}
       <Problem text={props.problem ?? null} />
+      {props.privacy ? <PrivacyNote text={props.privacy} /> : null}
     </View>
   );
 }
@@ -315,6 +320,19 @@ export function ConfirmButton({
         />
         <Button secondary label={t.cancel} onPress={() => setAsking(false)} />
       </View>
+    </View>
+  );
+}
+
+/** A line saying who can see some private detail, with a lock in front. */
+export function PrivacyNote({ text }: { text: string }) {
+  const palette = usePalette();
+  return (
+    <View className="flex-row items-start gap-1.5">
+      <View aria-hidden className="pt-0.5">
+        <Lock size={13} color={palette.ink2} />
+      </View>
+      <Text className="flex-1 font-figtree text-[13px] leading-5 text-ink-2">{text}</Text>
     </View>
   );
 }

@@ -1,6 +1,6 @@
 import "../test-router";
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   OPPORTUNITY_PAGE,
   type OpportunityBrowseApi,
@@ -9,7 +9,16 @@ import {
 } from "../lib/opportunity-browse";
 import { OpportunitiesList, OpportunityDetailScreen } from "./opportunities";
 
-afterEach(cleanup);
+function width(w: number) {
+  Object.defineProperty(document.documentElement, "clientWidth", { value: w, configurable: true });
+  window.dispatchEvent(new Event("resize"));
+}
+
+beforeEach(() => width(1280));
+afterEach(() => {
+  cleanup();
+  vi.restoreAllMocks();
+});
 
 const card = (over: Partial<OpportunityCard> = {}): OpportunityCard => ({
   id: "o1",
@@ -100,6 +109,27 @@ describe("OpportunitiesList (S16)", () => {
       expect.objectContaining({ kind: "tender", region: "r1", postedWithin: 7 }),
       0,
     );
+  });
+
+  it("on a phone, keeps the filters behind one button and waits for Show results", async () => {
+    width(390);
+    const list = vi.fn().mockResolvedValue([card()]);
+    await show(<OpportunitiesList api={fakeApi({ list })} />);
+    expect(screen.queryByRole("button", { name: "Region: Any" })).toBeNull();
+
+    await press("Filters");
+    await press("Region: Any");
+    await act(async () => fireEvent.click(screen.getByRole("option", { name: "Kilimanjaro" })));
+    expect(list).toHaveBeenLastCalledWith({}, 0);
+
+    await press("Show results");
+    expect(list).toHaveBeenLastCalledWith(expect.objectContaining({ region: "r1" }), 0);
+    expect(screen.getByRole("button", { name: "Filters · 1" })).toBeTruthy();
+
+    await press("Filters · 1");
+    await press("Clear filters");
+    expect(list).toHaveBeenLastCalledWith({ kind: undefined }, 0);
+    expect(screen.getByRole("button", { name: "Filters" })).toBeTruthy();
   });
 
   it("loads 20 more at a time", async () => {

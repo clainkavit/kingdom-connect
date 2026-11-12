@@ -1,10 +1,12 @@
 import "../test-router";
+import { COMPUTER, PHONE, setWidth } from "../test-width";
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { OpportunityDetail } from "../lib/opportunity-browse";
 import type { ResponsesApi } from "../lib/responses";
 import { MyResponses, PostResponses, RespondPanel } from "./responses";
 
+beforeEach(() => setWidth(COMPUTER));
 afterEach(cleanup);
 
 const post = (over: Partial<OpportunityDetail> = {}): OpportunityDetail => ({
@@ -67,6 +69,29 @@ describe("RespondPanel (S18)", () => {
     expect(api.respond).toHaveBeenCalledWith("o1", "Five years of bookkeeping.", cv);
     expect(screen.getByRole("heading", { name: "Your application" })).toBeTruthy();
     expect(screen.getByText("New")).toBeTruthy();
+  });
+
+  it("on a phone, opens the form in a sheet from one button and closes it once sent", async () => {
+    setWidth(PHONE);
+    const mine = vi.fn().mockResolvedValueOnce(null).mockResolvedValue({ id: "r1", status: "new" });
+    const api = fakeApi({ mine });
+    await show(<RespondPanel api={api} post={post()} />);
+    expect(screen.queryByLabelText("A note to the poster (optional)")).toBeNull();
+    await press("Apply");
+    expect(screen.getByRole("dialog", { name: "Apply for this job" })).toBeTruthy();
+    await press("Send application");
+    expect(api.respond).toHaveBeenCalledWith("o1", "", null);
+    expect(screen.queryByRole("dialog")).toBeNull();
+    expect(screen.getByText("Your application")).toBeTruthy();
+    expect(screen.getByText("New")).toBeTruthy();
+    await press("View");
+    expect(screen.getByRole("button", { name: "Withdraw" })).toBeTruthy();
+  });
+
+  it("on a phone, says I'm interested for anything that is not a job", async () => {
+    setWidth(PHONE);
+    await show(<RespondPanel api={fakeApi()} post={post({ type: "partnership" })} />);
+    expect(screen.getByRole("button", { name: "I'm interested" })).toBeTruthy();
   });
 
   it("calls any other type an expression of interest", async () => {

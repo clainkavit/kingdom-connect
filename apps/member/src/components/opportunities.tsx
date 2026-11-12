@@ -20,7 +20,8 @@ import {
 } from "../lib/opportunity-browse";
 import { useLoad } from "./events";
 import { Button, ChoiceList, Chips, Message, Switch } from "./form";
-import { FilterSheet, usePhone } from "./filter-sheet";
+import { FilterSheet } from "./filter-sheet";
+import { stickToBottom, usePhone } from "./sheet";
 import { LinkButton } from "./link-button";
 import { typeLabel } from "./opportunity-form";
 import { ReportLink } from "./report-link";
@@ -394,6 +395,7 @@ export function OpportunityDetailScreen({
   respond?: (post: OpportunityDetail) => React.ReactNode;
 }) {
   const { t, language } = useLanguage();
+  const phone = usePhone();
   const [attempt, setAttempt] = useState(0);
   const loaded = useLoad(async () => {
     const post = await api.detail(id);
@@ -415,6 +417,7 @@ export function OpportunityDetailScreen({
     );
 
   const role = roleLine(t, post);
+  const action = !post.isMine && !post.readOnly && respond ? respond(post) : null;
   return (
     <View className="gap-4">
       <LinkButton href="/opportunities" label={t.oppBack} className="min-h-[40px] justify-center">
@@ -446,7 +449,7 @@ export function OpportunityDetailScreen({
         </LinkButton>
       ) : (
         <>
-          {!post.readOnly && respond ? respond(post) : null}
+          {phone ? null : action}
           <View className="items-start">
             <ReportLink
               target={{ type: "opportunity", id: post.id }}
@@ -456,6 +459,14 @@ export function OpportunityDetailScreen({
         </>
       )}
       <Text className="font-figtree text-[13px] leading-5 text-ink-2">{t.oppNoFeeNote}</Text>
+      {phone && action ? (
+        <View
+          style={stickToBottom}
+          className="-mx-5 -mb-4 border-t border-line bg-surface px-5 pb-4 pt-3"
+        >
+          {action}
+        </View>
+      ) : null}
     </View>
   );
 }

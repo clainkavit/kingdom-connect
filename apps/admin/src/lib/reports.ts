@@ -1,10 +1,20 @@
 import type { ReportReason } from "@kingdom-connect/shared";
 import { supabase } from "./supabase";
 
+export type ReportTarget = "profile" | "thread" | "opportunity";
+
+/** The reported post, for a report on an opportunity (O06). Hidden while the report is open. */
+export type ReportedPost = {
+  id: string;
+  title: string;
+  description: string;
+  status: string;
+};
+
 export type CaseSummary = {
   reportId: string;
   reference: string;
-  targetType: "profile" | "thread";
+  targetType: ReportTarget;
   subjectName: string;
   reasons: ReportReason[];
   reportCount: number;
@@ -44,11 +54,12 @@ export type Subject = {
 
 export type CaseDetail = {
   reportId: string;
-  targetType: "profile" | "thread";
+  targetType: ReportTarget;
   open: boolean;
   subject: Subject;
   reports: CaseReport[];
   messages: CaseMessage[] | null;
+  post: ReportedPost | null;
 };
 
 export type ModerationAction = "no_action" | "warn" | "suspend_posting" | "suspend_account";
@@ -120,7 +131,7 @@ export const reportsApi: ReportsApi = {
       data as {
         report_id: string;
         reference_no: string;
-        target_type: "profile" | "thread";
+        target_type: ReportTarget;
         subject_name: string;
         reasons: ReportReason[];
         report_count: number;
@@ -236,9 +247,19 @@ export const reportsApi: ReportsApi = {
       }));
     }
 
+    let post: ReportedPost | null = null;
+    if (picked.target_type === "opportunity") {
+      const { data: found } = await supabase
+        .from("opportunities")
+        .select("id, title, description, status")
+        .eq("id", picked.target_id)
+        .maybeSingle();
+      post = (found as ReportedPost | null) ?? null;
+    }
+
     return {
       reportId,
-      targetType: picked.target_type as "profile" | "thread",
+      targetType: picked.target_type as ReportTarget,
       open,
       subject: {
         id: member.id,
@@ -261,6 +282,7 @@ export const reportsApi: ReportsApi = {
         reportedAt: new Date(r.created_at),
       })),
       messages,
+      post,
     };
   },
 

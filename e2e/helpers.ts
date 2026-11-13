@@ -486,3 +486,10 @@ export async function retypeOpportunity(
 ) {
   await db`update public.opportunities set type = ${type}, employment_type = null where id = ${id}`;
 }
+
+/** R24: how many threads the member has a read mark on. */
+export async function threadReadsOf(memberId: string): Promise<number> {
+  const [row] =
+    await db`select count(*)::int as n from public.thread_reads where member_id = ${memberId}`;
+  return row!.n as number;
+}

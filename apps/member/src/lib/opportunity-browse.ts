@@ -33,6 +33,9 @@ export type OpportunityCard = {
   posterName: string;
   isMine: boolean;
   skills: string[];
+  /** O11: how many of the post's skills the member has, on list rows only. */
+  skillsMatched?: number;
+  skillsTotal?: number;
 };
 
 export type OpportunityDetail = OpportunityCard & {
@@ -62,7 +65,8 @@ export type SavedPost = {
 };
 
 export type OpportunityBrowseApi = {
-  list: (filters: OpportunityFilters, page: number) => Promise<OpportunityCard[]>;
+  list: (filters: OpportunityFilters, page: number, best: boolean) => Promise<OpportunityCard[]>;
+  mySkillCount: () => Promise<number>;
   savedIds: () => Promise<string[]>;
   setSaved: (id: string, saved: boolean) => Promise<boolean>;
   saved: () => Promise<SavedPost[]>;
@@ -92,6 +96,8 @@ export type CardRow = {
   poster_name: string;
   is_mine: boolean;
   skills: string[] | null;
+  skills_total?: number;
+  skills_matched?: number;
 };
 
 const named = (en: string | null, sw: string | null): Named | null =>
@@ -113,11 +119,19 @@ export const card = (r: CardRow): OpportunityCard => ({
   posterName: r.poster_name,
   isMine: r.is_mine,
   skills: r.skills ?? [],
+  skillsMatched: r.skills_matched,
+  skillsTotal: r.skills_total,
 });
 
 /** S16 and S17 (O02): published open posts, featured first; one post with its tender fields (O04). */
 export const opportunityBrowseApi: OpportunityBrowseApi = {
-  async list(filters, page) {
+  async mySkillCount() {
+    const { data, error } = await supabase.rpc("my_skill_count");
+    if (error) throw error;
+    return (data as number | null) ?? 0;
+  },
+
+  async list(filters, page, best) {
     const { data, error } = await supabase.rpc("opportunity_list", {
       kind: filters.kind ?? null,
       region: filters.region ?? null,
@@ -126,6 +140,7 @@ export const opportunityBrowseApi: OpportunityBrowseApi = {
       employment: filters.employment ?? null,
       posted_within: filters.postedWithin ?? null,
       page,
+      best,
     });
     if (error) throw error;
     return (data as CardRow[]).map(card);

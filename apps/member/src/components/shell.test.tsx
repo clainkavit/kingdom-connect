@@ -77,6 +77,27 @@ describe("MemberShell top bar search (R22)", () => {
   });
 });
 
+describe("Unread messages on Messages (R24)", () => {
+  it("shows the count on the top bar and says it to screen readers", () => {
+    width(1280);
+    inLanguage("en", <MemberShell unreadMessages={3}>content</MemberShell>);
+    const link = screen.getByRole("link", { name: "Messages, 3 unread" });
+    expect(link.textContent).toContain("3");
+  });
+
+  it("shows 9+ for ten or more, on the phone tab too", () => {
+    width(390);
+    inLanguage("en", <MemberShell unreadMessages={12}>content</MemberShell>);
+    expect(screen.getByRole("link", { name: "Messages, 12 unread" }).textContent).toContain("9+");
+  });
+
+  it("shows no count when everything is read", () => {
+    width(1280);
+    inLanguage("en", <MemberShell unreadMessages={0}>content</MemberShell>);
+    expect(screen.getByRole("link", { name: "Messages" }).textContent).toBe("Messages");
+  });
+});
+
 describe("MemberShell on a phone", () => {
   it("shows the five tabs with a word under each icon instead of the top bar menu", () => {
     width(390);

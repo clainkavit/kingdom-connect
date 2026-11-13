@@ -945,6 +945,8 @@ export const sw: Strings = {
   requestsReceived: "Maombi uliyopokea",
   requestsSent: "Maombi uliyotuma",
   myConnections: "Watu niliounganishwa nao",
+  nearYouIn: (region: string) => `Karibu nawe, ${region}`,
+  moreMembers: "Wanachama wengine",
   peopleIntro:
     "Wanachama waliothibitishwa wa jumuiya. Mawasiliano yanabaki siri hadi mtakapounganishwa.",
   accept: "Kubali",

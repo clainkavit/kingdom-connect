@@ -928,6 +928,8 @@ export const en = {
   requestsReceived: "Requests received",
   requestsSent: "Requests sent",
   myConnections: "My connections",
+  nearYouIn: (region: string) => `Near you in ${region}`,
+  moreMembers: "More members",
   peopleIntro: "Verified members of the community. Contact details stay private until you connect.",
   accept: "Accept",
   decline: "Decline",

@@ -594,6 +594,7 @@ export const sw: Strings = {
 
   notificationsTitle: "Arifa",
   notificationsUnread: (count: number) => `Arifa, ${count} hazijasomwa`,
+  messagesUnread: (count: number) => `Ujumbe, ${count} haujasomwa`,
   nothingNew: "Hakuna jipya",
   nothingNewMessage: "Jambo likitokea, utaliona hapa.",
   unread: "Haijasomwa",

@@ -583,6 +583,7 @@ export const en = {
 
   notificationsTitle: "Notifications",
   notificationsUnread: (count: number) => `Notifications, ${count} unread`,
+  messagesUnread: (count: number) => `Messages, ${count} unread`,
   nothingNew: "Nothing new",
   nothingNewMessage: "When something happens, you will see it here.",
   unread: "Unread",

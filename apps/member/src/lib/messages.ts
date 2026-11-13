@@ -1,5 +1,6 @@
 import { photoLinks } from "./avatars";
 import { supabase } from "./supabase";
+import { threadRead } from "./notifications";
 
 export const MAX_MESSAGE_LENGTH = 4000;
 export const MAX_FILE_BYTES = 10 * 1024 * 1024;
@@ -258,6 +259,7 @@ export function messagesApi(pick: () => Promise<PickedFile | null>): MessagesApi
           .eq("payload->>thread_id", threadId)
           .is("read_at", null),
       ]);
+      threadRead();
     },
 
     subscribe(threadId, onChange) {

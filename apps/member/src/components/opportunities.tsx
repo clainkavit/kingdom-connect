@@ -88,6 +88,11 @@ export function OpportunityCardView({ post }: { post: OpportunityCard }) {
       </View>
       <Text className="font-figtree-bold text-[16px] text-ink">{post.title}</Text>
       {role ? <Text className="font-figtree text-[14px] text-ink">{role}</Text> : null}
+      {post.skillsTotal && post.skillsMatched !== undefined ? (
+        <Text className="font-figtree-semibold text-[13px] text-good-text">
+          {t.oppSkillsMatch(post.skillsMatched, post.skillsTotal)}
+        </Text>
+      ) : null}
       <Text className="font-figtree text-[13px] text-ink-2">
         {[post.posterName, placeLine(t, post, language), named(post.sector, language)]
           .filter(Boolean)
@@ -192,7 +197,15 @@ export function OpportunitiesList({ api }: { api: OpportunityBrowseApi }) {
   const [draft, setDraft] = useState<OpportunityFilters>({});
   const phone = usePhone();
   const [run, setRun] = useState(0);
-  const first = useLoad(() => api.list(filters, 0), run);
+  const skillCount = useLoad(() => api.mySkillCount().catch(() => 0), 0);
+  const [chosen, setChosen] = useState<"best" | "newest" | null>(null);
+  const ready = skillCount.state !== "loading";
+  const hasSkills = skillCount.state === "ready" && skillCount.value > 0;
+  const best = (chosen ?? (hasSkills ? "best" : "newest")) === "best";
+  const first = useLoad(
+    () => (ready ? api.list(filters, 0, best) : new Promise<OpportunityCard[]>(() => undefined)),
+    run * 4 + (ready ? 2 : 0) + (best ? 1 : 0),
+  );
   const [more, setMore] = useState<OpportunityCard[]>([]);
   const [page, setPage] = useState(1);
   const [done, setDone] = useState(false);
@@ -213,7 +226,7 @@ export function OpportunitiesList({ api }: { api: OpportunityBrowseApi }) {
     setBusy(true);
     setMoreFailed(false);
     try {
-      const next = await api.list(filters, page);
+      const next = await api.list(filters, page, best);
       setMore((m) => [...m, ...next]);
       setPage((p) => p + 1);
       if (next.length < OPPORTUNITY_PAGE) setDone(true);
@@ -252,6 +265,45 @@ export function OpportunitiesList({ api }: { api: OpportunityBrowseApi }) {
           <Text className="font-figtree-semibold text-[15px] text-ink">{t.respMineTitle}</Text>
         </LinkButton>
       </View>
+      <View role="tablist" aria-label={t.oppSortBy} className="flex-row gap-5 border-b border-line">
+        {(["best", "newest"] as const).map((tab) => {
+          const on = (tab === "best") === best;
+          return (
+            <Pressable
+              key={tab}
+              role="tab"
+              aria-selected={on}
+              onPress={() => {
+                setChosen(tab);
+                setMore([]);
+                setPage(1);
+                setDone(false);
+                setMoreFailed(false);
+                setRun((r) => r + 1);
+              }}
+              className={`min-h-[44px] justify-center border-b-[3px] ${on ? "border-navy" : "border-transparent"}`}
+            >
+              <Text
+                className={`text-[15px] ${on ? "font-figtree-bold text-ink" : "font-figtree text-ink-2"}`}
+              >
+                {tab === "best" ? t.oppBestMatches : t.oppNewest}
+              </Text>
+            </Pressable>
+          );
+        })}
+      </View>
+      {skillCount.state === "ready" && !hasSkills ? (
+        <View className="flex-row flex-wrap items-center justify-between gap-2 rounded-card bg-blue-soft px-4 py-3">
+          <Text className="flex-1 font-figtree text-sm text-ink">{t.oppAddSkillsForMatches}</Text>
+          <LinkButton
+            href="/profile/edit"
+            label={t.oppAddSkills}
+            className="min-h-[40px] justify-center"
+          >
+            <Text className="font-figtree-bold text-sm text-blue">{t.oppAddSkills}</Text>
+          </LinkButton>
+        </View>
+      ) : null}
       <Chips
         label={t.fieldType}
         options={[

@@ -31,15 +31,15 @@ test("a Member's language is saved to their account and comes back on a new devi
   };
 
   const first = await signIn();
-  await expect(first.page.getByRole("heading", { name: "Dashboard" })).toBeVisible();
+  await expect(first.page.getByRole("heading", { name: "Home", exact: true })).toBeVisible();
   await first.page.getByRole("button", { name: "Change language" }).click();
   await first.page.getByRole("menuitem", { name: "Kiswahili" }).click();
-  await expect(first.page.getByRole("heading", { name: "Dashibodi" })).toBeVisible();
+  await expect(first.page.getByRole("heading", { name: "Nyumbani", exact: true })).toBeVisible();
   await expect(first.page.getByRole("navigation", { name: "Menyu ya mwanachama" })).toBeVisible();
   await first.context.close();
 
   const second = await signIn();
-  await expect(second.page.getByRole("heading", { name: "Dashibodi" })).toBeVisible();
+  await expect(second.page.getByRole("heading", { name: "Nyumbani", exact: true })).toBeVisible();
   await second.context.close();
 });
 
@@ -55,7 +55,7 @@ test("a language picked before signing in is saved to the account (F07)", async 
   await logIn(page, "Jina la mtumiaji", username);
   await page.getByLabel("Msimbo wa barua pepe").fill(await nextCode(email, sentAfter));
   await page.getByRole("button", { name: "Thibitisha" }).click();
-  await expect(page.getByRole("heading", { name: "Dashibodi" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Nyumbani", exact: true })).toBeVisible();
   await first.close();
 
   const second = await browser.newContext();
@@ -65,6 +65,6 @@ test("a language picked before signing in is saved to the account (F07)", async 
   await logIn(next, "Username", username);
   await next.getByLabel("Email code").fill(await nextCode(email, sentAfter));
   await next.getByRole("button", { name: "Verify" }).click();
-  await expect(next.getByRole("heading", { name: "Dashibodi" })).toBeVisible();
+  await expect(next.getByRole("heading", { name: "Nyumbani", exact: true })).toBeVisible();
   await second.close();
 });

@@ -76,5 +76,5 @@ test("a rejected Applicant fixes and resubmits once, an Administrator reopens th
   await admin.getByRole("button", { name: "Approve" }).click();
   await expect(admin.getByText("Approved. The applicant has been told.")).toBeVisible();
   await page.reload();
-  await expect(page.getByRole("heading", { name: "Dashboard" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Home", exact: true })).toBeVisible();
 });

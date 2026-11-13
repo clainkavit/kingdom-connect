@@ -375,3 +375,37 @@ describe("Opportunities layout (13 Nov 2026 redesign)", () => {
     expect(screen.getByText(en.oppNoFeeNote)).toBeTruthy();
   });
 });
+
+describe("Opportunity page layout (13 Nov 2026 redesign)", () => {
+  it("on a computer, puts the closing date and Save, then Apply, then the fee note and Report in a side column", async () => {
+    await show(
+      <OpportunityDetailScreen
+        api={fakeApi()}
+        id="o1"
+        respond={() => <button type="button">Apply</button>}
+      />,
+    );
+    const apply = screen.getByRole("button", { name: "Apply" });
+    const side = apply.parentElement!;
+    expect(apply.style.position).not.toBe("sticky");
+    expect(side.textContent).toMatch(
+      new RegExp(`20 November 2026.*${en.oppSave}.*Apply.*${en.oppNoFeeNote.slice(0, 20)}`),
+    );
+    expect(side.querySelector('a[href^="/report"]')).toBeTruthy();
+    expect(side.textContent).not.toContain("Keep the books");
+  });
+
+  it("on a computer, the poster sees a link to their posts in the side card instead of Apply", async () => {
+    const respond = vi.fn(() => <button type="button">Apply</button>);
+    await show(
+      <OpportunityDetailScreen
+        api={fakeApi({ detail: vi.fn().mockResolvedValue(detail({ isMine: true })) })}
+        id="o1"
+        respond={respond}
+      />,
+    );
+    expect(respond).not.toHaveBeenCalled();
+    expect(screen.getByRole("link", { name: en.oppYourPost })).toBeTruthy();
+    expect(screen.queryByRole("button", { name: en.oppSaveThis(detail().title) })).toBeNull();
+  });
+});

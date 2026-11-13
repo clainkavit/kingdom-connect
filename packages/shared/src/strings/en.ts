@@ -928,6 +928,7 @@ export const en = {
   requestsReceived: "Requests received",
   requestsSent: "Requests sent",
   myConnections: "My connections",
+  peopleIntro: "Verified members of the community. Contact details stay private until you connect.",
   accept: "Accept",
   decline: "Decline",
   withdraw: "Withdraw",

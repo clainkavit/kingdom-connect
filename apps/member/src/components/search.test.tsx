@@ -39,9 +39,9 @@ const deps = (over: Partial<SearchDeps> = {}): SearchDeps => ({
   directory: {
     search: vi.fn().mockResolvedValue({ cards: [1, 2, 3, 4, 5, 6].map(person), more: false }),
   },
-  opportunities: { list: vi.fn().mockResolvedValueOnce([post]).mockResolvedValue([]) },
+  opportunities: { search: vi.fn().mockResolvedValue([post]) },
   training: {
-    feed: vi
+    search: vi
       .fn()
       .mockResolvedValue([
         { id: "t1", title: "Bookkeeping basics", provider: "Mkuyuni", status: "published" },
@@ -82,7 +82,8 @@ describe("SearchScreen (R22)", () => {
       "zzz",
       deps({
         directory: { search: vi.fn().mockResolvedValue({ cards: [], more: false }) },
-        training: { feed: vi.fn().mockResolvedValue([]) },
+        opportunities: { search: vi.fn().mockResolvedValue([]) },
+        training: { search: vi.fn().mockResolvedValue([]) },
       }),
     );
     expect(screen.getByText('Nothing found for "zzz". Try fewer or different words.')).toBeTruthy();

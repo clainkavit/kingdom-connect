@@ -1,7 +1,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 create or replace function access.accepted_terms_and_privacy() returns boolean language sql stable as 'select true';
-select plan(6);
+select plan(8);
 
 -- Two districts of one region, and a district of another region.
 select set_config('test.d1', (select d.id::text from public.districts d
@@ -26,8 +26,8 @@ from (values ('01', 'Ny Reader', 'test.d1'), ('02', 'Ny Same District', 'test.d1
 join public.districts d on d.id = current_setting(v.setting)::uuid;
 insert into public.profiles (member_id, full_name, profession)
 values ('00000000-0000-0000-0000-000000004405', 'Ny No Place', 'Nyprofession');
-select private.set_skills('00000000-0000-0000-0000-000000004404', array['nyweaving']);
-select private.set_skills('00000000-0000-0000-0000-000000004402', array['nyweaving']);
+select is(private.set_skills('00000000-0000-0000-0000-000000004404', array['nyweaving']), 'ok', 'fixture skills');
+select is(private.set_skills('00000000-0000-0000-0000-000000004402', array['nyweaving']), 'ok', 'fixture skills');
 
 create function pg_temp.login(k text) returns void language sql as $$
   select set_config('request.jwt.claims', json_build_object(

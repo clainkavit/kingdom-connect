@@ -46,7 +46,14 @@ export async function unreadThreadCount(): Promise<number> {
   return (data as number | null) ?? 0;
 }
 
-/** Unread messages, refreshed every minute and on each screen change, like the bell. */
+const readListeners = new Set<() => void>();
+
+/** Tells the Messages count that a thread was just read, so it does not wait for its next refresh. */
+export function threadRead(): void {
+  readListeners.forEach((listener) => listener());
+}
+
+/** Unread messages, refreshed every minute, on each screen change and whenever a thread is read. */
 export function useUnreadMessages(pathname: string): number {
   const [count, setCount] = useState(0);
   useEffect(() => {
@@ -57,9 +64,11 @@ export function useUnreadMessages(pathname: string): number {
       });
     load();
     const timer = setInterval(load, 60_000);
+    readListeners.add(load);
     return () => {
       live = false;
       clearInterval(timer);
+      readListeners.delete(load);
     };
   }, [pathname]);
   return count;

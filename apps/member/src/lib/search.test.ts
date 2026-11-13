@@ -1,54 +1,30 @@
 import { describe, expect, it, vi } from "vitest";
 import { noFilters } from "./directory";
-import { matchesQuery, searchEverything, type SearchDeps } from "./search";
+import { searchEverything, type SearchDeps } from "./search";
 
-describe("matchesQuery", () => {
-  it("needs every word, in any order and case", () => {
-    expect(matchesQuery("Book KEEP", ["Bookkeeper for a shop"])).toBe(true);
-    expect(matchesQuery("shop driver", ["Bookkeeper for a shop"])).toBe(false);
-    expect(matchesQuery("excel", ["Accountant", null, "excel"])).toBe(true);
-    expect(matchesQuery("  ", ["anything"])).toBe(false);
-  });
-});
+vi.mock("./supabase", () => ({ supabase: {} }));
 
-describe("searchEverything (R22)", () => {
-  const card = (id: string, title: string, skills: string[] = []) =>
-    ({ id, title, role: null, posterName: "Kirumba Hardware", skills }) as never;
-
-  const deps = (over: Partial<SearchDeps> = {}): SearchDeps => ({
+describe("searchEverything (R22, R23)", () => {
+  const deps = (): SearchDeps => ({
     directory: {
       search: vi.fn().mockResolvedValue({
         cards: Array.from({ length: 6 }, (_, i) => ({ memberId: `m${i}` })),
         more: false,
       }),
     },
-    opportunities: {
-      list: vi
-        .fn()
-        .mockResolvedValueOnce([card("o1", "Bookkeeper for a shop"), card("o2", "Driver")])
-        .mockResolvedValueOnce([card("o3", "Sales", ["bookkeeping"])])
-        .mockResolvedValue([]),
-    },
-    training: {
-      feed: vi.fn().mockResolvedValue([
-        { id: "t1", title: "Bookkeeping basics", provider: "", status: "published" },
-        { id: "t2", title: "Bookkeeping draft", provider: "", status: "draft" },
-      ]),
-    },
-    ...over,
+    opportunities: { search: vi.fn().mockResolvedValue([{ id: "o1" }]) },
+    training: { search: vi.fn().mockResolvedValue([{ id: "t1" }]) },
   });
 
-  it("asks the directory with the words and keeps the first five people", async () => {
+  it("sends the trimmed words to each search and keeps the first five people", async () => {
     const d = deps();
-    const results = await searchEverything(" book ", "en", d);
-    expect(d.directory.search).toHaveBeenCalledWith({ ...noFilters, q: "book" }, 0, "en");
+    const results = await searchEverything(" book keeper ", "en", d);
+    expect(d.directory.search).toHaveBeenCalledWith({ ...noFilters, q: "book keeper" }, 0, "en");
+    expect(d.opportunities.search).toHaveBeenCalledWith("book keeper");
+    expect(d.training.search).toHaveBeenCalledWith("book keeper");
     expect(results.people).toHaveLength(5);
     expect(results.morePeople).toBe(true);
-  });
-
-  it("matches opportunities on title and skills across the newest pages, and published training only", async () => {
-    const results = await searchEverything("book", "en", deps());
-    expect(results.opportunities.map((o) => o.id)).toEqual(["o1", "o3"]);
+    expect(results.opportunities.map((o) => o.id)).toEqual(["o1"]);
     expect(results.training.map((t) => t.id)).toEqual(["t1"]);
   });
 });

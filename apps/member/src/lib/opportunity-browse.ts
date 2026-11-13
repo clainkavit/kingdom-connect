@@ -61,7 +61,7 @@ export type OpportunityBrowseApi = {
   regions: (language: Language) => Promise<Option[]>;
 };
 
-type CardRow = {
+export type CardRow = {
   id: string;
   type: PostKind;
   title: string;
@@ -85,7 +85,7 @@ type CardRow = {
 const named = (en: string | null, sw: string | null): Named | null =>
   en ? { en, sw: sw ?? en } : null;
 
-const card = (r: CardRow): OpportunityCard => ({
+export const card = (r: CardRow): OpportunityCard => ({
   id: r.id,
   type: r.type,
   title: r.title,

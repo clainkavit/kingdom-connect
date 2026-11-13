@@ -1,5 +1,6 @@
 import { formatDate, formatDateTime, POSTER_LEVEL, type TextKey } from "@kingdom-connect/shared";
 import { useEffect, useState } from "react";
+import type { Profile } from "../lib/profile";
 import { Text, View } from "react-native";
 import type { ConnectionsApi, ReceivedRequest, SentRequest } from "../lib/connections";
 import type { DashboardApi, MyRegistration, Welcome } from "../lib/dashboard";
@@ -7,7 +8,7 @@ import { useLanguage } from "../lib/language";
 import { PersonRow, ReceivedRequestRow } from "./connections";
 import { Message } from "./form";
 import { LinkButton } from "./link-button";
-import { Section } from "./profile";
+import { Avatar, NextSteps, Section } from "./profile";
 import { ScreenTitle } from "./screens";
 import { EmptyState, ErrorState, LoadingRows } from "./states";
 import type { DashboardWidgetsApi } from "../lib/dashboard-widgets";
@@ -15,6 +16,7 @@ import type { MemberNewsApi } from "../lib/news";
 import type { PeopleYouMayKnowApi } from "../lib/people-you-may-know";
 import { FeaturedOpportunities, LatestItems, NewsPreview } from "./dashboard-widgets";
 import { PeopleYouMayKnow } from "./people-you-may-know";
+import { usePhone } from "./sheet";
 
 type QuickAction = { key: TextKey; href: string; minLevel: number; posts: boolean };
 
@@ -66,7 +68,7 @@ function WelcomeCard({ welcome, today }: { welcome: Welcome; today: Date }) {
     .join(", ");
   return (
     <View className="gap-1">
-      <ScreenTitle>{t.navDashboard}</ScreenTitle>
+      <ScreenTitle>{t.tabHome}</ScreenTitle>
       <Text role="heading" aria-level={2} className="font-figtree-bold text-lg text-ink">
         {t.dashboardHello(welcome.fullName)}
       </Text>
@@ -107,6 +109,54 @@ function QuickActions({ welcome }: { welcome: Welcome }) {
   );
 }
 
+const shortcuts: { key: TextKey; href: string }[] = [
+  { key: "myConnections", href: "/connections" },
+  { key: "savedTitle", href: "/opportunities/saved" },
+  { key: "respMineTitle", href: "/opportunities/responses" },
+];
+
+/** The member's own corner of Home: who they are, what to finish on their profile, and their shortcuts. */
+function MemberColumn({ welcome, profile }: { welcome: Welcome; profile: Profile | null }) {
+  const { t, language } = useLanguage();
+  const place = [welcome.district, welcome.region]
+    .filter((p) => p !== null)
+    .map((p) => p[language])
+    .join(", ");
+  return (
+    <View className="gap-4">
+      <LinkButton
+        href="/profile"
+        label={t.myProfile}
+        className="flex-row items-center gap-3 rounded-card border border-line bg-surface p-4"
+      >
+        <Avatar name={welcome.fullName} url={profile?.photoUrl ?? null} size={52} />
+        <View className="min-w-0 flex-1 gap-0.5">
+          <Text className="font-figtree-bold text-[16px] text-ink">{welcome.fullName}</Text>
+          {place ? <Text className="font-figtree text-[13px] text-ink-2">{place}</Text> : null}
+        </View>
+      </LinkButton>
+      {profile ? <NextSteps profile={profile} /> : null}
+      <View className="rounded-card border border-line bg-surface">
+        {shortcuts.map((item, i) => (
+          <LinkButton
+            key={item.href}
+            href={item.href}
+            label={t[item.key] as string}
+            className={`min-h-[48px] flex-row items-center justify-between px-4 ${i > 0 ? "border-t border-line" : ""}`}
+          >
+            <Text className="font-figtree-semibold text-[15px] text-ink">
+              {t[item.key] as string}
+            </Text>
+            <Text aria-hidden className="font-figtree text-[15px] text-ink-2">
+              ›
+            </Text>
+          </LinkButton>
+        ))}
+      </View>
+    </View>
+  );
+}
+
 /** S08. No platform-wide figure is ever loaded (PRD section 7, criterion 1); the widgets show items, never counts. */
 export function DashboardScreen({
   api,
@@ -114,6 +164,7 @@ export function DashboardScreen({
   widgets,
   news,
   people,
+  profile,
   today = new Date(),
 }: {
   api: DashboardApi;
@@ -121,9 +172,23 @@ export function DashboardScreen({
   widgets?: DashboardWidgetsApi;
   news?: MemberNewsApi;
   people?: PeopleYouMayKnowApi;
+  profile?: () => Promise<Profile | null>;
   today?: Date;
 }) {
   const { t } = useLanguage();
+  const phone = usePhone();
+  const [me, setMe] = useState<Profile | null>(null);
+
+  useEffect(() => {
+    let live = true;
+    profile?.().then(
+      (p) => live && setMe(p),
+      () => undefined,
+    );
+    return () => {
+      live = false;
+    };
+  }, [profile]);
   const [loaded, setLoaded] = useState<DashboardData | null>(null);
   const [failed, setFailed] = useState(false);
   const [actionFailed, setActionFailed] = useState(false);
@@ -167,9 +232,10 @@ export function DashboardScreen({
     );
   if (!loaded) return <LoadingRows />;
 
-  return (
+  const main = (
     <View className="gap-4">
       <WelcomeCard welcome={loaded.welcome} today={today} />
+      {phone ? <MemberColumn welcome={loaded.welcome} profile={me} /> : null}
       <Message text={actionFailed ? t.actionFailed : null} />
       <Section title={t.dashboardRequests}>
         {loaded.received.length ? (
@@ -209,6 +275,15 @@ export function DashboardScreen({
       {widgets ? <LatestItems api={widgets} /> : null}
       <QuickActions welcome={loaded.welcome} />
       {news ? <NewsPreview api={news} /> : null}
+    </View>
+  );
+  if (phone) return main;
+  return (
+    <View className="flex-row items-start gap-6">
+      <View className="w-[300px]">
+        <MemberColumn welcome={loaded.welcome} profile={me} />
+      </View>
+      <View className="min-w-0 flex-1">{main}</View>
     </View>
   );
 }

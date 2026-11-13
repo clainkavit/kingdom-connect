@@ -10,7 +10,7 @@ test("a Member logs in with the email code and logs out again (REG-4)", async ({
   await expect(page.getByRole("heading", { name: "Check your email" })).toBeVisible();
 
   await enterCode(page, await nextCode("test.level1@example.test", sentAfter));
-  await expect(page.getByRole("heading", { name: "Dashboard" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Home", exact: true })).toBeVisible();
   const menu = page.getByRole("navigation", { name: "Member menu" });
   for (const section of ["Home", "People", "Opportunities", "Growth", "Messages"])
     await expect(menu.getByText(section, { exact: true })).toBeVisible();
@@ -35,14 +35,14 @@ test("a Member logs in with their phone number or their email instead of the use
   let sentAfter = new Date();
   await logIn(page, "Username", `0${phone.slice(4, 7)} ${phone.slice(7, 10)} ${phone.slice(10)}`);
   await enterCode(page, await nextCode(member.email, sentAfter));
-  await expect(page.getByRole("heading", { name: "Dashboard" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Home", exact: true })).toBeVisible();
   await page.getByRole("link", { name: "My account" }).click();
   await page.getByRole("button", { name: "Log out" }).click();
 
   sentAfter = new Date();
   await logIn(page, "Username", member.email.toUpperCase());
   await enterCode(page, await nextCode(member.email, sentAfter));
-  await expect(page.getByRole("heading", { name: "Dashboard" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Home", exact: true })).toBeVisible();
 });
 
 test("a phone number two members share does not log either in", async ({ page }) => {

@@ -26,7 +26,7 @@ test("a Member must accept the current terms and privacy notice before the app o
   await page.getByRole("checkbox", { name: "I accept the privacy notice" }).click();
   await next.click();
 
-  await expect(page.getByRole("heading", { name: "Dashboard" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Home", exact: true })).toBeVisible();
   await page.reload();
-  await expect(page.getByRole("heading", { name: "Dashboard" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Home", exact: true })).toBeVisible();
 });

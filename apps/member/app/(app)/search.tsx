@@ -1,14 +1,11 @@
 import { useLocalSearchParams } from "expo-router";
 import { SearchScreen } from "../../src/components/search";
 import { directoryApi } from "../../src/lib/directory";
-import { opportunityBrowseApi } from "../../src/lib/opportunity-browse";
-import type { SearchDeps } from "../../src/lib/search";
-import { trainingApi } from "../../src/lib/training";
+import { serverSearch, type SearchDeps } from "../../src/lib/search";
 
 const deps: SearchDeps = {
   directory: directoryApi,
-  opportunities: opportunityBrowseApi,
-  training: trainingApi,
+  ...serverSearch,
 };
 
 export default function SearchRoute() {

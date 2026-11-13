@@ -33,7 +33,7 @@ export type TrainingApi = {
   registrants: (id: string) => Promise<Registrant[]>;
 };
 
-type FeedRow = {
+export type FeedRow = {
   training_id: string;
   title: string;
   provider: string;
@@ -51,28 +51,30 @@ type FeedRow = {
   my_waitlist_position: number | null;
 };
 
+export const trainingFromRow = (r: FeedRow): TrainingItem => ({
+  id: r.training_id,
+  title: r.title,
+  provider: r.provider,
+  format: r.format,
+  details: r.details,
+  venue: r.venue,
+  startsAt: r.starts_at,
+  seats: r.seats,
+  registered: r.registered,
+  downloadsAllowed: r.downloads_allowed,
+  status: r.status,
+  reviewReason: r.review_reason,
+  isMine: r.is_mine,
+  myStatus: r.my_status,
+  myWaitlistPosition: r.my_waitlist_position,
+});
+
 /** S35 and S37: training, registration and the waitlist (T01). */
 export const trainingApi: TrainingApi = {
   async feed() {
     const { data, error } = await supabase.rpc("trainings_feed");
     if (error) throw error;
-    return (data as FeedRow[]).map((r) => ({
-      id: r.training_id,
-      title: r.title,
-      provider: r.provider,
-      format: r.format,
-      details: r.details,
-      venue: r.venue,
-      startsAt: r.starts_at,
-      seats: r.seats,
-      registered: r.registered,
-      downloadsAllowed: r.downloads_allowed,
-      status: r.status,
-      reviewReason: r.review_reason,
-      isMine: r.is_mine,
-      myStatus: r.my_status,
-      myWaitlistPosition: r.my_waitlist_position,
-    }));
+    return (data as FeedRow[]).map(trainingFromRow);
   },
 
   async canPost() {

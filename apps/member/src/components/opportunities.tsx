@@ -7,8 +7,10 @@ import {
   type TextKey,
 } from "@kingdom-connect/shared";
 import { useState } from "react";
+import Bookmark from "lucide-react-native/icons/bookmark";
 import { Linking, Pressable, Text, View } from "react-native";
 import { useLanguage } from "../lib/language";
+import { useSavedPosts } from "../lib/saved-posts";
 import {
   OPPORTUNITY_PAGE,
   type OpportunityBrowseApi,
@@ -23,6 +25,7 @@ import { Button, ChoiceList, Chips, Message, Switch } from "./form";
 import { FilterSheet } from "./filter-sheet";
 import { stickToBottom, usePhone } from "./sheet";
 import { LinkButton } from "./link-button";
+import { usePalette } from "./palette";
 import { typeLabel } from "./opportunity-form";
 import { YourSkillsForPost, type MySkillsApi } from "./your-skills";
 import { ReportLink } from "./report-link";
@@ -73,10 +76,55 @@ function Badge({ text, tone = "plain" }: { text: string; tone?: "plain" | "gold"
   );
 }
 
-export function OpportunityCardView({ post }: { post: OpportunityCard }) {
+/** O10: the bookmark that saves a post; with words on the post page, an icon alone on a card. */
+export function SaveButton({
+  saved,
+  title,
+  onPress,
+  withWords,
+}: {
+  saved: boolean;
+  title: string;
+  onPress: () => void;
+  withWords?: boolean;
+}) {
+  const { t } = useLanguage();
+  const palette = usePalette();
+  return (
+    <Pressable
+      role="button"
+      aria-label={saved ? t.oppUnsaveThis(title) : t.oppSaveThis(title)}
+      aria-pressed={saved}
+      onPress={onPress}
+      className={`min-h-[44px] min-w-[44px] flex-row items-center justify-center gap-1.5 rounded-[10px] ${withWords ? "border border-line bg-surface px-3" : ""}`}
+    >
+      <Bookmark
+        size={20}
+        color={palette.navy}
+        fill={saved ? palette.navy : "transparent"}
+        aria-hidden
+      />
+      {withWords ? (
+        <Text className="font-figtree-semibold text-sm text-ink">
+          {saved ? t.oppSavedLabel : t.oppSave}
+        </Text>
+      ) : null}
+    </Pressable>
+  );
+}
+
+export function OpportunityCardView({
+  post,
+  saved,
+  onToggleSave,
+}: {
+  post: OpportunityCard;
+  saved?: boolean;
+  onToggleSave?: () => void;
+}) {
   const { t, language } = useLanguage();
   const role = roleLine(t, post);
-  return (
+  const card = (
     <LinkButton
       href={`/opportunities/${post.id}`}
       label={post.title}
@@ -89,6 +137,11 @@ export function OpportunityCardView({ post }: { post: OpportunityCard }) {
       </View>
       <Text className="font-figtree-bold text-[16px] text-ink">{post.title}</Text>
       {role ? <Text className="font-figtree text-[14px] text-ink">{role}</Text> : null}
+      {post.skillsTotal && post.skillsMatched !== undefined ? (
+        <Text className="font-figtree-semibold text-[13px] text-good-text">
+          {t.oppSkillsMatch(post.skillsMatched, post.skillsTotal)}
+        </Text>
+      ) : null}
       <Text className="font-figtree text-[13px] text-ink-2">
         {[post.posterName, placeLine(t, post, language), named(post.sector, language)]
           .filter(Boolean)
@@ -98,6 +151,15 @@ export function OpportunityCardView({ post }: { post: OpportunityCard }) {
         {t.oppCloses(closingDay(post.closingAt, language))}
       </Text>
     </LinkButton>
+  );
+  if (!onToggleSave) return card;
+  return (
+    <View className="relative">
+      {card}
+      <View style={{ position: "absolute", top: 6, right: 6 }}>
+        <SaveButton saved={Boolean(saved)} title={post.title} onPress={onToggleSave} />
+      </View>
+    </View>
   );
 }
 
@@ -189,11 +251,20 @@ function Filters({
 /** S16: published open posts, featured first, 20 at a time, with filters (O02). */
 export function OpportunitiesList({ api }: { api: OpportunityBrowseApi }) {
   const { t } = useLanguage();
+  const saved = useSavedPosts(api);
   const [filters, setFilters] = useState<OpportunityFilters>({});
   const [draft, setDraft] = useState<OpportunityFilters>({});
   const phone = usePhone();
   const [run, setRun] = useState(0);
-  const first = useLoad(() => api.list(filters, 0), run);
+  const skillCount = useLoad(() => api.mySkillCount().catch(() => 0), 0);
+  const [chosen, setChosen] = useState<"best" | "newest" | null>(null);
+  const ready = skillCount.state !== "loading";
+  const hasSkills = skillCount.state === "ready" && skillCount.value > 0;
+  const best = (chosen ?? (hasSkills ? "best" : "newest")) === "best";
+  const first = useLoad(
+    () => (ready ? api.list(filters, 0, best) : new Promise<OpportunityCard[]>(() => undefined)),
+    run * 4 + (ready ? 2 : 0) + (best ? 1 : 0),
+  );
   const [more, setMore] = useState<OpportunityCard[]>([]);
   const [page, setPage] = useState(1);
   const [done, setDone] = useState(false);
@@ -214,7 +285,7 @@ export function OpportunitiesList({ api }: { api: OpportunityBrowseApi }) {
     setBusy(true);
     setMoreFailed(false);
     try {
-      const next = await api.list(filters, page);
+      const next = await api.list(filters, page, best);
       setMore((m) => [...m, ...next]);
       setPage((p) => p + 1);
       if (next.length < OPPORTUNITY_PAGE) setDone(true);
@@ -252,7 +323,55 @@ export function OpportunitiesList({ api }: { api: OpportunityBrowseApi }) {
         >
           <Text className="font-figtree-semibold text-[15px] text-ink">{t.respMineTitle}</Text>
         </LinkButton>
+        <LinkButton
+          href="/opportunities/saved"
+          label={t.savedCount(saved.count)}
+          className="min-h-[48px] items-center justify-center rounded-[10px] border border-line bg-surface px-4"
+        >
+          <Text className="font-figtree-semibold text-[15px] text-ink">
+            {t.savedCount(saved.count)}
+          </Text>
+        </LinkButton>
       </View>
+      <View role="tablist" aria-label={t.oppSortBy} className="flex-row gap-5 border-b border-line">
+        {(["best", "newest"] as const).map((tab) => {
+          const on = (tab === "best") === best;
+          return (
+            <Pressable
+              key={tab}
+              role="tab"
+              aria-selected={on}
+              onPress={() => {
+                setChosen(tab);
+                setMore([]);
+                setPage(1);
+                setDone(false);
+                setMoreFailed(false);
+                setRun((r) => r + 1);
+              }}
+              className={`min-h-[44px] justify-center border-b-[3px] ${on ? "border-navy" : "border-transparent"}`}
+            >
+              <Text
+                className={`text-[15px] ${on ? "font-figtree-bold text-ink" : "font-figtree text-ink-2"}`}
+              >
+                {tab === "best" ? t.oppBestMatches : t.oppNewest}
+              </Text>
+            </Pressable>
+          );
+        })}
+      </View>
+      {skillCount.state === "ready" && !hasSkills ? (
+        <View className="flex-row flex-wrap items-center justify-between gap-2 rounded-card bg-blue-soft px-4 py-3">
+          <Text className="flex-1 font-figtree text-sm text-ink">{t.oppAddSkillsForMatches}</Text>
+          <LinkButton
+            href="/profile/edit"
+            label={t.oppAddSkills}
+            className="min-h-[40px] justify-center"
+          >
+            <Text className="font-figtree-bold text-sm text-blue">{t.oppAddSkills}</Text>
+          </LinkButton>
+        </View>
+      ) : null}
       <Chips
         label={t.fieldType}
         options={[
@@ -300,7 +419,12 @@ export function OpportunitiesList({ api }: { api: OpportunityBrowseApi }) {
       ) : (
         <>
           {[...first.value, ...more].map((post) => (
-            <OpportunityCardView key={post.id} post={post} />
+            <OpportunityCardView
+              key={post.id}
+              post={post}
+              saved={saved.isSaved(post.id)}
+              onToggleSave={() => saved.toggle(post.id)}
+            />
           ))}
           {moreFailed ? (
             <ErrorState message={t.oppLoadFailed} onRetry={loadMore} />
@@ -399,6 +523,7 @@ export function OpportunityDetailScreen({
 }) {
   const { t, language } = useLanguage();
   const phone = usePhone();
+  const saved = useSavedPosts(api);
   const [attempt, setAttempt] = useState(0);
   const loaded = useLoad(async () => {
     const post = await api.detail(id);
@@ -426,9 +551,19 @@ export function OpportunityDetailScreen({
       <LinkButton href="/opportunities" label={t.oppBack} className="min-h-[40px] justify-center">
         <Text className="font-figtree-semibold text-sm text-blue">{t.oppBack}</Text>
       </LinkButton>
-      <View className="flex-row flex-wrap gap-2">
+      <View className="flex-row flex-wrap items-center gap-2">
         <Badge text={t[typeLabel[post.type]] as string} />
         {post.featured ? <Badge tone="gold" text={t.oppFeatured} /> : null}
+        {post.isMine ? null : (
+          <View className="ml-auto">
+            <SaveButton
+              withWords
+              saved={saved.isSaved(post.id)}
+              title={post.title}
+              onPress={() => saved.toggle(post.id)}
+            />
+          </View>
+        )}
       </View>
       <ScreenTitle>{post.title}</ScreenTitle>
       <Text className="font-figtree-semibold text-[14px] text-ink-2">{post.posterName}</Text>
@@ -473,6 +608,57 @@ export function OpportunityDetailScreen({
           {action}
         </View>
       ) : null}
+    </View>
+  );
+}
+
+/** O10: the member's saved posts. A closed post says so; one that is gone can only be removed. */
+export function SavedOpportunities({ api }: { api: OpportunityBrowseApi }) {
+  const { t } = useLanguage();
+  const [attempt, setAttempt] = useState(0);
+  const loaded = useLoad(() => api.saved(), attempt);
+  const [removed, setRemoved] = useState<Set<string>>(new Set());
+
+  const remove = async (id: string) => {
+    if (await api.setSaved(id, false).catch(() => false)) setRemoved((r) => new Set(r).add(id));
+  };
+
+  return (
+    <View className="gap-3">
+      <LinkButton href="/opportunities" label={t.oppBack} className="min-h-[40px] justify-center">
+        <Text className="font-figtree-semibold text-sm text-blue">{t.oppBack}</Text>
+      </LinkButton>
+      <ScreenTitle>{t.savedTitle}</ScreenTitle>
+      {loaded.state === "failed" ? (
+        <ErrorState message={t.savedLoadFailed} onRetry={() => setAttempt((a) => a + 1)} />
+      ) : loaded.state === "loading" ? (
+        <LoadingRows />
+      ) : loaded.value.filter((s) => !removed.has(s.id)).length === 0 ? (
+        <EmptyState
+          title={t.savedEmpty}
+          message={t.savedEmptyHint}
+          action={{ label: t.navOpportunities, href: "/opportunities" }}
+        />
+      ) : (
+        loaded.value
+          .filter((s) => !removed.has(s.id))
+          .map((s) =>
+            s.card ? (
+              <View key={s.id} className="gap-1">
+                {s.open ? null : <Badge text={t.savedClosed} />}
+                <OpportunityCardView post={s.card} saved onToggleSave={() => remove(s.id)} />
+              </View>
+            ) : (
+              <View
+                key={s.id}
+                className="flex-row flex-wrap items-center justify-between gap-3 rounded-card border border-line bg-surface p-4"
+              >
+                <Text className="font-figtree text-[14px] text-ink-2">{t.savedGone}</Text>
+                <Button secondary label={t.savedRemove} onPress={() => remove(s.id)} />
+              </View>
+            ),
+          )
+      )}
     </View>
   );
 }

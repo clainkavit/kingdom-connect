@@ -9,7 +9,7 @@ import {
   type OpportunityCard,
   type OpportunityDetail,
 } from "../lib/opportunity-browse";
-import { OpportunitiesList, OpportunityDetailScreen } from "./opportunities";
+import { OpportunitiesList, OpportunityDetailScreen, SavedOpportunities } from "./opportunities";
 
 const en = stringsFor("en");
 
@@ -48,6 +48,10 @@ const detail = (over: Partial<OpportunityDetail> = {}): OpportunityDetail => ({
 
 const fakeApi = (over: Partial<OpportunityBrowseApi> = {}): OpportunityBrowseApi => ({
   list: vi.fn().mockResolvedValue([card()]),
+  mySkillCount: vi.fn().mockResolvedValue(0),
+  savedIds: vi.fn().mockResolvedValue([]),
+  setSaved: vi.fn().mockResolvedValue(true),
+  saved: vi.fn().mockResolvedValue([]),
   detail: vi.fn().mockResolvedValue(detail()),
   tender: vi.fn().mockResolvedValue(null),
   documentLink: vi.fn().mockResolvedValue("https://files.test/tender.pdf"),
@@ -90,15 +94,15 @@ describe("OpportunitiesList (S16)", () => {
   it("filters by type, region, sector and posted date, starting again from page 0", async () => {
     const list = vi.fn().mockResolvedValue([card()]);
     await show(<OpportunitiesList api={fakeApi({ list })} />);
-    expect(list).toHaveBeenLastCalledWith({}, 0);
+    expect(list).toHaveBeenLastCalledWith({}, 0, false);
 
     await act(async () => fireEvent.click(screen.getByRole("radio", { name: "Tender" })));
-    expect(list).toHaveBeenLastCalledWith({ kind: "tender", employment: undefined }, 0);
+    expect(list).toHaveBeenLastCalledWith({ kind: "tender", employment: undefined }, 0, false);
     expect(screen.queryByRole("button", { name: /^Employment type/ })).toBeNull();
 
     await press("Region: Any");
     await act(async () => fireEvent.click(screen.getByRole("option", { name: "Kilimanjaro" })));
-    expect(list).toHaveBeenLastCalledWith(expect.objectContaining({ region: "r1" }), 0);
+    expect(list).toHaveBeenLastCalledWith(expect.objectContaining({ region: "r1" }), 0, false);
 
     await press("Posted: Any time");
     await act(async () =>
@@ -107,6 +111,7 @@ describe("OpportunitiesList (S16)", () => {
     expect(list).toHaveBeenLastCalledWith(
       expect.objectContaining({ kind: "tender", region: "r1", postedWithin: 7 }),
       0,
+      false,
     );
   });
 
@@ -119,15 +124,15 @@ describe("OpportunitiesList (S16)", () => {
     await press("Filters");
     await press("Region: Any");
     await act(async () => fireEvent.click(screen.getByRole("option", { name: "Kilimanjaro" })));
-    expect(list).toHaveBeenLastCalledWith({}, 0);
+    expect(list).toHaveBeenLastCalledWith({}, 0, false);
 
     await press("Show results");
-    expect(list).toHaveBeenLastCalledWith(expect.objectContaining({ region: "r1" }), 0);
+    expect(list).toHaveBeenLastCalledWith(expect.objectContaining({ region: "r1" }), 0, false);
     expect(screen.getByRole("button", { name: "Filters · 1" })).toBeTruthy();
 
     await press("Filters · 1");
     await press("Clear filters");
-    expect(list).toHaveBeenLastCalledWith({ kind: undefined }, 0);
+    expect(list).toHaveBeenLastCalledWith({ kind: undefined }, 0, false);
     expect(screen.getByRole("button", { name: "Filters" })).toBeTruthy();
   });
 
@@ -141,7 +146,7 @@ describe("OpportunitiesList (S16)", () => {
       .mockResolvedValueOnce([card({ id: "last", title: "The last post" })]);
     await show(<OpportunitiesList api={fakeApi({ list })} />);
     await press("Load more");
-    expect(list).toHaveBeenLastCalledWith({}, 1);
+    expect(list).toHaveBeenLastCalledWith({}, 1, false);
     expect(screen.getByText("The last post")).toBeTruthy();
     expect(screen.queryByRole("button", { name: "Load more" })).toBeNull();
   });
@@ -254,5 +259,90 @@ describe("OpportunityDetailScreen (S17)", () => {
     );
     expect(documentLink).toHaveBeenCalledWith("u/d.pdf");
     expect(screen.getByText("We couldn't open the document. Try again.")).toBeTruthy();
+  });
+});
+
+describe("Best matches and Newest (O11)", () => {
+  it("opens on Best matches for a member with skills and shows how many skills fit", async () => {
+    const list = vi.fn().mockResolvedValue([card({ skillsMatched: 2, skillsTotal: 3 })]);
+    await show(
+      <OpportunitiesList api={fakeApi({ list, mySkillCount: vi.fn().mockResolvedValue(4) })} />,
+    );
+    expect(list).toHaveBeenLastCalledWith({}, 0, true);
+    expect(screen.getByRole("tab", { name: "Best matches" }).getAttribute("aria-selected")).toBe(
+      "true",
+    );
+    expect(screen.getByText("You have 2 of 3 skills")).toBeTruthy();
+    await act(async () => fireEvent.click(screen.getByRole("tab", { name: "Newest" })));
+    expect(list).toHaveBeenLastCalledWith({}, 0, false);
+  });
+
+  it("opens on Newest without skills and asks for some", async () => {
+    const list = vi.fn().mockResolvedValue([card()]);
+    await show(<OpportunitiesList api={fakeApi({ list })} />);
+    expect(list).toHaveBeenLastCalledWith({}, 0, false);
+    expect(screen.getByText("Add your skills to see the posts that fit you best.")).toBeTruthy();
+    expect(screen.getByRole("link", { name: "Add skills" }).getAttribute("href")).toBe(
+      "/profile/edit",
+    );
+    expect(screen.queryByText(/You have \d of/)).toBeNull();
+  });
+});
+
+describe("Saving opportunities (O10)", () => {
+  it("saves a post from its card and counts it on the Saved link", async () => {
+    const setSaved = vi.fn().mockResolvedValue(true);
+    await show(<OpportunitiesList api={fakeApi({ setSaved })} />);
+    expect(screen.getByRole("link", { name: "Saved · 0" })).toBeTruthy();
+    await press("Save Accountant for a coffee trader");
+    expect(setSaved).toHaveBeenCalledWith("o1", true);
+    expect(screen.getByRole("link", { name: "Saved · 1" })).toBeTruthy();
+    expect(
+      screen.getByRole("button", { name: "Remove Accountant for a coffee trader from saved" }),
+    ).toBeTruthy();
+  });
+
+  it("puts the bookmark back when saving fails", async () => {
+    await show(<OpportunitiesList api={fakeApi({ setSaved: vi.fn().mockResolvedValue(false) })} />);
+    await press("Save Accountant for a coffee trader");
+    expect(screen.getByRole("link", { name: "Saved · 0" })).toBeTruthy();
+  });
+
+  it("shows Save and Saved on the post page, but not on your own post", async () => {
+    await show(
+      <OpportunityDetailScreen
+        api={fakeApi({ savedIds: vi.fn().mockResolvedValue(["o1"]) })}
+        id="o1"
+      />,
+    );
+    expect(screen.getByText("Saved")).toBeTruthy();
+    cleanup();
+    await show(
+      <OpportunityDetailScreen
+        api={fakeApi({ detail: vi.fn().mockResolvedValue(detail({ isMine: true })) })}
+        id="o1"
+      />,
+    );
+    expect(screen.queryByText("Save")).toBeNull();
+  });
+
+  it("lists saved posts, marks a closed one, and lets a gone one be removed", async () => {
+    const setSaved = vi.fn().mockResolvedValue(true);
+    const saved = vi.fn().mockResolvedValue([
+      { id: "o1", savedAt: "2026-11-13", available: true, open: false, card: card() },
+      { id: "o2", savedAt: "2026-11-12", available: false, open: false, card: null },
+    ]);
+    await show(<SavedOpportunities api={fakeApi({ saved, setSaved })} />);
+    expect(screen.getByText("Closed")).toBeTruthy();
+    expect(screen.getByText("Accountant for a coffee trader")).toBeTruthy();
+    expect(screen.getByText("This post is no longer available.")).toBeTruthy();
+    await press("Remove");
+    expect(setSaved).toHaveBeenCalledWith("o2", false);
+    expect(screen.queryByText("This post is no longer available.")).toBeNull();
+  });
+
+  it("says when nothing is saved yet", async () => {
+    await show(<SavedOpportunities api={fakeApi()} />);
+    expect(screen.getByText("Nothing saved yet")).toBeTruthy();
   });
 });

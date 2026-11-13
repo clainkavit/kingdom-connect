@@ -33,6 +33,9 @@ export type OpportunityCard = {
   posterName: string;
   isMine: boolean;
   skills: string[];
+  /** O11: how many of the post's skills the member has, on list rows only. */
+  skillsMatched?: number;
+  skillsTotal?: number;
 };
 
 export type OpportunityDetail = OpportunityCard & {
@@ -52,8 +55,21 @@ export type TenderDetails = {
   documentPath: string | null;
 };
 
+/** O10: one saved post. A hidden or removed one keeps its place but shows nothing of itself. */
+export type SavedPost = {
+  id: string;
+  savedAt: string;
+  available: boolean;
+  open: boolean;
+  card: OpportunityCard | null;
+};
+
 export type OpportunityBrowseApi = {
-  list: (filters: OpportunityFilters, page: number) => Promise<OpportunityCard[]>;
+  list: (filters: OpportunityFilters, page: number, best: boolean) => Promise<OpportunityCard[]>;
+  mySkillCount: () => Promise<number>;
+  savedIds: () => Promise<string[]>;
+  setSaved: (id: string, saved: boolean) => Promise<boolean>;
+  saved: () => Promise<SavedPost[]>;
   detail: (id: string) => Promise<OpportunityDetail | null>;
   tender: (id: string) => Promise<TenderDetails | null>;
   documentLink: (path: string) => Promise<string | null>;
@@ -80,6 +96,8 @@ export type CardRow = {
   poster_name: string;
   is_mine: boolean;
   skills: string[] | null;
+  skills_total?: number;
+  skills_matched?: number;
 };
 
 const named = (en: string | null, sw: string | null): Named | null =>
@@ -101,11 +119,19 @@ export const card = (r: CardRow): OpportunityCard => ({
   posterName: r.poster_name,
   isMine: r.is_mine,
   skills: r.skills ?? [],
+  skillsMatched: r.skills_matched,
+  skillsTotal: r.skills_total,
 });
 
 /** S16 and S17 (O02): published open posts, featured first; one post with its tender fields (O04). */
 export const opportunityBrowseApi: OpportunityBrowseApi = {
-  async list(filters, page) {
+  async mySkillCount() {
+    const { data, error } = await supabase.rpc("my_skill_count");
+    if (error) throw error;
+    return (data as number | null) ?? 0;
+  },
+
+  async list(filters, page, best) {
     const { data, error } = await supabase.rpc("opportunity_list", {
       kind: filters.kind ?? null,
       region: filters.region ?? null,
@@ -114,9 +140,37 @@ export const opportunityBrowseApi: OpportunityBrowseApi = {
       employment: filters.employment ?? null,
       posted_within: filters.postedWithin ?? null,
       page,
+      best,
     });
     if (error) throw error;
     return (data as CardRow[]).map(card);
+  },
+
+  async savedIds() {
+    const { data, error } = await supabase.from("saved_opportunities").select("opportunity_id");
+    if (error) throw error;
+    return (data as { opportunity_id: string }[]).map((r) => r.opportunity_id);
+  },
+
+  async setSaved(id, saved) {
+    const { error } = saved
+      ? await supabase.from("saved_opportunities").insert({ opportunity_id: id })
+      : await supabase.from("saved_opportunities").delete().eq("opportunity_id", id);
+    return !error || error.code === "23505";
+  },
+
+  async saved() {
+    const { data, error } = await supabase.rpc("saved_opportunities");
+    if (error) throw error;
+    return (data as (CardRow & { saved_at: string; available: boolean; open: boolean })[]).map(
+      (r) => ({
+        id: r.id,
+        savedAt: r.saved_at,
+        available: r.available,
+        open: r.open,
+        card: r.available ? card(r) : null,
+      }),
+    );
   },
 
   async detail(id) {

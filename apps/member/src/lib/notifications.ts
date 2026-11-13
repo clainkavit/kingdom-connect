@@ -39,6 +39,41 @@ export async function unreadCount(): Promise<number> {
   return count ?? 0;
 }
 
+/** R24: conversations with a message the member has not read yet. */
+export async function unreadThreadCount(): Promise<number> {
+  const { data, error } = await supabase.rpc("unread_thread_count");
+  if (error) return 0;
+  return (data as number | null) ?? 0;
+}
+
+const readListeners = new Set<() => void>();
+
+/** Tells the Messages count that a thread was just read, so it does not wait for its next refresh. */
+export function threadRead(): void {
+  readListeners.forEach((listener) => listener());
+}
+
+/** Unread messages, refreshed every minute, on each screen change and whenever a thread is read. */
+export function useUnreadMessages(pathname: string): number {
+  const [count, setCount] = useState(0);
+  useEffect(() => {
+    let live = true;
+    const load = () =>
+      unreadThreadCount().then((next) => {
+        if (live) setCount(next);
+      });
+    load();
+    const timer = setInterval(load, 60_000);
+    readListeners.add(load);
+    return () => {
+      live = false;
+      clearInterval(timer);
+      readListeners.delete(load);
+    };
+  }, [pathname]);
+  return count;
+}
+
 export async function markRead(id: string): Promise<void> {
   await supabase
     .from("notifications")

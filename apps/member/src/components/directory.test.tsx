@@ -230,3 +230,49 @@ describe("DirectoryScreen (S10)", () => {
     expect(screen.getByText("Zawadi Listed")).toBeTruthy();
   });
 });
+
+describe("People layout (13 Nov 2026 redesign)", () => {
+  const four = [
+    card({ memberId: "a", fullName: "Joseph Mushi" }),
+    card({ memberId: "b", fullName: "Zawadi Lyimo" }),
+    card({ memberId: "c", fullName: "Pendo Massawe" }),
+    card({ memberId: "d", fullName: "Emmanuel Kisanga" }),
+  ];
+  const rowOf = (name: string) =>
+    screen.getByRole("link", { name: new RegExp(`^${name}`) }).parentElement!.parentElement!
+      .parentElement!;
+
+  it("on a wide computer screen, shows members three to a row", async () => {
+    await show(fakeApi({ search: vi.fn().mockResolvedValue({ cards: four, more: false }) }));
+    expect(rowOf("Joseph Mushi")).toBe(rowOf("Pendo Massawe"));
+    expect(rowOf("Joseph Mushi")).not.toBe(rowOf("Emmanuel Kisanga"));
+  });
+
+  it("on a smaller computer screen, two to a row", async () => {
+    setWidth(1000);
+    await show(fakeApi({ search: vi.fn().mockResolvedValue({ cards: four, more: false }) }));
+    expect(rowOf("Joseph Mushi")).toBe(rowOf("Zawadi Lyimo"));
+    expect(rowOf("Joseph Mushi")).not.toBe(rowOf("Pendo Massawe"));
+  });
+
+  it("on a phone, one under another", async () => {
+    setWidth(PHONE);
+    await show(fakeApi({ search: vi.fn().mockResolvedValue({ cards: four, more: false }) }));
+    const listOf = (name: string) =>
+      screen.getByRole("link", { name: new RegExp(`^${name}`) }).parentElement!.parentElement!;
+    expect(listOf("Joseph Mushi")).toBe(listOf("Emmanuel Kisanga"));
+    expect(listOf("Joseph Mushi").children.length).toBe(4);
+  });
+
+  it("says contact details stay private, and links to My connections", async () => {
+    await show(fakeApi());
+    expect(
+      screen.getByText(
+        "Verified members of the community. Contact details stay private until you connect.",
+      ),
+    ).toBeTruthy();
+    expect(screen.getByRole("link", { name: "My connections" }).getAttribute("href")).toBe(
+      "/connections",
+    );
+  });
+});

@@ -346,3 +346,32 @@ describe("Saving opportunities (O10)", () => {
     expect(screen.getByText("Nothing saved yet")).toBeTruthy();
   });
 });
+
+describe("Opportunities layout (13 Nov 2026 redesign)", () => {
+  it("on a computer, keeps better matches, your opportunities and stay safe in a side column", async () => {
+    await show(<OpportunitiesList api={fakeApi()} />);
+    expect(screen.getByRole("heading", { name: en.oppBetterMatches })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: en.oppYourSide })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: en.oppStaySafe })).toBeTruthy();
+    expect(screen.getByRole("link", { name: en.myPostsTitle })).toBeTruthy();
+    expect(screen.getByRole("link", { name: en.savedCount(0) })).toBeTruthy();
+  });
+
+  it("offers Clear filters once a filter is on, and clearing lists everything again", async () => {
+    const api = fakeApi();
+    await show(<OpportunitiesList api={api} />);
+    expect(screen.queryByRole("button", { name: en.clearFilters })).toBeNull();
+    await act(async () => fireEvent.click(screen.getByRole("switch", { name: en.oppRemoteOnly })));
+    await press(en.clearFilters);
+    expect(api.list).toHaveBeenLastCalledWith({}, 0, false);
+    expect(screen.queryByRole("button", { name: en.clearFilters })).toBeNull();
+  });
+
+  it("on a phone, has no side column; the links sit above the tabs", async () => {
+    setWidth(PHONE);
+    await show(<OpportunitiesList api={fakeApi()} />);
+    expect(screen.queryByRole("heading", { name: en.oppStaySafe })).toBeNull();
+    expect(screen.getByRole("link", { name: en.myPostsTitle })).toBeTruthy();
+    expect(screen.getByText(en.oppNoFeeNote)).toBeTruthy();
+  });
+});

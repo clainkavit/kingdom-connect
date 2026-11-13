@@ -302,12 +302,16 @@ function AddSkillsLink() {
 export function OpportunitiesList({
   api,
   alerts,
+  canPost,
 }: {
   api: OpportunityBrowseApi;
   alerts?: JobAlertsApi;
+  /** O14: whether this member may post (Level 3, posting not paused). The server checks again. */
+  canPost?: () => Promise<boolean>;
 }) {
   const { t } = useLanguage();
   const saved = useSavedPosts(api);
+  const poster = useLoad(() => canPost?.().catch(() => false) ?? Promise.resolve(false), 0);
   const [filters, setFilters] = useState<OpportunityFilters>({});
   const [draft, setDraft] = useState<OpportunityFilters>({});
   const phone = usePhone();
@@ -356,7 +360,20 @@ export function OpportunitiesList({
 
   const main = (
     <View className="gap-3">
-      <ScreenTitle>{t.navOpportunities}</ScreenTitle>
+      <View className="flex-row flex-wrap items-center justify-between gap-2">
+        <ScreenTitle>{t.navOpportunities}</ScreenTitle>
+        {poster.state === "ready" && poster.value ? (
+          <LinkButton
+            href="/opportunities/new"
+            label={t.actionPostOpportunity}
+            className="min-h-[44px] items-center justify-center rounded-[10px] bg-blue px-4"
+          >
+            <Text className="font-figtree-bold text-[15px] text-blue-ink">
+              {t.actionPostOpportunity}
+            </Text>
+          </LinkButton>
+        ) : null}
+      </View>
       <Text className="font-figtree text-[14px] leading-5 text-ink-2">{t.oppIntro}</Text>
       {phone ? <YourLinks row /> : null}
       <View className="flex-row items-end gap-5 border-b border-line">

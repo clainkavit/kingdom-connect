@@ -27,6 +27,7 @@ import { stickToBottom, usePhone } from "./sheet";
 import { LinkButton } from "./link-button";
 import { usePalette } from "./palette";
 import { typeLabel } from "./opportunity-form";
+import { YourSkillsForPost, type MySkillsApi } from "./your-skills";
 import { ReportLink } from "./report-link";
 import { ScreenTitle } from "./screens";
 import { EmptyState, ErrorState, LoadingRows } from "./states";
@@ -513,10 +514,12 @@ export function OpportunityDetailScreen({
   api,
   id,
   respond,
+  mySkills,
 }: {
   api: OpportunityBrowseApi;
   id: string;
   respond?: (post: OpportunityDetail) => React.ReactNode;
+  mySkills?: MySkillsApi;
 }) {
   const { t, language } = useLanguage();
   const phone = usePhone();
@@ -573,6 +576,9 @@ export function OpportunityDetailScreen({
         <Fact label={t.fieldSkills} value={post.skills.join(", ") || null} />
         <Fact label={t.fieldClosing} value={closingDay(post.closingAt, language)} />
       </View>
+      {mySkills && !post.isMine && post.skills.length > 0 ? (
+        <YourSkillsForPost skills={post.skills} api={mySkills} />
+      ) : null}
       {tender ? <TenderSection api={api} tender={tender} closingAt={post.closingAt} /> : null}
       {post.isMine ? (
         <LinkButton

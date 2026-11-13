@@ -9,7 +9,7 @@ import {
   type OpportunityCard,
   type OpportunityDetail,
 } from "../lib/opportunity-browse";
-import { OpportunitiesList, OpportunityDetailScreen } from "./opportunities";
+import { OpportunitiesList, OpportunityDetailScreen, SavedOpportunities } from "./opportunities";
 
 const en = stringsFor("en");
 
@@ -48,6 +48,9 @@ const detail = (over: Partial<OpportunityDetail> = {}): OpportunityDetail => ({
 
 const fakeApi = (over: Partial<OpportunityBrowseApi> = {}): OpportunityBrowseApi => ({
   list: vi.fn().mockResolvedValue([card()]),
+  savedIds: vi.fn().mockResolvedValue([]),
+  setSaved: vi.fn().mockResolvedValue(true),
+  saved: vi.fn().mockResolvedValue([]),
   detail: vi.fn().mockResolvedValue(detail()),
   tender: vi.fn().mockResolvedValue(null),
   documentLink: vi.fn().mockResolvedValue("https://files.test/tender.pdf"),
@@ -254,5 +257,63 @@ describe("OpportunityDetailScreen (S17)", () => {
     );
     expect(documentLink).toHaveBeenCalledWith("u/d.pdf");
     expect(screen.getByText("We couldn't open the document. Try again.")).toBeTruthy();
+  });
+});
+
+describe("Saving opportunities (O10)", () => {
+  it("saves a post from its card and counts it on the Saved link", async () => {
+    const setSaved = vi.fn().mockResolvedValue(true);
+    await show(<OpportunitiesList api={fakeApi({ setSaved })} />);
+    expect(screen.getByRole("link", { name: "Saved · 0" })).toBeTruthy();
+    await press("Save Accountant for a coffee trader");
+    expect(setSaved).toHaveBeenCalledWith("o1", true);
+    expect(screen.getByRole("link", { name: "Saved · 1" })).toBeTruthy();
+    expect(
+      screen.getByRole("button", { name: "Remove Accountant for a coffee trader from saved" }),
+    ).toBeTruthy();
+  });
+
+  it("puts the bookmark back when saving fails", async () => {
+    await show(<OpportunitiesList api={fakeApi({ setSaved: vi.fn().mockResolvedValue(false) })} />);
+    await press("Save Accountant for a coffee trader");
+    expect(screen.getByRole("link", { name: "Saved · 0" })).toBeTruthy();
+  });
+
+  it("shows Save and Saved on the post page, but not on your own post", async () => {
+    await show(
+      <OpportunityDetailScreen
+        api={fakeApi({ savedIds: vi.fn().mockResolvedValue(["o1"]) })}
+        id="o1"
+      />,
+    );
+    expect(screen.getByText("Saved")).toBeTruthy();
+    cleanup();
+    await show(
+      <OpportunityDetailScreen
+        api={fakeApi({ detail: vi.fn().mockResolvedValue(detail({ isMine: true })) })}
+        id="o1"
+      />,
+    );
+    expect(screen.queryByText("Save")).toBeNull();
+  });
+
+  it("lists saved posts, marks a closed one, and lets a gone one be removed", async () => {
+    const setSaved = vi.fn().mockResolvedValue(true);
+    const saved = vi.fn().mockResolvedValue([
+      { id: "o1", savedAt: "2026-11-13", available: true, open: false, card: card() },
+      { id: "o2", savedAt: "2026-11-12", available: false, open: false, card: null },
+    ]);
+    await show(<SavedOpportunities api={fakeApi({ saved, setSaved })} />);
+    expect(screen.getByText("Closed")).toBeTruthy();
+    expect(screen.getByText("Accountant for a coffee trader")).toBeTruthy();
+    expect(screen.getByText("This post is no longer available.")).toBeTruthy();
+    await press("Remove");
+    expect(setSaved).toHaveBeenCalledWith("o2", false);
+    expect(screen.queryByText("This post is no longer available.")).toBeNull();
+  });
+
+  it("says when nothing is saved yet", async () => {
+    await show(<SavedOpportunities api={fakeApi()} />);
+    expect(screen.getByText("Nothing saved yet")).toBeTruthy();
   });
 });

@@ -59,6 +59,24 @@ describe("MemberShell on a wide screen", () => {
   });
 });
 
+describe("MemberShell top bar search (R22)", () => {
+  it("opens the Search page with the typed words", () => {
+    width(1280);
+    router.pushed.length = 0;
+    inLanguage("en", <MemberShell>content</MemberShell>);
+    const box = screen.getByLabelText("Search Test Platform");
+    fireEvent.change(box, { target: { value: " book keeper " } });
+    fireEvent.keyDown(box, { key: "Enter", code: "Enter", keyCode: 13 });
+    expect(router.pushed).toEqual(["/search?q=book%20keeper"]);
+  });
+
+  it("is not on the phone, which keeps its tabs", () => {
+    width(390);
+    inLanguage("en", <MemberShell>content</MemberShell>);
+    expect(screen.queryByLabelText("Search Test Platform")).toBeNull();
+  });
+});
+
 describe("MemberShell on a phone", () => {
   it("shows the five tabs with a word under each icon instead of the top bar menu", () => {
     width(390);
@@ -104,8 +122,11 @@ describe("MemberShell in Kiswahili (F07)", () => {
     width(1280);
     const setLanguage = vi.fn();
     inLanguage("en", <MemberShell>content</MemberShell>, setLanguage);
-    fireEvent.click(screen.getByRole("button", { name: "Kiswahili" }));
+    expect(screen.queryByRole("menuitem", { name: "Kiswahili" })).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: "Change language" }));
+    fireEvent.click(screen.getByRole("menuitem", { name: "Kiswahili" }));
     expect(setLanguage).toHaveBeenCalledWith("sw");
+    expect(screen.queryByRole("menuitem", { name: "Kiswahili" })).toBeNull();
   });
 });
 

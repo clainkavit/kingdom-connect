@@ -32,7 +32,8 @@ test("a Member's language is saved to their account and comes back on a new devi
 
   const first = await signIn();
   await expect(first.page.getByRole("heading", { name: "Dashboard" })).toBeVisible();
-  await first.page.getByRole("button", { name: "Kiswahili" }).click();
+  await first.page.getByRole("button", { name: "Change language" }).click();
+  await first.page.getByRole("menuitem", { name: "Kiswahili" }).click();
   await expect(first.page.getByRole("heading", { name: "Dashibodi" })).toBeVisible();
   await expect(first.page.getByRole("navigation", { name: "Menyu ya mwanachama" })).toBeVisible();
   await first.context.close();

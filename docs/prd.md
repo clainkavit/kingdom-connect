@@ -102,7 +102,7 @@ Phase 1 ships in two releases inside the 12-month plan: Release 1 builds trust a
 
 Members and administrators get different menus; a member never sees admin items, and an investor's menu looks the same as any member's.
 
-**Member menu (decided 12 Nov 2026, the same on a computer and a phone):** Home · People (the directory, with Professionals and Businesses tabs, and My connections) · Opportunities (filtered by type on the page) · Growth (Ideas, Training, Events, Milestone plans) · Messages. The bell opens Notifications; the person icon opens My account: My profile, News and updates, Reports & Safety, Settings, language and Log out. The phone tabs show a word under each icon. This replaces the ten-item menu of 2 Nov.
+**Member menu (decided 12 Nov 2026, the same on a computer and a phone):** Home · People (the directory, with Professionals and Businesses tabs, and My connections) · Opportunities (filtered by type on the page) · Growth (Ideas, Training, Events, Milestone plans) · Messages. The bell opens Notifications; the person icon opens My account: My profile, News and updates, Reports & Safety, Settings, language and Log out. The phone tabs show a word under each icon. This replaces the ten-item menu of 2 Nov. On a computer the top bar also holds a search box that finds people, opportunities and training (13 Nov 2026, R22).
 
 **Investor additions (inside Ideas only):** investor filters, Saved ideas, anonymous "Express interest" option. No separate menu item.
 

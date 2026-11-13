@@ -21,7 +21,7 @@ import { Avatar } from "./profile";
 import { ScreenTitle } from "./screens";
 import { EmptyState, ErrorState, LoadingRows } from "./states";
 
-function Card({ card }: { card: DirectoryCard }) {
+export function DirectoryCardView({ card }: { card: DirectoryCard }) {
   const { t } = useLanguage();
   return (
     <View className="gap-3 rounded-card border border-line bg-surface p-4">
@@ -319,15 +319,21 @@ function BusinessesPanel({ api }: { api: DirectoryApi }) {
   );
 }
 
-function ProfessionalsPanel({ api }: { api: DirectoryApi }) {
+function ProfessionalsPanel({
+  api,
+  initialQuery = "",
+}: {
+  api: DirectoryApi;
+  initialQuery?: string;
+}) {
   const { t, language } = useLanguage();
-  const [draft, setDraft] = useState<DirectoryFilters>(noFilters);
+  const [draft, setDraft] = useState<DirectoryFilters>({ ...noFilters, q: initialQuery });
   const [regions, setRegions] = useState<Option[]>([]);
   const [districts, setDistricts] = useState<Option[]>([]);
   const [sectors, setSectors] = useState<Option[]>([]);
   const { applied, results, failed, run, loadMore } = useSearch(
     api.search,
-    noFilters,
+    { ...noFilters, q: initialQuery },
     (c: DirectoryCard) => c.memberId,
   );
 
@@ -402,7 +408,7 @@ function ProfessionalsPanel({ api }: { api: DirectoryApi }) {
         emptyTitle={t.noResultsTitle}
         onRetry={() => run(applied)}
         onMore={loadMore}
-        render={(card) => <Card key={card.memberId} card={card} />}
+        render={(card) => <DirectoryCardView key={card.memberId} card={card} />}
       />
     </>
   );
@@ -443,7 +449,13 @@ function Tabs({ value, onChange }: { value: Tab; onChange: (tab: Tab) => void })
 }
 
 /** S10: the Professionals tab (R07) and the Businesses tab (B03). */
-export function DirectoryScreen({ api }: { api: DirectoryApi }) {
+export function DirectoryScreen({
+  api,
+  initialQuery,
+}: {
+  api: DirectoryApi;
+  initialQuery?: string;
+}) {
   const { t } = useLanguage();
   const [tab, setTab] = useState<Tab>("professionals");
   return (
@@ -457,7 +469,11 @@ export function DirectoryScreen({ api }: { api: DirectoryApi }) {
         <Text className="font-figtree-semibold text-sm text-blue">{t.myConnections}</Text>
       </LinkButton>
       <Tabs value={tab} onChange={setTab} />
-      {tab === "professionals" ? <ProfessionalsPanel api={api} /> : <BusinessesPanel api={api} />}
+      {tab === "professionals" ? (
+        <ProfessionalsPanel api={api} initialQuery={initialQuery} />
+      ) : (
+        <BusinessesPanel api={api} />
+      )}
     </View>
   );
 }

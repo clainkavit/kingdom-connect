@@ -1,8 +1,10 @@
 import { isCurrent, memberNav, memberPhoneTabs } from "@kingdom-connect/shared";
-import { usePathname } from "expo-router";
-import { ScrollView, Text, useWindowDimensions, View } from "react-native";
+import { usePathname, useRouter } from "expo-router";
+import Search from "lucide-react-native/icons/search";
+import { useState } from "react";
+import { ScrollView, Text, TextInput, useWindowDimensions, View } from "react-native";
 import { useLanguage } from "../lib/language";
-import { LanguageSwitch } from "./language-switch";
+import { LanguageMenu } from "./language-menu";
 import { LinkButton } from "./link-button";
 import { NotificationBell } from "./notifications";
 import { NavIcon } from "./nav-icon";
@@ -20,37 +22,90 @@ function Wordmark({ phone }: { phone?: boolean }) {
   );
 }
 
+function Mark() {
+  const { platformName } = useLanguage();
+  const initials = platformName
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((w) => w[0]!.toUpperCase())
+    .join("");
+  return (
+    <View aria-hidden className="h-9 w-9 items-center justify-center rounded-[10px] bg-navy">
+      <Text className="font-figtree-extrabold text-[15px] text-navy-ink">{initials}</Text>
+    </View>
+  );
+}
+
+function TopSearch() {
+  const { t, platformName } = useLanguage();
+  const palette = usePalette();
+  const router = useRouter();
+  const [q, setQ] = useState("");
+  const submit = () => {
+    if (q.trim()) router.push(`/search?q=${encodeURIComponent(q.trim())}`);
+  };
+  return (
+    <View className="min-w-[150px] flex-1 basis-0 items-center justify-center py-3">
+      <View className="min-h-[42px] w-full max-w-[400px] flex-row items-center gap-2.5 rounded-full border border-line bg-bg px-3.5">
+        <Search size={18} color={palette.ink2} aria-hidden />
+        <TextInput
+          aria-label={t.searchEverything(platformName)}
+          placeholder={t.searchPlaceholder}
+          placeholderTextColor={palette.ink3}
+          value={q}
+          onChangeText={setQ}
+          onSubmitEditing={submit}
+          returnKeyType="search"
+          className="min-w-0 flex-1 font-figtree text-[15px] text-ink"
+        />
+      </View>
+    </View>
+  );
+}
+
 function TopBar({ pathname, unread }: { pathname: string; unread: number }) {
-  const { t } = useLanguage();
+  const { t, platformName } = useLanguage();
   const palette = usePalette();
   return (
-    <View className="flex-row flex-wrap items-center justify-between gap-4 bg-navy px-7 py-3.5">
-      <Wordmark />
-      <View
-        role="navigation"
-        aria-label={t.memberMenu}
-        className="flex-row flex-wrap items-center gap-1.5"
-      >
-        {memberNav.map((item) => {
-          const current = isCurrent(pathname, item);
-          return (
-            <LinkButton
-              key={item.href}
-              href={item.href}
-              current={current}
-              className={`rounded-[9px] px-3 py-2.5 ${current ? "bg-blue-soft" : ""}`}
-            >
-              <Text
-                className={`text-sm ${current ? "font-figtree-bold text-blue" : "font-figtree text-navy-ink"}`}
+    <View style={{ zIndex: 10 }} className="border-b border-line bg-surface">
+      <View className="w-full flex-row flex-wrap items-stretch gap-x-4 px-7">
+        <View className="flex-row items-center gap-2.5">
+          <Mark />
+          <Text className="font-figtree-extrabold text-[19px] text-navy">{platformName}</Text>
+        </View>
+        <TopSearch />
+        <View
+          role="navigation"
+          aria-label={t.memberMenu}
+          className="flex-row flex-wrap items-stretch gap-0.5"
+        >
+          {memberNav.map((item) => {
+            const current = isCurrent(pathname, item);
+            return (
+              <LinkButton
+                key={item.href}
+                href={item.href}
+                current={current}
+                label={t[item.key]}
+                className={`min-h-[72px] min-w-[62px] items-center justify-center gap-[3px] border-b-[3px] px-1 ${current ? "border-navy" : "border-transparent"}`}
               >
-                {t[item.key]}
-              </Text>
-            </LinkButton>
-          );
-        })}
-        <NotificationBell count={unread} color={palette.navyInk} />
-        <ProfileLink color={palette.navyInk} />
-        <LanguageSwitch onNavy />
+                <NavIcon name={item.icon} size={22} color={current ? palette.navy : palette.ink2} />
+                <Text
+                  numberOfLines={1}
+                  className={`text-[13px] ${current ? "font-figtree-extrabold text-navy" : "font-figtree-semibold text-ink-2"}`}
+                >
+                  {t[item.key]}
+                </Text>
+              </LinkButton>
+            );
+          })}
+        </View>
+        <View className="flex-row items-center gap-1 border-l border-line pl-2.5">
+          <NotificationBell count={unread} color={palette.ink2} />
+          <LanguageMenu />
+          <ProfileLink color={palette.navy} />
+        </View>
       </View>
     </View>
   );

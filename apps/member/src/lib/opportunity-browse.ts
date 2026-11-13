@@ -55,9 +55,21 @@ export type TenderDetails = {
   documentPath: string | null;
 };
 
+/** O10: one saved post. A hidden or removed one keeps its place but shows nothing of itself. */
+export type SavedPost = {
+  id: string;
+  savedAt: string;
+  available: boolean;
+  open: boolean;
+  card: OpportunityCard | null;
+};
+
 export type OpportunityBrowseApi = {
   list: (filters: OpportunityFilters, page: number, best: boolean) => Promise<OpportunityCard[]>;
   mySkillCount: () => Promise<number>;
+  savedIds: () => Promise<string[]>;
+  setSaved: (id: string, saved: boolean) => Promise<boolean>;
+  saved: () => Promise<SavedPost[]>;
   detail: (id: string) => Promise<OpportunityDetail | null>;
   tender: (id: string) => Promise<TenderDetails | null>;
   documentLink: (path: string) => Promise<string | null>;
@@ -132,6 +144,33 @@ export const opportunityBrowseApi: OpportunityBrowseApi = {
     });
     if (error) throw error;
     return (data as CardRow[]).map(card);
+  },
+
+  async savedIds() {
+    const { data, error } = await supabase.from("saved_opportunities").select("opportunity_id");
+    if (error) throw error;
+    return (data as { opportunity_id: string }[]).map((r) => r.opportunity_id);
+  },
+
+  async setSaved(id, saved) {
+    const { error } = saved
+      ? await supabase.from("saved_opportunities").insert({ opportunity_id: id })
+      : await supabase.from("saved_opportunities").delete().eq("opportunity_id", id);
+    return !error || error.code === "23505";
+  },
+
+  async saved() {
+    const { data, error } = await supabase.rpc("saved_opportunities");
+    if (error) throw error;
+    return (data as (CardRow & { saved_at: string; available: boolean; open: boolean })[]).map(
+      (r) => ({
+        id: r.id,
+        savedAt: r.saved_at,
+        available: r.available,
+        open: r.open,
+        card: r.available ? card(r) : null,
+      }),
+    );
   },
 
   async detail(id) {

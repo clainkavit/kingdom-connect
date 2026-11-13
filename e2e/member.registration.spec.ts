@@ -119,7 +119,7 @@ test("a person signs up, completes the six steps and is approved (REG-1, S02, S0
   const sentAfter = new Date();
   await page.getByRole("button", { name: "Log in" }).click();
   await enterCode(page, await nextCode(email, sentAfter));
-  await expect(page.getByRole("heading", { name: "Dashboard" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Home", exact: true })).toBeVisible();
 });
 
 test("an ID that is already registered is refused (PRD section 6, criterion 3)", async ({

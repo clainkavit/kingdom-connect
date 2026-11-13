@@ -1,4 +1,5 @@
 import "../test-router";
+import { COMPUTER, PHONE, setWidth } from "../test-width";
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { ConnectionsApi } from "../lib/connections";
@@ -169,5 +170,59 @@ describe("My activity: training and events (T01)", () => {
     );
     expect(screen.getByText(/You are number 2 on the waitlist\.$/)).toBeTruthy();
     expect(screen.queryByText("Nothing here yet")).toBeNull();
+  });
+});
+
+describe("Home layout (13 Nov 2026 redesign)", () => {
+  const me = {
+    memberId: "m1",
+    own: true,
+    fullName: "Dash Member",
+    headline: "",
+    bio: "",
+    profession: "Accountant",
+    experience: "",
+    certifications: "",
+    regionId: "r1",
+    districtId: null,
+    location: "Mwanza",
+    study: { institution: "", course: "", year: null },
+    skills: [],
+    photoUrl: null,
+    hidden: false,
+    contact: null,
+  };
+
+  const showWith = (width: number) => {
+    setWidth(width);
+    return act(async () => {
+      render(
+        <DashboardScreen
+          api={fakeApi()}
+          connections={fakeConnections()}
+          profile={vi.fn().mockResolvedValue(me)}
+          today={new Date("2026-11-04T09:00:00+03:00")}
+        />,
+      );
+    });
+  };
+
+  it("is titled Home, with the member's column: profile, next steps and shortcuts", async () => {
+    await showWith(COMPUTER);
+    expect(screen.getByRole("heading", { name: "Home" })).toBeTruthy();
+    expect(screen.getByRole("link", { name: "My profile" }).getAttribute("href")).toBe("/profile");
+    expect(screen.getByRole("heading", { name: "Next steps" })).toBeTruthy();
+    expect(screen.getByRole("link", { name: "Saved opportunities" }).getAttribute("href")).toBe(
+      "/opportunities/saved",
+    );
+    expect(screen.getByRole("link", { name: "My connections" }).getAttribute("href")).toBe(
+      "/connections",
+    );
+  });
+
+  it("keeps the same pieces on a phone, stacked", async () => {
+    await showWith(PHONE);
+    expect(screen.getByRole("heading", { name: "Next steps" })).toBeTruthy();
+    expect(screen.getByRole("link", { name: "My responses" })).toBeTruthy();
   });
 });

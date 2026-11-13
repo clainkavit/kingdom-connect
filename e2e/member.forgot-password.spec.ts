@@ -44,7 +44,7 @@ test("a Member who forgot the password sets a new one with the email code (REG-6
   const loginAfter = new Date();
   await logIn(page, "Username", username, newPassword);
   await enterCode(page, await nextCode(email, loginAfter));
-  await expect(page.getByRole("heading", { name: "Dashboard" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Home", exact: true })).toBeVisible();
 });
 
 test("an unknown username gets the same answer as a real one (S04a)", async ({ page }) => {

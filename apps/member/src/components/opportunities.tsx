@@ -169,12 +169,10 @@ function Filters({
   api,
   filters,
   onChange,
-  bare,
 }: {
   api: OpportunityBrowseApi;
   filters: OpportunityFilters;
   onChange: (next: OpportunityFilters) => void;
-  bare?: boolean;
 }) {
   const { t, language } = useLanguage();
   const sectors = useLoad(() => api.sectors(language).catch(() => []), 0);
@@ -187,14 +185,9 @@ function Filters({
   const set = (change: Partial<OpportunityFilters>) => onChange({ ...filters, ...change });
 
   return (
-    <View className={bare ? "gap-3" : "gap-3 rounded-card border border-line bg-surface p-4"}>
-      {bare ? null : (
-        <Text role="heading" aria-level={2} className="font-figtree-bold text-sm text-ink">
-          {t.filtersTitle}
-        </Text>
-      )}
+    <View className="gap-3">
       <View className="flex-row flex-wrap gap-3">
-        <View className="min-w-[220px] flex-1">
+        <View className="min-w-[160px] flex-1">
           <ChoiceList
             label={t.region}
             options={[any, ...list(regions)]}
@@ -203,7 +196,7 @@ function Filters({
             disabled={filters.remoteOnly}
           />
         </View>
-        <View className="min-w-[220px] flex-1">
+        <View className="min-w-[160px] flex-1">
           <ChoiceList
             label={t.filterSector}
             options={[any, ...list(sectors)]}
@@ -212,7 +205,7 @@ function Filters({
           />
         </View>
         {filters.kind === undefined || filters.kind === "job" ? (
-          <View className="min-w-[220px] flex-1">
+          <View className="min-w-[160px] flex-1">
             <ChoiceList
               label={t.fieldEmployment}
               options={[
@@ -227,7 +220,7 @@ function Filters({
             />
           </View>
         ) : null}
-        <View className="min-w-[220px] flex-1">
+        <View className="min-w-[160px] flex-1">
           <ChoiceList
             label={t.oppPosted}
             options={[
@@ -247,6 +240,61 @@ function Filters({
         }
       />
     </View>
+  );
+}
+
+function SideCard({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <View className="gap-2 rounded-card border border-line bg-surface p-4">
+      <Text role="heading" aria-level={2} className="font-figtree-bold text-[15px] text-ink">
+        {title}
+      </Text>
+      {children}
+    </View>
+  );
+}
+
+const yourLinks: { key: TextKey; href: string }[] = [
+  { key: "myPostsTitle", href: "/opportunities/mine" },
+  { key: "respMineTitle", href: "/opportunities/responses" },
+  { key: "scanTitle", href: "/opportunities/scan" },
+];
+
+function YourLinks({ row }: { row?: boolean }) {
+  const { t } = useLanguage();
+  return (
+    <View className={row ? "flex-row flex-wrap gap-2" : ""}>
+      {yourLinks.map((item, i) => (
+        <LinkButton
+          key={item.href}
+          href={item.href}
+          label={t[item.key] as string}
+          className={
+            row
+              ? "min-h-[44px] items-center justify-center rounded-[10px] border border-line bg-surface px-4"
+              : `min-h-[44px] flex-row items-center justify-between ${i > 0 ? "border-t border-line" : ""}`
+          }
+        >
+          <Text className="font-figtree-semibold text-[14px] text-ink">
+            {t[item.key] as string}
+          </Text>
+          {row ? null : (
+            <Text aria-hidden className="font-figtree text-[15px] text-ink-2">
+              ›
+            </Text>
+          )}
+        </LinkButton>
+      ))}
+    </View>
+  );
+}
+
+function AddSkillsLink() {
+  const { t } = useLanguage();
+  return (
+    <LinkButton href="/profile/edit" label={t.oppAddSkills} className="min-h-[40px] justify-center">
+      <Text className="font-figtree-bold text-sm text-blue">{t.oppAddSkills}</Text>
+    </LinkButton>
   );
 }
 
@@ -304,80 +352,53 @@ export function OpportunitiesList({
   };
 
   const filtered = Object.values(filters).some((v) => v !== undefined && v !== false);
+  const noSkills = skillCount.state === "ready" && !hasSkills;
 
-  return (
+  const main = (
     <View className="gap-3">
       <ScreenTitle>{t.navOpportunities}</ScreenTitle>
       <Text className="font-figtree text-[14px] leading-5 text-ink-2">{t.oppIntro}</Text>
-      <View className="flex-row flex-wrap gap-2">
-        <LinkButton
-          href="/opportunities/mine"
-          label={t.myPostsTitle}
-          className="min-h-[48px] items-center justify-center rounded-[10px] border border-line bg-surface px-4"
-        >
-          <Text className="font-figtree-semibold text-[15px] text-ink">{t.myPostsTitle}</Text>
-        </LinkButton>
-        <LinkButton
-          href="/opportunities/scan"
-          label={t.scanTitle}
-          className="min-h-[48px] items-center justify-center rounded-[10px] bg-blue px-4"
-        >
-          <Text className="font-figtree-bold text-[15px] text-blue-ink">{t.scanTitle}</Text>
-        </LinkButton>
-        <LinkButton
-          href="/opportunities/responses"
-          label={t.respMineTitle}
-          className="min-h-[48px] items-center justify-center rounded-[10px] border border-line bg-surface px-4"
-        >
-          <Text className="font-figtree-semibold text-[15px] text-ink">{t.respMineTitle}</Text>
-        </LinkButton>
+      {phone ? <YourLinks row /> : null}
+      <View className="flex-row items-end gap-5 border-b border-line">
+        <View role="tablist" aria-label={t.oppSortBy} className="flex-row gap-5">
+          {(["best", "newest"] as const).map((tab) => {
+            const on = (tab === "best") === best;
+            return (
+              <Pressable
+                key={tab}
+                role="tab"
+                aria-selected={on}
+                onPress={() => {
+                  setChosen(tab);
+                  setMore([]);
+                  setPage(1);
+                  setDone(false);
+                  setMoreFailed(false);
+                  setRun((r) => r + 1);
+                }}
+                className={`min-h-[44px] justify-center border-b-[3px] ${on ? "border-navy" : "border-transparent"}`}
+              >
+                <Text
+                  className={`text-[15px] ${on ? "font-figtree-bold text-ink" : "font-figtree text-ink-2"}`}
+                >
+                  {tab === "best" ? t.oppBestMatches : t.oppNewest}
+                </Text>
+              </Pressable>
+            );
+          })}
+        </View>
         <LinkButton
           href="/opportunities/saved"
           label={t.savedCount(saved.count)}
-          className="min-h-[48px] items-center justify-center rounded-[10px] border border-line bg-surface px-4"
+          className="min-h-[44px] justify-center border-b-[3px] border-transparent"
         >
-          <Text className="font-figtree-semibold text-[15px] text-ink">
-            {t.savedCount(saved.count)}
-          </Text>
+          <Text className="font-figtree text-[15px] text-ink-2">{t.savedCount(saved.count)}</Text>
         </LinkButton>
       </View>
-      <View role="tablist" aria-label={t.oppSortBy} className="flex-row gap-5 border-b border-line">
-        {(["best", "newest"] as const).map((tab) => {
-          const on = (tab === "best") === best;
-          return (
-            <Pressable
-              key={tab}
-              role="tab"
-              aria-selected={on}
-              onPress={() => {
-                setChosen(tab);
-                setMore([]);
-                setPage(1);
-                setDone(false);
-                setMoreFailed(false);
-                setRun((r) => r + 1);
-              }}
-              className={`min-h-[44px] justify-center border-b-[3px] ${on ? "border-navy" : "border-transparent"}`}
-            >
-              <Text
-                className={`text-[15px] ${on ? "font-figtree-bold text-ink" : "font-figtree text-ink-2"}`}
-              >
-                {tab === "best" ? t.oppBestMatches : t.oppNewest}
-              </Text>
-            </Pressable>
-          );
-        })}
-      </View>
-      {skillCount.state === "ready" && !hasSkills ? (
+      {noSkills && phone ? (
         <View className="flex-row flex-wrap items-center justify-between gap-2 rounded-card bg-blue-soft px-4 py-3">
           <Text className="flex-1 font-figtree text-sm text-ink">{t.oppAddSkillsForMatches}</Text>
-          <LinkButton
-            href="/profile/edit"
-            label={t.oppAddSkills}
-            className="min-h-[40px] justify-center"
-          >
-            <Text className="font-figtree-bold text-sm text-blue">{t.oppAddSkills}</Text>
-          </LinkButton>
+          <AddSkillsLink />
         </View>
       ) : null}
       <Chips
@@ -409,12 +430,23 @@ export function OpportunitiesList({
             apply(next);
           }}
         >
-          <Filters api={api} filters={draft} onChange={setDraft} bare />
+          <Filters api={api} filters={draft} onChange={setDraft} />
         </FilterSheet>
       ) : (
-        <Filters api={api} filters={filters} onChange={apply} />
+        <View className="gap-1">
+          <Filters api={api} filters={filters} onChange={apply} />
+          {filtered ? (
+            <Pressable
+              role="button"
+              onPress={() => apply({})}
+              className="min-h-[40px] justify-center self-start"
+            >
+              <Text className="font-figtree-semibold text-sm text-blue">{t.clearFilters}</Text>
+            </Pressable>
+          ) : null}
+        </View>
       )}
-      {alerts ? <AlertSwitch api={alerts} filters={filters} /> : null}
+      {alerts && phone ? <AlertSwitch api={alerts} filters={filters} /> : null}
       {first.state === "failed" ? (
         <ErrorState message={t.oppLoadFailed} onRetry={() => setRun((r) => r + 1)} />
       ) : first.state === "loading" ? (
@@ -442,7 +474,36 @@ export function OpportunitiesList({
           ) : null}
         </>
       )}
-      <Text className="font-figtree text-[13px] leading-5 text-ink-2">{t.oppNoFeeNote}</Text>
+      {phone ? (
+        <Text className="font-figtree text-[13px] leading-5 text-ink-2">{t.oppNoFeeNote}</Text>
+      ) : null}
+    </View>
+  );
+  if (phone) return main;
+  return (
+    <View className="flex-row items-start gap-6">
+      <View className="min-w-0 flex-1">{main}</View>
+      <View className="w-[300px] gap-4">
+        {noSkills ? (
+          <SideCard title={t.oppBetterMatches}>
+            <Text className="font-figtree text-sm leading-5 text-ink-2">
+              {t.oppAddSkillsForMatches}
+            </Text>
+            <AddSkillsLink />
+          </SideCard>
+        ) : null}
+        {alerts ? (
+          <SideCard title={t.oppAlertTitle}>
+            <AlertSwitch api={alerts} filters={filters} />
+          </SideCard>
+        ) : null}
+        <SideCard title={t.oppYourSide}>
+          <YourLinks />
+        </SideCard>
+        <SideCard title={t.oppStaySafe}>
+          <Text className="font-figtree text-[13px] leading-5 text-ink-2">{t.oppNoFeeNote}</Text>
+        </SideCard>
+      </View>
     </View>
   );
 }

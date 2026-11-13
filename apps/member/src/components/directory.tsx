@@ -1,6 +1,6 @@
 import type { Language, TextKey } from "@kingdom-connect/shared";
-import { useEffect, useState } from "react";
-import { Pressable, Text, View } from "react-native";
+import { Children, useEffect, useState } from "react";
+import { Pressable, Text, useWindowDimensions, View } from "react-native";
 import {
   noBusinessFilters,
   noFilters,
@@ -21,10 +21,12 @@ import { Avatar } from "./profile";
 import { ScreenTitle } from "./screens";
 import { EmptyState, ErrorState, LoadingRows } from "./states";
 
-export function DirectoryCardView({ card }: { card: DirectoryCard }) {
+export function DirectoryCardView({ card, fill }: { card: DirectoryCard; fill?: boolean }) {
   const { t } = useLanguage();
   return (
-    <View className="gap-3 rounded-card border border-line bg-surface p-4">
+    <View
+      className={`${fill ? "flex-1 " : ""}gap-3 rounded-card border border-line bg-surface p-4`}
+    >
       <LinkButton
         href={`/profile/${card.memberId}`}
         label={[card.fullName, card.headline].filter(Boolean).join(", ")}
@@ -53,7 +55,7 @@ export function DirectoryCardView({ card }: { card: DirectoryCard }) {
           </View>
         ))}
       </View>
-      <View className="flex-row flex-wrap items-center gap-3">
+      <View className="mt-auto flex-row flex-wrap items-center gap-3">
         {card.relation === "none" || card.relation === "received" ? (
           <LinkButton
             href={card.relation === "none" ? `/profile/${card.memberId}?connect=1` : "/connections"}
@@ -81,10 +83,12 @@ const sizeLabel: Record<BusinessCard["size"], TextKey> = {
   large: "sizeLarge",
 };
 
-function BusinessCardView({ card }: { card: BusinessCard }) {
+function BusinessCardView({ card, fill }: { card: BusinessCard; fill?: boolean }) {
   const { t } = useLanguage();
   return (
-    <View className="gap-3 rounded-card border border-line bg-surface p-4">
+    <View
+      className={`${fill ? "flex-1 " : ""}gap-3 rounded-card border border-line bg-surface p-4`}
+    >
       <LinkButton
         href={`/profile/${card.memberId}`}
         label={[card.name, card.ownerName].filter(Boolean).join(", ")}
@@ -216,10 +220,26 @@ function FilterArea({
       <Text role="heading" aria-level={2} className="font-figtree-bold text-sm text-ink">
         {t.filtersTitle}
       </Text>
-      <View className="gap-3">{children}</View>
+      <View className="flex-row flex-wrap gap-3">
+        {Children.toArray(children).map((child, i) => (
+          <View key={i} className="min-w-[200px] flex-1">
+            {child}
+          </View>
+        ))}
+      </View>
       <SearchActions onSearch={onSearch} onClear={onClear} />
     </>
   );
+}
+
+const WIDE = 1280;
+
+/** One column on a phone, two on a computer, three on a wide screen. */
+function useColumns(): number {
+  const phone = usePhone();
+  const { width } = useWindowDimensions();
+  if (phone) return 1;
+  return width >= WIDE ? 3 : 2;
 }
 
 function ResultList<C>({
@@ -235,16 +255,30 @@ function ResultList<C>({
   emptyTitle: string;
   onRetry: () => void;
   onMore: () => void;
-  render: (card: C) => React.ReactNode;
+  render: (card: C, fill: boolean) => React.ReactNode;
 }) {
   const { t } = useLanguage();
+  const columns = useColumns();
   if (failed) return <ErrorState message={t.directoryLoadFailed} onRetry={onRetry} />;
   if (!results) return <LoadingRows />;
   if (results.cards.length === 0)
     return <EmptyState title={emptyTitle} message={t.noResultsMessage} />;
+  const rows: C[][] = [];
+  for (let i = 0; i < results.cards.length; i += columns)
+    rows.push(results.cards.slice(i, i + columns));
   return (
     <View className="gap-3">
-      {results.cards.map(render)}
+      {columns === 1
+        ? results.cards.map((card) => render(card, false))
+        : rows.map((row, r) => (
+            <View key={r} className="flex-row items-stretch gap-3">
+              {Array.from({ length: columns }, (_, i) => (
+                <View key={i} className="min-w-0 flex-1">
+                  {row[i] === undefined ? null : render(row[i], true)}
+                </View>
+              ))}
+            </View>
+          ))}
       {results.more ? <Button secondary label={t.loadMore} onPress={onMore} /> : null}
     </View>
   );
@@ -313,7 +347,7 @@ function BusinessesPanel({ api }: { api: DirectoryApi }) {
         emptyTitle={t.noBusinessesTitle}
         onRetry={() => run(applied)}
         onMore={loadMore}
-        render={(card) => <BusinessCardView key={card.businessId} card={card} />}
+        render={(card, fill) => <BusinessCardView key={card.businessId} card={card} fill={fill} />}
       />
     </>
   );
@@ -408,7 +442,7 @@ function ProfessionalsPanel({
         emptyTitle={t.noResultsTitle}
         onRetry={() => run(applied)}
         onMore={loadMore}
-        render={(card) => <DirectoryCardView key={card.memberId} card={card} />}
+        render={(card, fill) => <DirectoryCardView key={card.memberId} card={card} fill={fill} />}
       />
     </>
   );
@@ -460,14 +494,17 @@ export function DirectoryScreen({
   const [tab, setTab] = useState<Tab>("professionals");
   return (
     <View className="gap-4">
-      <ScreenTitle>{t.navPeople}</ScreenTitle>
-      <LinkButton
-        href="/connections"
-        label={t.myConnections}
-        className="mb-3 min-h-[44px] justify-center self-start"
-      >
-        <Text className="font-figtree-semibold text-sm text-blue">{t.myConnections}</Text>
-      </LinkButton>
+      <View className="flex-row flex-wrap items-center justify-between gap-2">
+        <ScreenTitle>{t.navPeople}</ScreenTitle>
+        <LinkButton
+          href="/connections"
+          label={t.myConnections}
+          className="min-h-[44px] justify-center rounded-[10px] border border-line bg-surface px-4"
+        >
+          <Text className="font-figtree-semibold text-sm text-ink">{t.myConnections}</Text>
+        </LinkButton>
+      </View>
+      <Text className="font-figtree text-[14px] leading-5 text-ink-2">{t.peopleIntro}</Text>
       <Tabs value={tab} onChange={setTab} />
       {tab === "professionals" ? (
         <ProfessionalsPanel api={api} initialQuery={initialQuery} />

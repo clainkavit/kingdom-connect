@@ -409,3 +409,22 @@ describe("Opportunity page layout (13 Nov 2026 redesign)", () => {
     expect(screen.queryByRole("button", { name: en.oppSaveThis(detail().title) })).toBeNull();
   });
 });
+
+describe("Post an opportunity button (O14)", () => {
+  it("shows the button to a member who may post, linking to the form", async () => {
+    await show(<OpportunitiesList api={fakeApi()} canPost={async () => true} />);
+    expect(screen.getByRole("link", { name: en.actionPostOpportunity }).getAttribute("href")).toBe(
+      "/opportunities/new",
+    );
+  });
+
+  it("hides it from a member who may not post, or when the check fails", async () => {
+    await show(<OpportunitiesList api={fakeApi()} canPost={async () => false} />);
+    expect(screen.queryByRole("link", { name: en.actionPostOpportunity })).toBeNull();
+    cleanup();
+    await show(
+      <OpportunitiesList api={fakeApi()} canPost={() => Promise.reject(new Error("down"))} />,
+    );
+    expect(screen.queryByRole("link", { name: en.actionPostOpportunity })).toBeNull();
+  });
+});

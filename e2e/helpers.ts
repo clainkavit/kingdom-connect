@@ -251,6 +251,12 @@ export async function addProfile(memberId: string, fullName: string) {
   await db`insert into public.profiles (member_id, full_name) values (${memberId}, ${fullName})`;
 }
 
+/** Puts a member's profile in a district, by its English name, and gives them a profession. */
+export async function placeIn(memberId: string, district: string, profession: string) {
+  await db`update public.profiles p set district_id = d.id, region_id = d.region_id, profession = ${profession}
+    from public.districts d where p.member_id = ${memberId} and d.name_en = ${district}`;
+}
+
 export async function connect(a: string, b: string) {
   const [first, second] = [a, b].sort();
   await db`insert into public.connections (member_a, member_b) values (${first!}, ${second!})`;

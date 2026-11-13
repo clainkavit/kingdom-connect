@@ -276,3 +276,42 @@ describe("People layout (13 Nov 2026 redesign)", () => {
     );
   });
 });
+
+describe("Near you (R25)", () => {
+  const cards = [
+    card({ memberId: "a", fullName: "Joseph Mushi", near: "Mwanza" }),
+    card({ memberId: "b", fullName: "Zawadi Lyimo", near: "Mwanza" }),
+    card({ memberId: "c", fullName: "Baraka Dodoma", near: null }),
+  ];
+
+  it("with no search words, puts members in the reader's region under Near you, then the rest", async () => {
+    await show(fakeApi({ search: vi.fn().mockResolvedValue({ cards, more: false }) }));
+    const near = screen.getByRole("heading", { name: "Near you in Mwanza" });
+    const more = screen.getByRole("heading", { name: "More members" });
+    expect(near.parentElement!.textContent).toContain("Zawadi Lyimo");
+    expect(near.parentElement!.textContent).not.toContain("Baraka Dodoma");
+    expect(more.parentElement!.textContent).toContain("Baraka Dodoma");
+  });
+
+  it("shows no headings when nobody is near", async () => {
+    await show(
+      fakeApi({
+        search: vi.fn().mockResolvedValue({ cards: [card({ near: null })], more: false }),
+      }),
+    );
+    expect(screen.queryByRole("heading", { name: /Near you/ })).toBeNull();
+    expect(screen.queryByRole("heading", { name: "More members" })).toBeNull();
+  });
+
+  it("shows no headings once search words are typed", async () => {
+    await act(async () => {
+      render(
+        <DirectoryScreen
+          api={fakeApi({ search: vi.fn().mockResolvedValue({ cards, more: false }) })}
+          initialQuery="bookkeeping"
+        />,
+      );
+    });
+    expect(screen.queryByRole("heading", { name: /Near you/ })).toBeNull();
+  });
+});

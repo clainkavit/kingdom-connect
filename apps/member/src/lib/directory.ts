@@ -35,6 +35,8 @@ export type DirectoryCard = {
   business: boolean;
   photoUrl: string | null;
   relation: Relation;
+  /** R25: in the reader's own region, named here; only when no search words were typed. */
+  near?: string | null;
 };
 
 export type ResultPage<C> = { cards: C[]; more: boolean };
@@ -118,6 +120,7 @@ type Row = PlaceNames & {
   verified_business: boolean;
   photo_path: string | null;
   relation: Relation;
+  near: boolean;
 };
 
 const pageOf = <R, C>(rows: R[], toCard: (row: R) => C): ResultPage<C> => ({
@@ -151,6 +154,7 @@ export const directoryApi: DirectoryApi = {
       business: r.verified_business,
       photoUrl: (r.photo_path && urlFor.get(r.photo_path)) || null,
       relation: r.relation,
+      near: r.near ? (language === "sw" ? r.region_sw : r.region_en) : null,
     }));
   },
   regions: regionOptions,

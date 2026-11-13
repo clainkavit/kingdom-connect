@@ -1,4 +1,4 @@
-import type { Language, TextKey } from "@kingdom-connect/shared";
+import type { Language, Strings, TextKey } from "@kingdom-connect/shared";
 import { Children, useEffect, useState } from "react";
 import { Pressable, Text, useWindowDimensions, View } from "react-native";
 import {
@@ -249,6 +249,7 @@ function ResultList<C>({
   onRetry,
   onMore,
   render,
+  sections,
 }: {
   failed: boolean;
   results: Results<C> | null;
@@ -256,6 +257,7 @@ function ResultList<C>({
   onRetry: () => void;
   onMore: () => void;
   render: (card: C, fill: boolean) => React.ReactNode;
+  sections?: (cards: C[]) => Section<C>[];
 }) {
   const { t } = useLanguage();
   const columns = useColumns();
@@ -263,25 +265,49 @@ function ResultList<C>({
   if (!results) return <LoadingRows />;
   if (results.cards.length === 0)
     return <EmptyState title={emptyTitle} message={t.noResultsMessage} />;
-  const rows: C[][] = [];
-  for (let i = 0; i < results.cards.length; i += columns)
-    rows.push(results.cards.slice(i, i + columns));
+  const grid = (cards: C[]) => {
+    if (columns === 1) return cards.map((card) => render(card, false));
+    const rows: C[][] = [];
+    for (let i = 0; i < cards.length; i += columns) rows.push(cards.slice(i, i + columns));
+    return rows.map((row, r) => (
+      <View key={r} className="flex-row items-stretch gap-3">
+        {Array.from({ length: columns }, (_, i) => (
+          <View key={i} className="min-w-0 flex-1">
+            {row[i] === undefined ? null : render(row[i], true)}
+          </View>
+        ))}
+      </View>
+    ));
+  };
+  const parts = sections ? sections(results.cards) : [{ title: null, cards: results.cards }];
   return (
     <View className="gap-3">
-      {columns === 1
-        ? results.cards.map((card) => render(card, false))
-        : rows.map((row, r) => (
-            <View key={r} className="flex-row items-stretch gap-3">
-              {Array.from({ length: columns }, (_, i) => (
-                <View key={i} className="min-w-0 flex-1">
-                  {row[i] === undefined ? null : render(row[i], true)}
-                </View>
-              ))}
-            </View>
-          ))}
+      {parts.map((part, i) => (
+        <View key={i} className="gap-3">
+          {part.title ? (
+            <Text role="heading" aria-level={2} className="font-figtree-bold text-base text-ink">
+              {part.title}
+            </Text>
+          ) : null}
+          {grid(part.cards)}
+        </View>
+      ))}
       {results.more ? <Button secondary label={t.loadMore} onPress={onMore} /> : null}
     </View>
   );
+}
+
+type Section<C> = { title: string | null; cards: C[] };
+
+/** R25: with no search words, the members in the reader's region under "Near you", then the rest. */
+function nearSections(t: Strings, cards: DirectoryCard[]): Section<DirectoryCard>[] {
+  const near = cards.filter((c) => c.near);
+  if (near.length === 0) return [{ title: null, cards }];
+  const rest = cards.filter((c) => !c.near);
+  return [
+    { title: t.nearYouIn(near[0].near as string), cards: near },
+    ...(rest.length ? [{ title: t.moreMembers, cards: rest }] : []),
+  ];
 }
 
 const levelChoice: Record<string, BusinessLevel | null> = { "": null, "2": 2, "3": 3 };
@@ -443,6 +469,7 @@ function ProfessionalsPanel({
         onRetry={() => run(applied)}
         onMore={loadMore}
         render={(card, fill) => <DirectoryCardView key={card.memberId} card={card} fill={fill} />}
+        sections={applied.q.trim() ? undefined : (cards) => nearSections(t, cards)}
       />
     </>
   );

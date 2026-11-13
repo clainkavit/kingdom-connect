@@ -603,6 +603,21 @@ export const notificationCopy = {
       message: "Fursa {count} mpya zinaendana na ujuzi wako na eneo lako wiki hii.",
     },
   },
+  S2: {
+    category: "matches",
+    inApp: true,
+    email: "yes",
+    push: false,
+    opens: "/opportunities",
+    en: {
+      title: "New posts for your alerts",
+      message: "{count} new opportunities match the filters you asked to be alerted about.",
+    },
+    sw: {
+      title: "Matangazo mapya ya arifa zako",
+      message: "Fursa {count} mpya zinaendana na vichujio ulivyoomba kuarifiwa.",
+    },
+  },
   T1: {
     category: "learning",
     inApp: true,

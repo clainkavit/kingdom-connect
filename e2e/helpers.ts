@@ -472,3 +472,17 @@ export async function ideaPartners(ownerId: string, partnerId: string, title: st
 export async function setPhone(memberId: string, phone: string) {
   await db`update public.member_private set phone = ${phone} where member_id = ${memberId}`;
 }
+
+/** O13: runs the daily job alerts now, as the scheduler would. */
+export async function runJobAlerts(): Promise<number> {
+  const [row] = await db`select private.queue_job_alerts() as n`;
+  return row!.n as number;
+}
+
+/** Changes a published post's type, for tests that need something other than a job. */
+export async function retypeOpportunity(
+  id: string,
+  type: "partnership" | "collaboration" | "investment",
+) {
+  await db`update public.opportunities set type = ${type}, employment_type = null where id = ${id}`;
+}

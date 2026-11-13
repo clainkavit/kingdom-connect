@@ -1,4 +1,4 @@
-import { isCurrent, memberNav, memberPhoneTabs } from "@kingdom-connect/shared";
+import { isCurrent, memberNav, memberPhoneTabs, type NavItem } from "@kingdom-connect/shared";
 import { usePathname, useRouter } from "expo-router";
 import Search from "lucide-react-native/icons/search";
 import { useState } from "react";
@@ -64,9 +64,59 @@ function TopSearch() {
   );
 }
 
-function TopBar({ pathname, unread }: { pathname: string; unread: number }) {
+/** A small count on an icon; the screen reader hears it through the link's label instead. */
+function CountBadge({ count }: { count: number }) {
+  if (count <= 0) return null;
+  return (
+    <View
+      aria-hidden
+      style={{ position: "absolute", top: -4, right: -9 }}
+      className="min-w-[18px] items-center rounded-full bg-bad px-1"
+    >
+      <Text className="font-figtree-bold text-[11px] text-white">{count > 9 ? "9+" : count}</Text>
+    </View>
+  );
+}
+
+function useNavLabel(unreadMessages: number) {
+  const { t } = useLanguage();
+  return (item: NavItem) =>
+    item.href === "/messages" && unreadMessages > 0
+      ? t.messagesUnread(unreadMessages)
+      : t[item.key];
+}
+
+function NavGlyph({
+  item,
+  color,
+  size,
+  unreadMessages,
+}: {
+  item: NavItem;
+  color: string;
+  size: number;
+  unreadMessages: number;
+}) {
+  return (
+    <View>
+      <NavIcon name={item.icon} size={size} color={color} />
+      {item.href === "/messages" ? <CountBadge count={unreadMessages} /> : null}
+    </View>
+  );
+}
+
+function TopBar({
+  pathname,
+  unread,
+  unreadMessages,
+}: {
+  pathname: string;
+  unread: number;
+  unreadMessages: number;
+}) {
   const { t, platformName } = useLanguage();
   const palette = usePalette();
+  const label = useNavLabel(unreadMessages);
   return (
     <View style={{ zIndex: 10 }} className="border-b border-line bg-surface">
       <View className="w-full flex-row flex-wrap items-stretch gap-x-4 px-7">
@@ -87,10 +137,15 @@ function TopBar({ pathname, unread }: { pathname: string; unread: number }) {
                 key={item.href}
                 href={item.href}
                 current={current}
-                label={t[item.key]}
+                label={label(item)}
                 className={`min-h-[72px] min-w-[62px] items-center justify-center gap-[3px] border-b-[3px] px-1 ${current ? "border-navy" : "border-transparent"}`}
               >
-                <NavIcon name={item.icon} size={22} color={current ? palette.navy : palette.ink2} />
+                <NavGlyph
+                  item={item}
+                  size={22}
+                  color={current ? palette.navy : palette.ink2}
+                  unreadMessages={unreadMessages}
+                />
                 <Text
                   numberOfLines={1}
                   className={`text-[13px] ${current ? "font-figtree-extrabold text-navy" : "font-figtree-semibold text-ink-2"}`}
@@ -111,9 +166,10 @@ function TopBar({ pathname, unread }: { pathname: string; unread: number }) {
   );
 }
 
-function TabBar({ pathname }: { pathname: string }) {
+function TabBar({ pathname, unreadMessages }: { pathname: string; unreadMessages: number }) {
   const palette = usePalette();
   const { t } = useLanguage();
+  const label = useNavLabel(unreadMessages);
   return (
     <View
       role="navigation"
@@ -127,10 +183,15 @@ function TabBar({ pathname }: { pathname: string }) {
             key={item.href}
             href={item.href}
             current={current}
-            label={t[item.key]}
+            label={label(item)}
             className="min-h-[56px] flex-1 items-center justify-center gap-0.5"
           >
-            <NavIcon name={item.icon} size={24} color={current ? palette.blue : palette.ink2} />
+            <NavGlyph
+              item={item}
+              size={24}
+              color={current ? palette.blue : palette.ink2}
+              unreadMessages={unreadMessages}
+            />
             <Text
               numberOfLines={1}
               className={`text-[11px] ${current ? "font-figtree-bold text-blue" : "font-figtree text-ink-2"}`}
@@ -147,9 +208,11 @@ function TabBar({ pathname }: { pathname: string }) {
 export function MemberShell({
   children,
   unread = 0,
+  unreadMessages = 0,
 }: {
   children: React.ReactNode;
   unread?: number;
+  unreadMessages?: number;
 }) {
   const { width } = useWindowDimensions();
   const pathname = usePathname();
@@ -157,7 +220,7 @@ export function MemberShell({
   return (
     <View className="flex-1 bg-bg">
       {wide ? (
-        <TopBar pathname={pathname} unread={unread} />
+        <TopBar pathname={pathname} unread={unread} unreadMessages={unreadMessages} />
       ) : (
         <View className="flex-row items-center justify-between bg-navy px-5 py-2.5">
           <Wordmark phone />
@@ -170,7 +233,7 @@ export function MemberShell({
       <ScrollView className="flex-1" contentContainerClassName={wide ? "px-7 py-6" : "px-5 py-4"}>
         <View role="main">{children}</View>
       </ScrollView>
-      {wide ? null : <TabBar pathname={pathname} />}
+      {wide ? null : <TabBar pathname={pathname} unreadMessages={unreadMessages} />}
     </View>
   );
 }

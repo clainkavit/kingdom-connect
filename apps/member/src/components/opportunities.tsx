@@ -555,6 +555,82 @@ export function OpportunityDetailScreen({
 
   const role = roleLine(t, post);
   const action = !post.isMine && !post.readOnly && respond ? respond(post) : null;
+  const save = (
+    <SaveButton
+      withWords
+      saved={saved.isSaved(post.id)}
+      title={post.title}
+      onPress={() => saved.toggle(post.id)}
+    />
+  );
+  const yourSkills =
+    mySkills && !post.isMine && post.skills.length > 0 ? (
+      <YourSkillsForPost skills={post.skills} api={mySkills} />
+    ) : null;
+
+  if (!phone)
+    return (
+      <View className="gap-4">
+        <LinkButton
+          href="/opportunities"
+          label={t.oppBack}
+          className="min-h-[40px] justify-center self-start"
+        >
+          <Text className="font-figtree-semibold text-sm text-blue">{t.oppBack}</Text>
+        </LinkButton>
+        <View className="flex-row items-start gap-6">
+          <View className="min-w-0 flex-1 gap-4">
+            <View className="flex-row flex-wrap items-center gap-2">
+              <Badge text={t[typeLabel[post.type]] as string} />
+              {post.featured ? <Badge tone="gold" text={t.oppFeatured} /> : null}
+            </View>
+            <ScreenTitle>{post.title}</ScreenTitle>
+            <Text className="font-figtree-semibold text-[14px] text-ink-2">{post.posterName}</Text>
+            {post.readOnly ? <Message tone="info" text={t.oppReadOnly} /> : null}
+            <Text className="font-figtree text-[15px] leading-6 text-ink">{post.description}</Text>
+            <View className="gap-3 rounded-card border border-line bg-surface p-4">
+              <Fact label={t.oppRoleLabel} value={role} />
+              <Fact label={t.oppPlaceLabel} value={placeLine(t, post, language)} />
+              <Fact label={t.filterSector} value={named(post.sector, language)} />
+              <Fact label={t.fieldSkills} value={post.skills.join(", ") || null} />
+            </View>
+            {tender ? <TenderSection api={api} tender={tender} closingAt={post.closingAt} /> : null}
+          </View>
+          <View className="w-[320px] gap-4">
+            <View className="gap-3 rounded-card border border-line bg-surface p-4">
+              <Fact label={t.fieldClosing} value={closingDay(post.closingAt, language)} />
+              {post.isMine ? (
+                <LinkButton
+                  href="/opportunities/mine"
+                  label={t.oppYourPost}
+                  className="min-h-[40px] justify-center"
+                >
+                  <Text className="font-figtree-semibold text-sm text-blue">{t.oppYourPost}</Text>
+                </LinkButton>
+              ) : (
+                save
+              )}
+            </View>
+            {action}
+            <View className="gap-2">
+              <Text className="font-figtree text-[13px] leading-5 text-ink-2">
+                {t.oppNoFeeNote}
+              </Text>
+              {post.isMine ? null : (
+                <View className="items-start">
+                  <ReportLink
+                    target={{ type: "opportunity", id: post.id }}
+                    memberId={post.posterId ?? ""}
+                  />
+                </View>
+              )}
+            </View>
+            {yourSkills}
+          </View>
+        </View>
+      </View>
+    );
+
   return (
     <View className="gap-4">
       <LinkButton href="/opportunities" label={t.oppBack} className="min-h-[40px] justify-center">
@@ -563,16 +639,7 @@ export function OpportunityDetailScreen({
       <View className="flex-row flex-wrap items-center gap-2">
         <Badge text={t[typeLabel[post.type]] as string} />
         {post.featured ? <Badge tone="gold" text={t.oppFeatured} /> : null}
-        {post.isMine ? null : (
-          <View className="ml-auto">
-            <SaveButton
-              withWords
-              saved={saved.isSaved(post.id)}
-              title={post.title}
-              onPress={() => saved.toggle(post.id)}
-            />
-          </View>
-        )}
+        {post.isMine ? null : <View className="ml-auto">{save}</View>}
       </View>
       <ScreenTitle>{post.title}</ScreenTitle>
       <Text className="font-figtree-semibold text-[14px] text-ink-2">{post.posterName}</Text>
@@ -585,9 +652,7 @@ export function OpportunityDetailScreen({
         <Fact label={t.fieldSkills} value={post.skills.join(", ") || null} />
         <Fact label={t.fieldClosing} value={closingDay(post.closingAt, language)} />
       </View>
-      {mySkills && !post.isMine && post.skills.length > 0 ? (
-        <YourSkillsForPost skills={post.skills} api={mySkills} />
-      ) : null}
+      {yourSkills}
       {tender ? <TenderSection api={api} tender={tender} closingAt={post.closingAt} /> : null}
       {post.isMine ? (
         <LinkButton
@@ -598,18 +663,15 @@ export function OpportunityDetailScreen({
           <Text className="font-figtree-semibold text-sm text-blue">{t.oppYourPost}</Text>
         </LinkButton>
       ) : (
-        <>
-          {phone ? null : action}
-          <View className="items-start">
-            <ReportLink
-              target={{ type: "opportunity", id: post.id }}
-              memberId={post.posterId ?? ""}
-            />
-          </View>
-        </>
+        <View className="items-start">
+          <ReportLink
+            target={{ type: "opportunity", id: post.id }}
+            memberId={post.posterId ?? ""}
+          />
+        </View>
       )}
       <Text className="font-figtree text-[13px] leading-5 text-ink-2">{t.oppNoFeeNote}</Text>
-      {phone && action ? (
+      {action ? (
         <View
           style={stickToBottom}
           className="-mx-5 -mb-4 border-t border-line bg-surface px-5 pb-4 pt-3"

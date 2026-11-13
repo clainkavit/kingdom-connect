@@ -245,6 +245,11 @@ To: member. Channels: in-app, weekly email digest.
 - **EN** Title: New matches for you. Message: {count} new opportunities match your skills and location this week.
 - **SW** Title: Fursa mpya kwa ajili yako. Message: Fursa {count} mpya zinaendana na ujuzi wako na eneo lako wiki hii.
 
+### S2 New posts for a job alert (O13)
+To: member with job alerts. Channels: in-app, email (category matches, so the S46 switch for matches turns the email off). Sent at most once a day, at 07:00 Tanzania time, only when a post matching one of the member's saved filters was published since the last run.
+- **EN** Title: New posts for your alerts. Message: {count} new opportunities match the filters you asked to be alerted about.
+- **SW** Title: Matangazo mapya ya arifa zako. Message: Fursa {count} mpya zinaendana na vichujio ulivyoomba kuarifiwa.
+
 ### T1 Training or event reminder (1 day before)
 To: registrant. Channels: in-app, email.
 - **EN** Title: Tomorrow: {title}. Message: It starts at {time}. See you there.

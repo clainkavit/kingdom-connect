@@ -9,6 +9,7 @@ import {
 import { useState } from "react";
 import Bookmark from "lucide-react-native/icons/bookmark";
 import { Linking, Pressable, Text, View } from "react-native";
+import type { JobAlertsApi } from "../lib/job-alerts";
 import { useLanguage } from "../lib/language";
 import { useSavedPosts } from "../lib/saved-posts";
 import {
@@ -26,6 +27,7 @@ import { FilterSheet } from "./filter-sheet";
 import { stickToBottom, usePhone } from "./sheet";
 import { LinkButton } from "./link-button";
 import { usePalette } from "./palette";
+import { AlertSwitch } from "./job-alerts";
 import { typeLabel } from "./opportunity-form";
 import { YourSkillsForPost, type MySkillsApi } from "./your-skills";
 import { ReportLink } from "./report-link";
@@ -249,7 +251,13 @@ function Filters({
 }
 
 /** S16: published open posts, featured first, 20 at a time, with filters (O02). */
-export function OpportunitiesList({ api }: { api: OpportunityBrowseApi }) {
+export function OpportunitiesList({
+  api,
+  alerts,
+}: {
+  api: OpportunityBrowseApi;
+  alerts?: JobAlertsApi;
+}) {
   const { t } = useLanguage();
   const saved = useSavedPosts(api);
   const [filters, setFilters] = useState<OpportunityFilters>({});
@@ -406,6 +414,7 @@ export function OpportunitiesList({ api }: { api: OpportunityBrowseApi }) {
       ) : (
         <Filters api={api} filters={filters} onChange={apply} />
       )}
+      {alerts ? <AlertSwitch api={alerts} filters={filters} /> : null}
       {first.state === "failed" ? (
         <ErrorState message={t.oppLoadFailed} onRetry={() => setRun((r) => r + 1)} />
       ) : first.state === "loading" ? (

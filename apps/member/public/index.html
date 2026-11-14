@@ -3,7 +3,10 @@
   <head>
     <meta charset="utf-8" />
     <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no, viewport-fit=cover"
+    />
     <title>Kingdom Connect</title>
     <style id="expo-reset">
       /* These styles make the body full-height */
@@ -14,6 +17,8 @@
       /* These styles disable body scrolling if you are using <ScrollView> */
       body {
         overflow: hidden;
+        margin: 0;
+        background: #f7f1ea;
       }
       /* These styles make the root element full-height */
       #root {
@@ -22,6 +27,68 @@
         flex: 1;
       }
     </style>
+    <style id="kc-splash-style">
+      /*
+       * Shown by the HTML alone, before any JavaScript arrives (audit H1: on 3G the app's
+       * code takes several seconds). React replaces everything inside #root on its first
+       * render, so the splash disappears by itself.
+       */
+      #kc-splash {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 28px;
+        background: #4a0e1a;
+      }
+      #kc-splash img {
+        width: min(62vw, 260px);
+        height: auto;
+        animation: kc-rise 700ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+      }
+      #kc-splash .kc-bar {
+        width: 96px;
+        height: 3px;
+        border-radius: 3px;
+        overflow: hidden;
+        background: rgba(243, 230, 208, 0.18);
+      }
+      #kc-splash .kc-bar::after {
+        content: "";
+        display: block;
+        width: 40%;
+        height: 100%;
+        border-radius: 3px;
+        background: #d9a73e;
+        animation: kc-slide 1.2s ease-in-out infinite;
+      }
+      @keyframes kc-rise {
+        from {
+          opacity: 0;
+          transform: translateY(12px) scale(0.97);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      @keyframes kc-slide {
+        from {
+          transform: translateX(-100%);
+        }
+        to {
+          transform: translateX(250%);
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        #kc-splash img,
+        #kc-splash .kc-bar::after {
+          animation: none;
+        }
+      }
+    </style>
+    <link rel="preload" as="image" href="/icons/logo-splash.jpg" />
     <link rel="manifest" href="/manifest.json" />
     <meta name="theme-color" content="#4a0e1a" />
     <meta name="mobile-web-app-capable" content="yes" />
@@ -32,6 +99,11 @@
 
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
+    <div id="root">
+      <div id="kc-splash" aria-busy="true">
+        <img src="/icons/logo-splash.jpg" width="440" height="401" alt="Kingdom Connect" />
+        <div class="kc-bar" role="progressbar" aria-label="Loading"></div>
+      </div>
+    </div>
   </body>
 </html>

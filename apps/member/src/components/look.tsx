@@ -1,4 +1,9 @@
-import { lookAllows, type ApplicationStatus, type Strings } from "@kingdom-connect/shared";
+import {
+  lookAllows,
+  VERIFY_STEPS,
+  type ApplicationStatus,
+  type Strings,
+} from "@kingdom-connect/shared";
 import { usePathname, useRouter } from "expo-router";
 import { createContext, useContext, useEffect, useState } from "react";
 import { Text, View } from "react-native";
@@ -13,7 +18,7 @@ import { LockedState } from "./states";
 /** What someone who is not verified tried to do (R27, PRD section 3). */
 export type LookAction = "apply" | "interest" | "save" | "register" | "alert";
 
-const VERIFY_HREF = "/registration";
+const VERIFY_HREF = "/profile/verify";
 
 const askFor = (t: Strings, action: LookAction): string =>
   ({
@@ -86,7 +91,13 @@ export function LookGate({ children }: { children: React.ReactNode }) {
   );
 }
 
-function VerifyBanner({ status }: { status: ApplicationStatus["kind"] | null }) {
+function VerifyBanner({
+  status,
+  done,
+}: {
+  status: ApplicationStatus["kind"] | null;
+  done: number | null;
+}) {
   const { t } = useLanguage();
   const checking = status === "under_review";
   const sent = checking || status === "rejected";
@@ -105,6 +116,11 @@ function VerifyBanner({ status }: { status: ApplicationStatus["kind"] | null }) 
       {status === "rejected" ? null : (
         <Text className="font-figtree text-sm leading-5 text-navy-ink">{body}</Text>
       )}
+      {!sent && done !== null ? (
+        <Text className="font-figtree-bold text-[13px] text-navy-ink">
+          {t.lookProgress(done, VERIFY_STEPS.length)}
+        </Text>
+      ) : null}
       <LinkButton
         href={VERIFY_HREF}
         label={action}
@@ -120,28 +136,35 @@ function VerifyBanner({ status }: { status: ApplicationStatus["kind"] | null }) 
 export function LookHome({
   widgets,
   status,
+  progress,
 }: {
   widgets: DashboardWidgetsApi;
   status: () => Promise<ApplicationStatus>;
+  progress: () => Promise<number>;
 }) {
   const { t } = useLanguage();
   const [kind, setKind] = useState<ApplicationStatus["kind"] | null>(null);
+  const [done, setDone] = useState<number | null>(null);
   useEffect(() => {
     let live = true;
     status().then(
       (s) => live && setKind(s.kind),
       () => undefined,
     );
+    progress().then(
+      (n) => live && setDone(n),
+      () => undefined,
+    );
     return () => {
       live = false;
     };
-  }, [status]);
+  }, [status, progress]);
   return (
     <View className="gap-5">
       <View className="self-start rounded-full bg-warn-soft px-3 py-1">
         <Text className="font-figtree-bold text-xs text-warn-text">{t.lookNotVerified}</Text>
       </View>
-      <VerifyBanner status={kind} />
+      <VerifyBanner status={kind} done={done} />
       <LatestItems api={widgets} />
       <View className="gap-2 rounded-card border border-line bg-surface p-5">
         <Text role="heading" aria-level={2} className="font-figtree-bold text-base text-ink">

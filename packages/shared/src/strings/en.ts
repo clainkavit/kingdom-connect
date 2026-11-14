@@ -1708,6 +1708,8 @@ export const en = {
   lookCheckingTitle: "Your identity is being checked",
   lookCheckingBody: "Keep looking around. You will get a notification when the review is done.",
   lookSeeStatus: "See your application",
+  verifyTitle: "Verify your identity",
+  lookProgress: (done: number, total: number) => `${done} of ${total} steps done`,
   lookAround: "Look around while you wait",
   googleContinue: "Continue with Google",
   googleFailed: "Sign-in did not finish. Try again or use another way.",

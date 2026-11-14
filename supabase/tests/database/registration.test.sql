@@ -4,6 +4,10 @@ create extension if not exists pgtap with schema extensions;
 create or replace function access.accepted_terms_and_privacy() returns boolean language sql stable as 'select true';
 select plan(43);
 
+insert into public.legal_texts (kind, version, body_en, body_sw, effective_at)
+select k, '95.0', 'Test ' || k, 'Jaribio ' || k, now() - interval '1 minute'
+from unnest(array['terms', 'privacy']) k;
+
 select has_table('public', 'registration_drafts', 'registration_drafts exists');
 select has_table('public', 'verification_documents', 'verification_documents exists');
 select is((select public from storage.buckets where id = 'identity-documents'), false,
@@ -91,12 +95,12 @@ where member_id = '00000000-0000-0000-0000-0000000000d1';
 select is(private.submit_registration('00000000-0000-0000-0000-0000000000d1'), 'incomplete',
   'a district outside the chosen region is refused');
 update public.registration_drafts
-set data = data || jsonb_build_object('districtId', (select district_id from place), 'acceptPrivacy', false)
+set data = data || jsonb_build_object('districtId', (select district_id from place))
 where member_id = '00000000-0000-0000-0000-0000000000d1';
 select is(private.submit_registration('00000000-0000-0000-0000-0000000000d1'), 'legal_not_accepted',
-  'submitting needs both legal boxes ticked');
-update public.registration_drafts set data = data || '{"acceptPrivacy": true}'
-where member_id = '00000000-0000-0000-0000-0000000000d1';
+  'submitting needs the current terms of use and privacy notice accepted (R28)');
+insert into public.legal_acceptances (member_id, legal_text_id, context_type)
+select '00000000-0000-0000-0000-0000000000d1', id, 'reaccept' from public.legal_texts where version = '95.0';
 select is(private.submit_registration('00000000-0000-0000-0000-0000000000d1'), 'ok', 'a complete draft is submitted');
 select is(private.submit_registration('00000000-0000-0000-0000-0000000000d1'), 'already_submitted',
   'and only once');
@@ -122,6 +126,8 @@ select is(private.submit_registration('00000000-0000-0000-0000-0000000000d2'), '
 insert into storage.objects (bucket_id, name) values
   ('identity-documents', '00000000-0000-0000-0000-0000000000d2/face'),
   ('identity-documents', '00000000-0000-0000-0000-0000000000d2/id');
+insert into public.legal_acceptances (member_id, legal_text_id, context_type)
+select '00000000-0000-0000-0000-0000000000d2', id, 'reaccept' from public.legal_texts where version = '95.0';
 select is(private.submit_registration('00000000-0000-0000-0000-0000000000d2'), 'ok',
   'an applicant who first tried a registered ID can submit with their own');
 select is(

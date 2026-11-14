@@ -2,6 +2,11 @@ import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import {
   firstIncompleteStep,
+  nextVerifyStep,
+  previousVerifyStep,
+  shownStepNumber,
+  verifyProgress,
+  VERIFY_STEPS,
   idNumberProblem,
   normalizePhone,
   type RegistrationDraft,
@@ -85,7 +90,42 @@ describe("wizard steps (S05)", () => {
   it("sends the applicant back to the first unfinished step", () => {
     expect(firstIncompleteStep({ ...complete, address: " " })).toBe(1);
     expect(firstIncompleteStep({ ...complete, idPhoto: false })).toBe(4);
-    expect(firstIncompleteStep({ ...complete, acceptPrivacy: false })).toBe(5);
+  });
+
+  it("does not ask for the terms in the steps: they are accepted when the account is made (R28)", () => {
+    expect(
+      firstIncompleteStep({ ...complete, acceptTerms: false, acceptPrivacy: false }),
+    ).toBeNull();
+  });
+
+  it("shows five steps in the profile: about you, what you do, your work, ID and photos, check and send", () => {
+    expect(VERIFY_STEPS).toEqual([1, 2, 3, 4, 6]);
+    expect(VERIFY_STEPS.map(shownStepNumber)).toEqual([1, 2, 3, 4, 5]);
+    expect(nextVerifyStep(4)).toBe(6);
+    expect(previousVerifyStep(6)).toBe(4);
+    expect(nextVerifyStep(1)).toBe(2);
+    expect(previousVerifyStep(2)).toBe(1);
+  });
+
+  it("asks an account with no phone yet for one in About you, in the +255 form", () => {
+    const aboutYou = {
+      fullName: "A",
+      regionId: "r",
+      districtId: "d",
+      address: "Plot 1",
+      needsPhone: true,
+    };
+    expect(stepProblems(1, aboutYou)).toEqual({ phone: "phone" });
+    expect(stepProblems(1, { ...aboutYou, phone: "0712 345 678" })).toEqual({});
+    expect(stepProblems(1, { ...aboutYou, phone: "12345" })).toEqual({ phone: "phone" });
+  });
+
+  it("counts the steps done for the Home banner (S08)", () => {
+    expect(verifyProgress({})).toBe(0);
+    expect(
+      verifyProgress({ fullName: "A", regionId: "r", districtId: "d", address: "Plot 1" }),
+    ).toBe(1);
+    expect(verifyProgress(complete)).toBe(4);
   });
 
   it("lets a member tick several categories and asks for the details of each (#161)", () => {

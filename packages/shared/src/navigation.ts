@@ -124,6 +124,7 @@ const lookPages = [
   "/news",
   "/account",
   "/registration",
+  "/profile/verify",
 ];
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const lookDetails: Record<string, readonly string[]> = {

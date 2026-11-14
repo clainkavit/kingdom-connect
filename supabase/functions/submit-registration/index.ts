@@ -19,7 +19,8 @@ Deno.serve(async (req) => {
     await keepPhotosWithApplication(applicant.userId);
     return json({ ok: true });
   }
-  if (row?.result === "incomplete") return json({ error: "incomplete", step: 1 }, 400);
+  if (row?.result === "incomplete" || row?.result === "missing_phone")
+    return json({ error: "incomplete", step: 1 }, 400);
   return json({ error: row?.result ?? "failed" }, 400);
 });
 

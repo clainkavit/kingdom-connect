@@ -200,6 +200,7 @@ export async function createApplication(username: string, idNumber: string) {
   };
   await db`insert into public.registration_drafts (member_id, step, data)
     values (${id}, 6, ${db.json(draft)})`;
+  await acceptCurrentTexts([id]);
   const [result] = await db`select private.submit_registration(${id}) as result`;
   expect(result!.result).toBe("ok");
   return { id, email };

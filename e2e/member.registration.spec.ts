@@ -28,7 +28,14 @@ async function signUp(page: Page, username: string) {
   await page.getByRole("button", { name: "Create an account" }).click();
   await expect(page.getByRole("heading", { name: "Check your email" })).toBeVisible();
   await enterCode(page, await nextCode(email, sentAfter));
-  await expect(page.getByText("Step 1 of 6")).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Please accept the updated texts" }),
+  ).toBeVisible();
+  await page.getByRole("checkbox", { name: "I accept the terms of use" }).click();
+  await page.getByRole("checkbox", { name: "I accept the privacy notice" }).click();
+  await page.getByRole("button", { name: "Continue" }).click();
+  await expect(page.getByRole("heading", { name: "Verify your identity" })).toBeVisible();
+  await expect(page.getByText("Step 1 of 5")).toBeVisible();
   return email;
 }
 
@@ -55,7 +62,7 @@ async function saveNida(page: Page, nida: string) {
 
 const nidaFor = (seed: number) => String(seed).padStart(20, "7").slice(-20);
 
-test("a person signs up, completes the six steps and is approved (REG-1, S02, S05, S06)", async ({
+test("a person signs up, does the five steps in the profile and is approved (REG-1, REG-8, S05, S06)", async ({
   page,
 }) => {
   const username = `e2e_reg_${Date.now()}`;
@@ -67,21 +74,21 @@ test("a person signs up, completes the six steps and is approved (REG-1, S02, S0
   await page.getByLabel("Address (street, area or plot)").fill("Plot 1, Test Street");
   await page.getByRole("button", { name: "Next" }).click();
 
-  await expect(page.getByText("Step 2 of 6")).toBeVisible();
+  await expect(page.getByText("Step 2 of 5")).toBeVisible();
   await page.reload();
-  await expect(page.getByText("Step 2 of 6")).toBeVisible();
+  await expect(page.getByText("Step 2 of 5")).toBeVisible();
   await expect(page.getByRole("checkbox", { name: "Entrepreneur" })).toHaveCount(0);
   await page.getByRole("checkbox", { name: "Businessperson" }).click();
   await page.getByRole("checkbox", { name: "Professional" }).click();
   await page.getByRole("button", { name: "Next" }).click();
 
-  await expect(page.getByText("Step 3 of 6")).toBeVisible();
+  await expect(page.getByText("Step 3 of 5")).toBeVisible();
   await page.getByLabel("Profession", { exact: true }).fill("Accountant");
   await page.getByLabel("Business name", { exact: true }).fill("Test Traders");
   await choose(page, "Sector", "Trade");
   await page.getByRole("button", { name: "Next" }).click();
 
-  await expect(page.getByText("Step 4 of 6")).toBeVisible();
+  await expect(page.getByText("Step 4 of 5")).toBeVisible();
   await saveNida(page, nidaFor(Date.now()));
   await expect(page.getByText("Your ID is saved. Enter it again only to change it.")).toBeVisible();
   await upload(page, 0);
@@ -90,17 +97,13 @@ test("a person signs up, completes the six steps and is approved (REG-1, S02, S0
   await expect(page.getByText("Added")).toHaveCount(2);
   await page.getByRole("button", { name: "Next" }).click();
 
-  await expect(page.getByText("Step 5 of 6")).toBeVisible();
-  await page.getByRole("checkbox", { name: "I accept the terms of use" }).click();
-  await page.getByRole("checkbox", { name: /I consent to how my data is used/ }).click();
-  await page.getByRole("button", { name: "Next" }).click();
-
-  await expect(page.getByText("Step 6 of 6")).toBeVisible();
+  await expect(page.getByText("Step 5 of 5")).toBeVisible();
   await expect(page.getByText("Test Applicant")).toBeVisible();
   await expect(page.getByText("Professional, Businessperson")).toBeVisible();
   await page.getByRole("button", { name: "Submit application" }).click();
-  await expect(page.getByRole("heading", { name: "Registration status" })).toBeVisible();
   await expect(page.getByText("Under review")).toBeVisible();
+  await page.getByRole("link", { name: "Look around while you wait" }).click();
+  await expect(page.getByText("Your identity is being checked")).toBeVisible();
 
   const admin = await page.context().browser()!.newPage();
   await signInToAdmin(admin);
@@ -111,6 +114,7 @@ test("a person signs up, completes the six steps and is approved (REG-1, S02, S0
   await expect(admin.getByText("Approved. The applicant has been told.")).toBeVisible();
   await admin.close();
 
+  await page.goto("/account");
   await page.getByRole("button", { name: "Log out" }).click();
   await expect(page).toHaveURL(/\/login$/);
   const email = `${username.replace(/_/g, ".")}@example.test`;

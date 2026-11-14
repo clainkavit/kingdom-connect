@@ -17,6 +17,10 @@ do $$ begin
   perform private.set_identity(('00000000-0000-0000-0000-0000000050' || k)::uuid, 'nida', '1990010150' || k || '000000' || k)
   from unnest(array['01', '02', '03']) k;
 end $$;
+insert into public.legal_acceptances (member_id, legal_text_id, context_type)
+select ('00000000-0000-0000-0000-0000000050' || k)::uuid, access.current_legal_text_id(kind), 'reaccept'
+from unnest(array['01', '02', '03']) k, unnest(array['terms', 'privacy']) kind
+where access.current_legal_text_id(kind) is not null;
 insert into storage.objects (bucket_id, name)
 select 'identity-documents', '00000000-0000-0000-0000-0000000050' || k || '/' || f
 from unnest(array['01', '02', '03']) k, unnest(array['face', 'id']) f;

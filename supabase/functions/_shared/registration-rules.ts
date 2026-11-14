@@ -98,9 +98,10 @@ export type RegistrationDraft = {
   idPhoto?: boolean;
   acceptTerms?: boolean;
   acceptPrivacy?: boolean;
+  /** Set when the account has no phone yet (made with Google), so About you asks for one. */
+  needsPhone?: boolean;
+  phone?: string;
 };
-
-export const WIZARD_STEPS = 6;
 
 const blank = (value: string | undefined) => !value || !value.trim();
 
@@ -143,6 +144,7 @@ export function stepProblems(step: number, draft: RegistrationDraft): Record<str
       problems["study.institution"] = "required";
     if (study?.year !== undefined && !(study.year >= 1 && study.year <= 10))
       problems["study.year"] = "study_year";
+    if (draft.needsPhone && !normalizePhone(draft.phone ?? "")) problems.phone = "phone";
   }
   const categories = draftCategories(draft);
   if (
@@ -163,16 +165,38 @@ export function stepProblems(step: number, draft: RegistrationDraft): Record<str
     if (!draft.facePhoto) problems.facePhoto = "required";
     if (!draft.idPhoto) problems.idPhoto = "required";
   }
-  if (step === 5) {
-    if (!draft.acceptTerms) problems.acceptTerms = "required";
-    if (!draft.acceptPrivacy) problems.acceptPrivacy = "required";
-  }
   return problems;
 }
 
+/**
+ * The steps of Verify your identity (R28), by the numbers drafts are saved with: about you, what you do, your work,
+ * ID and photos, check and send. The terms are not a step: they are accepted when the account is made.
+ */
+export const VERIFY_STEPS = [1, 2, 3, 4, 6] as const;
+
+export const CHECK_AND_SEND = VERIFY_STEPS[VERIFY_STEPS.length - 1]!;
+
+const FILLED_STEPS = VERIFY_STEPS.filter((s) => s !== CHECK_AND_SEND);
+
+/** Where a step sits in Verify your identity, counted from 1 ("Step 3 of 5"). */
+export const shownStepNumber = (step: number): number =>
+  VERIFY_STEPS.indexOf(step as (typeof VERIFY_STEPS)[number]) + 1;
+
+export const nextVerifyStep = (step: number): number =>
+  VERIFY_STEPS.find((s) => s > step) ?? CHECK_AND_SEND;
+
+export const previousVerifyStep = (step: number): number =>
+  [...VERIFY_STEPS].reverse().find((s) => s < step) ?? VERIFY_STEPS[0]!;
+
+const stepDone = (step: number, draft: RegistrationDraft) =>
+  Object.keys(stepProblems(step, draft)).length === 0;
+
 /** The first step that still has a problem, or null when the draft can be submitted. */
 export function firstIncompleteStep(draft: RegistrationDraft): number | null {
-  for (let step = 1; step < WIZARD_STEPS; step++)
-    if (Object.keys(stepProblems(step, draft)).length) return step;
-  return null;
+  return FILLED_STEPS.find((step) => !stepDone(step, draft)) ?? null;
+}
+
+/** How many of the steps that ask for something are done, for the Home banner (S08). */
+export function verifyProgress(draft: RegistrationDraft): number {
+  return FILLED_STEPS.filter((step) => stepDone(step, draft)).length;
 }

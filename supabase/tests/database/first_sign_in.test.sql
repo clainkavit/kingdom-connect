@@ -85,7 +85,7 @@ select '00000000-0000-0000-0000-000000004701', 6, jsonb_build_object(
   'fullName', 'Neema Joseph', 'categories', jsonb_build_array('other'), 'address', 'Plot 9',
   'regionId', d.region_id, 'districtId', d.id, 'categoryDetails', jsonb_build_object('description', 'Tailor'),
   'idType', 'passport', 'identitySaved', true, 'facePhoto', true, 'idPhoto', true,
-  'acceptTerms', true, 'acceptPrivacy', true)
+  'phone', '0712 004 701')
 from public.districts d limit 1;
 select is(private.submit_registration('00000000-0000-0000-0000-000000004701'), 'ok', 'it can send them');
 select is((select status from public.members where id = '00000000-0000-0000-0000-000000004701'), 'pending',

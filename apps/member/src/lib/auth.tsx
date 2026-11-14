@@ -1,6 +1,7 @@
 import { routeFor, routePaths, type Route, type Session } from "@kingdom-connect/shared";
 import { Redirect } from "expo-router";
 import { createContext, useContext, useEffect, useState } from "react";
+import { BootSplash } from "../components/boot-splash";
 import { supabase } from "./supabase";
 
 type Auth = {
@@ -54,10 +55,26 @@ export function useAuth(): Auth {
   return auth;
 }
 
-export function Guard({ route, children }: { route: Route; children: React.ReactNode }) {
+/**
+ * Shows `children` only on the route the visitor belongs on, and sends them there otherwise.
+ * While the sign-in state loads it shows the logo splash, not a blank page. `signedOutHref`
+ * replaces the login page for a signed-out visitor: the root sends them to the landing page (S01).
+ */
+export function Guard({
+  route,
+  children,
+  signedOutHref,
+}: {
+  route: Route;
+  children: React.ReactNode;
+  signedOutHref?: string;
+}) {
   const { ready, accessToken } = useAuth();
-  if (!ready) return null;
+  if (!ready) return <BootSplash />;
   const actual = routeFor(accessToken, "member");
-  if (actual !== route) return <Redirect href={routePaths[actual]} />;
+  if (actual !== route) {
+    const href = actual === "login" && signedOutHref ? signedOutHref : routePaths[actual];
+    return <Redirect href={href} />;
+  }
   return <>{children}</>;
 }

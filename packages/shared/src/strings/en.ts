@@ -524,6 +524,12 @@ export const en = {
   loginName: "Username, phone or email",
   email: "Email",
   password: "Password",
+  landingEyebrow: "People · Opportunities · Growth",
+  landingTitle: "Find people, opportunities and ideas to grow together",
+  landingBody: "A members-only platform for Tanzania. Every member is verified.",
+  everyMemberVerified: "Every member verified",
+  skipIntro: "Skip",
+  legalUnavailable: "This text is not available yet. Please try again later.",
   logIn: "Log in",
   logOut: "Log out",
   loginTitle: (platformName: string) => `Log in to ${platformName}`,
@@ -563,6 +569,10 @@ export const en = {
   savePassword: "Save password",
   passwordChanged:
     "Your password was changed. You are signed out on every other device. Log in with the new password and the code we email you.",
+  changePasswordTitle: "Password and sign-in",
+  changePasswordIntro:
+    "To change your password, we first send a 6-digit code to the email on your account.",
+  changeCodeSent: "We sent a 6-digit code to the email on your account. It works for 10 minutes.",
   noEmailAccess: "No access to that email?",
 
   statusTitle: "Registration status",

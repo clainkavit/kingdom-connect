@@ -3,7 +3,7 @@ import { act, cleanup, fireEvent, render, screen } from "@testing-library/react"
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { DashboardWidgetsApi, LatestItem } from "../lib/dashboard-widgets";
 import type { MemberNewsApi } from "../lib/news";
-import { FeaturedOpportunities, LatestItems, NewsPreview } from "./dashboard-widgets";
+import { LatestItems, NewsPreview } from "./dashboard-widgets";
 
 afterEach(cleanup);
 
@@ -26,35 +26,6 @@ const fakeWidgets = (over: Partial<DashboardWidgetsApi> = {}): DashboardWidgetsA
   featured: vi.fn().mockResolvedValue([]),
   latest: vi.fn().mockResolvedValue([]),
   ...over,
-});
-
-describe("FeaturedOpportunities (S08, D01)", () => {
-  it("lists featured posts with their type, poster and closing date", async () => {
-    await show(
-      <FeaturedOpportunities
-        api={fakeWidgets({
-          featured: vi.fn().mockResolvedValue([
-            {
-              id: "o9",
-              type: "tender",
-              title: "Supply of school uniforms",
-              sector: { en: "Textiles", sw: "Nguo" },
-              posterName: "Dodoma City Council",
-              closingAt: "2026-12-02",
-            },
-          ]),
-        })}
-      />,
-    );
-    const link = screen.getByRole("link", { name: "Supply of school uniforms" });
-    expect(link.getAttribute("href")).toBe("/opportunities/o9");
-    expect(screen.getByText("Tender · Dodoma City Council · Closes 2 December 2026")).toBeTruthy();
-  });
-
-  it("has its own empty state", async () => {
-    await show(<FeaturedOpportunities api={fakeWidgets()} />);
-    expect(screen.getByText("No featured opportunities right now")).toBeTruthy();
-  });
 });
 
 describe("LatestItems (S08, D01)", () => {
@@ -99,6 +70,55 @@ describe("LatestItems (S08, D01)", () => {
       expect(screen.getByRole("radio", { name: tab })).toBeTruthy();
     expect(screen.queryByText(/\(\d+\)/)).toBeNull();
     expect(screen.getByText("Nothing new here yet")).toBeTruthy();
+  });
+
+  const featuredPost = {
+    id: "o9",
+    type: "tender" as const,
+    title: "Supply of school uniforms",
+    sector: { en: "Textiles", sw: "Nguo" },
+    posterName: "Dodoma City Council",
+    closingAt: "2026-12-02",
+  };
+
+  it("puts featured posts first on All, marked Featured, and does not list them twice", async () => {
+    await show(
+      <LatestItems
+        api={fakeWidgets({
+          featured: vi.fn().mockResolvedValue([featuredPost]),
+          latest: vi
+            .fn()
+            .mockResolvedValue([item({ id: "o9", title: "Supply of school uniforms" }), item()]),
+        })}
+      />,
+    );
+    const links = screen.getAllByRole("link");
+    expect(links[0]?.getAttribute("href")).toBe("/opportunities/o9");
+    expect(screen.getAllByRole("link", { name: "Supply of school uniforms" })).toHaveLength(1);
+    expect(
+      screen.getByText("Featured · Tender · Dodoma City Council · Closes 2 December 2026"),
+    ).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "Featured opportunities" })).toBeNull();
+  });
+
+  it("shows featured posts only on All", async () => {
+    await show(
+      <LatestItems api={fakeWidgets({ featured: vi.fn().mockResolvedValue([featuredPost]) })} />,
+    );
+    await act(async () => fireEvent.click(screen.getByRole("radio", { name: "Jobs" })));
+    expect(screen.queryByText("Supply of school uniforms")).toBeNull();
+  });
+
+  it("still lists the latest when featured posts cannot load", async () => {
+    await show(
+      <LatestItems
+        api={fakeWidgets({
+          featured: vi.fn().mockRejectedValue(new Error("offline")),
+          latest: vi.fn().mockResolvedValue([item()]),
+        })}
+      />,
+    );
+    expect(screen.getByText("Accountant for a coffee trader")).toBeTruthy();
   });
 
   it("offers a retry when a tab cannot load", async () => {

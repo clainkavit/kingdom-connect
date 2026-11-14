@@ -55,47 +55,15 @@ function ItemLink({ href, title, line }: { href: string; title: string; line: st
   );
 }
 
-/** S08: open featured posts, up to 5 (D01, O05). */
-export function FeaturedOpportunities({ api }: { api: DashboardWidgetsApi }) {
-  const { t, language } = useLanguage();
-  const [attempt, setAttempt] = useState(0);
-  const loaded = useLoad(() => api.featured(), attempt);
-  return (
-    <Section title={t.featuredTitle}>
-      {loaded.state === "failed" ? (
-        <ErrorState message={t.widgetLoadFailed} onRetry={() => setAttempt((a) => a + 1)} />
-      ) : loaded.state === "loading" ? (
-        <LoadingRows rows={2} />
-      ) : loaded.value.length === 0 ? (
-        <EmptyState
-          title={t.featuredEmpty}
-          message={t.featuredEmptyHint}
-          action={{ label: t.navOpportunities, href: "/opportunities" }}
-        />
-      ) : (
-        loaded.value.map((p) => (
-          <ItemLink
-            key={p.id}
-            href={`/opportunities/${p.id}`}
-            title={p.title}
-            line={[
-              t[typeLabel[p.type]] as string,
-              p.posterName,
-              t.oppCloses(closingDay(p.closingAt, language)),
-            ].join(" · ")}
-          />
-        ))
-      )}
-    </Section>
-  );
-}
-
-/** S08: the newest open items, by tab (D01). */
+/** S08: the newest open items, by tab, with featured posts first on All (D01, O05). */
 export function LatestItems({ api }: { api: DashboardWidgetsApi }) {
   const { t, language } = useLanguage();
   const [tab, setTab] = useState<LatestTab>("all");
   const [attempt, setAttempt] = useState(0);
   const loaded = useLoad(() => api.latest(tab), attempt);
+  const featured = useLoad(() => api.featured().catch(() => []), 0);
+  const pinned = tab === "all" && featured.state === "ready" ? featured.value : [];
+  const pinnedIds = new Set(pinned.map((p) => p.id));
   const choose = (next: LatestTab) => {
     setTab(next);
     setAttempt((a) => a + 1);
@@ -112,23 +80,40 @@ export function LatestItems({ api }: { api: DashboardWidgetsApi }) {
         <ErrorState message={t.widgetLoadFailed} onRetry={() => setAttempt((a) => a + 1)} />
       ) : loaded.state === "loading" ? (
         <LoadingRows rows={2} />
-      ) : loaded.value.length === 0 ? (
+      ) : loaded.value.length === 0 && pinned.length === 0 ? (
         <EmptyState title={t.latestEmpty} message={t.latestEmptyHint} />
       ) : (
-        loaded.value.map((item) => (
-          <ItemLink
-            key={`${item.kind}-${item.id}`}
-            href={hrefOf(item)}
-            title={item.title}
-            line={[
-              kindLine(t, item),
-              item.sector ? (language === "sw" ? item.sector.sw : item.sector.en) : null,
-              item.publishedAt ? formatDate(item.publishedAt, language) : null,
-            ]
-              .filter(Boolean)
-              .join(" · ")}
-          />
-        ))
+        <>
+          {pinned.map((p) => (
+            <ItemLink
+              key={`featured-${p.id}`}
+              href={`/opportunities/${p.id}`}
+              title={p.title}
+              line={[
+                t.featuredTag,
+                t[typeLabel[p.type]] as string,
+                p.posterName,
+                t.oppCloses(closingDay(p.closingAt, language)),
+              ].join(" · ")}
+            />
+          ))}
+          {loaded.value
+            .filter((item) => !(item.kind === "opportunity" && pinnedIds.has(item.id)))
+            .map((item) => (
+              <ItemLink
+                key={`${item.kind}-${item.id}`}
+                href={hrefOf(item)}
+                title={item.title}
+                line={[
+                  kindLine(t, item),
+                  item.sector ? (language === "sw" ? item.sector.sw : item.sector.en) : null,
+                  item.publishedAt ? formatDate(item.publishedAt, language) : null,
+                ]
+                  .filter(Boolean)
+                  .join(" · ")}
+              />
+            ))}
+        </>
       )}
     </Section>
   );

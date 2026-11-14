@@ -1618,6 +1618,7 @@ export const sw: Strings = {
   featuredEmptyHint: "Tazama matangazo yote yaliyo wazi kwenye Fursa.",
   widgetLoadFailed: "Hatukuweza kupakia hiki. Angalia mtandao wako kisha ujaribu tena.",
   latestTitle: "Mapya",
+  featuredTag: "Imeangaziwa",
   latestShow: "Onyesha",
   latestJobs: "Kazi",
   latestTenders: "Zabuni",

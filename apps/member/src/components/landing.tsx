@@ -162,7 +162,7 @@ function useEntrance(play: boolean, count: number) {
   });
 }
 
-function Eyebrow() {
+export function Eyebrow() {
   const { t } = useLanguage();
   return <>{t.landingEyebrow}</>;
 }
@@ -217,7 +217,7 @@ function Actions({
   );
 }
 
-function Photo({
+export function Photo({
   className,
   style,
   children,
@@ -240,7 +240,7 @@ function Photo({
   );
 }
 
-function LogoTile({ size }: { size: number }) {
+export function LogoTile({ size }: { size: number }) {
   const { platformName } = useLanguage();
   return (
     <Image
@@ -254,7 +254,7 @@ function LogoTile({ size }: { size: number }) {
   );
 }
 
-function VerifiedChip({ className }: { className?: string }) {
+export function VerifiedChip({ className }: { className?: string }) {
   const { t } = useLanguage();
   const palette = usePalette();
   return (
@@ -268,7 +268,7 @@ function VerifiedChip({ className }: { className?: string }) {
 }
 
 /** EN and SW as a pill, as in the designs. */
-function LanguagePill({ onPhoto }: { onPhoto?: boolean }) {
+export function LanguagePill({ onPhoto }: { onPhoto?: boolean }) {
   const { language, t, setLanguage } = useLanguage();
   return (
     <View
@@ -297,7 +297,7 @@ function LanguagePill({ onPhoto }: { onPhoto?: boolean }) {
   );
 }
 
-function LegalLinks({ onLegal }: { onLegal: (kind: "terms" | "privacy") => void }) {
+export function LegalLinks({ onLegal }: { onLegal: (kind: "terms" | "privacy") => void }) {
   const { t } = useLanguage();
   return (
     <View className="flex-row flex-wrap justify-end gap-4">

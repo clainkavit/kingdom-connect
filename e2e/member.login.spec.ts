@@ -3,6 +3,9 @@ import { createMember, enterCode, logIn, nextCode, nextEmail, setPhone } from ".
 
 test("a Member logs in with the email code and logs out again (REG-4)", async ({ page }) => {
   await page.goto("/");
+  await expect(page).toHaveURL(/\/welcome$/);
+  await expect(page.getByTestId("intro")).toBeHidden({ timeout: 5_000 });
+  await page.getByRole("button", { name: "Log in" }).click();
   await expect(page).toHaveURL(/\/login$/);
 
   const sentAfter = new Date();

@@ -5,8 +5,9 @@ import { Guard } from "../../src/lib/auth";
 import { useUnreadCount, useUnreadMessages } from "../../src/lib/notifications";
 
 export default function AppLayout() {
+  const pathname = usePathname();
   return (
-    <Guard route="app">
+    <Guard route="app" signedOutHref={pathname === "/" ? "/welcome" : undefined}>
       <SignedInShell />
     </Guard>
   );

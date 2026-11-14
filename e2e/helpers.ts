@@ -505,3 +505,36 @@ export async function memberIdOf(username: string): Promise<string> {
   const [row] = await db`select id from public.members where username = ${username}`;
   return row!.id as string;
 }
+
+/**
+ * A verified session for someone with a sign-in but no member account yet, as after Continue with Google (R26):
+ * the session is marked verified the way the provider marks it, then put in the browser before the app loads.
+ */
+/** Where supabase-js keeps the session in the browser for the local project (127.0.0.1). */
+const SUPABASE_SESSION_KEY = "sb-127-auth-token";
+
+export async function newSignInWithoutAccount(page: Page, email: string) {
+  await fetch(`${LOCAL_SUPABASE.url}/auth/v1/admin/users`, {
+    method: "POST",
+    headers: serviceHeaders,
+    body: JSON.stringify({ email, password: TEST_PASSWORD, email_confirm: true }),
+  });
+  const auth = { apikey: LOCAL_SUPABASE.anonKey, "Content-Type": "application/json" };
+  const first = await fetch(`${LOCAL_SUPABASE.url}/auth/v1/token?grant_type=password`, {
+    method: "POST",
+    headers: auth,
+    body: JSON.stringify({ email, password: TEST_PASSWORD }),
+  }).then((r) => r.json());
+  const claims = JSON.parse(Buffer.from(first.access_token.split(".")[1], "base64url").toString());
+  await db`insert into private.mfa_sessions (session_id, user_id) values (${claims.session_id}, ${claims.sub})`;
+  const session = await fetch(`${LOCAL_SUPABASE.url}/auth/v1/token?grant_type=refresh_token`, {
+    method: "POST",
+    headers: auth,
+    body: JSON.stringify({ refresh_token: first.refresh_token }),
+  }).then((r) => r.json());
+  await page.addInitScript(
+    ([key, value]) => localStorage.setItem(key!, value!),
+    [SUPABASE_SESSION_KEY, JSON.stringify(session)],
+  );
+  return claims.sub as string;
+}

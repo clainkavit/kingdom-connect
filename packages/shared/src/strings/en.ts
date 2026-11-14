@@ -1709,4 +1709,12 @@ export const en = {
   lookCheckingBody: "Keep looking around. You will get a notification when the review is done.",
   lookSeeStatus: "See your application",
   lookAround: "Look around while you wait",
+  googleContinue: "Continue with Google",
+  googleFailed: "Sign-in did not finish. Try again or use another way.",
+  orDivider: "or",
+  firstTitle: "One more step",
+  firstIntro: (email: string) =>
+    `You signed in as ${email}. Choose how other members find you, then read and accept the two texts.`,
+  firstAccept: "Agree and continue",
+  firstFailed: "That did not work. Try again.",
 };

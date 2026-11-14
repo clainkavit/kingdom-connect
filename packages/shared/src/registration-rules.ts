@@ -34,13 +34,16 @@ export function normalizePhone(phone: string): string | null {
 
 export const normalizeUsername = (username: string) => username.trim().toLowerCase();
 
+/** The username rule shared by sign-up, first sign-in and the database. */
+export const USERNAME_PATTERN = /^[a-z0-9][a-z0-9._]{2,29}$/;
+
 export function signUpProblems(
   input: SignUpInput,
 ): Partial<Record<keyof SignUpInput, FieldProblem>> {
   const problems: Partial<Record<keyof SignUpInput, FieldProblem>> = {};
   const username = normalizeUsername(input.username);
   if (!username) problems.username = "required";
-  else if (!/^[a-z0-9][a-z0-9._]{2,29}$/.test(username)) problems.username = "username";
+  else if (!USERNAME_PATTERN.test(username)) problems.username = "username";
   const email = emailProblem(input.email);
   if (email) problems.email = email;
   if (!input.phone.trim()) problems.phone = "required";

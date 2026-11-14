@@ -1570,6 +1570,7 @@ export const en = {
   featuredEmptyHint: "Browse every open post on Opportunities.",
   widgetLoadFailed: "We couldn't load this. Check your connection and try again.",
   latestTitle: "Latest",
+  featuredTag: "Featured",
   latestShow: "Show",
   latestJobs: "Jobs",
   latestTenders: "Tenders",

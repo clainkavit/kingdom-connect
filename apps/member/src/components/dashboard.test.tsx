@@ -220,6 +220,28 @@ describe("Home layout (13 Nov 2026 redesign)", () => {
     );
   });
 
+  it("names the member and their place once, and links Scan once", async () => {
+    await showWith(COMPUTER);
+    expect(screen.getByText("Hello, Dash Member")).toBeTruthy();
+    expect(screen.queryByText("Dash Member")).toBeNull();
+    expect(screen.queryByText("Ilemela, Mwanza")).toBeNull();
+    expect(screen.getAllByRole("link", { name: "Scan for opportunities" })).toHaveLength(1);
+  });
+
+  it("has one list of links, not a separate Quick actions section", async () => {
+    await showWith(COMPUTER);
+    expect(screen.queryByRole("heading", { name: "Quick actions" })).toBeNull();
+    for (const name of ["Share an idea", "Post training", "My connections", "My responses"])
+      expect(screen.getByRole("link", { name })).toBeTruthy();
+  });
+
+  it("says in one line that no requests are waiting", async () => {
+    await showWith(COMPUTER);
+    expect(screen.getByText("No requests waiting")).toBeTruthy();
+    expect(screen.queryByText("Find people to connect with.")).toBeNull();
+    expect(screen.queryByRole("link", { name: "Find people" })).toBeNull();
+  });
+
   it("keeps the same pieces on a phone, stacked", async () => {
     await showWith(PHONE);
     expect(screen.getByRole("heading", { name: "Next steps" })).toBeTruthy();

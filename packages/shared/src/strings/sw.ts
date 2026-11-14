@@ -1438,6 +1438,27 @@ export const sw: Strings = {
   savedRemove: "Ondoa",
   savedLoadFailed: "Fursa ulizohifadhi hazikupakia.",
   oppCloses: (date: string) => `Inafungwa ${date}`,
+  oppClosesInDays: (days: number) =>
+    days <= 0
+      ? "Inafungwa leo"
+      : days === 1
+        ? "Inafungwa kesho"
+        : `Inafungwa baada ya siku ${days}`,
+  oppPostedNow: "Imewekwa sasa hivi",
+  oppPostedHours: (hours: number) =>
+    hours === 1 ? "Imewekwa saa moja iliyopita" : `Imewekwa saa ${hours} zilizopita`,
+  oppPostedYesterday: "Imewekwa jana",
+  oppPostedDays: (days: number) => `Imewekwa siku ${days} zilizopita`,
+  oppPostedOn: (date: string) => `Imewekwa ${date}`,
+  oppSearchLabel: "Tafuta fursa",
+  oppSearchHint: "Tafuta kazi, ujuzi au maeneo",
+  oppPluralJob: "Kazi",
+  oppPluralPartnership: "Ubia",
+  oppPluralCollaboration: "Ushirikiano",
+  oppPluralInvestment: "Uwekezaji",
+  oppPluralTender: "Zabuni",
+  oppListLine: (kinds: string | null, region: string | null, best: boolean) =>
+    `${kinds ?? "Fursa"}${region ? ` mkoani ${region}` : ""}, ${best ? "zinazokufaa zaidi kwanza" : "mpya kwanza"}`,
   oppPosted: "Ilitangazwa",
   oppPostedAny: "Wakati wowote",
   oppPostedWithin: (days: number) => (days === 1 ? "Ndani ya siku moja" : `Ndani ya siku ${days}`),

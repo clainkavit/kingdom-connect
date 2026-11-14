@@ -18,3 +18,6 @@ export const loginClient = createLoginClient({ url, anonKey });
 
 /** Fake accounts shown on a preview site's login screen. Never set on a real environment. */
 export const testLogins = parseTestLogins(process.env.NEXT_PUBLIC_TEST_LOGINS);
+
+/** The member app of this environment, for "Not staff? Go to the member app". Unset means no link. */
+export const memberUrl = process.env.NEXT_PUBLIC_MEMBER_URL || undefined;

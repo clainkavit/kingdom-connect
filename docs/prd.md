@@ -990,7 +990,9 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 - Let Kingdom Connect pick (OPP-7): staff choose a short list from members' record on the platform, helped by rule-based suggestions with no AI; each person agrees before the poster sees them; Beta and free, with a note that it may become paid later (section 10).
 - Work references (OPP-8): two-way ratings after work both sides confirmed, hidden until both rate or 14 days pass, shown on profiles from 3 ratings, with a private note to staff (section 10).
 - Saved opportunities and job alerts stay on the Opportunities screens (they had dropped out of the combined design canvas).
-- Still open, each needing a ticket: the SMS provider and cost for phone sign-in; the Google, Facebook and Apple developer accounts (under the company, like M04); the Privacy notice wording for ratings, private notes and picks; the new notification texts in docs/notifications.md (picked, marked hired, rating open, list ready); docs/screens.md and docs/schema.md for the new screens and records.
+- Sign-in accounts (#273): the Google, Meta (Facebook) and Apple developer accounts are organisation accounts of the company once it exists (L01), like M04; until then development uses test projects with test data only. Launch with Google and email; phone once the SMS sender ID exists (#272); Facebook after Meta's app review; Apple when the iPhone app ships.
+- Phone sign-in SMS (#272): researched in [context/memory/sms-provider-tanzania.md](../context/memory/sms-provider-tanzania.md). Every route needs a registered sender ID backed by an organisation's letter, so the sender ID waits for the company and phone sign-in launches after it; until then Google and email carry the pilot. The provider is chosen at the end.
+- Privacy notice 0.3 (#274) and notifications A8, A9 and O9 to O14 (#275) are drafted; the Kiswahili needs Champion's review and the notice a lawyer's. Still open: docs/screens.md and docs/schema.md (#276).
 
 **Open.** Every open question is a ticket on the [wayfinder map](https://github.com/clainkavit/kingdom-connect/issues/1) and is linked where it applies above.
 

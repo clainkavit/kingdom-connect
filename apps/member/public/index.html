@@ -105,5 +105,14 @@
         <div class="kc-bar" role="progressbar" aria-label="Loading"></div>
       </div>
     </div>
+    <script>
+      // Offline shell (audit M7). Not on local development servers, so Expo's live reload
+      // and the end-to-end tests always get fresh files.
+      if ("serviceWorker" in navigator && !/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) {
+        window.addEventListener("load", function () {
+          navigator.serviceWorker.register("/sw.js").catch(function () {});
+        });
+      }
+    </script>
   </body>
 </html>

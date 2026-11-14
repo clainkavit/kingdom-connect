@@ -17,6 +17,13 @@ describe("RegistrationStatus (S06)", () => {
     expect(screen.queryByText(/working day/)).toBeNull();
   });
 
+  it("lets the applicant look around while they wait (R27)", () => {
+    render(<RegistrationStatus status={{ kind: "under_review" }} onResubmit={vi.fn()} />);
+    expect(
+      screen.getByRole("link", { name: "Look around while you wait" }).getAttribute("href"),
+    ).toBe("/");
+  });
+
   it("shows the reason after a first rejection and lets the applicant fix and resubmit", async () => {
     const onResubmit = vi.fn().mockResolvedValue(true);
     render(

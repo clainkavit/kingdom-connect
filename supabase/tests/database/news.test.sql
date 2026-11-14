@@ -47,7 +47,8 @@ update public.news_items set title = 'Changed by a member' where title = 'Pilot 
 delete from public.news_items where title = 'Pilot opens';
 
 select pg_temp.login('02');
-select is((select count(*)::int from public.news_items), 0, 'an applicant who is not yet approved sees no news');
+select is((select count(*)::int from public.news_items where status <> 'published'), 0,
+  'an applicant who accepted the terms reads published news only (R27)');
 
 select pg_temp.login('a1');
 select is((select count(*)::int from public.news_items where title = 'Pilot opens'), 1,

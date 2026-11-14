@@ -1,5 +1,14 @@
 import { expect, test } from "@playwright/test";
-import { createMember, enterCode, logIn, nextCode, nextEmail, setPhone } from "./helpers";
+import {
+  acceptCurrentTexts,
+  createMember,
+  enterCode,
+  logIn,
+  memberIdOf,
+  nextCode,
+  nextEmail,
+  setPhone,
+} from "./helpers";
 
 test("a Member logs in with the email code and logs out again (REG-4)", async ({ page }) => {
   await page.goto("/");
@@ -95,7 +104,10 @@ test("a suspended Member is told why after the right password (S03)", async ({ p
   await expect(page.getByText("Your account is suspended. An admin will review it.")).toBeVisible();
 });
 
-test("an Applicant reaches Registration status only", async ({ page }) => {
+test("an Applicant reaches Registration status, and Messages stays locked (R27)", async ({
+  page,
+}) => {
+  await acceptCurrentTexts([await memberIdOf("test_applicant")]);
   await page.goto("/login");
   const sentAfter = new Date();
   await logIn(page, "Username", "test_applicant");
@@ -106,5 +118,5 @@ test("an Applicant reaches Registration status only", async ({ page }) => {
   ).toBeVisible();
 
   await page.goto("/messages");
-  await expect(page).toHaveURL(/\/registration$/);
+  await expect(page.getByText("This opens once you are verified")).toBeVisible();
 });

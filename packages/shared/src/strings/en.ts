@@ -1686,4 +1686,27 @@ export const en = {
   demoIntro: "This is a test version with made-up people. Nothing you do here is real.",
   demoOpen: "Open the demo",
   demoFailed: "This demo link was already used or has expired. Ask for a new one.",
+  lookNotVerified: "Not verified yet",
+  lookBannerTitle: "Verify your identity to connect, apply and post",
+  lookBannerBody:
+    "Five short steps: about you, what you do, your work, a photo of your ID and a face photo. Staff check it and we tell you the answer.",
+  lookContinue: "Continue verification",
+  lookNotNow: "Not now",
+  lookAskApply: "Verify your identity to apply",
+  lookAskInterest: "Verify your identity to show interest",
+  lookAskSave: "Verify your identity to save posts",
+  lookAskRegister: "Verify your identity to register",
+  lookAskAlert: "Verify your identity to get alerts",
+  lookAskBody:
+    "Posters and other members only hear from verified members. It keeps everyone safe from fake accounts.",
+  lookLockedTitle: "This opens once you are verified",
+  lookLockedBody:
+    "People, messages and profiles are for verified members. You can still look at opportunities, ideas, training, events and news.",
+  lookPeopleTitle: "People open after verification",
+  lookPeopleBody:
+    "Verified members see each other here. Once staff approve your identity you can find people, connect and message.",
+  lookCheckingTitle: "Your identity is being checked",
+  lookCheckingBody: "Keep looking around. You will get a notification when the review is done.",
+  lookSeeStatus: "See your application",
+  lookAround: "Look around while you wait",
 };

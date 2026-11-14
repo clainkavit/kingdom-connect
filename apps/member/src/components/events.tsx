@@ -15,6 +15,7 @@ import { Button, Field, Message } from "./form";
 import { LinkButton } from "./link-button";
 import { ScreenTitle } from "./screens";
 import { EmptyState, ErrorState, LoadingRows, LockedState } from "./states";
+import { useAct } from "./look";
 
 type Loaded<T> = { state: "loading" } | { state: "failed" } | { state: "ready"; value: T };
 
@@ -185,6 +186,7 @@ export function EventDetail({ api, eventId }: { api: EventsApi; eventId: string 
     attempt,
   );
 
+  const lookAct = useAct();
   const act = async (action: () => Promise<unknown>) => {
     setBusy(true);
     setProblem(null);
@@ -236,7 +238,7 @@ export function EventDetail({ api, eventId }: { api: EventsApi; eventId: string 
             <Button
               label={full ? t.eventsJoinWaitlist : t.eventsRegister}
               disabled={busy}
-              onPress={() => act(() => api.register(event.id))}
+              onPress={() => lookAct("register", () => act(() => api.register(event.id)))}
             />
           ) : (
             <Button

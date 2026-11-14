@@ -13,6 +13,7 @@ import { Linking, Pressable, Text, View } from "react-native";
 import type { JobAlertsApi } from "../lib/job-alerts";
 import { useLanguage } from "../lib/language";
 import { useSavedPosts } from "../lib/saved-posts";
+import { useAct } from "./look";
 import {
   OPPORTUNITY_PAGE,
   type OpportunityBrowseApi,
@@ -611,6 +612,7 @@ export function OpportunitiesList({
   const { t, language } = useLanguage();
   const palette = usePalette();
   const saved = useSavedPosts(api);
+  const act = useAct();
   const poster = useLoad(() => canPost?.().catch(() => false) ?? Promise.resolve(false), 0);
   const sectorsLoad = useLoad(() => api.sectors(language).catch(() => []), 0);
   const regionsLoad = useLoad(() => api.regions(language).catch(() => []), 0);
@@ -781,7 +783,7 @@ export function OpportunitiesList({
                 key={post.id}
                 post={post}
                 saved={saved.isSaved(post.id)}
-                onToggleSave={() => saved.toggle(post.id)}
+                onToggleSave={() => act("save", () => saved.toggle(post.id))}
                 withType={withType}
                 now={now}
               />
@@ -794,7 +796,7 @@ export function OpportunitiesList({
                 key={post.id}
                 post={post}
                 saved={saved.isSaved(post.id)}
-                onToggleSave={() => saved.toggle(post.id)}
+                onToggleSave={() => act("save", () => saved.toggle(post.id))}
                 last={i === posts.length - 1}
                 withType={withType}
                 now={now}
@@ -982,6 +984,7 @@ export function OpportunityDetailScreen({
   const { t, language } = useLanguage();
   const phone = usePhone();
   const saved = useSavedPosts(api);
+  const act = useAct();
   const [attempt, setAttempt] = useState(0);
   const loaded = useLoad(async () => {
     const post = await api.detail(id);
@@ -1009,7 +1012,7 @@ export function OpportunityDetailScreen({
       withWords
       saved={saved.isSaved(post.id)}
       title={post.title}
-      onPress={() => saved.toggle(post.id)}
+      onPress={() => act("save", () => saved.toggle(post.id))}
     />
   );
   const yourSkills =

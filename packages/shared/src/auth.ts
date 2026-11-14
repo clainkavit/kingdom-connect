@@ -38,6 +38,9 @@ export const routePaths: Record<Route, string> = {
   wrong_app: "/wrong-app",
 };
 
+/** Accounts that look but do not act: the same list as `access.is_looker()` in the database. */
+const LOOKING_STATUSES: readonly string[] = ["signed_in", "pending", "rejected"];
+
 export function routeFor(accessToken: string | null, app: App): Route {
   if (!accessToken) return "login";
   const claims = claimsOf(accessToken);
@@ -45,8 +48,15 @@ export function routeFor(accessToken: string | null, app: App): Route {
   const status = claims.user_status;
   if (app === "admin") return status === "staff" ? "app" : "wrong_app";
   if (status === "approved") return "app";
-  if (status === "pending" || status === "rejected") return "status";
+  if (LOOKING_STATUSES.includes(status ?? "")) return "status";
   return "wrong_app";
+}
+
+/** Signed in, pending or rejected: may look around the member app but not act (R27, PRD section 3). */
+export function isLooking(accessToken: string | null): boolean {
+  if (!accessToken) return false;
+  const claims = claimsOf(accessToken);
+  return !!claims.otp_verified && LOOKING_STATUSES.includes(claims.user_status ?? "");
 }
 
 export type Session = { access_token: string; refresh_token: string };

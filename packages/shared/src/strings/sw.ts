@@ -919,6 +919,13 @@ export const sw: Strings = {
   clearFilters: "Ondoa vichujio",
   filtersOn: (count: number) => `Vichujio · ${count}`,
   applyFilters: "Onyesha matokeo",
+  clearAll: "Ondoa vyote",
+  filterApply: "Tumia",
+  peopleSearchHint: "Jina, kazi au ujuzi",
+  peoplePrivacyNote:
+    "Simu na barua pepe hubaki siri hadi muunganishwe na mtu huyo achague kuzishiriki.",
+  sentShort: "Imetumwa",
+  answerShort: "Jibu",
   closeSheet: "Funga",
   noResultsTitle: "Hakuna anayelingana",
   noResultsMessage: "Jaribu maneno machache, au ondoa vichujio.",

@@ -18,7 +18,7 @@ test("Members connect: a decline stays hidden, an accept connects, a block ends 
 
   await a.goto("/people");
   await a.getByLabel("Search by name, profession or skill").fill(`Receiving Member ${stamp}`);
-  await a.getByRole("button", { name: "Search" }).click();
+  await a.keyboard.press("Enter");
   await a.getByRole("link", { name: "Connect", exact: true }).click();
   await a.getByLabel("Add a note (optional)").fill("We met at the Sunday service.");
   await a.getByRole("button", { name: "Send request" }).click();

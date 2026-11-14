@@ -1,9 +1,10 @@
+import { motion } from "@kingdom-connect/shared";
 import { useEffect, useRef, useState } from "react";
-import { AccessibilityInfo, Animated, Easing, Platform, View } from "react-native";
+import { AccessibilityInfo, Animated, Easing, Platform, Pressable, View } from "react-native";
 
 /** How long things take to come in and go out, in milliseconds. */
-export const ENTER_MS = 200;
-export const EXIT_MS = 140;
+export const ENTER_MS = motion.enter;
+export const EXIT_MS = motion.exit;
 
 const native = Platform.OS !== "web";
 
@@ -149,6 +150,49 @@ export function EnterOnChange({
       }}
     >
       <View className={className}>{children}</View>
+    </Animated.View>
+  );
+}
+
+/**
+ * A Pressable that shrinks slightly while pressed and springs back, so every tap gets a visible
+ * answer. Skipped when reduce motion is on.
+ */
+export function PressScale({
+  className,
+  style,
+  children,
+  onPressIn,
+  onPressOut,
+  disabled,
+  ...rest
+}: React.ComponentProps<typeof Pressable> & { className?: string; children: React.ReactNode }) {
+  const reduced = useReducedMotion();
+  const scale = useRef(new Animated.Value(1)).current;
+  const to = (value: number) =>
+    Animated.timing(scale, {
+      toValue: value,
+      duration: motion.press,
+      easing: Easing.out(Easing.quad),
+      useNativeDriver: native,
+    }).start();
+  return (
+    <Animated.View style={[style as object, { transform: [{ scale }] }]}>
+      <Pressable
+        {...rest}
+        disabled={disabled}
+        className={className}
+        onPressIn={(e) => {
+          if (!reduced && !disabled) to(0.97);
+          onPressIn?.(e);
+        }}
+        onPressOut={(e) => {
+          to(1);
+          onPressOut?.(e);
+        }}
+      >
+        {children}
+      </Pressable>
     </Animated.View>
   );
 }

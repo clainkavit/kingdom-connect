@@ -11,6 +11,7 @@ export const colors = {
     navy2: "#5e1626",
     navyInk: "#f3e6d0",
     navyMute: "#d9b8a3",
+    gold: "#d9a73e",
     blue: "#4a0e1a",
     blueInk: "#ffffff",
     blueSoft: "#f3e6d0",
@@ -44,6 +45,7 @@ export const colors = {
     navy2: "#3a0f1a",
     navyInk: "#f3e6d0",
     navyMute: "#c7a894",
+    gold: "#d9a73e",
     blue: "#e59aaa",
     blueInk: "#2a0810",
     blueSoft: "#3a1e26",
@@ -109,3 +111,23 @@ export function themeCss(): string {
     "",
   ].join("\n");
 }
+
+/**
+ * Motion tokens, in milliseconds, shared by both apps so every animation feels the same.
+ * Everyday movements stay under 300 ms; only the once-per-device intro is longer.
+ */
+export const motion = {
+  /** Something coming in: a panel, a list row, a message. */
+  enter: 200,
+  /** Something going away. */
+  exit: 140,
+  /** A button being pressed. */
+  press: 100,
+  /** The gap between items that come in one after another. */
+  stagger: 60,
+  /**
+   * The intro on the first open (Phase 3): the logo settles, the tagline comes in word by word,
+   * then the maroon panel lifts away to show the landing page. Total under 2.5 s.
+   */
+  intro: { settle: 450, word: 260, hold: 450, lift: 520, total: 2300 },
+} as const;

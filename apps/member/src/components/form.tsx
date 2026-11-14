@@ -2,7 +2,7 @@ import Lock from "lucide-react-native/icons/lock";
 import type { FieldProblem, Strings } from "@kingdom-connect/shared";
 import { useState } from "react";
 import { Pressable, ScrollView, Text, TextInput, View } from "react-native";
-import { Reveal } from "./motion";
+import { PressScale, Reveal } from "./motion";
 import { useLanguage } from "../lib/language";
 import { usePalette } from "./palette";
 
@@ -72,7 +72,7 @@ export function Button(props: {
   secondary?: boolean;
 }) {
   return (
-    <Pressable
+    <PressScale
       role="button"
       aria-label={props.label}
       aria-disabled={props.disabled}
@@ -89,7 +89,7 @@ export function Button(props: {
       >
         {props.label}
       </Text>
-    </Pressable>
+    </PressScale>
   );
 }
 

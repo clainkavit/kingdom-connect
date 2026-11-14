@@ -2,6 +2,7 @@ import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { Image, Linking, Pressable, Text, View } from "react-native";
 import { useLanguage } from "../lib/language";
+import { useLowData } from "../lib/low-data";
 import {
   fileProblem,
   MAX_FILE_BYTES,
@@ -124,7 +125,9 @@ function AttachmentView({
   mime: string;
   url: string | null;
 }) {
-  if (url && mime.startsWith("image/"))
+  const { lowData } = useLowData();
+  const { t } = useLanguage();
+  if (url && mime.startsWith("image/") && !lowData)
     return (
       <Image
         source={{ uri: url }}
@@ -141,7 +144,9 @@ function AttachmentView({
       onPress={() => url && Linking.openURL(url)}
       className="rounded-lg border border-line bg-surface px-3 py-2"
     >
-      <Text className="font-figtree-semibold text-sm text-info-text">{fileName}</Text>
+      <Text className="font-figtree-semibold text-sm text-info-text">
+        {mime.startsWith("image/") && lowData ? t.photoHidden(fileName) : fileName}
+      </Text>
     </Pressable>
   );
 }

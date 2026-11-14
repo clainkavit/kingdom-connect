@@ -15,6 +15,7 @@ import { useEffect } from "react";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { AuthProvider } from "../src/lib/auth";
 import { LanguageProvider } from "../src/lib/language";
+import { LowDataProvider } from "../src/lib/low-data";
 import { startMonitoring } from "../src/lib/monitoring";
 
 export default function RootLayout() {
@@ -34,7 +35,9 @@ export default function RootLayout() {
         <StatusBar style="auto" />
         <AuthProvider>
           <LanguageProvider>
-            <Slot />
+            <LowDataProvider>
+              <Slot />
+            </LowDataProvider>
           </LanguageProvider>
         </AuthProvider>
       </SafeAreaView>

@@ -3,6 +3,7 @@ import type { ContactApi } from "../lib/contact";
 import { ContactDetails } from "./contact-details";
 import { Text, View } from "react-native";
 import { useLanguage } from "../lib/language";
+import { useLowData } from "../lib/low-data";
 import type { ConnectionsApi } from "../lib/connections";
 import type { PrivacyApi, PrivacySettings, PrivacySwitch } from "../lib/privacy";
 import { BlockedList } from "./connections";
@@ -27,6 +28,7 @@ function Card({ title, children }: { title?: string; children: React.ReactNode }
 /** S44: the settings built so far. */
 export function SettingsMenu() {
   const { t } = useLanguage();
+  const { lowData, setLowData } = useLowData();
   return (
     <View className="gap-4">
       <ScreenTitle>{t.navSettings}</ScreenTitle>
@@ -81,6 +83,14 @@ export function SettingsMenu() {
             ›
           </Text>
         </LinkButton>
+      </View>
+      <View className="rounded-card border border-line bg-surface px-4">
+        <Switch
+          label={t.lowDataTitle}
+          hint={t.lowDataHint}
+          checked={lowData}
+          onChange={setLowData}
+        />
       </View>
     </View>
   );

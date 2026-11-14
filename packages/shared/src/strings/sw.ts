@@ -582,6 +582,10 @@ export const sw: Strings = {
   passwordChanged:
     "Nenosiri lako limebadilishwa. Umetolewa kwenye vifaa vingine vyote. Ingia kwa nenosiri jipya na msimbo tutakaokutumia kwa barua pepe.",
   changePasswordTitle: "Nenosiri na kuingia",
+  lowDataTitle: "Hali ya data kidogo",
+  lowDataHint:
+    "Usipakue picha kwenye kifaa hiki. Majina na herufi za mwanzo zinaonyeshwa badala yake.",
+  photoHidden: (name: string) => `Picha: ${name} (hali ya data kidogo)`,
   changePasswordIntro:
     "Ili kubadilisha nenosiri lako, kwanza tutatuma msimbo wa tarakimu 6 kwenye barua pepe ya akaunti yako.",
   changeCodeSent:

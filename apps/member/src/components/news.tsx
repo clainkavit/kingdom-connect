@@ -2,15 +2,17 @@ import { formatDate } from "@kingdom-connect/shared";
 import { useEffect, useState } from "react";
 import { Image, Text, View } from "react-native";
 import { useLanguage } from "../lib/language";
+import { useLowData } from "../lib/low-data";
 import type { MemberNewsApi, MemberNewsItem } from "../lib/news";
 import { ScreenTitle } from "./screens";
 import { EmptyState, ErrorState, LoadingRows } from "./states";
 
 function NewsCard({ item }: { item: MemberNewsItem }) {
   const { t, language } = useLanguage();
+  const { lowData } = useLowData();
   return (
     <View role="article" className="gap-2 rounded-card border border-line bg-surface p-4">
-      {item.imageUrl ? (
+      {item.imageUrl && !lowData ? (
         <Image
           source={{ uri: item.imageUrl }}
           accessibilityIgnoresInvertColors

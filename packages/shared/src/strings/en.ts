@@ -570,6 +570,9 @@ export const en = {
   passwordChanged:
     "Your password was changed. You are signed out on every other device. Log in with the new password and the code we email you.",
   changePasswordTitle: "Password and sign-in",
+  lowDataTitle: "Low-data mode",
+  lowDataHint: "Don't load photos on this device. Names and initials show instead.",
+  photoHidden: (name: string) => `Photo: ${name} (low-data mode)`,
   changePasswordIntro:
     "To change your password, we first send a 6-digit code to the email on your account.",
   changeCodeSent: "We sent a 6-digit code to the email on your account. It works for 10 minutes.",

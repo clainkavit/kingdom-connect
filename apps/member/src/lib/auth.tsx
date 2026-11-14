@@ -54,10 +54,17 @@ export function useAuth(): Auth {
   return auth;
 }
 
-export function Guard({ route, children }: { route: Route; children: React.ReactNode }) {
+export function Guard({
+  route,
+  children,
+}: {
+  route: Route | readonly Route[];
+  children: React.ReactNode;
+}) {
   const { ready, accessToken } = useAuth();
   if (!ready) return null;
   const actual = routeFor(accessToken, "member");
-  if (actual !== route) return <Redirect href={routePaths[actual]} />;
+  const allowed: readonly Route[] = typeof route === "string" ? [route] : route;
+  if (!allowed.includes(actual)) return <Redirect href={routePaths[actual]} />;
   return <>{children}</>;
 }

@@ -5,6 +5,7 @@ import {
   createRegistrationClient,
   loginMessage,
   minutesAndSeconds,
+  isLooking,
   routeFor,
   type LoginMessages,
 } from "./auth";
@@ -34,6 +35,21 @@ describe("routeFor (docs/screens.md S03 to S06)", () => {
     expect(routeFor(token({ otp_verified: true, user_status: "rejected" }), "member")).toBe(
       "status",
     );
+  });
+
+  it("sends a signed-in account that has not sent the verification steps there too (R27)", () => {
+    expect(routeFor(token({ otp_verified: true, user_status: "signed_in" }), "member")).toBe(
+      "status",
+    );
+  });
+
+  it("knows who looks but does not act: signed in, pending or rejected (R27, PRD section 3)", () => {
+    for (const status of ["signed_in", "pending", "rejected"])
+      expect(isLooking(token({ otp_verified: true, user_status: status }))).toBe(true);
+    for (const status of ["approved", "suspended", "staff"])
+      expect(isLooking(token({ otp_verified: true, user_status: status }))).toBe(false);
+    expect(isLooking(token({ otp_verified: false, user_status: "pending" }))).toBe(false);
+    expect(isLooking(null)).toBe(false);
   });
 
   it("keeps Administrators out of the member app and Members out of the admin console", () => {

@@ -113,3 +113,30 @@ export function moreItems(nav: readonly NavItem[], tabs: readonly NavItem[]): Na
   const tabHrefs = new Set(tabs.map((t) => t.href));
   return nav.filter((item) => !tabHrefs.has(item.href));
 }
+
+const lookPages = [
+  "/",
+  "/opportunities",
+  "/growth",
+  "/ideas",
+  "/training",
+  "/events",
+  "/news",
+  "/account",
+  "/registration",
+];
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const lookDetails: Record<string, readonly string[]> = {
+  "/opportunities": ["new", "mine", "saved", "responses", "scan"],
+  "/ideas": ["new", "mine", "saved", "investor"],
+  "/training": ["new"],
+  "/events": ["new"],
+};
+
+/** The read-only pages someone who is not verified may open (R27, docs/screens.md "Look, but not act"). */
+export function lookAllows(pathname: string): boolean {
+  if (lookPages.includes(pathname)) return true;
+  const [, section, id, ...rest] = pathname.split("/");
+  const locked = lookDetails[`/${section}`];
+  return !!locked && !!id && UUID.test(id) && rest.length === 0 && !locked.includes(id);
+}

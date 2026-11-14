@@ -19,8 +19,9 @@ test("a Member in Mwanza sees members in Mwanza first, under Near you (R25)", as
 
   await signInAs(page, `e2e_near_reader_${stamp}`, ids.reader!.email);
   await page.goto("/people");
+  await page.getByRole("button", { name: "Profession: Any" }).click();
   await page.getByRole("textbox", { name: "Profession", exact: true }).fill(profession);
-  await page.getByRole("button", { name: "Search", exact: true }).click();
+  await page.getByRole("button", { name: "Apply", exact: true }).click();
 
   const near = page.getByRole("heading", { name: "Near you in Mwanza" });
   const more = page.getByRole("heading", { name: "More members" });

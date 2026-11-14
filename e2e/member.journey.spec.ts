@@ -28,7 +28,7 @@ test("Release 1 journey: connect, accept on the dashboard, message, report, an A
 
   await a.goto("/people");
   await a.getByLabel("Search by name, profession or skill").fill(`Journey Receiver ${stamp}`);
-  await a.getByRole("button", { name: "Search" }).click();
+  await a.keyboard.press("Enter");
   await a.getByRole("link", { name: "Connect", exact: true }).click();
   await a.getByLabel("Add a note (optional)").fill("Can I ask about the job?");
   await a.getByRole("button", { name: "Send request" }).click();

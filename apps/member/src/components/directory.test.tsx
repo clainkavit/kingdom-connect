@@ -99,7 +99,7 @@ describe("DirectoryScreen (S10), Businesses tab", () => {
     );
     await click("Region: Any");
     await act(async () => fireEvent.click(screen.getByRole("option", { name: "Mwanza" })));
-    await click("Search");
+    await act(async () => new Promise((r) => setTimeout(r, 450)));
     expect(api.searchBusinesses).toHaveBeenLastCalledWith(
       { q: "pendo", sector: "s1", level: 3, region: "r1" },
       0,
@@ -117,16 +117,15 @@ describe("DirectoryScreen (S10), Businesses tab", () => {
 });
 
 describe("DirectoryScreen (S10)", () => {
-  it("lists cards with name, headline, location, top 3 skills, badge and Connect", async () => {
+  it("lists cards with name, what they do and where, top 3 skills and Connect", async () => {
     const api = fakeApi();
     await show(api);
     expect(api.search).toHaveBeenCalledWith(noFilters, 0, "en");
     const link = screen.getByRole("link", { name: /Zawadi Listed/ });
     expect(link.getAttribute("href")).toBe("/profile/m1");
-    expect(screen.getByText("Accountant in Mwanza")).toBeTruthy();
-    expect(screen.getByText("Nyamagana, Mwanza")).toBeTruthy();
+    expect(screen.getByText("Accountant in Mwanza · Nyamagana, Mwanza")).toBeTruthy();
     expect(screen.getByText("tax")).toBeTruthy();
-    expect(screen.getByText("Verified member")).toBeTruthy();
+    expect(screen.queryByText("Verified member")).toBeNull();
     expect(screen.getByRole("link", { name: "Connect" }).getAttribute("href")).toBe(
       "/profile/m1?connect=1",
     );
@@ -163,12 +162,65 @@ describe("DirectoryScreen (S10)", () => {
       fireEvent.click(screen.getByRole("button", { name: "Currently studying: Any" })),
     );
     await act(async () => fireEvent.click(screen.getByRole("option", { name: "Yes" })));
-    await click("Search");
     expect(api.search).toHaveBeenLastCalledWith(
       expect.objectContaining({ q: "excel", studying: true }),
       0,
       "en",
     );
+    expect(screen.getByRole("button", { name: "Currently studying: Yes" })).toBeTruthy();
+  });
+
+  it("searches the typed words once typing pauses, or at once on Enter", async () => {
+    const api = fakeApi();
+    await show(api);
+    const box = screen.getByLabelText("Search by name, profession or skill");
+    expect(box.getAttribute("placeholder")).toBe("Name, profession or skill");
+    fireEvent.change(box, { target: { value: "solar" } });
+    expect(api.search).toHaveBeenCalledTimes(1);
+    await act(async () => new Promise((r) => setTimeout(r, 450)));
+    expect(api.search).toHaveBeenLastCalledWith(expect.objectContaining({ q: "solar" }), 0, "en");
+    fireEvent.change(box, { target: { value: "wiring" } });
+    await act(async () => fireEvent.keyDown(box, { key: "Enter" }));
+    expect(api.search).toHaveBeenLastCalledWith(expect.objectContaining({ q: "wiring" }), 0, "en");
+  });
+
+  it("on a computer, shows the filters as one row of buttons, with no Search button", async () => {
+    const api = fakeApi();
+    await show(api);
+    for (const name of [
+      "Region: Any",
+      "Profession: Any",
+      "Skill: Any",
+      "Sector: Any",
+      "Currently studying: Any",
+    ])
+      expect(screen.getByRole("button", { name })).toBeTruthy();
+    expect(screen.queryByRole("button", { name: "Search" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "District: Any" })).toBeNull();
+    await click("Region: Any");
+    await act(async () => fireEvent.click(screen.getByRole("option", { name: "Mwanza" })));
+    expect(screen.getByRole("button", { name: "Region: Mwanza" })).toBeTruthy();
+    await click("District: Any");
+    await act(async () => fireEvent.click(screen.getByRole("option", { name: "Nyamagana" })));
+    expect(api.search).toHaveBeenLastCalledWith(
+      expect.objectContaining({ region: "r1", district: "d1" }),
+      0,
+      "en",
+    );
+  });
+
+  it("filters by a typed profession from its menu", async () => {
+    const api = fakeApi();
+    await show(api);
+    await click("Profession: Any");
+    fireEvent.change(screen.getByLabelText("Profession"), { target: { value: "Nurse" } });
+    await click("Apply");
+    expect(api.search).toHaveBeenLastCalledWith(
+      expect.objectContaining({ profession: "Nurse" }),
+      0,
+      "en",
+    );
+    expect(screen.getByRole("button", { name: "Profession: Nurse" })).toBeTruthy();
   });
 
   it("on a phone, keeps search open and folds the filters into one button", async () => {
@@ -211,12 +263,16 @@ describe("DirectoryScreen (S10)", () => {
     expect(screen.queryByRole("button", { name: "Load more" })).toBeNull();
   });
 
-  it("says when no one matches and clears the filters", async () => {
+  it("says when no one matches, and Clear all appears once a filter is on", async () => {
     const api = fakeApi({ search: vi.fn().mockResolvedValue({ cards: [], more: false }) });
     await show(api);
     expect(screen.getByText("No one matches")).toBeTruthy();
-    await click("Clear filters");
+    expect(screen.queryByRole("button", { name: "Clear all" })).toBeNull();
+    await click("Currently studying: Any");
+    await act(async () => fireEvent.click(screen.getByRole("option", { name: "Yes" })));
+    await click("Clear all");
     expect(api.search).toHaveBeenLastCalledWith(noFilters, 0, "en");
+    expect(screen.queryByRole("button", { name: "Clear all" })).toBeNull();
   });
 
   it("offers a retry when the directory cannot load", async () => {
@@ -262,6 +318,32 @@ describe("People layout (13 Nov 2026 redesign)", () => {
       screen.getByRole("link", { name: new RegExp(`^${name}`) }).parentElement!.parentElement!;
     expect(listOf("Joseph Mushi")).toBe(listOf("Emmanuel Kisanga"));
     expect(listOf("Joseph Mushi").children.length).toBe(4);
+  });
+
+  it("on a phone, shows short labels in each row and the privacy note under the list", async () => {
+    setWidth(PHONE);
+    await show(
+      fakeApi({
+        search: vi.fn().mockResolvedValue({
+          cards: [
+            card({ memberId: "a", fullName: "Sent To", relation: "sent" }),
+            card({ memberId: "c", fullName: "Asked Me", relation: "received" }),
+          ],
+          more: false,
+        }),
+      }),
+    );
+    expect(screen.getByText("Sent")).toBeTruthy();
+    expect(screen.getByRole("link", { name: "Answer their request" }).textContent).toBe("Answer");
+    expect(screen.getAllByText("bookkeeping · excel · tax")).toHaveLength(2);
+    expect(
+      screen.getByText("Phone and email stay private until you connect and they choose to share."),
+    ).toBeTruthy();
+    expect(
+      screen.queryByText(
+        "Verified members of the community. Contact details stay private until you connect.",
+      ),
+    ).toBeNull();
   });
 
   it("says contact details stay private, and links to My connections", async () => {

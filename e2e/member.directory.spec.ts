@@ -28,7 +28,7 @@ test("a Member finds people by skill, and hidden profiles are not listed (PRO-3,
   await signInAs(page, `e2e_seek_${stamp}`, searcher.email);
   await page.goto("/people");
   await page.getByLabel("Search by name, profession or skill").fill(tag);
-  await page.getByRole("button", { name: "Search" }).click();
+  await page.keyboard.press("Enter");
 
   await expect(page.getByText(`Found First ${stamp}`)).toBeVisible();
   await expect(page.getByText(`Found Second ${stamp}`)).toBeVisible();
@@ -40,7 +40,7 @@ test("a Member finds people by skill, and hidden profiles are not listed (PRO-3,
 
   await page.goto("/people");
   await page.getByLabel("Search by name, profession or skill").fill(`no one has this ${stamp}`);
-  await page.getByRole("button", { name: "Search" }).click();
+  await page.keyboard.press("Enter");
   await expect(page.getByText("No one matches")).toBeVisible();
 });
 
@@ -62,7 +62,7 @@ test("a Member finds a verified business on the Businesses tab, and a business s
   await page
     .getByRole("textbox", { name: "Search by business name or what it does" })
     .fill(`${stamp}`);
-  await page.getByRole("button", { name: "Search", exact: true }).click();
+  await page.keyboard.press("Enter");
   await expect(page.getByText(`Listed Traders ${stamp}`)).toBeVisible();
   await expect(page.getByText(`Owner: Business Owner ${stamp}`)).toBeVisible();
   await expect(page.getByText(`Waiting Traders ${stamp}`)).toHaveCount(0);

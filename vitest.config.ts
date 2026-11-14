@@ -31,6 +31,7 @@ export default defineConfig({
         },
         test: {
           name: "member",
+          setupFiles: ["apps/member/test/setup.ts"],
           include: ["apps/member/**/*.test.{ts,tsx}"],
           exclude,
           environment: "jsdom",

@@ -535,6 +535,12 @@ export const sw: Strings = {
   loginName: "Jina la mtumiaji, simu au barua pepe",
   email: "Barua pepe",
   password: "Nenosiri",
+  landingEyebrow: "Watu · Fursa · Ukuaji",
+  landingTitle: "Pata watu, fursa na mawazo ya kukua pamoja",
+  landingBody: "Jukwaa la wanachama pekee kwa Tanzania. Kila mwanachama amethibitishwa.",
+  everyMemberVerified: "Kila mwanachama amethibitishwa",
+  skipIntro: "Ruka",
+  legalUnavailable: "Maandishi haya bado hayapatikani. Tafadhali jaribu tena baadaye.",
   logIn: "Ingia",
   logOut: "Toka",
   loginTitle: (platformName: string) => `Ingia kwenye ${platformName}`,
@@ -575,6 +581,15 @@ export const sw: Strings = {
   savePassword: "Hifadhi nenosiri",
   passwordChanged:
     "Nenosiri lako limebadilishwa. Umetolewa kwenye vifaa vingine vyote. Ingia kwa nenosiri jipya na msimbo tutakaokutumia kwa barua pepe.",
+  changePasswordTitle: "Nenosiri na kuingia",
+  lowDataTitle: "Hali ya data kidogo",
+  lowDataHint:
+    "Usipakue picha kwenye kifaa hiki. Majina na herufi za mwanzo zinaonyeshwa badala yake.",
+  photoHidden: (name: string) => `Picha: ${name} (hali ya data kidogo)`,
+  changePasswordIntro:
+    "Ili kubadilisha nenosiri lako, kwanza tutatuma msimbo wa tarakimu 6 kwenye barua pepe ya akaunti yako.",
+  changeCodeSent:
+    "Tumetuma msimbo wa tarakimu 6 kwenye barua pepe ya akaunti yako. Unafanya kazi kwa dakika 10.",
   noEmailAccess: "Huwezi kufikia barua pepe hiyo?",
 
   statusTitle: "Hali ya usajili",

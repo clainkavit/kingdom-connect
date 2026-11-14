@@ -8,6 +8,7 @@ import {
 import { useEffect, useState } from "react";
 import { Image, Pressable, Text, View } from "react-native";
 import { useLanguage } from "../lib/language";
+import { useLowData } from "../lib/low-data";
 import type { Option } from "../lib/registration";
 import type { Profile, ProfileApi, ProfileChanges } from "../lib/profile";
 import { Button, ChoiceList, Field, Message } from "./form";
@@ -42,13 +43,14 @@ export function Avatar({
   url: string | null;
   size?: number;
 }) {
+  const { lowData } = useLowData();
   const initials = name
     .split(/\s+/)
     .filter(Boolean)
     .slice(0, 2)
     .map((w) => w[0]!.toUpperCase())
     .join("");
-  if (url)
+  if (url && !lowData)
     return (
       <Image
         source={{ uri: url }}

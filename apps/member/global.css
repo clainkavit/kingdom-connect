@@ -2,6 +2,54 @@
 @tailwind components;
 @tailwind utilities;
 
+@media (hover: hover) {
+  [role="button"],
+  [role="link"],
+  [role="tab"],
+  [role="menuitem"],
+  [role="option"],
+  [role="switch"],
+  [role="checkbox"],
+  a {
+    transition:
+      background-color 150ms ease,
+      border-color 150ms ease,
+      color 150ms ease,
+      opacity 150ms ease,
+      box-shadow 150ms ease,
+      transform 120ms ease,
+      filter 150ms ease;
+  }
+  [role="button"]:hover,
+  [role="link"]:hover,
+  [role="tab"]:hover,
+  [role="menuitem"]:hover,
+  [role="option"]:hover,
+  a:hover {
+    filter: brightness(0.96);
+  }
+}
+
+[role="button"]:active,
+[role="tab"]:active,
+[role="switch"]:active {
+  transform: scale(0.97);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0ms !important;
+    animation-duration: 0ms !important;
+  }
+  [role="button"]:active,
+  [role="tab"]:active,
+  [role="switch"]:active {
+    transform: none;
+  }
+}
+
 :root {
   color-scheme: light;
   --kc-radius: 12px;

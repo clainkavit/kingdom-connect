@@ -18,7 +18,7 @@ export function LinkButton({ href, className, current, label, children }: LinkBu
       role="link"
       asChild
     >
-      <Pressable className={className}>{children}</Pressable>
+      <Pressable className={`active:opacity-80 ${className ?? ""}`}>{children}</Pressable>
     </Link>
   );
 }

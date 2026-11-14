@@ -2,6 +2,7 @@ import Lock from "lucide-react-native/icons/lock";
 import type { FieldProblem, Strings } from "@kingdom-connect/shared";
 import { useState } from "react";
 import { Pressable, ScrollView, Text, TextInput, View } from "react-native";
+import { Reveal } from "./motion";
 import { useLanguage } from "../lib/language";
 import { usePalette } from "./palette";
 
@@ -77,7 +78,7 @@ export function Button(props: {
       aria-disabled={props.disabled}
       disabled={props.disabled}
       onPress={props.onPress}
-      className={`items-center justify-center px-4 ${props.secondary ? "min-h-[44px] rounded-[9px] border border-line bg-surface" : "min-h-[48px] rounded-[10px] bg-blue"} ${props.disabled ? "opacity-50" : ""}`}
+      className={`items-center justify-center px-4 active:opacity-80 ${props.secondary ? "min-h-[44px] rounded-[9px] border border-line bg-surface" : "min-h-[48px] rounded-[10px] bg-blue"} ${props.disabled ? "opacity-50" : ""}`}
     >
       <Text
         className={
@@ -254,35 +255,37 @@ export function ChoiceList({
           {chosen ?? t.choose}
         </Text>
       </Pressable>
-      {open ? (
-        <View className="gap-2 rounded-[9px] border border-line bg-surface p-2">
-          <TextInput
-            aria-label={`${t.searchList}: ${label}`}
-            value={search}
-            onChangeText={setSearch}
-            placeholder={t.searchList}
-            className="min-h-[40px] rounded-lg border border-field px-3 font-figtree text-sm text-ink"
-          />
-          <ScrollView className="max-h-60" nestedScrollEnabled>
-            {shown.map((option) => (
-              <Pressable
-                key={option.value}
-                role="option"
-                aria-selected={option.value === value}
-                aria-label={option.label}
-                onPress={() => {
-                  onChange(option.value);
-                  setOpen(false);
-                  setSearch("");
-                }}
-                className={`min-h-[40px] justify-center rounded-md px-3 ${option.value === value ? "bg-blue-soft" : ""}`}
-              >
-                <Text className="font-figtree text-[15px] text-ink">{option.label}</Text>
-              </Pressable>
-            ))}
-          </ScrollView>
-        </View>
-      ) : null}
+      <Reveal
+        show={open}
+        from="above"
+        className="gap-2 rounded-[9px] border border-line bg-surface p-2"
+      >
+        <TextInput
+          aria-label={`${t.searchList}: ${label}`}
+          value={search}
+          onChangeText={setSearch}
+          placeholder={t.searchList}
+          className="min-h-[40px] rounded-lg border border-field px-3 font-figtree text-sm text-ink"
+        />
+        <ScrollView className="max-h-60" nestedScrollEnabled>
+          {shown.map((option) => (
+            <Pressable
+              key={option.value}
+              role="option"
+              aria-selected={option.value === value}
+              aria-label={option.label}
+              onPress={() => {
+                onChange(option.value);
+                setOpen(false);
+                setSearch("");
+              }}
+              className={`min-h-[40px] justify-center rounded-md px-3 ${option.value === value ? "bg-blue-soft" : ""}`}
+            >
+              <Text className="font-figtree text-[15px] text-ink">{option.label}</Text>
+            </Pressable>
+          ))}
+        </ScrollView>
+      </Reveal>
       <Problem text={problem ?? null} />
     </View>
   );

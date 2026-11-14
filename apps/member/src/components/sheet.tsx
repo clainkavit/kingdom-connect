@@ -7,7 +7,9 @@ import {
   useWindowDimensions,
   View,
 } from "react-native";
+import { useState } from "react";
 import { useLanguage } from "../lib/language";
+import { Reveal } from "./motion";
 
 /** Below this width the screen is a phone. */
 export const PHONE_MAX = 880;
@@ -33,13 +35,23 @@ export function Sheet({
   children: React.ReactNode;
 }) {
   const { t } = useLanguage();
+  const [leaving, setLeaving] = useState(false);
+  const [wasOpen, setWasOpen] = useState(open);
+  if (open !== wasOpen) {
+    setWasOpen(open);
+    setLeaving(!open);
+  }
   return (
-    <Modal visible={open} transparent animationType="slide" onRequestClose={onClose}>
+    <Modal visible={open || leaving} transparent animationType="fade" onRequestClose={onClose}>
       <View className="flex-1 justify-end bg-black/40">
-        <View
+        <Reveal
+          show={open}
+          from="below"
+          onGone={() => setLeaving(false)}
           role="dialog"
           aria-label={title}
-          className="max-h-[88%] gap-3 rounded-t-[20px] bg-surface px-5 pb-6 pt-4"
+          style={{ maxHeight: "88%" }}
+          className="max-h-full shrink gap-3 rounded-t-[20px] bg-surface px-5 pb-6 pt-4"
         >
           <View className="flex-row items-center justify-between">
             <Text role="heading" aria-level={2} className="font-figtree-bold text-lg text-ink">
@@ -56,7 +68,7 @@ export function Sheet({
           </View>
           <ScrollView contentContainerClassName="gap-3 pb-2">{children}</ScrollView>
           {footer}
-        </View>
+        </Reveal>
       </View>
     </Modal>
   );

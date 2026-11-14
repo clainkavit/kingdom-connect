@@ -5,6 +5,7 @@ import { useState } from "react";
 import { ScrollView, Text, TextInput, useWindowDimensions, View } from "react-native";
 import { useLanguage } from "../lib/language";
 import { LanguageMenu } from "./language-menu";
+import { EnterOnChange } from "./motion";
 import { LinkButton } from "./link-button";
 import { NotificationBell } from "./notifications";
 import { NavIcon } from "./nav-icon";
@@ -231,7 +232,9 @@ export function MemberShell({
         </View>
       )}
       <ScrollView className="flex-1" contentContainerClassName={wide ? "px-7 py-6" : "px-5 py-4"}>
-        <View role="main">{children}</View>
+        <View role="main">
+          <EnterOnChange value={pathname}>{children}</EnterOnChange>
+        </View>
       </ScrollView>
       {wide ? null : <TabBar pathname={pathname} unreadMessages={unreadMessages} />}
     </View>

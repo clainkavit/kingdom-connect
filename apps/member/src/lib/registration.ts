@@ -1,4 +1,4 @@
-import { compareVersions, type Language, type RegistrationDraft } from "@kingdom-connect/shared";
+import { type Language, type RegistrationDraft } from "@kingdom-connect/shared";
 import { supabase } from "./supabase";
 
 export type SavedDraft = { step: number; data: RegistrationDraft; submitted: boolean };
@@ -63,28 +63,4 @@ export async function districtOptions(regionId: string, language: Language): Pro
 export async function sectorOptions(language: Language): Promise<Option[]> {
   const { data } = await supabase.from("sectors").select("id, name_en, name_sw");
   return toOptions(data, language);
-}
-
-export type LegalText = {
-  kind: "terms" | "privacy";
-  version: string;
-  body_en: string;
-  body_sw: string;
-};
-
-export async function currentTermsAndPrivacy(): Promise<LegalText[]> {
-  const { data } = await supabase
-    .from("legal_texts")
-    .select("kind, version, body_en, body_sw")
-    .in("kind", ["terms", "privacy"])
-    .lte("effective_at", new Date().toISOString());
-  const rows = (data ?? []) as LegalText[];
-  return (["terms", "privacy"] as const)
-    .map(
-      (kind) =>
-        rows
-          .filter((r) => r.kind === kind)
-          .sort((a, b) => compareVersions(a.version, b.version))[0],
-    )
-    .filter((r): r is LegalText => Boolean(r));
 }

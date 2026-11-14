@@ -135,6 +135,7 @@ describe("look, but not act (R27, docs/screens.md)", () => {
       "/news",
       "/account",
       "/registration",
+      "/profile/verify",
     ])
       expect(lookAllows(path)).toBe(true);
   });

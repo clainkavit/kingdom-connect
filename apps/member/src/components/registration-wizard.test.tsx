@@ -13,7 +13,6 @@ const fakeApi = (over: Partial<WizardApi> = {}): WizardApi => ({
   regions: vi.fn().mockResolvedValue([{ value: "r1", label: "Mwanza" }]),
   districts: vi.fn().mockResolvedValue([{ value: "d1", label: "Nyamagana" }]),
   sectors: vi.fn().mockResolvedValue([{ value: "s1", label: "Agriculture" }]),
-  legalTexts: vi.fn().mockResolvedValue([]),
   ...over,
 });
 
@@ -26,14 +25,13 @@ async function show(step: number, data: object, api: WizardApi, onSubmitted = vi
       <RegistrationWizard
         initial={{ step, data, submitted: false }}
         api={api}
-        entityName="E"
         onSubmitted={onSubmitted}
       />,
     );
   });
 }
 
-describe("RegistrationWizard (S05)", () => {
+describe("Verify your identity (S05, R28)", () => {
   it("will not move on until the step is complete, then saves it", async () => {
     const api = fakeApi();
     await show(1, {}, api);
@@ -56,7 +54,7 @@ describe("RegistrationWizard (S05)", () => {
       2,
       expect.objectContaining({ fullName: "Test Applicant", regionId: "r1", districtId: "d1" }),
     );
-    expect(screen.getByText("Step 2 of 6")).toBeTruthy();
+    expect(screen.getByText("Step 2 of 5")).toBeTruthy();
   });
 
   it("asks for the details that fit the chosen category", async () => {
@@ -168,11 +166,25 @@ describe("RegistrationWizard (S05)", () => {
 
   it("goes back to an unfinished step when the server says so", async () => {
     const onSubmitted = vi.fn();
-    const api = fakeApi({ submit: vi.fn().mockResolvedValue({ kind: "incomplete", step: 5 }) });
+    const api = fakeApi({ submit: vi.fn().mockResolvedValue({ kind: "incomplete", step: 4 }) });
     await show(6, {}, api, onSubmitted);
     await click("Submit application");
     expect(onSubmitted).not.toHaveBeenCalled();
-    expect(screen.getByText("Step 5 of 6")).toBeTruthy();
+    expect(screen.getByText("Step 4 of 5")).toBeTruthy();
+  });
+
+  it("has no terms step: after ID and photos comes Check and send, step 5 of 5", async () => {
+    const api = fakeApi();
+    await show(6, {}, api);
+    expect(screen.getByText("Step 5 of 5")).toBeTruthy();
+    expect(screen.queryByRole("checkbox", { name: "I accept the terms of use" })).toBeNull();
+    await click("Back");
+    expect(api.saveDraft).toHaveBeenCalledWith(4, expect.anything());
+  });
+
+  it("opens a draft saved on the old terms step at Check and send", async () => {
+    await show(5, {}, fakeApi());
+    expect(screen.getByText("Step 5 of 5")).toBeTruthy();
   });
 
   it("finishes when the application is submitted", async () => {

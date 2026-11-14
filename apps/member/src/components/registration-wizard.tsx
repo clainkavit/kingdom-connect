@@ -1,26 +1,24 @@
 import {
   type FieldProblem,
   type IdType,
+  nextVerifyStep,
+  previousVerifyStep,
+  VERIFY_STEPS,
+  shownStepNumber,
+  verifyProgress,
+  CHECK_AND_SEND,
   type RegistrationDraft,
   type SaveIdentityResult,
   stepProblems,
   type SubmitResult,
   type TextKey,
-  WIZARD_STEPS,
 } from "@kingdom-connect/shared";
 import { useEffect, useState } from "react";
 import { Text, View } from "react-native";
 import { useLanguage } from "../lib/language";
-import type { LegalText, Option, SavedDraft } from "../lib/registration";
+import type { Option, SavedDraft } from "../lib/registration";
 import { Button, Message } from "./form";
-import {
-  CategoryStep,
-  DetailsStep,
-  IdentityStep,
-  LegalStep,
-  PersonalStep,
-  ReviewStep,
-} from "./wizard-steps";
+import { CategoryStep, DetailsStep, IdentityStep, PersonalStep, ReviewStep } from "./wizard-steps";
 
 export type WizardApi = {
   saveDraft: (step: number, draft: RegistrationDraft) => Promise<void>;
@@ -34,32 +32,31 @@ export type WizardApi = {
   regions: () => Promise<Option[]>;
   districts: (regionId: string) => Promise<Option[]>;
   sectors: () => Promise<Option[]>;
-  legalTexts: () => Promise<LegalText[]>;
 };
 
-const stepTitles: TextKey[] = [
-  "stepPersonal",
-  "stepCategory",
-  "stepCategoryDetails",
-  "stepIdentity",
-  "stepLegal",
-  "stepReview",
-];
+const stepTitles: Record<number, TextKey> = {
+  1: "stepPersonal",
+  2: "stepCategory",
+  3: "stepCategoryDetails",
+  4: "stepIdentity",
+  6: "stepReview",
+};
 
-/** The six registration steps (S05). Each step is saved before moving on. */
+/** A draft saved on a step that is not shown, such as the terms, opens on Check and send. */
+const shownStep = (step: number) => (stepTitles[step] ? step : CHECK_AND_SEND);
+
+/** Verify your identity (S05, R28): five steps in the profile, each saved before moving on. */
 export function RegistrationWizard({
   initial,
   api,
-  entityName,
   onSubmitted,
 }: {
   initial: SavedDraft;
   api: WizardApi;
-  entityName: string;
   onSubmitted: () => void;
 }) {
   const { t } = useLanguage();
-  const [step, setStep] = useState(initial.step);
+  const [step, setStep] = useState(shownStep(initial.step));
   const [draft, setDraft] = useState<RegistrationDraft>(initial.data);
   const [problems, setProblems] = useState<Record<string, FieldProblem>>({});
   const [message, setMessage] = useState<string | null>(null);
@@ -69,12 +66,10 @@ export function RegistrationWizard({
   const [regions, setRegions] = useState<Option[]>([]);
   const [districts, setDistricts] = useState<Option[]>([]);
   const [sectors, setSectors] = useState<Option[]>([]);
-  const [texts, setTexts] = useState<LegalText[]>([]);
 
   useEffect(() => {
     api.regions().then(setRegions);
     api.sectors().then(setSectors);
-    api.legalTexts().then(setTexts);
   }, [api]);
 
   useEffect(() => {
@@ -100,7 +95,7 @@ export function RegistrationWizard({
   const nextStep = () => {
     const found = stepProblems(step, draft);
     setProblems(found);
-    if (Object.keys(found).length === 0) go(step + 1);
+    if (Object.keys(found).length === 0) go(nextVerifyStep(step));
   };
 
   const saveId = async (idNumber: string) => {
@@ -146,7 +141,7 @@ export function RegistrationWizard({
     setBusy(false);
     if (result.kind === "submitted") return onSubmitted();
     if (result.kind === "incomplete") {
-      setStep(result.step);
+      setStep(shownStep(result.step));
       setProblems(stepProblems(result.step, draft));
       return;
     }
@@ -162,12 +157,14 @@ export function RegistrationWizard({
     <View className="gap-4">
       <View className="gap-1">
         <Text className="font-figtree-semibold text-xs text-blue">
-          {t.stepOf(step, WIZARD_STEPS)}
+          {t.stepOf(shownStepNumber(step), VERIFY_STEPS.length)}
         </Text>
         <Text role="heading" aria-level={2} className="font-figtree-extrabold text-lg text-ink">
-          {t[stepTitles[step - 1]!]}
+          {t[stepTitles[step]!]}
         </Text>
-        <Text className="font-figtree text-[13px] text-ink-2">{t.savedProgress}</Text>
+        <Text className="font-figtree text-[13px] text-ink-2">
+          {t.lookProgress(verifyProgress(draft), VERIFY_STEPS.length)} · {t.savedProgress}
+        </Text>
       </View>
 
       {step === 1 ? <PersonalStep {...props} regions={regions} districts={districts} /> : null}
@@ -183,18 +180,22 @@ export function RegistrationWizard({
           idProblem={idProblem}
         />
       ) : null}
-      {step === 5 ? <LegalStep {...props} texts={texts} entityName={entityName} /> : null}
       {step === 6 ? <ReviewStep draft={draft} labelOf={labelOf} onEdit={(n) => go(n)} /> : null}
 
       <Message text={message} />
       <View className="flex-row gap-3">
         {step > 1 ? (
           <View className="flex-1">
-            <Button secondary label={t.back} onPress={() => go(step - 1)} disabled={busy} />
+            <Button
+              secondary
+              label={t.back}
+              onPress={() => go(previousVerifyStep(step))}
+              disabled={busy}
+            />
           </View>
         ) : null}
         <View className="flex-1">
-          {step < WIZARD_STEPS ? (
+          {step < CHECK_AND_SEND ? (
             <Button label={t.next} onPress={nextStep} disabled={busy} />
           ) : (
             <Button label={t.submitApplication} onPress={submit} disabled={busy} />

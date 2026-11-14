@@ -112,7 +112,7 @@ test("an Applicant reaches Registration status, and Messages stays locked (R27)"
   const sentAfter = new Date();
   await logIn(page, "Username", "test_applicant");
   await enterCode(page, await nextCode("test.applicant@example.test", sentAfter));
-  await expect(page.getByRole("heading", { name: "Registration status" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Verify your identity" })).toBeVisible();
   await expect(
     page.getByText("Your application is being reviewed.", { exact: false }),
   ).toBeVisible();

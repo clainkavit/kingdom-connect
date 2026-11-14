@@ -42,7 +42,7 @@ describe("look, but not act (R27)", () => {
     expect(screen.getByText("Verify your identity to apply")).toBeTruthy();
     expect(screen.getByText(/only hear from verified members/)).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Continue verification" }));
-    expect(router.pushed).toEqual(["/registration"]);
+    expect(router.pushed).toEqual(["/profile/verify"]);
   });
 
   it("names the action it waits for", async () => {
@@ -78,7 +78,7 @@ describe("look, but not act (R27)", () => {
     expect(screen.queryByText("People page")).toBeNull();
     expect(screen.getByText("This opens once you are verified")).toBeTruthy();
     expect(screen.getByRole("link", { name: "Continue verification" }).getAttribute("href")).toBe(
-      "/registration",
+      "/profile/verify",
     );
   });
 
@@ -96,25 +96,39 @@ describe("look, but not act (R27)", () => {
 
   it("Home says the member is not verified yet, shows what is open and locks People (S08)", async () => {
     await act(async () => {
-      render(<LookHome widgets={widgets} status={async () => ({ kind: "drafting" })} />);
+      render(
+        <LookHome
+          widgets={widgets}
+          status={async () => ({ kind: "drafting" })}
+          progress={async () => 2}
+        />,
+      );
     });
     expect(screen.getByText("Not verified yet")).toBeTruthy();
     expect(screen.getByText("Verify your identity to connect, apply and post")).toBeTruthy();
     expect(screen.getByRole("link", { name: "Continue verification" }).getAttribute("href")).toBe(
-      "/registration",
+      "/profile/verify",
     );
     expect(screen.getByText("People open after verification")).toBeTruthy();
+    expect(screen.getByText("2 of 5 steps done")).toBeTruthy();
     expect(widgets.latest).toHaveBeenCalled();
   });
 
   it("tells an applicant who sent the steps that their identity is being checked (S08)", async () => {
     await act(async () => {
-      render(<LookHome widgets={widgets} status={async () => ({ kind: "under_review" })} />);
+      render(
+        <LookHome
+          widgets={widgets}
+          status={async () => ({ kind: "under_review" })}
+          progress={async () => 4}
+        />,
+      );
     });
     expect(screen.getByText("Your identity is being checked")).toBeTruthy();
     expect(screen.queryByText("Verify your identity to connect, apply and post")).toBeNull();
+    expect(screen.queryByText(/steps done/)).toBeNull();
     expect(screen.getByRole("link", { name: "See your application" }).getAttribute("href")).toBe(
-      "/registration",
+      "/profile/verify",
     );
   });
 });

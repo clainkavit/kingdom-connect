@@ -1739,6 +1739,8 @@ export const sw: Strings = {
   lookCheckingTitle: "Utambulisho wako unakaguliwa",
   lookCheckingBody: "Endelea kuangalia. Utapata arifa ukaguzi ukikamilika.",
   lookSeeStatus: "Angalia ombi lako",
+  verifyTitle: "Thibitisha utambulisho wako",
+  lookProgress: (done: number, total: number) => `Hatua ${done} kati ya ${total} zimekamilika`,
   lookAround: "Angalia huku ukisubiri",
   googleContinue: "Endelea na Google",
   googleFailed: "Kuingia hakukukamilika. Jaribu tena au tumia njia nyingine.",

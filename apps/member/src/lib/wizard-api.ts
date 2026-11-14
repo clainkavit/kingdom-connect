@@ -3,7 +3,6 @@ import * as ImagePicker from "expo-image-picker";
 import type { WizardApi } from "../components/registration-wizard";
 import {
   accessToken,
-  currentTermsAndPrivacy,
   districtOptions,
   regionOptions,
   saveDraft,
@@ -31,6 +30,5 @@ export function wizardApi(language: Language): WizardApi {
     regions: () => regionOptions(language),
     districts: (regionId) => districtOptions(regionId, language),
     sectors: () => sectorOptions(language),
-    legalTexts: currentTermsAndPrivacy,
   };
 }

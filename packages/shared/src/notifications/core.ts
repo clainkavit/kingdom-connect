@@ -70,7 +70,7 @@ export function categoryOfCode(code: string): NotificationCategory {
 const opensByCode: [RegExp, string][] = [
   [/^A5$/, "/verify"],
   [/^(L1|X1|A7)$/, "/login"],
-  [/^A\d+$/, "/registration"],
+  [/^A\d+$/, "/profile/verify"],
   [/^B\d+$/, "/settings"],
   [/^C[12]$/, "/connections"],
   [/^C3$/, "/messages"],

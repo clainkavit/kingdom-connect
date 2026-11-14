@@ -14,7 +14,7 @@ async function signInAsApplicant(page: Page, username: string, email: string) {
   const sentAfter = new Date();
   await logIn(page, "Username", username);
   await enterCode(page, await nextCode(email, sentAfter));
-  await expect(page.getByRole("heading", { name: "Registration status" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Verify your identity" })).toBeVisible();
 }
 
 async function reject(admin: Page, username: string, reason: string) {
@@ -26,7 +26,7 @@ async function reject(admin: Page, username: string, reason: string) {
 }
 
 async function resubmitFromReview(page: Page) {
-  await expect(page.getByText("Step 6 of 6")).toBeVisible();
+  await expect(page.getByText("Step 5 of 5")).toBeVisible();
   await page.getByRole("button", { name: "Submit application" }).click();
   await expect(page.getByText("Under review")).toBeVisible();
 }

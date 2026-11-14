@@ -14,7 +14,7 @@ import {
 import { useState } from "react";
 import { Pressable, Text, View } from "react-native";
 import { useLanguage } from "../lib/language";
-import type { LegalText, Option } from "../lib/registration";
+import type { Option } from "../lib/registration";
 import {
   Button,
   Checkbox,
@@ -25,7 +25,6 @@ import {
   PrivacyNote,
   problemText,
 } from "./form";
-import { LegalTextView } from "./legal";
 
 export type StepProps = {
   draft: RegistrationDraft;
@@ -76,6 +75,15 @@ export function PersonalStep({
         onChange={(fullName) => update({ fullName })}
         problem={say(t, problems, "fullName")}
       />
+      {draft.needsPhone ? (
+        <Field
+          label={t.phone}
+          value={draft.phone ?? ""}
+          onChange={(phone) => update({ phone })}
+          keyboardType="phone-pad"
+          problem={say(t, problems, "phone")}
+        />
+      ) : null}
       <ChoiceList
         label={t.region}
         options={regions}
@@ -295,66 +303,6 @@ export function IdentityStep({
         onPick={() => onPickPhoto("id")}
         problem={say(t, problems, "idPhoto")}
       />
-    </View>
-  );
-}
-
-function ReadMore({ text, entityName }: { text: LegalText | undefined; entityName: string }) {
-  const { t, language } = useLanguage();
-  const [open, setOpen] = useState(false);
-  if (!text) return null;
-  return (
-    <View className="gap-2">
-      <Pressable
-        role="button"
-        aria-expanded={open}
-        onPress={() => setOpen(!open)}
-        className="min-h-[44px] justify-center self-start"
-      >
-        <Text className="font-figtree-semibold text-sm text-blue">{t.readText}</Text>
-      </Pressable>
-      {open ? (
-        <View className="max-h-72 rounded-card border border-line p-3">
-          <LegalTextView
-            body={language === "sw" ? text.body_sw : text.body_en}
-            entityName={entityName}
-          />
-        </View>
-      ) : null}
-    </View>
-  );
-}
-
-export function LegalStep({
-  draft,
-  update,
-  problems,
-  texts,
-  entityName,
-}: StepProps & { texts: LegalText[]; entityName: string }) {
-  const { t } = useLanguage();
-  const text = (kind: LegalText["kind"]) => texts.find((x) => x.kind === kind);
-  return (
-    <View className="gap-3">
-      <View className="gap-1 rounded-card border border-line p-3">
-        <Checkbox
-          label={t.acceptTermsLabel}
-          checked={Boolean(draft.acceptTerms)}
-          onChange={(acceptTerms) => update({ acceptTerms })}
-          problem={say(t, problems, "acceptTerms")}
-        />
-        <ReadMore text={text("terms")} entityName={entityName} />
-      </View>
-      <View className="gap-1 rounded-card border border-line p-3">
-        <Checkbox
-          label={t.acceptPrivacyLabel}
-          checked={Boolean(draft.acceptPrivacy)}
-          onChange={(acceptPrivacy) => update({ acceptPrivacy })}
-          problem={say(t, problems, "acceptPrivacy")}
-        />
-        <ReadMore text={text("privacy")} entityName={entityName} />
-      </View>
-      <Text className="font-figtree text-xs text-ink-2">{t.englishGoverns}</Text>
     </View>
   );
 }

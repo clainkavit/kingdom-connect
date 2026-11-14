@@ -34,7 +34,7 @@ export const routePaths: Record<Route, string> = {
   login: "/login",
   verify: "/verify",
   first: "/first-sign-in",
-  status: "/registration",
+  status: "/profile/verify",
   app: "/",
   wrong_app: "/wrong-app",
 };

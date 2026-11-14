@@ -13,7 +13,8 @@ export type Applicant = {
 export async function requireApplicant(req: Request): Promise<Applicant | Response> {
   const account = await requireVerifiedAccount(req);
   if (account instanceof Response) return account;
-  if (account.status !== "pending") return json({ error: "not_an_applicant" }, 403);
+  if (account.status !== "pending" && account.status !== "signed_in")
+    return json({ error: "not_an_applicant" }, 403);
   const [row] = await sql`
     select data, submitted_at from public.registration_drafts where member_id = ${account.id}`;
   return {

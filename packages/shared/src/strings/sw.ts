@@ -1740,4 +1740,12 @@ export const sw: Strings = {
   lookCheckingBody: "Endelea kuangalia. Utapata arifa ukaguzi ukikamilika.",
   lookSeeStatus: "Angalia ombi lako",
   lookAround: "Angalia huku ukisubiri",
+  googleContinue: "Endelea na Google",
+  googleFailed: "Kuingia hakukukamilika. Jaribu tena au tumia njia nyingine.",
+  orDivider: "au",
+  firstTitle: "Hatua moja zaidi",
+  firstIntro: (email: string) =>
+    `Umeingia kama ${email}. Chagua jinsi wanachama wengine watakavyokupata, kisha soma na ukubali maandishi mawili.`,
+  firstAccept: "Kubali na uendelee",
+  firstFailed: "Hilo halikufanikiwa. Jaribu tena.",
 };

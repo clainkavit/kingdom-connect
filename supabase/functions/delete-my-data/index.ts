@@ -3,7 +3,7 @@ import { corsHeaders, json } from "../_shared/http.ts";
 import { requireVerifiedAccount } from "../_shared/session.ts";
 
 const HUNDRED_YEARS = "876000h";
-const MAY_DELETE = new Set(["approved", "pending", "rejected"]);
+const MAY_DELETE = new Set(["approved", "signed_in", "pending", "rejected"]);
 
 async function logUnfinished(
   memberId: string,

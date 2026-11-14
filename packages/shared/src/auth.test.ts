@@ -7,6 +7,7 @@ import {
   minutesAndSeconds,
   isLooking,
   routeFor,
+  routePaths,
   type LoginMessages,
 } from "./auth";
 
@@ -41,6 +42,12 @@ describe("routeFor (docs/screens.md S03 to S06)", () => {
     expect(routeFor(token({ otp_verified: true, user_status: "signed_in" }), "member")).toBe(
       "status",
     );
+  });
+
+  it("sends someone new from Google, verified but with no account yet, to First sign-in (R26, S01a)", () => {
+    expect(routeFor(token({ otp_verified: true, user_status: "none" }), "member")).toBe("first");
+    expect(routePaths.first).toBe("/first-sign-in");
+    expect(routeFor(token({ otp_verified: true, user_status: "none" }), "admin")).toBe("wrong_app");
   });
 
   it("knows who looks but does not act: signed in, pending or rejected (R27, PRD section 3)", () => {

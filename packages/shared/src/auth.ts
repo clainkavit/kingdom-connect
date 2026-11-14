@@ -4,7 +4,7 @@ import type { Language } from "./strings";
 /** Sign-in flow shared by both apps: PRD section 6 (criteria 7 and 8), docs/screens.md S03 to S06. */
 
 export type App = "member" | "admin";
-export type Route = "login" | "verify" | "status" | "app" | "wrong_app";
+export type Route = "login" | "verify" | "first" | "status" | "app" | "wrong_app";
 
 type Claims = { sub?: string; otp_verified?: boolean; user_status?: string };
 
@@ -33,6 +33,7 @@ export const LOCAL_SUPABASE = {
 export const routePaths: Record<Route, string> = {
   login: "/login",
   verify: "/verify",
+  first: "/first-sign-in",
   status: "/registration",
   app: "/",
   wrong_app: "/wrong-app",
@@ -49,6 +50,7 @@ export function routeFor(accessToken: string | null, app: App): Route {
   if (app === "admin") return status === "staff" ? "app" : "wrong_app";
   if (status === "approved") return "app";
   if (LOOKING_STATUSES.includes(status ?? "")) return "status";
+  if (status === "none") return "first";
   return "wrong_app";
 }
 

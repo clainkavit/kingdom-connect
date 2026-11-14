@@ -32,7 +32,9 @@ test("a reported post leaves the list at once and staff review it as an opportun
   await expect(page.getByText(/Your report reference is|reference/i).first()).toBeVisible();
 
   await page.goto("/opportunities");
-  await page.getByRole("switch", { name: "Remote work only" }).click();
+  await page.getByLabel("Search opportunities").fill(String(stamp));
+  await page.keyboard.press("Enter");
+  await expect(page.getByText("Opportunities, newest first")).toBeVisible();
   await expect(page.getByRole("link", { name: title })).toHaveCount(0);
 
   const admin = await browser.newPage();

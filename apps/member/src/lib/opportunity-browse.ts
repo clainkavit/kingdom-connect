@@ -7,6 +7,8 @@ export const OPPORTUNITY_PAGE = 20;
 export type PostKind = OpportunityType | "tender";
 
 export type OpportunityFilters = {
+  /** Search words; every word must appear in the post. */
+  q?: string;
   kind?: PostKind;
   region?: string;
   remoteOnly?: boolean;
@@ -36,6 +38,10 @@ export type OpportunityCard = {
   /** O11: how many of the post's skills the member has, on list rows only. */
   skillsMatched?: number;
   skillsTotal?: number;
+  /** List rows only: when it was published, its description on one line (cut short), and the member's skills it asks for. */
+  publishedAt?: string;
+  summary?: string;
+  skillsMine?: string[];
 };
 
 export type OpportunityDetail = OpportunityCard & {
@@ -98,6 +104,9 @@ export type CardRow = {
   skills: string[] | null;
   skills_total?: number;
   skills_matched?: number;
+  published_at?: string | null;
+  summary?: string | null;
+  skills_mine?: string[] | null;
 };
 
 const named = (en: string | null, sw: string | null): Named | null =>
@@ -121,6 +130,9 @@ export const card = (r: CardRow): OpportunityCard => ({
   skills: r.skills ?? [],
   skillsMatched: r.skills_matched,
   skillsTotal: r.skills_total,
+  publishedAt: r.published_at ?? undefined,
+  summary: r.summary ?? undefined,
+  skillsMine: r.skills_mine ?? undefined,
 });
 
 /** S16 and S17 (O02): published open posts, featured first; one post with its tender fields (O04). */
@@ -141,6 +153,7 @@ export const opportunityBrowseApi: OpportunityBrowseApi = {
       posted_within: filters.postedWithin ?? null,
       page,
       best,
+      q: filters.q?.trim() || null,
     });
     if (error) throw error;
     return (data as CardRow[]).map(card);

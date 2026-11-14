@@ -12,6 +12,7 @@ import {
 import { OpportunitiesList, OpportunityDetailScreen, SavedOpportunities } from "./opportunities";
 
 const en = stringsFor("en");
+const NOW = new Date("2026-11-10T09:00:00+03:00");
 
 beforeEach(() => setWidth(COMPUTER));
 afterEach(() => {
@@ -69,14 +70,63 @@ const press = (name: string | RegExp) =>
   act(async () => fireEvent.click(screen.getByRole("button", { name })));
 
 describe("OpportunitiesList (S16)", () => {
-  it("lists posts with their type, role, poster, place and closing date", async () => {
-    await show(<OpportunitiesList api={fakeApi()} />);
+  it("lists posts as rows: when, title, poster, place, employment, summary and skills", async () => {
+    await show(
+      <OpportunitiesList
+        api={fakeApi({
+          list: vi.fn().mockResolvedValue([
+            card({
+              publishedAt: "2026-11-10T07:00:00+03:00",
+              summary: "Keep the books for a coffee trader.",
+              skillsMine: ["excel"],
+            }),
+          ]),
+        })}
+        now={NOW}
+      />,
+    );
     expect(screen.getByText("Accountant for a coffee trader")).toBeTruthy();
-    expect(screen.getByText("Accountant, Full-time")).toBeTruthy();
     expect(
-      screen.getByText("Kilimanjaro Coffee Traders · Moshi, Kilimanjaro · Agriculture"),
+      screen.getByText("Kilimanjaro Coffee Traders · Moshi, Kilimanjaro · Full-time"),
     ).toBeTruthy();
+    expect(screen.getByText("Posted 2 hours ago ·", { exact: false })).toBeTruthy();
     expect(screen.getByText("Closes 20 November 2026")).toBeTruthy();
+    expect(screen.getByText("Keep the books for a coffee trader.")).toBeTruthy();
+    expect(screen.getByText("excel ✓")).toBeTruthy();
+    expect(screen.getByText("bookkeeping")).toBeTruthy();
+    expect(screen.getByText("Job")).toBeTruthy();
+  });
+
+  it("marks a post that closes within 3 days", async () => {
+    await show(
+      <OpportunitiesList
+        api={fakeApi({ list: vi.fn().mockResolvedValue([card({ closingAt: "2026-11-12" })]) })}
+        now={NOW}
+      />,
+    );
+    expect(screen.getByText("Closes in 2 days")).toBeTruthy();
+  });
+
+  it("searches the typed words with the filters, and says what the list shows without a number", async () => {
+    const list = vi.fn().mockResolvedValue([card()]);
+    await show(<OpportunitiesList api={fakeApi({ list })} />);
+    expect(screen.getByText("Opportunities, newest first")).toBeTruthy();
+    const box = screen.getByLabelText("Search opportunities");
+    expect(box.getAttribute("placeholder")).toBe("Search roles, skills or places");
+    fireEvent.change(box, { target: { value: "bookkeeper" } });
+    await act(async () => fireEvent.keyDown(box, { key: "Enter" }));
+    expect(list).toHaveBeenLastCalledWith({ q: "bookkeeper" }, 0, false);
+    await press("Type: Any");
+    await act(async () => fireEvent.click(screen.getByRole("option", { name: "Job" })));
+    await press("Region: Any");
+    await act(async () => fireEvent.click(screen.getByRole("option", { name: "Kilimanjaro" })));
+    expect(list).toHaveBeenLastCalledWith(
+      expect.objectContaining({ q: "bookkeeper", kind: "job", region: "r1" }),
+      0,
+      false,
+    );
+    expect(screen.getByText("Jobs in Kilimanjaro, newest first")).toBeTruthy();
+    expect(screen.queryByText(/\d+ (jobs|opportunities)/i)).toBeNull();
   });
 
   it("marks a featured post and calls a tender a tender", async () => {
@@ -88,7 +138,7 @@ describe("OpportunitiesList (S16)", () => {
       />,
     );
     expect(screen.getByText("Featured")).toBeTruthy();
-    expect(screen.getAllByText("Tender").length).toBeGreaterThan(1);
+    expect(screen.getByText("Tender")).toBeTruthy();
   });
 
   it("filters by type, region, sector and posted date, starting again from page 0", async () => {
@@ -96,15 +146,17 @@ describe("OpportunitiesList (S16)", () => {
     await show(<OpportunitiesList api={fakeApi({ list })} />);
     expect(list).toHaveBeenLastCalledWith({}, 0, false);
 
-    await act(async () => fireEvent.click(screen.getByRole("radio", { name: "Tender" })));
+    await press("Type: Any");
+    await act(async () => fireEvent.click(screen.getByRole("option", { name: "Tender" })));
     expect(list).toHaveBeenLastCalledWith({ kind: "tender", employment: undefined }, 0, false);
+    expect(screen.getByRole("button", { name: "Type: Tender" })).toBeTruthy();
     expect(screen.queryByRole("button", { name: /^Employment type/ })).toBeNull();
 
     await press("Region: Any");
     await act(async () => fireEvent.click(screen.getByRole("option", { name: "Kilimanjaro" })));
     expect(list).toHaveBeenLastCalledWith(expect.objectContaining({ region: "r1" }), 0, false);
 
-    await press("Posted: Any time");
+    await press("Posted: Any");
     await act(async () =>
       fireEvent.click(screen.getByRole("option", { name: "In the last 7 days" })),
     );
@@ -155,7 +207,8 @@ describe("OpportunitiesList (S16)", () => {
     const list = vi.fn().mockResolvedValue([]);
     await show(<OpportunitiesList api={fakeApi({ list })} />);
     expect(screen.getByText("No open opportunities yet")).toBeTruthy();
-    await act(async () => fireEvent.click(screen.getByRole("radio", { name: "Job" })));
+    await press("Type: Any");
+    await act(async () => fireEvent.click(screen.getByRole("option", { name: "Job" })));
     expect(screen.getByText("No opportunities match")).toBeTruthy();
   });
 
@@ -272,7 +325,7 @@ describe("Best matches and Newest (O11)", () => {
     expect(screen.getByRole("tab", { name: "Best matches" }).getAttribute("aria-selected")).toBe(
       "true",
     );
-    expect(screen.getByText("You have 2 of 3 skills")).toBeTruthy();
+    expect(screen.getByText("Opportunities, best matches first")).toBeTruthy();
     await act(async () => fireEvent.click(screen.getByRole("tab", { name: "Newest" })));
     expect(list).toHaveBeenLastCalledWith({}, 0, false);
   });
@@ -357,19 +410,34 @@ describe("Opportunities layout (13 Nov 2026 redesign)", () => {
     expect(screen.getByRole("link", { name: en.savedCount(0) })).toBeTruthy();
   });
 
-  it("offers Clear filters once a filter is on, and clearing lists everything again", async () => {
+  it("offers Clear all once a filter is on, and clearing lists everything again", async () => {
     const api = fakeApi();
     await show(<OpportunitiesList api={api} />);
-    expect(screen.queryByRole("button", { name: en.clearFilters })).toBeNull();
-    await act(async () => fireEvent.click(screen.getByRole("switch", { name: en.oppRemoteOnly })));
-    await press(en.clearFilters);
+    expect(screen.queryByRole("button", { name: en.clearAll })).toBeNull();
+    await press("Sector: Any");
+    await act(async () => fireEvent.click(screen.getByRole("option", { name: "Agriculture" })));
+    await press(en.clearAll);
     expect(api.list).toHaveBeenLastCalledWith({}, 0, false);
-    expect(screen.queryByRole("button", { name: en.clearFilters })).toBeNull();
+    expect(screen.queryByRole("button", { name: en.clearAll })).toBeNull();
   });
 
-  it("on a phone, has no side column; the links sit above the tabs", async () => {
-    setWidth(PHONE);
+  it("has no intro text and no Remote work switch", async () => {
     await show(<OpportunitiesList api={fakeApi()} />);
+    expect(screen.queryByText(en.oppIntro)).toBeNull();
+    expect(screen.queryByRole("switch", { name: en.oppRemoteOnly })).toBeNull();
+  });
+
+  it("on a phone, shows compact cards with the skills that fit, and no side column", async () => {
+    setWidth(PHONE);
+    await show(
+      <OpportunitiesList
+        api={fakeApi({
+          list: vi.fn().mockResolvedValue([card({ skillsMatched: 2, skillsTotal: 3 })]),
+        })}
+        now={NOW}
+      />,
+    );
+    expect(screen.getByText("You have 2 of 3 skills · Full-time")).toBeTruthy();
     expect(screen.queryByRole("heading", { name: en.oppStaySafe })).toBeNull();
     expect(screen.getByRole("link", { name: en.myPostsTitle })).toBeTruthy();
     expect(screen.getByText(en.oppNoFeeNote)).toBeTruthy();
@@ -416,6 +484,14 @@ describe("Post an opportunity button (O14)", () => {
     expect(screen.getByRole("link", { name: en.actionPostOpportunity }).getAttribute("href")).toBe(
       "/opportunities/new",
     );
+  });
+
+  it("on a phone, shows it as a round + button with the same name", async () => {
+    setWidth(PHONE);
+    await show(<OpportunitiesList api={fakeApi()} canPost={async () => true} />);
+    const link = screen.getByRole("link", { name: en.actionPostOpportunity });
+    expect(link.getAttribute("href")).toBe("/opportunities/new");
+    expect(link.textContent).toBe("");
   });
 
   it("hides it from a member who may not post, or when the check fails", async () => {

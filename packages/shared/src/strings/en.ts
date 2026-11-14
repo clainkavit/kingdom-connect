@@ -1413,6 +1413,23 @@ export const en = {
   savedRemove: "Remove",
   savedLoadFailed: "Your saved opportunities did not load.",
   oppCloses: (date: string) => `Closes ${date}`,
+  oppClosesInDays: (days: number) =>
+    days <= 0 ? "Closes today" : days === 1 ? "Closes tomorrow" : `Closes in ${days} days`,
+  oppPostedNow: "Posted just now",
+  oppPostedHours: (hours: number) =>
+    hours === 1 ? "Posted an hour ago" : `Posted ${hours} hours ago`,
+  oppPostedYesterday: "Posted yesterday",
+  oppPostedDays: (days: number) => `Posted ${days} days ago`,
+  oppPostedOn: (date: string) => `Posted ${date}`,
+  oppSearchLabel: "Search opportunities",
+  oppSearchHint: "Search roles, skills or places",
+  oppPluralJob: "Jobs",
+  oppPluralPartnership: "Partnerships",
+  oppPluralCollaboration: "Collaborations",
+  oppPluralInvestment: "Investments",
+  oppPluralTender: "Tenders",
+  oppListLine: (kinds: string | null, region: string | null, best: boolean) =>
+    `${kinds ?? "Opportunities"}${region ? ` in ${region}` : ""}, ${best ? "best matches first" : "newest first"}`,
   oppPosted: "Posted",
   oppPostedAny: "Any time",
   oppPostedWithin: (days: number) => (days === 1 ? "In the last day" : `In the last ${days} days`),

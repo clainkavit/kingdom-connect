@@ -21,7 +21,8 @@ test("a Member keeps their filters as an alert and is told about a new matching 
   await signInAs(page, `e2e_alert_reader_${stamp}`, reader.email);
 
   await page.goto("/opportunities");
-  await page.getByRole("radio", { name: "Investment" }).click();
+  await page.getByRole("button", { name: "Type: Any", exact: true }).click();
+  await page.getByRole("option", { name: "Investment", exact: true }).click();
   const toggle = page.getByRole("switch", { name: "Email me new posts like these" });
   await toggle.click();
   await expect(toggle).toHaveAttribute("aria-checked", "true");

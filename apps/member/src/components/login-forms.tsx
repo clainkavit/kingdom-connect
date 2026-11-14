@@ -163,13 +163,19 @@ export function CodeForm({
 
 type ResetStep = "username" | "code" | "password" | "saved";
 
-/** S04a (REG-6): username, then the email code, then the new password typed twice. */
+/**
+ * S04a (REG-6): username, then the email code, then the new password typed twice.
+ * S47: a signed-in member passes `knownUsername`, so the first step only asks to send the code.
+ * The email code is still required before the password changes.
+ */
 export function ForgotPasswordForm({
   client,
   onLogIn,
+  knownUsername,
 }: {
   client: LoginClient;
   onLogIn: () => void;
+  knownUsername?: string;
 }) {
   const { t } = useLanguage();
   const [step, setStep] = useState<ResetStep>("username");
@@ -183,9 +189,10 @@ export function ForgotPasswordForm({
   const resend = useCountdown(0);
 
   const sendCode = async () => {
-    if (!username.trim()) return setMessage(t.needUsername);
+    const name = (knownUsername ?? username).trim();
+    if (!name) return setMessage(t.needUsername);
     setBusy(true);
-    const result = await client.startPasswordReset(username.trim());
+    const result = await client.startPasswordReset(name);
     setBusy(false);
     if (result.kind === "network") return setMessage(t.network);
     setResetId(result.resetId);
@@ -250,7 +257,9 @@ export function ForgotPasswordForm({
   if (step === "code")
     return (
       <View className="gap-3">
-        <Text className="font-figtree text-sm leading-5 text-ink-2">{t.resetCodeSent}</Text>
+        <Text className="font-figtree text-sm leading-5 text-ink-2">
+          {knownUsername ? t.changeCodeSent : t.resetCodeSent}
+        </Text>
         <CodeBoxes value={code} onChange={setCode} />
         <Message text={message} />
         <Button label={t.verify} onPress={checkCode} disabled={busy} />
@@ -263,6 +272,15 @@ export function ForgotPasswordForm({
         <LinkButton href="/recover" label={t.noEmailAccess} className="items-center py-2">
           <Text className="font-figtree-semibold text-sm text-blue">{t.noEmailAccess}</Text>
         </LinkButton>
+      </View>
+    );
+
+  if (knownUsername)
+    return (
+      <View className="gap-3">
+        <Text className="font-figtree text-sm leading-5 text-ink-2">{t.changePasswordIntro}</Text>
+        <Message text={message} />
+        <Button label={t.sendCode} onPress={sendCode} disabled={busy} />
       </View>
     );
 

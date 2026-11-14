@@ -228,6 +228,25 @@ describe("ForgotPasswordForm (S04a)", () => {
     expect(screen.getByText("No access to that email?")).toBeTruthy();
   });
 
+  it("S47: a signed-in member only asks for the code, which goes to their own username", async () => {
+    const startPasswordReset = started;
+    render(
+      <ForgotPasswordForm
+        client={fakeClient({ startPasswordReset })}
+        onLogIn={vi.fn()}
+        knownUsername="test_level1"
+      />,
+    );
+    expect(screen.queryByLabelText("Username")).toBeNull();
+    await press("Send code");
+    expect(startPasswordReset).toHaveBeenCalledWith("test_level1");
+    expect(
+      screen.getByText(
+        "We sent a 6-digit code to the email on your account. It works for 10 minutes.",
+      ),
+    ).toBeTruthy();
+  });
+
   it("asks for the username before sending a code", async () => {
     const startPasswordReset = vi.fn();
     render(<ForgotPasswordForm client={fakeClient({ startPasswordReset })} onLogIn={vi.fn()} />);

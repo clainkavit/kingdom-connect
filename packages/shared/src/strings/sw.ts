@@ -1717,4 +1717,27 @@ export const sw: Strings = {
   demoIntro: "Hili ni toleo la majaribio lenye watu wa kubuni. Hakuna unachofanya hapa ni halisi.",
   demoOpen: "Fungua onyesho",
   demoFailed: "Kiungo hiki cha onyesho kimeshatumika au muda wake umeisha. Omba kipya.",
+  lookNotVerified: "Bado hujathibitishwa",
+  lookBannerTitle: "Thibitisha utambulisho wako ili uunganishe, utume maombi na uchapishe",
+  lookBannerBody:
+    "Hatua tano fupi: kuhusu wewe, unachofanya, kazi yako, picha ya kitambulisho chako na picha ya uso. Wafanyakazi wanakagua na tunakujulisha jibu.",
+  lookContinue: "Endelea na uthibitisho",
+  lookNotNow: "Si sasa",
+  lookAskApply: "Thibitisha utambulisho wako ili utume maombi",
+  lookAskInterest: "Thibitisha utambulisho wako ili uonyeshe nia",
+  lookAskSave: "Thibitisha utambulisho wako ili uhifadhi matangazo",
+  lookAskRegister: "Thibitisha utambulisho wako ili ujisajili",
+  lookAskAlert: "Thibitisha utambulisho wako ili upate arifa",
+  lookAskBody:
+    "Watangazaji na wanachama wengine wanapokea taarifa kutoka kwa wanachama waliothibitishwa pekee. Hii inawalinda wote dhidi ya akaunti bandia.",
+  lookLockedTitle: "Hii inafunguka ukishathibitishwa",
+  lookLockedBody:
+    "Watu, ujumbe na wasifu ni kwa wanachama waliothibitishwa. Bado unaweza kuangalia fursa, mawazo, mafunzo, matukio na habari.",
+  lookPeopleTitle: "Watu wanafunguka baada ya uthibitisho",
+  lookPeopleBody:
+    "Wanachama waliothibitishwa wanaonana hapa. Wafanyakazi wakishaidhinisha utambulisho wako, unaweza kutafuta watu, kuunganisha na kutuma ujumbe.",
+  lookCheckingTitle: "Utambulisho wako unakaguliwa",
+  lookCheckingBody: "Endelea kuangalia. Utapata arifa ukaguzi ukikamilika.",
+  lookSeeStatus: "Angalia ombi lako",
+  lookAround: "Angalia huku ukisubiri",
 };

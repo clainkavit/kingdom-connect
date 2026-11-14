@@ -4,6 +4,7 @@ import {
   adminNavFor,
   adminPhoneTabs,
   isCurrent,
+  lookAllows,
   memberNav,
   memberPhoneTabs,
   accountItems,
@@ -114,5 +115,61 @@ describe("moreItems", () => {
   it("lists the admin menu items that have no phone tab", () => {
     expect(moreItems(adminNav, adminPhoneTabs).map((i) => i.href)).not.toContain("/verification");
     expect(moreItems(adminNav, adminPhoneTabs).map((i) => i.href)).toContain("/settings");
+  });
+});
+
+describe("look, but not act (R27, docs/screens.md)", () => {
+  it("lets a looker read Home, Opportunities, Growth, ideas, training, events, news and My account", () => {
+    const id = "6f1c2a90-1b2c-4d3e-8f90-a1b2c3d4e5f6";
+    for (const path of [
+      "/",
+      "/opportunities",
+      `/opportunities/${id}`,
+      "/growth",
+      "/ideas",
+      `/ideas/${id}`,
+      "/training",
+      `/training/${id}`,
+      "/events",
+      `/events/${id}`,
+      "/news",
+      "/account",
+      "/registration",
+    ])
+      expect(lookAllows(path)).toBe(true);
+  });
+
+  it("locks People, Messages, profiles, posting, saving, responses and the rest", () => {
+    for (const path of [
+      "/people",
+      "/connections",
+      "/messages",
+      "/messages/abc",
+      "/profile",
+      "/profile/abc",
+      "/opportunities/new",
+      "/opportunities/mine",
+      "/opportunities/saved",
+      "/opportunities/responses",
+      "/opportunities/scan",
+      "/opportunities/abc/edit",
+      "/opportunities/abc/responses",
+      "/ideas/new",
+      "/ideas/mine",
+      "/ideas/saved",
+      "/ideas/investor",
+      "/ideas/abc/details",
+      "/training/new",
+      "/events/new",
+      "/plans",
+      "/search",
+      "/settings",
+      "/notifications",
+      "/reports",
+      "/business",
+      "/events/calendar",
+      "/opportunities/anything",
+    ])
+      expect(lookAllows(path)).toBe(false);
   });
 });

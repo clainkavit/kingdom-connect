@@ -18,6 +18,7 @@ import { Materials } from "./materials";
 import { LinkButton } from "./link-button";
 import { ScreenTitle } from "./screens";
 import { EmptyState, ErrorState, LoadingRows, LockedState } from "./states";
+import { useAct } from "./look";
 
 function whenLine(t: Strings, item: TrainingItem, language: "en" | "sw"): string {
   const when = item.startsAt
@@ -140,6 +141,7 @@ export function TrainingDetail({
     attempt,
   );
 
+  const lookAct = useAct();
   const act = async (action: () => Promise<unknown>) => {
     setBusy(true);
     setProblem(null);
@@ -190,7 +192,7 @@ export function TrainingDetail({
           <Button
             label={full ? t.eventsJoinWaitlist : t.eventsRegister}
             disabled={busy}
-            onPress={() => act(() => api.register(item.id))}
+            onPress={() => lookAct("register", () => act(() => api.register(item.id)))}
           />
         ) : (
           <Button

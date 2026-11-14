@@ -55,7 +55,8 @@ select is((select count(*)::int from public.idea_summaries), 0,
   'a member who blocked the owner sees none of their ideas, named or not');
 
 select pg_temp.login('04');
-select is((select count(*)::int from public.idea_summaries), 0, 'an applicant not yet approved sees nothing');
+select is((select count(*)::int from public.idea_summaries where owner_id is not null), 0,
+  'an applicant who accepted the terms looks at summaries (R27), never with the owner''s member id');
 
 select * from finish();
 rollback;

@@ -8,6 +8,7 @@ import { useLoad } from "./events";
 import { Button, Checkbox, Chips, ConfirmButton, Message } from "./form";
 import { seekingLabel } from "./ideas";
 import { LinkButton } from "./link-button";
+import { useLook } from "./look";
 import { AcceptTexts } from "./legal";
 import { Section } from "./profile";
 import { ErrorState, LoadingRows } from "./states";
@@ -159,11 +160,13 @@ export function IdeaInterest({ api, ideaId }: { api: IdeaAccessApi; ideaId: stri
   const [anonymous, setAnonymous] = useState(false);
   const [problem, setProblem] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const look = useLook();
 
   useEffect(() => {
-    api.recordView(ideaId).catch(() => undefined);
-  }, [api, ideaId]);
+    if (!look.looking) api.recordView(ideaId).catch(() => undefined);
+  }, [api, ideaId, look.looking]);
 
+  if (look.looking) return <Button label={t.interestSend} onPress={() => look.ask("interest")} />;
   if (loaded.state === "failed") {
     return <ErrorState message={t.interestFailed} onRetry={() => setAttempt((a) => a + 1)} />;
   }

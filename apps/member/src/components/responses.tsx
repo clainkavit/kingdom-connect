@@ -16,6 +16,7 @@ import {
 import { useLoad } from "./events";
 import { Button, ConfirmButton, Field, Message } from "./form";
 import { LinkButton } from "./link-button";
+import { useLook } from "./look";
 import { Sheet, usePhone } from "./sheet";
 import { typeLabel } from "./opportunity-form";
 import { ScreenTitle } from "./screens";
@@ -104,8 +105,16 @@ export function RespondPanel({ api, post }: { api: ResponsesApi; post: Opportuni
   const [busy, setBusy] = useState(false);
   const [open, setOpen] = useState(false);
   const phone = usePhone();
+  const look = useLook();
   const application = post.type === "job";
 
+  if (look.looking)
+    return (
+      <Button
+        label={application ? t.respApplyOpen : t.respInterestOpen}
+        onPress={() => look.ask(application ? "apply" : "interest")}
+      />
+    );
   if (loaded.state === "failed")
     return <ErrorState message={t.respLoadFailed} onRetry={() => setAttempt((a) => a + 1)} />;
   if (loaded.state === "loading") return <LoadingRows rows={1} />;

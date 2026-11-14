@@ -6,6 +6,7 @@ import { useLanguage } from "../lib/language";
 import type { OpportunityFilters } from "../lib/opportunity-browse";
 import { useLoad } from "./events";
 import { Message, Switch } from "./form";
+import { useAct } from "./look";
 import { typeLabel } from "./opportunity-form";
 import { ScreenTitle } from "./screens";
 import { EmptyState, ErrorState, LoadingRows } from "./states";
@@ -32,6 +33,7 @@ export function describeAlert(t: Strings, alert: JobAlert, language: Language): 
 /** O13: on Opportunities, a switch that keeps the filters on screen as a daily alert. */
 export function AlertSwitch({ api, filters }: { api: JobAlertsApi; filters: OpportunityFilters }) {
   const { t } = useLanguage();
+  const act = useAct();
   const [attempt, setAttempt] = useState(0);
   const alerts = useLoad(() => api.list().catch(() => [] as JobAlert[]), attempt);
   const [problem, setProblem] = useState<string | null>(null);
@@ -59,7 +61,7 @@ export function AlertSwitch({ api, filters }: { api: JobAlertsApi; filters: Oppo
         label={t.alertMe}
         hint={t.alertMeHint}
         checked={Boolean(current)}
-        onChange={toggle}
+        onChange={(on) => act("alert", () => toggle(on))}
         disabled={busy}
       />
       <Message text={problem} />

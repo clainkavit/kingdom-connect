@@ -499,3 +499,9 @@ export async function threadReadsOf(memberId: string): Promise<number> {
     await db`select count(*)::int as n from public.thread_reads where member_id = ${memberId}`;
   return row!.n as number;
 }
+
+/** The id of a member by username, for seed members such as test_applicant. */
+export async function memberIdOf(username: string): Promise<string> {
+  const [row] = await db`select id from public.members where username = ${username}`;
+  return row!.id as string;
+}

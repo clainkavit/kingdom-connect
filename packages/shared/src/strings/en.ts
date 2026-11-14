@@ -563,6 +563,10 @@ export const en = {
   savePassword: "Save password",
   passwordChanged:
     "Your password was changed. You are signed out on every other device. Log in with the new password and the code we email you.",
+  changePasswordTitle: "Password and sign-in",
+  changePasswordIntro:
+    "To change your password, we first send a 6-digit code to the email on your account.",
+  changeCodeSent: "We sent a 6-digit code to the email on your account. It works for 10 minutes.",
   noEmailAccess: "No access to that email?",
 
   statusTitle: "Registration status",

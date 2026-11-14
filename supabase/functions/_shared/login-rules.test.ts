@@ -105,12 +105,19 @@ describe("emails (docs/notifications.md A5 and L1)", () => {
 });
 
 describe("skipsCode", () => {
+  const on = { demoAccounts: true, testDataOnly: true };
   it("skips the email code only for fake test accounts on a project with demo accounts on", () => {
-    expect(skipsCode("test.level2@example.test", true)).toBe(true);
-    expect(skipsCode("test.admin@example.test", true)).toBe(true);
-    expect(skipsCode("test.level2@example.test", false)).toBe(false);
-    expect(skipsCode("asha@test.invalid", true)).toBe(false);
-    expect(skipsCode("nottest.level2@example.test", true)).toBe(false);
+    expect(skipsCode("test.level2@example.test", on)).toBe(true);
+    expect(skipsCode("test.admin@example.test", on)).toBe(true);
+    expect(skipsCode("asha@test.invalid", on)).toBe(false);
+    expect(skipsCode("nottest.level2@example.test", on)).toBe(false);
+  });
+
+  it("never skips the code unless both the secret and test_data_only are on (audit M1)", () => {
+    const email = "test.level2@example.test";
+    expect(skipsCode(email, { demoAccounts: false, testDataOnly: true })).toBe(false);
+    expect(skipsCode(email, { demoAccounts: true, testDataOnly: false })).toBe(false);
+    expect(skipsCode(email, { demoAccounts: false, testDataOnly: false })).toBe(false);
   });
 });
 

@@ -57,9 +57,19 @@ export function loginCodeEmail(language: Language, platformName: string, code: s
   return notificationEmail(notificationCopy.A5, language, { platform_name: platformName, code });
 }
 
-/** On a test project with demo accounts switched on, the fake test.…@example.test accounts sign in without the email code. */
-export function skipsCode(email: string, demoAccounts: boolean): boolean {
-  return demoAccounts && /^test\.[a-z0-9.]+@example\.test$/.test(email);
+/**
+ * On a test project with demo accounts switched on, the fake test.…@example.test accounts sign
+ * in without the email code. Both switches are needed: the DEMO_ACCOUNTS function secret and the
+ * database's test_data_only setting, which the API cannot change. A secret copied to production
+ * by mistake therefore never skips the code (audit M1).
+ */
+export function skipsCode(
+  email: string,
+  switches: { demoAccounts: boolean; testDataOnly: boolean },
+): boolean {
+  return (
+    switches.demoAccounts && switches.testDataOnly && /^test\.[a-z0-9.]+@example\.test$/.test(email)
+  );
 }
 
 /** The code for resetting a forgotten password (REG-6). */

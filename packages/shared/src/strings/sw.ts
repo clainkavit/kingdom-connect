@@ -575,6 +575,11 @@ export const sw: Strings = {
   savePassword: "Hifadhi nenosiri",
   passwordChanged:
     "Nenosiri lako limebadilishwa. Umetolewa kwenye vifaa vingine vyote. Ingia kwa nenosiri jipya na msimbo tutakaokutumia kwa barua pepe.",
+  changePasswordTitle: "Nenosiri na kuingia",
+  changePasswordIntro:
+    "Ili kubadilisha nenosiri lako, kwanza tutatuma msimbo wa tarakimu 6 kwenye barua pepe ya akaunti yako.",
+  changeCodeSent:
+    "Tumetuma msimbo wa tarakimu 6 kwenye barua pepe ya akaunti yako. Unafanya kazi kwa dakika 10.",
   noEmailAccess: "Huwezi kufikia barua pepe hiyo?",
 
   statusTitle: "Hali ya usajili",

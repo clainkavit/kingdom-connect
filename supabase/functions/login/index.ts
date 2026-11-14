@@ -25,6 +25,13 @@ const invalid = () => json({ error: "invalid_credentials" }, 401);
 const locked = (until: Date) =>
   json({ error: "locked", retry_after_seconds: secondsUntil(until, new Date()) }, 423);
 
+/** The database's test_data_only setting, which only the environment can set (audit M1). */
+async function testDataOnly(): Promise<boolean> {
+  const [row] = await sql`
+    select value = 'true'::jsonb as on from public.platform_settings where key = 'test_data_only'`;
+  return Boolean(row?.on);
+}
+
 type Attempt = { allowed: boolean; attempt: number; locked_until: Date | null };
 
 async function startAttempt(identifier: string, account: Account | null): Promise<Attempt> {
@@ -102,7 +109,12 @@ Deno.serve(async (req) => {
     return outcome === "suspended" ? json({ error: "suspended" }, 403) : invalid();
   }
 
-  const demoAccount = skipsCode(account.email, Deno.env.get("DEMO_ACCOUNTS") === "1");
+  const demoAccounts = Deno.env.get("DEMO_ACCOUNTS") === "1";
+  const demoAccount = skipsCode(account.email, {
+    demoAccounts,
+    // Only asked when the secret is set, so real sign-ins make no extra query.
+    testDataOnly: demoAccounts && (await testDataOnly()),
+  });
   if (!demoAccount && !(await issueCode(account, sessionIdOf(data.session.access_token)))) {
     await serviceClient.auth.admin.signOut(data.session.access_token, "local");
     return json({ error: "too_many_codes" }, 429);

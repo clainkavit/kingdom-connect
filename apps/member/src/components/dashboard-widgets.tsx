@@ -56,12 +56,21 @@ function ItemLink({ href, title, line }: { href: string; title: string; line: st
 }
 
 /** S08: the newest open items, by tab, with featured posts first on All (D01, O05). */
-export function LatestItems({ api }: { api: DashboardWidgetsApi }) {
+export function LatestItems({
+  api,
+  withFeatured = true,
+}: {
+  api: DashboardWidgetsApi;
+  withFeatured?: boolean;
+}) {
   const { t, language } = useLanguage();
   const [tab, setTab] = useState<LatestTab>("all");
   const [attempt, setAttempt] = useState(0);
   const loaded = useLoad(() => api.latest(tab), attempt);
-  const featured = useLoad(() => api.featured().catch(() => []), 0);
+  const featured = useLoad(
+    () => (withFeatured ? api.featured().catch(() => []) : Promise.resolve([])),
+    0,
+  );
   const pinned = tab === "all" && featured.state === "ready" ? featured.value : [];
   const pinnedIds = new Set(pinned.map((p) => p.id));
   const choose = (next: LatestTab) => {
@@ -115,6 +124,29 @@ export function LatestItems({ api }: { api: DashboardWidgetsApi }) {
             ))}
         </>
       )}
+    </Section>
+  );
+}
+
+/** S08 on the combined canvas (U01): up to 5 featured opportunities in a section of their own. No counts. */
+export function FeaturedList({ api }: { api: DashboardWidgetsApi }) {
+  const { t, language } = useLanguage();
+  const loaded = useLoad(() => api.featured().catch(() => []), 0);
+  if (loaded.state !== "ready" || loaded.value.length === 0) return null;
+  return (
+    <Section title={t.featuredTitle}>
+      {loaded.value.map((p) => (
+        <ItemLink
+          key={p.id}
+          href={`/opportunities/${p.id}`}
+          title={p.title}
+          line={[
+            `${t.featuredTag} · ${t[typeLabel[p.type]] as string}`,
+            p.posterName,
+            t.oppCloses(closingDay(p.closingAt, language)),
+          ].join(" · ")}
+        />
+      ))}
     </Section>
   );
 }

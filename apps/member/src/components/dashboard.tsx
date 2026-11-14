@@ -5,31 +5,38 @@ import { Text, View } from "react-native";
 import type { ConnectionsApi, ReceivedRequest, SentRequest } from "../lib/connections";
 import type { DashboardApi, MyRegistration, Welcome } from "../lib/dashboard";
 import { useLanguage } from "../lib/language";
+import type { ScanApi, ScanMatch } from "../lib/scan";
 import { PersonRow, ReceivedRequestRow } from "./connections";
+import { useLoad } from "./events";
 import { Message } from "./form";
 import { LinkButton } from "./link-button";
-import { Avatar, NextSteps, Section } from "./profile";
+import { NextSteps, Section } from "./profile";
+import { reasonText } from "./scan";
 import { ScreenTitle } from "./screens";
 import { EmptyState, ErrorState, LoadingRows } from "./states";
 import type { DashboardWidgetsApi } from "../lib/dashboard-widgets";
 import type { MemberNewsApi } from "../lib/news";
 import type { PeopleYouMayKnowApi } from "../lib/people-you-may-know";
-import { LatestItems, NewsPreview } from "./dashboard-widgets";
+import { FeaturedList, LatestItems, NewsPreview } from "./dashboard-widgets";
+import { closingDay } from "./opportunities";
+import { typeLabel } from "./opportunity-form";
 import { PeopleYouMayKnow } from "./people-you-may-know";
 import { usePhone } from "./sheet";
 
-type HomeLink = { key: TextKey; href: string; minLevel: number; posts: boolean };
+type QuickAction = { key: TextKey; href: string; minLevel: number; posts: boolean };
 
-/** Home's one list of links: what the member can do, then where their things are. */
-const homeLinks: HomeLink[] = [
+const quickActions: QuickAction[] = [
   { key: "actionShareIdea", href: "/ideas/new", minLevel: 1, posts: true },
   { key: "actionScan", href: "/opportunities/scan", minLevel: 1, posts: false },
   { key: "actionPostTraining", href: "/training", minLevel: 1, posts: true },
   { key: "actionPostOpportunity", href: "/opportunities/new", minLevel: POSTER_LEVEL, posts: true },
-  { key: "myConnections", href: "/connections", minLevel: 1, posts: false },
-  { key: "savedTitle", href: "/opportunities/saved", minLevel: 1, posts: false },
-  { key: "respMineTitle", href: "/opportunities/responses", minLevel: 1, posts: false },
 ];
+
+const categoryLabel: Record<string, TextKey> = {
+  professional: "categoryProfessional",
+  businessperson: "categoryBusinessperson",
+  other: "categoryOther",
+};
 
 type DashboardData = {
   welcome: Welcome;
@@ -37,6 +44,18 @@ type DashboardData = {
   sent: SentRequest[];
   registrations: MyRegistration[];
 };
+
+function Chip({ text, tone = "neutral" }: { text: string; tone?: "neutral" | "good" }) {
+  return (
+    <View className={`rounded-full px-3 py-1 ${tone === "good" ? "bg-good-soft" : "bg-blue-soft"}`}>
+      <Text
+        className={`font-figtree-bold text-xs ${tone === "good" ? "text-good-text" : "text-navy"}`}
+      >
+        {text}
+      </Text>
+    </View>
+  );
+}
 
 function RegistrationRow({ item }: { item: MyRegistration }) {
   const { t, language } = useLanguage();
@@ -64,83 +83,210 @@ function RegistrationRow({ item }: { item: MyRegistration }) {
   );
 }
 
+/** The canvas welcome: date and place, the member's name, their badges and what they can do next. */
 function WelcomeCard({ welcome, today }: { welcome: Welcome; today: Date }) {
   const { t, language } = useLanguage();
   const place = [welcome.district, welcome.region]
     .filter((p) => p !== null)
     .map((p) => p[language])
     .join(", ");
+  const actions = quickActions.filter(
+    (a) => welcome.level >= a.minLevel && !(a.posts && welcome.postingPaused),
+  );
   return (
-    <View className="gap-1">
+    <View className="gap-3 rounded-card border border-line bg-surface p-5">
       <ScreenTitle>{t.tabHome}</ScreenTitle>
-      <Text role="heading" aria-level={2} className="font-figtree-bold text-lg text-ink">
-        {t.dashboardHello(welcome.fullName)}
-      </Text>
       <Text className="font-figtree text-sm text-ink-2">
         {[formatDate(today, language), place].filter(Boolean).join(" · ")}
       </Text>
-    </View>
-  );
-}
-
-/** The member's own corner of Home: their photo and profile, what to finish on it, and their links. */
-function MemberColumn({ welcome, profile }: { welcome: Welcome; profile: Profile | null }) {
-  const { t } = useLanguage();
-  const links = homeLinks.filter(
-    (a) =>
-      welcome.level >= a.minLevel &&
-      !(a.posts && welcome.postingPaused) &&
-      !(a.key === "actionScan" && profile),
-  );
-  return (
-    <View className="gap-4">
-      <LinkButton
-        href="/profile"
-        label={t.myProfile}
-        className="flex-row items-center gap-3 rounded-card border border-line bg-surface p-4"
-      >
-        <Avatar name={welcome.fullName} url={profile?.photoUrl ?? null} size={52} />
-        <Text className="flex-1 font-figtree-bold text-[16px] text-ink">{t.myProfile}</Text>
-        <Text aria-hidden className="font-figtree text-[15px] text-ink-2">
-          ›
-        </Text>
-      </LinkButton>
-      {profile ? <NextSteps profile={profile} /> : null}
-      <View className="rounded-card border border-line bg-surface">
-        {links.map((item, i) => (
+      <Text role="heading" aria-level={2} className="font-figtree-extrabold text-2xl text-navy">
+        {t.dashboardHello(welcome.fullName)}
+      </Text>
+      <View className="flex-row flex-wrap gap-2">
+        <Chip tone="good" text={t.homeVerifiedMember} />
+        {welcome.categories
+          .filter((c) => categoryLabel[c])
+          .map((c) => (
+            <Chip key={c} text={t[categoryLabel[c]!] as string} />
+          ))}
+      </View>
+      <View className="flex-row flex-wrap gap-2">
+        {actions.map((a) => (
           <LinkButton
-            key={item.href}
-            href={item.href}
-            label={t[item.key] as string}
-            className={`min-h-[48px] flex-row items-center justify-between px-4 ${i > 0 ? "border-t border-line" : ""}`}
+            key={a.href}
+            href={a.href}
+            label={t[a.key] as string}
+            className="min-h-[44px] justify-center rounded-full border border-line bg-surface px-4"
           >
-            <Text className="font-figtree-semibold text-[15px] text-ink">
-              {t[item.key] as string}
-            </Text>
-            <Text aria-hidden className="font-figtree text-[15px] text-ink-2">
-              ›
-            </Text>
+            <Text className="font-figtree-semibold text-sm text-navy">{t[a.key] as string}</Text>
           </LinkButton>
         ))}
+        {!welcome.postingPaused && welcome.level < POSTER_LEVEL ? (
+          <LinkButton
+            href="/business"
+            label={t.verifyBusinessLink}
+            className="min-h-[44px] justify-center rounded-full bg-navy px-4"
+          >
+            <Text className="font-figtree-semibold text-sm text-navy-ink">{t.upgradeToPost}</Text>
+          </LinkButton>
+        ) : null}
       </View>
       {welcome.postingPaused ? (
         <Text className="font-figtree text-sm text-ink-2">{t.postingPausedNote}</Text>
-      ) : welcome.level < POSTER_LEVEL ? (
-        <LinkButton href="/business" label={t.verifyBusinessLink} className="py-1">
-          <Text className="font-figtree text-sm text-blue">{t.upgradeToPost}</Text>
-        </LinkButton>
       ) : null}
     </View>
   );
 }
 
-/** S08. No platform-wide figure is ever loaded (PRD section 7, criterion 1); the widgets show items, never counts. */
+function LevelSteps({ level }: { level: number }) {
+  const { t } = useLanguage();
+  return (
+    <View className="flex-row flex-wrap gap-2">
+      {[1, 2, 3].map((n) => (
+        <View
+          key={n}
+          className={`rounded-full px-3 py-1 ${n <= level ? "bg-navy" : "border border-line bg-surface"}`}
+        >
+          <Text
+            className={`font-figtree-bold text-xs ${n <= level ? "text-navy-ink" : "text-ink-2"}`}
+          >
+            {t.myProfilesLevel(n)}
+          </Text>
+        </View>
+      ))}
+    </View>
+  );
+}
+
+/** My profiles (canvas): one card per category the member ticked, each with what unlocks its badge. */
+function MyProfiles({ welcome, profile }: { welcome: Welcome; profile: Profile | null }) {
+  const { t } = useLanguage();
+  const professional = welcome.categories.includes("professional");
+  const business = welcome.categories.includes("businessperson");
+  if (!professional && !business) return null;
+  return (
+    <Section title={t.myProfilesTitle}>
+      {professional ? (
+        <View className="gap-1.5 border-b border-line pb-3">
+          <Text className="font-figtree-bold text-[15px] text-ink">{t.categoryProfessional}</Text>
+          {profile?.profession ? (
+            <Text className="font-figtree text-sm text-ink-2">{profile.profession}</Text>
+          ) : null}
+          <Text className="font-figtree text-sm text-ink-2">{t.myProfilesCertificates}</Text>
+          <LinkButton
+            href="/profile/edit"
+            label={t.myProfilesAddCertificates}
+            className="min-h-[44px] justify-center self-start"
+          >
+            <Text className="font-figtree-semibold text-sm text-blue">
+              {t.myProfilesAddCertificates}
+            </Text>
+          </LinkButton>
+        </View>
+      ) : null}
+      {business ? (
+        <View className="gap-2 pt-1">
+          <Text className="font-figtree-bold text-[15px] text-ink">{t.categoryBusinessperson}</Text>
+          <Text className="font-figtree text-sm text-ink-2">
+            {welcome.businessName ?? t.myProfilesYourBusiness}
+          </Text>
+          <LevelSteps level={welcome.level} />
+          {welcome.level < POSTER_LEVEL ? (
+            <>
+              <Text className="font-figtree text-sm text-ink-2">{t.myProfilesBusinessHint}</Text>
+              <LinkButton
+                href="/business"
+                label={t.verifyBusinessLink}
+                className="min-h-[44px] justify-center self-start"
+              >
+                <Text className="font-figtree-semibold text-sm text-blue">
+                  {t.verifyBusinessLink}
+                </Text>
+              </LinkButton>
+            </>
+          ) : null}
+        </View>
+      ) : null}
+    </Section>
+  );
+}
+
+function MatchRow({ match }: { match: ScanMatch }) {
+  const { t, language } = useLanguage();
+  return (
+    <LinkButton
+      href={`/opportunities/${match.id}`}
+      label={match.title}
+      className="gap-1 border-b border-line py-2.5"
+    >
+      <Text className="font-figtree-semibold text-[15px] text-ink">
+        {t[typeLabel[match.type]] as string} · {match.title}
+      </Text>
+      <Text className="font-figtree text-[13px] text-ink-2">
+        {t.oppCloses(closingDay(match.closingAt, language))}
+      </Text>
+      {match.reasons.length ? (
+        <Text className="font-figtree-semibold text-[13px] text-good-text">
+          {match.reasons.map((r) => reasonText(t, r)).join(" · ")}
+        </Text>
+      ) : null}
+    </LinkButton>
+  );
+}
+
+/** Jobs for your skills and Tenders for your business, both from Scan for Opportunities (O07). */
+function HomeMatches({ scan, business }: { scan: ScanApi; business: boolean }) {
+  const { t } = useLanguage();
+  const loaded = useLoad(() => scan.matches().catch(() => [] as ScanMatch[]), 0);
+  if (loaded.state !== "ready") return null;
+  const jobs = loaded.value.filter((m) => m.type === "job").slice(0, 3);
+  const tenders = loaded.value.filter((m) => m.type === "tender").slice(0, 3);
+  const more = (label: string) => (
+    <LinkButton
+      href="/opportunities/scan"
+      label={label}
+      className="min-h-[44px] justify-center self-start"
+    >
+      <Text className="font-figtree-semibold text-sm text-blue">{label}</Text>
+    </LinkButton>
+  );
+  return (
+    <>
+      <Section title={t.jobsForSkillsTitle}>
+        <Text className="font-figtree text-[13px] text-ink-2">{t.jobsForSkillsWhy}</Text>
+        {jobs.length ? (
+          jobs.map((m) => <MatchRow key={m.id} match={m} />)
+        ) : (
+          <Text className="font-figtree text-sm text-ink-2">{t.homeMatchesEmpty}</Text>
+        )}
+        {more(t.scanForMore)}
+      </Section>
+      {business ? (
+        <Section title={t.tendersForBusinessTitle}>
+          <Text className="font-figtree text-[13px] text-ink-2">{t.tendersForBusinessWhy}</Text>
+          {tenders.length ? (
+            tenders.map((m) => <MatchRow key={m.id} match={m} />)
+          ) : (
+            <Text className="font-figtree text-sm text-ink-2">{t.homeMatchesEmpty}</Text>
+          )}
+          {more(t.scanForMore)}
+        </Section>
+      ) : null}
+    </>
+  );
+}
+
+/**
+ * S08 on the combined canvas (U01). No platform-wide figure is ever loaded (PRD section 7, criterion 1); the widgets
+ * show items, never counts.
+ */
 export function DashboardScreen({
   api,
   connections,
   widgets,
   news,
   people,
+  scan,
   profile,
   today = new Date(),
 }: {
@@ -149,6 +295,7 @@ export function DashboardScreen({
   widgets?: DashboardWidgetsApi;
   news?: MemberNewsApi;
   people?: PeopleYouMayKnowApi;
+  scan?: ScanApi;
   profile?: () => Promise<Profile | null>;
   today?: Date;
 }) {
@@ -209,52 +356,76 @@ export function DashboardScreen({
     );
   if (!loaded) return <LoadingRows />;
 
+  const { welcome } = loaded;
+  const requests = (
+    <Section title={t.dashboardRequests}>
+      <Message text={actionFailed ? t.actionFailed : null} />
+      {loaded.received.length ? (
+        loaded.received.map((r) => (
+          <ReceivedRequestRow
+            key={r.requestId}
+            request={r}
+            onAnswer={(accept) => answer(r.requestId, accept)}
+          />
+        ))
+      ) : (
+        <Text className="font-figtree text-[15px] text-ink-2">{t.noRequestsWaiting}</Text>
+      )}
+    </Section>
+  );
+  const activity = (
+    <Section title={t.myActivity}>
+      {loaded.sent.length || loaded.registrations.length ? (
+        <>
+          {loaded.registrations.map((r) => (
+            <RegistrationRow key={`${r.kind}-${r.id}`} item={r} />
+          ))}
+          {loaded.sent.map((r) => (
+            <PersonRow key={r.requestId} person={r}>
+              <Text className="font-figtree text-sm text-ink-2">{t.requestSent}</Text>
+            </PersonRow>
+          ))}
+        </>
+      ) : (
+        <EmptyState title={t.activityEmptyTitle} message={t.activityEmptyMessage} />
+      )}
+    </Section>
+  );
+  const business = welcome.categories.includes("businessperson");
   const main = (
     <View className="gap-4">
-      <WelcomeCard welcome={loaded.welcome} today={today} />
-      {phone ? <MemberColumn welcome={loaded.welcome} profile={me} /> : null}
-      <Message text={actionFailed ? t.actionFailed : null} />
-      <Section title={t.dashboardRequests}>
-        {loaded.received.length ? (
-          loaded.received.map((r) => (
-            <ReceivedRequestRow
-              key={r.requestId}
-              request={r}
-              onAnswer={(accept) => answer(r.requestId, accept)}
-            />
-          ))
-        ) : (
-          <Text className="font-figtree text-[15px] text-ink-2">{t.noRequestsWaiting}</Text>
-        )}
-      </Section>
+      {me ? <NextSteps profile={me} /> : null}
+      <MyProfiles welcome={welcome} profile={me} />
       {people ? <PeopleYouMayKnow api={people} /> : null}
-      <Section title={t.myActivity}>
-        {loaded.sent.length || loaded.registrations.length ? (
-          <>
-            {loaded.registrations.map((r) => (
-              <RegistrationRow key={`${r.kind}-${r.id}`} item={r} />
-            ))}
-            {loaded.sent.map((r) => (
-              <PersonRow key={r.requestId} person={r}>
-                <Text className="font-figtree text-sm text-ink-2">{t.requestSent}</Text>
-              </PersonRow>
-            ))}
-          </>
-        ) : (
-          <EmptyState title={t.activityEmptyTitle} message={t.activityEmptyMessage} />
-        )}
-      </Section>
-      {widgets ? <LatestItems api={widgets} /> : null}
+      {scan ? <HomeMatches scan={scan} business={business} /> : null}
+      {widgets ? <LatestItems api={widgets} withFeatured={false} /> : null}
+    </View>
+  );
+  const side = (
+    <View className="gap-4">
+      {requests}
+      {activity}
+      {widgets ? <FeaturedList api={widgets} /> : null}
       {news ? <NewsPreview api={news} /> : null}
     </View>
   );
-  if (phone) return main;
   return (
-    <View className="flex-row items-start gap-6">
-      <View className="w-[300px]">
-        <MemberColumn welcome={loaded.welcome} profile={me} />
-      </View>
-      <View className="min-w-0 flex-1">{main}</View>
+    <View className="gap-4">
+      <WelcomeCard welcome={welcome} today={today} />
+      {phone ? (
+        <View className="gap-4">
+          {requests}
+          {main}
+          {activity}
+          {widgets ? <FeaturedList api={widgets} /> : null}
+          {news ? <NewsPreview api={news} /> : null}
+        </View>
+      ) : (
+        <View className="flex-row items-start gap-6">
+          <View className="min-w-0 flex-1">{main}</View>
+          <View className="w-[340px]">{side}</View>
+        </View>
+      )}
     </View>
   );
 }

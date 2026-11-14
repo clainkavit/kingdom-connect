@@ -7,6 +7,7 @@ import { dashboardApi } from "../../src/lib/dashboard";
 import { dashboardWidgetsApi } from "../../src/lib/dashboard-widgets";
 import { memberNewsApi } from "../../src/lib/news";
 import { peopleYouMayKnowApi } from "../../src/lib/people-you-may-know";
+import { scanApi } from "../../src/lib/scan";
 import { verifyProgress } from "@kingdom-connect/shared";
 import { accessToken, loadDraft } from "../../src/lib/registration";
 import { registrationClient } from "../../src/lib/supabase";
@@ -28,6 +29,7 @@ export default function DashboardPage() {
       widgets={dashboardWidgetsApi}
       news={memberNewsApi}
       people={peopleYouMayKnowApi}
+      scan={scanApi}
       profile={() => memberProfileApi.load(null, language)}
     />
   );

@@ -2,7 +2,7 @@
 
 | Item | Detail |
 |---|---|
-| Version | 0.1 (draft), 22 October 2026 |
+| Version | 0.1 (draft), 22 October 2026; A8, A9 and O9 to O14 added 14 November 2026 |
 | Ticket | [Notification copy in English and Kiswahili](https://github.com/clainkavit/kingdom-connect/issues/14) |
 | Built on | [docs/prd.md](prd.md) section 14 |
 | Status | English is a first draft. **Every Kiswahili line needs native review** before release; Champion reviews it line by line |
@@ -72,6 +72,16 @@ To: applicant. Channels: in-app, email, push.
 To: member who asked to reset a forgotten password (REG-6). Channels: email only.
 - **EN** Title: Reset your {platform_name} password. Message: Your code is {code}. It works for 10 minutes. Do not share it with anyone. If you did not ask to reset your password, ignore this email.
 - **SW** Title: Badilisha nenosiri lako la {platform_name}. Message: Msimbo wako ni {code}. Unatumika kwa dakika 10. Usimpe mtu yeyote. Kama hukuomba kubadilisha nenosiri lako, puuza barua pepe hii.
+
+### A8 Finish verifying (Proposed)
+To: member who signed in but has not sent the verification steps. Channels: in-app, email. Sent once, 3 days after the first sign-in (Proposed, 14 Nov).
+- **EN** Title: Finish verifying to connect. Message: You can look around already. Verify your identity from your profile to connect, apply and post.
+- **SW** Title: Kamilisha uthibitisho ili uunganishe. Message: Tayari unaweza kuangalia. Thibitisha utambulisho wako kupitia wasifu wako ili uunganishe, utume maombi na uchapishe.
+
+### A9 Phone sign-in code
+To: person signing in with a phone number (REG-7). Channels: SMS only.
+- **EN** Title: {platform_name} code. Message: Your {platform_name} code is {code}. It works for 10 minutes. Do not share it.
+- **SW** Title: Msimbo wa {platform_name}. Message: Msimbo wako wa {platform_name} ni {code}. Unatumika kwa dakika 10. Usimpe mtu.
 
 ## 2. Business levels
 
@@ -153,6 +163,36 @@ To: poster. Channels: in-app, email.
 To: poster. Channels: in-app, email.
 - **EN** Title: Your post was removed. Message: {title}: {reason}.
 - **SW** Title: Tangazo lako limeondolewa. Message: {title}: {reason}.
+
+### O9 Picked for a post
+To: member chosen by staff for Let Kingdom Connect pick (OPP-7). Channels: in-app, email, push.
+- **EN** Title: You were picked for {title}. Message: Our staff think you fit. Say whether the poster may see your profile.
+- **SW** Title: Umechaguliwa kwa {title}. Message: Wafanyakazi wetu wanaona unafaa. Sema kama mtangazaji anaweza kuona wasifu wako.
+
+### O10 Your list is ready
+To: poster who asked for Let Kingdom Connect pick. Channels: in-app, email, push.
+- **EN** Title: Your list for {title} is ready. Message: {count} people agreed to share their profile with you. Take a look.
+- **SW** Title: Orodha yako ya {title} iko tayari. Message: Watu {count} wamekubali kukuonyesha wasifu wao. Iangalie.
+
+### O11 Confirm the work
+To: member a poster marked as hired (OPP-8). Channels: in-app, email, push.
+- **EN** Title: Did you work on {title}? Message: {name} marked you as hired. Confirm it so you can rate each other.
+- **SW** Title: Ulifanya kazi ya {title}? Message: {name} amekuweka kama aliyeajiriwa. Thibitisha ili mpeane tathmini.
+
+### O12 Rate the work
+To: both sides, once the work is confirmed. Channels: in-app, email.
+- **EN** Title: How was working with {name}? Message: Rate the work on {title} within {days} days. They cannot see your rating until they rate too.
+- **SW** Title: Kufanya kazi na {name} kulikuwaje? Message: Toa tathmini ya kazi ya {title} ndani ya siku {days}. Hataiona tathmini yako hadi naye atoe yake.
+
+### O13 Rating reminder
+To: a side that has not rated yet, 3 days before the window closes. Channels: in-app, email.
+- **EN** Title: {days} days left to rate {name}. Message: Your rating of the work on {title} helps other members know who to trust.
+- **SW** Title: Zimebaki siku {days} kumpa {name} tathmini. Message: Tathmini yako ya kazi ya {title} inawasaidia wanachama wengine kujua wamwamini nani.
+
+### O14 Your references changed
+To: member whose work references became visible or gained a new rating. Channels: in-app.
+- **EN** Title: New work reference. Message: A rating from your work on {title} is now on your profile. You can reply once.
+- **SW** Title: Rejeo jipya la kazi. Message: Tathmini ya kazi yako ya {title} sasa iko kwenye wasifu wako. Unaweza kujibu mara moja.
 
 ## 5. Ideas
 

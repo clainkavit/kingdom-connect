@@ -26,7 +26,7 @@ describe("the catalogue", () => {
   it("holds every event in the doc", () => {
     const codes = [...doc.matchAll(/^### (\w+) /gm)].map((m) => m[1]);
     expect(Object.keys(notificationCopy)).toEqual(codes);
-    expect(codes).toHaveLength(60);
+    expect(codes).toHaveLength(68);
   });
 
   it("reads the channels from each event", () => {
@@ -34,6 +34,7 @@ describe("the catalogue", () => {
     expect(notificationCopy.C3).toMatchObject({ inApp: true, email: "digest", push: true });
     expect(notificationCopy.S1).toMatchObject({ email: "weekly" });
     expect(notificationCopy.R1).toMatchObject({ inApp: true, email: "no" });
+    expect(notificationCopy.A9).toMatchObject({ inApp: false, email: "no", push: false });
   });
 
   it("uses only the placeholders the doc lists", () => {

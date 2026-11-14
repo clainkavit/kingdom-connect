@@ -114,6 +114,38 @@ export const notificationCopy = {
         "Msimbo wako ni {code}. Unatumika kwa dakika 10. Usimpe mtu yeyote. Kama hukuomba kubadilisha nenosiri lako, puuza barua pepe hii.",
     },
   },
+  A8: {
+    category: "account",
+    inApp: true,
+    email: "yes",
+    push: false,
+    opens: "/registration",
+    en: {
+      title: "Finish verifying to connect",
+      message:
+        "You can look around already. Verify your identity from your profile to connect, apply and post.",
+    },
+    sw: {
+      title: "Kamilisha uthibitisho ili uunganishe",
+      message:
+        "Tayari unaweza kuangalia. Thibitisha utambulisho wako kupitia wasifu wako ili uunganishe, utume maombi na uchapishe.",
+    },
+  },
+  A9: {
+    category: "account",
+    inApp: false,
+    email: "no",
+    push: false,
+    opens: "/registration",
+    en: {
+      title: "{platform_name} code",
+      message: "Your {platform_name} code is {code}. It works for 10 minutes. Do not share it.",
+    },
+    sw: {
+      title: "Msimbo wa {platform_name}",
+      message: "Msimbo wako wa {platform_name} ni {code}. Unatumika kwa dakika 10. Usimpe mtu.",
+    },
+  },
   B1: {
     category: "business",
     inApp: true,
@@ -341,6 +373,100 @@ export const notificationCopy = {
     sw: {
       title: "Tangazo lako limeondolewa",
       message: "{title}: {reason}.",
+    },
+  },
+  O9: {
+    category: "opportunities",
+    inApp: true,
+    email: "yes",
+    push: true,
+    opens: "/opportunities",
+    en: {
+      title: "You were picked for {title}",
+      message: "Our staff think you fit. Say whether the poster may see your profile.",
+    },
+    sw: {
+      title: "Umechaguliwa kwa {title}",
+      message: "Wafanyakazi wetu wanaona unafaa. Sema kama mtangazaji anaweza kuona wasifu wako.",
+    },
+  },
+  O10: {
+    category: "opportunities",
+    inApp: true,
+    email: "yes",
+    push: true,
+    opens: "/opportunities",
+    en: {
+      title: "Your list for {title} is ready",
+      message: "{count} people agreed to share their profile with you. Take a look.",
+    },
+    sw: {
+      title: "Orodha yako ya {title} iko tayari",
+      message: "Watu {count} wamekubali kukuonyesha wasifu wao. Iangalie.",
+    },
+  },
+  O11: {
+    category: "opportunities",
+    inApp: true,
+    email: "yes",
+    push: true,
+    opens: "/opportunities",
+    en: {
+      title: "Did you work on {title}?",
+      message: "{name} marked you as hired. Confirm it so you can rate each other.",
+    },
+    sw: {
+      title: "Ulifanya kazi ya {title}?",
+      message: "{name} amekuweka kama aliyeajiriwa. Thibitisha ili mpeane tathmini.",
+    },
+  },
+  O12: {
+    category: "opportunities",
+    inApp: true,
+    email: "yes",
+    push: false,
+    opens: "/opportunities",
+    en: {
+      title: "How was working with {name}?",
+      message:
+        "Rate the work on {title} within {days} days. They cannot see your rating until they rate too.",
+    },
+    sw: {
+      title: "Kufanya kazi na {name} kulikuwaje?",
+      message:
+        "Toa tathmini ya kazi ya {title} ndani ya siku {days}. Hataiona tathmini yako hadi naye atoe yake.",
+    },
+  },
+  O13: {
+    category: "opportunities",
+    inApp: true,
+    email: "yes",
+    push: false,
+    opens: "/opportunities",
+    en: {
+      title: "{days} days left to rate {name}",
+      message: "Your rating of the work on {title} helps other members know who to trust.",
+    },
+    sw: {
+      title: "Zimebaki siku {days} kumpa {name} tathmini",
+      message:
+        "Tathmini yako ya kazi ya {title} inawasaidia wanachama wengine kujua wamwamini nani.",
+    },
+  },
+  O14: {
+    category: "opportunities",
+    inApp: true,
+    email: "no",
+    push: false,
+    opens: "/opportunities",
+    en: {
+      title: "New work reference",
+      message: "A rating from your work on {title} is now on your profile. You can reply once.",
+    },
+    sw: {
+      title: "Rejeo jipya la kazi",
+      message:
+        "Tathmini ya kazi yako ya {title} sasa iko kwenye wasifu wako. Unaweza kujibu mara moja.",
     },
   },
   I1: {

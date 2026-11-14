@@ -47,7 +47,8 @@ Roles stack: a member gains rights by passing further verification, and the inve
 
 | Role | How someone gets it | Visible to other members as |
 |---|---|---|
-| Applicant | Submits registration | Not visible |
+| Signed in, not verified (changed 14 Nov) | Signs in with Google, Facebook, Apple, a phone number or email, and accepts the terms and privacy notice | Not visible |
+| Applicant | Sends the verification steps from their profile | Not visible |
 | Verified Member (Level 1) | Identity checked by an admin with one accepted ID (section 6, Member verification) | Member, with profession |
 | Verified Business (Level 2) | BRELA, TRA TIN, business licence approved | Member + business listing |
 | Opportunity Poster (Level 3) | Director/authorisation proof + physical address approved | Member + business listing |
@@ -73,6 +74,14 @@ Roles stack: a member gains rights by passing further verification, and the inve
 | Manage admin accounts and settings | ✗ | ✗ | ✗ | ✗ | Super Admin only |
 
 A professional who is also a student is one Level 1 member with study information on their profile (FR-09).
+
+**Changed 14 Nov: look, but not act, before verification.** Someone signed in but not yet verified (or an Applicant waiting for review) can read opportunity and idea summaries, training, events and news. They cannot see People or any profile, connect, message, apply, express interest, register, post, save, or rate. Every action that would reach another member shows "Verify your identity" instead. The server enforces this, not the app.
+
+| Action added 14 Nov | Member L1 | Business L2 | Poster L3 | Investor flag | Admin |
+|---|---|---|---|---|---|
+| Rate a member after work both confirmed (section 10) | ✓ | ✓ | ✓ | ✓ | ✗ |
+| Ask Kingdom Connect to pick people for a post (section 10) | ✗ | ✗ | ✓ | ✗ | ✗ |
+| Choose the people for a Kingdom Connect pick | ✗ | ✗ | ✗ | ✗ | ✓ |
 
 **Changed 15 Oct: Administrators post opportunities and tenders.** This restores use case UC16 from the original use case diagram and overrides Plan FR-15 (Level 3 posters only). Admin posts publish directly with no probation review and do not carry the no-fee declaration.
 
@@ -137,7 +146,11 @@ The full screen list with states, which replaces this table for the build, is in
 
 ## 6. Registration, login and verification
 
-No one reaches member content until an administrator has verified their identity, and business rights unlock one level at a time.
+Anyone can get in quickly and look around; nothing that reaches another member happens until an administrator has verified their identity, and business rights unlock one level at a time (changed 14 Nov; before, no one reached member content until verified).
+
+**Getting in (decided 14 Nov).** The welcome screen offers Continue with Google, Continue with Facebook, Continue with Apple, Continue with phone number (a 6-digit SMS code) and Continue with email (the existing sign-up with username, email, phone and password, then the email code). On the first sign-in the person chooses a username and ticks the Terms of use and the Privacy notice as two separate choices. Then they land on Home in the look-but-not-act state (section 3). Other members never see which way someone signed in, and Kingdom Connect never posts to their Google, Facebook or Apple account.
+
+**Verifying from the profile (decided 14 Nov).** The registration wizard moves out of sign-up into the member's profile as "Verify your identity": five steps (About you, What you do, Your work, ID and photos, Check and send), saved as the member goes. A banner on Home shows how many steps are done. Sending makes the member an Applicant, and the review below is unchanged.
 
 **Stories**
 - **REG-1** As a person in Tanzania, I want to register on web or mobile so that I can join the platform. (FR-01, UC-01–06)
@@ -146,9 +159,11 @@ No one reaches member content until an administrator has verified their identity
 - **REG-4** As a member, I want to log in with password and OTP so that my account is protected. (FR-02, UC-09–10) The first box takes a username, phone number or email (12 Nov 2026); a phone number shared by two members logs neither in, and the 5-try lock counts per account.
 - **REG-5** As a business owner, I want to upgrade to Verified Business, then Opportunity Poster, so that I can list my business and post opportunities. (FR-32, UC-28–29)
 - **REG-6** As a member, I want to reset a forgotten password so that I can get back into my account without an administrator. (FR-02, UC-09–10; decided 10 Nov, [#182](https://github.com/clainkavit/kingdom-connect/issues/182))
+- **REG-7** As a newcomer, I want to get in with Google, Facebook, Apple, my phone number or email so that I can see the platform before I hand over any documents. (FR-01, FR-02; decided 14 Nov)
+- **REG-8** As a signed-in member who is not yet verified, I want to verify my identity from my profile, in steps I can pause, so that I can connect, apply and post once staff approve me. (FR-01, FR-04; decided 14 Nov)
 
 **Acceptance criteria**
-1. The wizard collects full name, username, a Tanzanian address chosen from the region and district lists, email, a Tanzanian phone number (+255), one accepted ID (NIDA, passport, driving licence or voter's ID) with its type and number, occupation categories, ticked as many as apply from Professional, Businessperson and Other (decided 10 Nov, [#161](https://github.com/clainkavit/kingdom-connect/issues/161); Entrepreneur and Student are not categories), optional study info, a face photo (required), and a photo of the ID (see Member verification below).
+1. The verification steps in the profile (the wizard until 14 Nov; the username comes from the first sign-in) collect full name, username, a Tanzanian address chosen from the region and district lists, email, a Tanzanian phone number (+255), one accepted ID (NIDA, passport, driving licence or voter's ID) with its type and number, occupation categories, ticked as many as apply from Professional, Businessperson and Other (decided 10 Nov, [#161](https://github.com/clainkavit/kingdom-connect/issues/161); Entrepreneur and Student are not categories), optional study info, a face photo (required), and a photo of the ID (see Member verification below).
 2. Category-specific fields appear based on the category (for example, CPA number for auditors; CISSP, CISM, CEH for cybersecurity).
 3. An ID number must be unique for its ID type, and a NIDA number must be 20 digits. A duplicate blocks submission and alerts admins (duplicate-profile detection). Because one person could register twice with two different IDs, admins also compare face photos. In Phase 1 an admin checks the ID manually; a connection to NIDA's verification service for NIDA holders may follow (ticket [#30](https://github.com/clainkavit/kingdom-connect/issues/30)).
 4. On submit, status = Pending and the applicant receives an email and SMS confirmation.
@@ -156,6 +171,7 @@ No one reaches member content until an administrator has verified their identity
 6. Status values: Pending → Approved or Rejected. A rejected applicant can correct and resubmit once; a second rejection is final unless an admin reopens the application.
 7. Login requires username/password, then a 6-digit OTP sent by email during the pilot (SMS OTP considered later, depending on cost), valid 10 minutes, 3 attempts, with a resend allowed after 60 seconds (changed 19 Oct: email can arrive slowly on mobile networks). **Open:** whether the chosen auth service supports this natively, see [Can Supabase Auth do username login plus an email OTP second step?](https://github.com/clainkavit/kingdom-connect/issues/8)
 8. Five failed password attempts lock the account for 15 minutes.
+9. A member who got in with Google, Facebook or Apple signs in through that provider and has no Kingdom Connect password; the provider's own checks replace the email code. A phone-number sign-in uses a 6-digit SMS code with the email code's rules (10 minutes, 3 attempts, resend after 60 seconds). One person is one account: a provider, phone number or email already linked to an account signs in to that account and never makes a second one (decided 14 Nov). **Open:** the SMS provider and its cost, which the 14 Oct decision deferred.
 
 **Business verification levels**
 
@@ -275,6 +291,8 @@ Level 3 businesses and Administrators post opportunities, including tenders. Eve
 - **OPP-4** As a member, I want to "Scan for Opportunities" so that I see ones that match my skills and location.
 - **OPP-5** As an admin, I want to feature selected opportunities on the dashboard.
 - **OPP-6** As an admin, I want to post opportunities and tenders on behalf of the community so that members see them without waiting for a business to post (changed 15 Oct).
+- **OPP-7** As a poster, I want Kingdom Connect to pick the most trusted people for my post so that I get a short list instead of reading every response (decided 14 Nov).
+- **OPP-8** As a member who did work through Kingdom Connect, I want to rate the other side, and be rated, so that good work and fair posters are known (decided 14 Nov).
 
 **Posting form: required fields**
 
@@ -350,6 +368,22 @@ Excluded: members already connected, with a pending request, blocked, hidden fro
 - The weekly Scan digest email sends the top 5 matches new since the last digest, only when there is at least one, and members can turn it off.
 - A member with an empty profile sees "Complete your profile to see matches", listing the missing fields. People you may know falls back to the newest verified members in the same region until the profile has data.
 - Weights and minimum scores live in a settings table. Only a Super Administrator can change them, and each change is written to the audit log with before and after values. Any Administrator can edit the synonym merge list.
+
+**Let Kingdom Connect pick (OPP-7, decided 14 Nov).**
+1. In the last posting step the poster chooses Open to applicants (as before) or Let Kingdom Connect pick, then how many people (5, 10, 15 or 20) and an optional note to staff. A picked post is not open for applications.
+2. After the post is approved it appears in a staff queue, Picks for posters. The platform suggests members, ranked by rules with no AI and nothing sent outside Kingdom Connect: fit (the Scan signals above: skills, profession or business sector, location) and record (certificates and business levels checked by staff, finished milestone plans, work references below, and upheld reports, which count against). The investor flag, ID numbers and contact details are never used. Staff can add a member the suggestions missed.
+3. Staff choose the people and write one or two sentences each, "Why we picked them", which the poster sees. Every pick, note and sent list is written to the audit log.
+4. Each picked member is asked first: "Staff think you fit this job. Share your profile with the poster?" Only those who say yes reach the poster. Saying no is private, and the poster never learns who was asked. A no is replaced from the suggestions.
+5. The poster sees the list in the order staff recommend, with badges and the why-note, and can Connect or mark Not a fit, which the member is not told. Contact details still open only inside an accepted connection (section 9).
+6. The poster sees progress: Post approved, Finding people, Asking each person, Your list arrives.
+7. **Beta.** The feature is labelled Beta and is free. Its screens say it may become a paid service later and that members will be told well before; a list already being picked stays free. No payment of any kind is built in Phase 1.
+
+**Work references (OPP-8, decided 14 Nov).**
+1. A rating opens only after real work that both sides confirm: the poster marks a response Hired (or a tender Awarded) and the member confirms "Yes, I did this work". A finished milestone plan also counts. Either side saying no opens nothing.
+2. Both sides rate each other within 14 days. Neither sees the other's rating until both have rated or the 14 days end (double-blind, as on Airbnb and Upwork). A sent rating cannot be changed.
+3. A rating has four 1 to 5 scores (Did what they promised, on time; Quality of the work; Communication; Honesty and respect), "Would you work with them again?" (yes or no), an optional public comment and an optional private note to Kingdom Connect. The person rated never sees the private note; staff read it when they pick people.
+4. A profile shows Work references only once the member has 3 or more ratings: "N of N members who worked with them would work with them again", the four averages and the comments, each from confirmed work only. The rated member may reply once to each comment.
+5. Comments follow the posting rules: no phone numbers, emails or insults. Ratings can be reported, and staff remove those that break the community rules. A member who marks people as hired who then deny it more than once is looked at by staff.
 
 ## 11. Ideas pool and investor access
 
@@ -950,6 +984,14 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 - Store accounts (M04): the Google Play and App Store developer accounts are registered as organisation accounts of the company once it exists (L01), so nothing has to be transferred later.
 - The tender document is optional (O04), replacing the 9 Nov rule.
 
+**Decided on 14 November 2026 (Champion and the collaborator)**
+- Easier entry: people get in with Google, Facebook, Apple, a phone number or email, look around first, and verify their identity later from their profile. Before verification they can look, but not act (sections 3 and 6). This replaces "no one reaches member content until verified". The identity check stays the gate for everything that reaches another member.
+- Terms of use and the Privacy notice are accepted at the first sign-in, as two separate ticks, before anything about the person is stored beyond the sign-in itself.
+- Let Kingdom Connect pick (OPP-7): staff choose a short list from members' record on the platform, helped by rule-based suggestions with no AI; each person agrees before the poster sees them; Beta and free, with a note that it may become paid later (section 10).
+- Work references (OPP-8): two-way ratings after work both sides confirmed, hidden until both rate or 14 days pass, shown on profiles from 3 ratings, with a private note to staff (section 10).
+- Saved opportunities and job alerts stay on the Opportunities screens (they had dropped out of the combined design canvas).
+- Still open, each needing a ticket: the SMS provider and cost for phone sign-in; the Google, Facebook and Apple developer accounts (under the company, like M04); the Privacy notice wording for ratings, private notes and picks; the new notification texts in docs/notifications.md (picked, marked hired, rating open, list ready); docs/screens.md and docs/schema.md for the new screens and records.
+
 **Open.** Every open question is a ticket on the [wayfinder map](https://github.com/clainkavit/kingdom-connect/issues/1) and is linked where it applies above.
 
 **Outside this spec**
@@ -1022,6 +1064,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | 8 Nov 2026 | Registration categories become tick all that apply from Professional, Businessperson and Other (#161, decided 10 Nov) | 6, 18 |
 | 9 Nov 2026 | Reporting an opportunity hides it at once; the decision restores or removes it; an upheld report puts a poster back on review | 13, 18 |
 | 10 Nov 2026 | Forgot password (REG-6), admin Ideas page, store accounts under the company, tender document optional; the 9 Nov opportunity rules confirmed | 5, 6, 10, 18 |
+| 14 Nov 2026 | Easier entry: Google, Facebook, Apple, phone or email sign-in, look but not act until verified, verification moved into the profile (REG-7, REG-8); Let Kingdom Connect pick, Beta and free (OPP-7); two-way work references after confirmed work (OPP-8) | 3, 6, 10, 18 |
 
 ## Appendix B: Source documents
 

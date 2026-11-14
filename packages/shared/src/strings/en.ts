@@ -570,6 +570,9 @@ export const en = {
   passwordChanged:
     "Your password was changed. You are signed out on every other device. Log in with the new password and the code we email you.",
   changePasswordTitle: "Password and sign-in",
+  testLoginsTitle: "Test accounts (preview only)",
+  testLoginsHint: "Fake people only. Choose one to fill in the form.",
+  useTestLogin: (label: string) => `Use ${label}`,
   lowDataTitle: "Low-data mode",
   lowDataHint: "Don't load photos on this device. Names and initials show instead.",
   photoHidden: (name: string) => `Photo: ${name} (low-data mode)`,

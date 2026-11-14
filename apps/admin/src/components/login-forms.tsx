@@ -6,6 +6,7 @@ import {
   minutesAndSeconds,
   type LoginClient,
   type Session,
+  type TestLogin,
 } from "@kingdom-connect/shared";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
@@ -89,9 +90,11 @@ function Message({ text, tone = "bad" }: { text: string | null; tone?: "bad" | "
 export function LoginForm({
   client,
   onCodeSent,
+  testLogins = [],
 }: {
   client: LoginClient;
   onCodeSent: (session: Session, resendAfterSeconds: number) => void;
+  testLogins?: TestLogin[];
 }) {
   const { t } = useLanguage();
   const [email, setEmail] = useState("");
@@ -133,6 +136,33 @@ export function LoginForm({
       >
         {t.logIn}
       </button>
+      {testLogins.length ? (
+        <section
+          aria-label={t.testLoginsTitle}
+          className="mt-2 flex flex-col gap-2 rounded-lg border border-dashed border-gold p-3"
+        >
+          <h2 className="text-sm font-bold text-navy">{t.testLoginsTitle}</h2>
+          <p className="text-[13px] text-ink-2">{t.testLoginsHint}</p>
+          {testLogins.map((login) => (
+            <button
+              key={login.login}
+              type="button"
+              aria-label={t.useTestLogin(login.label)}
+              onClick={() => {
+                setEmail(login.login);
+                setPassword(login.password);
+                setMessage(null);
+              }}
+              className="flex min-h-11 flex-col items-start rounded-md border border-line px-3 py-2 text-left hover:bg-bg"
+            >
+              <span className="text-sm font-semibold text-ink">{login.label}</span>
+              <span className="text-[13px] text-ink-2 select-all">
+                {login.login} · {login.password}
+              </span>
+            </button>
+          ))}
+        </section>
+      ) : null}
     </form>
   );
 }

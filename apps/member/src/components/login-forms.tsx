@@ -5,9 +5,10 @@ import {
   passwordProblem,
   type LoginClient,
   type Session,
+  type TestLogin,
 } from "@kingdom-connect/shared";
 import { useEffect, useState } from "react";
-import { Text, TextInput, View } from "react-native";
+import { Pressable, Text, TextInput, View } from "react-native";
 import { useLanguage } from "../lib/language";
 import { Button, Field, Message } from "./form";
 import { LinkButton } from "./link-button";
@@ -65,9 +66,11 @@ function CodeBoxes({ value, onChange }: { value: string; onChange: (v: string) =
 export function LoginForm({
   client,
   onCodeSent,
+  testLogins = [],
 }: {
   client: LoginClient;
   onCodeSent: (session: Session, resendAfterSeconds: number) => void;
+  testLogins?: TestLogin[];
 }) {
   const { t } = useLanguage();
   const [username, setUsername] = useState("");
@@ -97,6 +100,48 @@ export function LoginForm({
         <Message text={message} />
       )}
       <Button label={t.logIn} onPress={submit} disabled={busy || locked} />
+      {testLogins.length ? (
+        <TestLogins
+          logins={testLogins}
+          onUse={(login) => {
+            setUsername(login.login);
+            setPassword(login.password);
+            setMessage(null);
+          }}
+        />
+      ) : null}
+    </View>
+  );
+}
+
+/** Preview sites only: the fake accounts, with their passwords, and a button to fill the form. */
+function TestLogins({ logins, onUse }: { logins: TestLogin[]; onUse: (l: TestLogin) => void }) {
+  const { t } = useLanguage();
+  return (
+    <View
+      role="region"
+      aria-label={t.testLoginsTitle}
+      className="mt-2 gap-2 rounded-card border border-dashed border-gold bg-surface p-3"
+    >
+      <Text className="font-figtree-bold text-sm text-navy">{t.testLoginsTitle}</Text>
+      <Text className="font-figtree text-[13px] text-ink-2">{t.testLoginsHint}</Text>
+      {logins.map((login) => (
+        <Pressable
+          key={login.login}
+          role="button"
+          aria-label={t.useTestLogin(login.label)}
+          onPress={() => onUse(login)}
+          className="min-h-[44px] flex-row items-center justify-between gap-3 rounded-lg border border-line px-3 py-2 active:opacity-80"
+        >
+          <View className="flex-1">
+            <Text className="font-figtree-semibold text-sm text-ink">{login.label}</Text>
+            <Text selectable className="font-figtree text-[13px] text-ink-2">
+              {login.login} · {login.password}
+            </Text>
+          </View>
+          <Text className="font-figtree-bold text-sm text-blue">›</Text>
+        </Pressable>
+      ))}
     </View>
   );
 }

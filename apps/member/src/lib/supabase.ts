@@ -1,5 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
+  parseTestLogins,
   createLoginClient,
   createProfileClient,
   createRegistrationClient,
@@ -30,3 +31,6 @@ export const loginClient = createLoginClient({ url, anonKey });
 export const registrationClient = createRegistrationClient({ url, anonKey });
 
 export const profileClient = createProfileClient({ url, anonKey });
+
+/** Fake accounts shown on a preview site's login screen. Never set on a real environment. */
+export const testLogins = parseTestLogins(process.env.EXPO_PUBLIC_TEST_LOGINS);

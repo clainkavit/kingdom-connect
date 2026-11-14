@@ -228,6 +228,25 @@ describe("ForgotPasswordForm (S04a)", () => {
     expect(screen.getByText("No access to that email?")).toBeTruthy();
   });
 
+  it("S47: a signed-in member only asks for the code, which goes to their own username", async () => {
+    const startPasswordReset = started;
+    render(
+      <ForgotPasswordForm
+        client={fakeClient({ startPasswordReset })}
+        onLogIn={vi.fn()}
+        knownUsername="test_level1"
+      />,
+    );
+    expect(screen.queryByLabelText("Username")).toBeNull();
+    await press("Send code");
+    expect(startPasswordReset).toHaveBeenCalledWith("test_level1");
+    expect(
+      screen.getByText(
+        "We sent a 6-digit code to the email on your account. It works for 10 minutes.",
+      ),
+    ).toBeTruthy();
+  });
+
   it("asks for the username before sending a code", async () => {
     const startPasswordReset = vi.fn();
     render(<ForgotPasswordForm client={fakeClient({ startPasswordReset })} onLogIn={vi.fn()} />);
@@ -340,5 +359,30 @@ describe("ForgotPasswordForm (S04a)", () => {
     type("Username", "neema");
     await press("Send code");
     expect(screen.getByText(/couldn't reach the server/)).toBeTruthy();
+  });
+});
+
+describe("Test accounts on a preview site", () => {
+  it("lists the fake accounts and fills the form with one", async () => {
+    const logIn = vi.fn().mockResolvedValue({ kind: "invalid" });
+    render(
+      <LoginForm
+        client={fakeClient({ logIn })}
+        onCodeSent={vi.fn()}
+        testLogins={[{ label: "Member, level 1", login: "test_level1", password: "pw-1" }]}
+      />,
+    );
+    expect(screen.getByText("Test accounts (preview only)")).toBeTruthy();
+    expect(screen.getByText("test_level1 · pw-1")).toBeTruthy();
+    await act(async () =>
+      fireEvent.click(screen.getByRole("button", { name: "Use Member, level 1" })),
+    );
+    await act(async () => fireEvent.click(screen.getByRole("button", { name: "Log in" })));
+    expect(logIn).toHaveBeenCalledWith({ username: "test_level1", password: "pw-1" });
+  });
+
+  it("shows nothing without test accounts", () => {
+    render(<LoginForm client={fakeClient({})} onCodeSent={vi.fn()} />);
+    expect(screen.queryByText("Test accounts (preview only)")).toBeNull();
   });
 });

@@ -6,15 +6,26 @@ import { useUnreadCount, useUnreadMessages } from "../../src/lib/notifications";
 
 export default function AppLayout() {
   const pathname = usePathname();
+  return (
+    <Guard route="app" signedOutHref={pathname === "/" ? "/welcome" : undefined}>
+      <SignedInShell />
+    </Guard>
+  );
+}
+
+/**
+ * Rendered only once Guard has let a signed-in member through, so the unread counts are never
+ * asked for by a signed-out visitor (audit M2: they returned 401 on every visit to /login).
+ */
+function SignedInShell() {
+  const pathname = usePathname();
   const unread = useUnreadCount(pathname);
   const unreadMessages = useUnreadMessages(pathname);
   return (
-    <Guard route="app">
-      <LegalGate>
-        <MemberShell unread={unread} unreadMessages={unreadMessages}>
-          <Slot />
-        </MemberShell>
-      </LegalGate>
-    </Guard>
+    <LegalGate>
+      <MemberShell unread={unread} unreadMessages={unreadMessages}>
+        <Slot />
+      </MemberShell>
+    </LegalGate>
   );
 }

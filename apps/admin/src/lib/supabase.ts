@@ -1,4 +1,4 @@
-import { createLoginClient, LOCAL_SUPABASE } from "@kingdom-connect/shared";
+import { createLoginClient, LOCAL_SUPABASE, parseTestLogins } from "@kingdom-connect/shared";
 import { createClient } from "@supabase/supabase-js";
 
 export const url = process.env.NEXT_PUBLIC_SUPABASE_URL ?? LOCAL_SUPABASE.url;
@@ -15,3 +15,6 @@ export const supabase = createClient(url, anonKey, {
 });
 
 export const loginClient = createLoginClient({ url, anonKey });
+
+/** Fake accounts shown on a preview site's login screen. Never set on a real environment. */
+export const testLogins = parseTestLogins(process.env.NEXT_PUBLIC_TEST_LOGINS);

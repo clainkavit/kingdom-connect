@@ -118,3 +118,30 @@ describe("CodeForm (admin)", () => {
     expect(onVerified).toHaveBeenCalled();
   });
 });
+
+describe("Test accounts on a preview site", () => {
+  it("lists the fake accounts and fills the form with one", async () => {
+    const logIn = vi.fn().mockResolvedValue({ kind: "invalid" });
+    render(
+      <LoginForm
+        client={fakeClient({ logIn })}
+        onCodeSent={vi.fn()}
+        testLogins={[
+          { label: "Administrator", login: "test.admin@example.test", password: "pw-1" },
+        ]}
+      />,
+    );
+    expect(screen.getByText("Test accounts (preview only)")).toBeTruthy();
+    expect(screen.getByText("test.admin@example.test · pw-1")).toBeTruthy();
+    await act(async () =>
+      fireEvent.click(screen.getByRole("button", { name: "Use Administrator" })),
+    );
+    await act(async () => fireEvent.click(screen.getByRole("button", { name: "Log in" })));
+    expect(logIn).toHaveBeenCalledWith({ email: "test.admin@example.test", password: "pw-1" });
+  });
+
+  it("shows nothing without test accounts", () => {
+    render(<LoginForm client={fakeClient({})} onCodeSent={vi.fn()} />);
+    expect(screen.queryByText("Test accounts (preview only)")).toBeNull();
+  });
+});

@@ -5,9 +5,10 @@ import {
   passwordProblem,
   type LoginClient,
   type Session,
+  type TestLogin,
 } from "@kingdom-connect/shared";
 import { useEffect, useState } from "react";
-import { Text, TextInput, View } from "react-native";
+import { Pressable, Text, TextInput, View } from "react-native";
 import { useLanguage } from "../lib/language";
 import { Button, Field, Message } from "./form";
 import { LinkButton } from "./link-button";
@@ -65,9 +66,11 @@ function CodeBoxes({ value, onChange }: { value: string; onChange: (v: string) =
 export function LoginForm({
   client,
   onCodeSent,
+  testLogins = [],
 }: {
   client: LoginClient;
   onCodeSent: (session: Session, resendAfterSeconds: number) => void;
+  testLogins?: TestLogin[];
 }) {
   const { t } = useLanguage();
   const [username, setUsername] = useState("");
@@ -97,6 +100,48 @@ export function LoginForm({
         <Message text={message} />
       )}
       <Button label={t.logIn} onPress={submit} disabled={busy || locked} />
+      {testLogins.length ? (
+        <TestLogins
+          logins={testLogins}
+          onUse={(login) => {
+            setUsername(login.login);
+            setPassword(login.password);
+            setMessage(null);
+          }}
+        />
+      ) : null}
+    </View>
+  );
+}
+
+/** Preview sites only: the fake accounts, with their passwords, and a button to fill the form. */
+function TestLogins({ logins, onUse }: { logins: TestLogin[]; onUse: (l: TestLogin) => void }) {
+  const { t } = useLanguage();
+  return (
+    <View
+      role="region"
+      aria-label={t.testLoginsTitle}
+      className="mt-2 gap-2 rounded-card border border-dashed border-gold bg-surface p-3"
+    >
+      <Text className="font-figtree-bold text-sm text-navy">{t.testLoginsTitle}</Text>
+      <Text className="font-figtree text-[13px] text-ink-2">{t.testLoginsHint}</Text>
+      {logins.map((login) => (
+        <Pressable
+          key={login.login}
+          role="button"
+          aria-label={t.useTestLogin(login.label)}
+          onPress={() => onUse(login)}
+          className="min-h-[44px] flex-row items-center justify-between gap-3 rounded-lg border border-line px-3 py-2 active:opacity-80"
+        >
+          <View className="flex-1">
+            <Text className="font-figtree-semibold text-sm text-ink">{login.label}</Text>
+            <Text selectable className="font-figtree text-[13px] text-ink-2">
+              {login.login} · {login.password}
+            </Text>
+          </View>
+          <Text className="font-figtree-bold text-sm text-blue">›</Text>
+        </Pressable>
+      ))}
     </View>
   );
 }
@@ -163,13 +208,19 @@ export function CodeForm({
 
 type ResetStep = "username" | "code" | "password" | "saved";
 
-/** S04a (REG-6): username, then the email code, then the new password typed twice. */
+/**
+ * S04a (REG-6): username, then the email code, then the new password typed twice.
+ * S47: a signed-in member passes `knownUsername`, so the first step only asks to send the code.
+ * The email code is still required before the password changes.
+ */
 export function ForgotPasswordForm({
   client,
   onLogIn,
+  knownUsername,
 }: {
   client: LoginClient;
   onLogIn: () => void;
+  knownUsername?: string;
 }) {
   const { t } = useLanguage();
   const [step, setStep] = useState<ResetStep>("username");
@@ -183,9 +234,10 @@ export function ForgotPasswordForm({
   const resend = useCountdown(0);
 
   const sendCode = async () => {
-    if (!username.trim()) return setMessage(t.needUsername);
+    const name = (knownUsername ?? username).trim();
+    if (!name) return setMessage(t.needUsername);
     setBusy(true);
-    const result = await client.startPasswordReset(username.trim());
+    const result = await client.startPasswordReset(name);
     setBusy(false);
     if (result.kind === "network") return setMessage(t.network);
     setResetId(result.resetId);
@@ -250,7 +302,9 @@ export function ForgotPasswordForm({
   if (step === "code")
     return (
       <View className="gap-3">
-        <Text className="font-figtree text-sm leading-5 text-ink-2">{t.resetCodeSent}</Text>
+        <Text className="font-figtree text-sm leading-5 text-ink-2">
+          {knownUsername ? t.changeCodeSent : t.resetCodeSent}
+        </Text>
         <CodeBoxes value={code} onChange={setCode} />
         <Message text={message} />
         <Button label={t.verify} onPress={checkCode} disabled={busy} />
@@ -263,6 +317,15 @@ export function ForgotPasswordForm({
         <LinkButton href="/recover" label={t.noEmailAccess} className="items-center py-2">
           <Text className="font-figtree-semibold text-sm text-blue">{t.noEmailAccess}</Text>
         </LinkButton>
+      </View>
+    );
+
+  if (knownUsername)
+    return (
+      <View className="gap-3">
+        <Text className="font-figtree text-sm leading-5 text-ink-2">{t.changePasswordIntro}</Text>
+        <Message text={message} />
+        <Button label={t.sendCode} onPress={sendCode} disabled={busy} />
       </View>
     );
 

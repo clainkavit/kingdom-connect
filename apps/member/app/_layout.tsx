@@ -7,6 +7,7 @@ import {
   Figtree_800ExtraBold,
   useFonts,
 } from "@expo-google-fonts/figtree";
+import { CormorantGaramond_600SemiBold } from "@expo-google-fonts/cormorant-garamond";
 import { Slot } from "expo-router";
 import { Platform } from "react-native";
 import { StatusBar } from "expo-status-bar";
@@ -14,6 +15,7 @@ import { useEffect } from "react";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { AuthProvider } from "../src/lib/auth";
 import { LanguageProvider } from "../src/lib/language";
+import { LowDataProvider } from "../src/lib/low-data";
 import { startMonitoring } from "../src/lib/monitoring";
 
 export default function RootLayout() {
@@ -23,6 +25,7 @@ export default function RootLayout() {
     Figtree_600SemiBold,
     Figtree_700Bold,
     Figtree_800ExtraBold,
+    CormorantGaramond_600SemiBold,
   });
   useEffect(startMonitoring, []);
   if (!fontsLoaded && Platform.OS !== "web") return null;
@@ -32,7 +35,9 @@ export default function RootLayout() {
         <StatusBar style="auto" />
         <AuthProvider>
           <LanguageProvider>
-            <Slot />
+            <LowDataProvider>
+              <Slot />
+            </LowDataProvider>
           </LanguageProvider>
         </AuthProvider>
       </SafeAreaView>

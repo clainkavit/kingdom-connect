@@ -24,7 +24,8 @@
     "prepare": "husky",
     "notifications": "tsx packages/shared/scripts/write-notification-copy.ts",
     "legal:load": "tsx packages/shared/scripts/load-legal-texts.ts",
-    "generate": "tsx packages/shared/scripts/write-notification-copy.ts"
+    "generate": "tsx packages/shared/scripts/write-notification-copy.ts",
+    "demo:load": "tsx packages/shared/scripts/load-demo.ts"
   },
   "devDependencies": {
     "@kingdom-connect/shared": "workspace:*",

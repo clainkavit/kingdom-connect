@@ -570,6 +570,12 @@ export const en = {
   passwordChanged:
     "Your password was changed. You are signed out on every other device. Log in with the new password and the code we email you.",
   changePasswordTitle: "Password and sign-in",
+  signInAs: "Who is signing in?",
+  roleMember: "I'm a member",
+  roleStaff: "I'm staff",
+  openAdminConsole: "Go to the admin console",
+  notStaff: "Not staff?",
+  goToMemberApp: "Go to the member app",
   testLoginsTitle: "Test accounts (preview only)",
   testLoginsHint: "Fake people only. Choose one to fill in the form.",
   useTestLogin: (label: string) => `Use ${label}`,

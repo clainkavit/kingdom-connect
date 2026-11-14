@@ -17,6 +17,7 @@ import photo from "../../assets/landing-photo.jpg";
 import { useLanguage } from "../lib/language";
 import { logoSource } from "./boot-splash";
 import { PressScale, useReducedMotion } from "./motion";
+import { RoleChoice } from "./role-choice";
 import { usePalette } from "./palette";
 
 const native = Platform.OS !== "web";
@@ -44,7 +45,7 @@ export function LandingScreen({
 }) {
   const { width } = useWindowDimensions();
   const wide = width >= WIDE;
-  const enter = useEntrance(play, 5);
+  const enter = useEntrance(play, 6);
 
   const copy = (
     <View className="gap-4">
@@ -68,6 +69,9 @@ export function LandingScreen({
       <Animated.View style={enter(3)}>
         <Actions wide={wide} onSignUp={onSignUp} onLogIn={onLogIn} />
       </Animated.View>
+      <Animated.View style={enter(4)}>
+        <RoleChoice />
+      </Animated.View>
     </View>
   );
 
@@ -84,7 +88,7 @@ export function LandingScreen({
             <LanguagePill />
           </View>
           {copy}
-          <Animated.View style={enter(4)}>
+          <Animated.View style={enter(5)}>
             <LegalLinks onLegal={onLegal} />
           </Animated.View>
         </View>
@@ -122,7 +126,7 @@ export function LandingScreen({
         className={`w-full gap-6 px-6 pb-8 pt-7 ${tablet ? "max-w-[560px] self-center" : ""}`}
       >
         {copy}
-        <Animated.View style={enter(4)}>
+        <Animated.View style={enter(5)}>
           <LegalLinks onLegal={onLegal} />
         </Animated.View>
       </View>

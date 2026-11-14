@@ -582,6 +582,12 @@ export const sw: Strings = {
   passwordChanged:
     "Nenosiri lako limebadilishwa. Umetolewa kwenye vifaa vingine vyote. Ingia kwa nenosiri jipya na msimbo tutakaokutumia kwa barua pepe.",
   changePasswordTitle: "Nenosiri na kuingia",
+  signInAs: "Nani anaingia?",
+  roleMember: "Mimi ni mwanachama",
+  roleStaff: "Mimi ni mfanyakazi",
+  openAdminConsole: "Nenda kwenye mfumo wa wasimamizi",
+  notStaff: "Si mfanyakazi?",
+  goToMemberApp: "Nenda kwenye programu ya wanachama",
   testLoginsTitle: "Akaunti za majaribio (onyesho tu)",
   testLoginsHint: "Watu wa kubuni tu. Chagua moja ujaze fomu.",
   useTestLogin: (label: string) => `Tumia ${label}`,

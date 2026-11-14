@@ -1,6 +1,7 @@
 "use client";
 
 import { AuthCard } from "@/components/auth-card";
+import { MemberAppLink } from "@/components/member-app-link";
 import { useAuth } from "@/lib/auth";
 import { useLanguage } from "@/lib/language";
 
@@ -10,6 +11,7 @@ export default function WrongAppPage() {
   return (
     <AuthCard title={platformName}>
       <p className="text-sm leading-[1.45] text-ink-2">{t.wrongAppStaff}</p>
+      <MemberAppLink />
       <button
         type="button"
         onClick={signOut}

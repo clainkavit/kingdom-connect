@@ -64,6 +64,10 @@ pnpm db:stop              # stop the stack
 
 **Test accounts.** `pnpm db:reset` loads [supabase/seed.sql](supabase/seed.sql): fake people for every role, safe to load again. All of them use the password `kingdom-test-only`. Never use real names, ID numbers or phone numbers in test data (PRD section 17).
 
+**Demo content.** `pnpm demo:load` adds [supabase/demo/demo-seed.sql](supabase/demo/demo-seed.sql) on top of the seed: 12 more fake members across regions (two waiting for review, with generated ID, face and business-document images), opportunities with a tender PDF and CVs, ideas with an NDA partner and a signed milestone plan, trainings, events, news, conversations with a photo and a PDF, and open reports. It refuses to run unless `test_data_only` is on, and it is safe to run again. Set `DEMO_PASSWORD` (the demo accounts' password); for a hosted project also set `DB_URL`, `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY`. The images are generated shapes, never real faces.
+
+**Member or staff.** Set `EXPO_PUBLIC_ADMIN_URL` on the member app and `NEXT_PUBLIC_MEMBER_URL` on the admin console to show "I'm a member / I'm staff" on the member app's landing and log-in, and "Not staff? Go to the member app" on the staff log-in. Left unset, neither shows.
+
 | Role | Email | Username |
 |---|---|---|
 | Applicant (pending) | test.applicant@example.test | test_applicant |

@@ -14,17 +14,21 @@ import { EmptyState, ErrorState, LoadingRows } from "./states";
 import type { DashboardWidgetsApi } from "../lib/dashboard-widgets";
 import type { MemberNewsApi } from "../lib/news";
 import type { PeopleYouMayKnowApi } from "../lib/people-you-may-know";
-import { FeaturedOpportunities, LatestItems, NewsPreview } from "./dashboard-widgets";
+import { LatestItems, NewsPreview } from "./dashboard-widgets";
 import { PeopleYouMayKnow } from "./people-you-may-know";
 import { usePhone } from "./sheet";
 
-type QuickAction = { key: TextKey; href: string; minLevel: number; posts: boolean };
+type HomeLink = { key: TextKey; href: string; minLevel: number; posts: boolean };
 
-const quickActions: QuickAction[] = [
+/** Home's one list of links: what the member can do, then where their things are. */
+const homeLinks: HomeLink[] = [
   { key: "actionShareIdea", href: "/ideas/new", minLevel: 1, posts: true },
   { key: "actionScan", href: "/opportunities/scan", minLevel: 1, posts: false },
   { key: "actionPostTraining", href: "/training", minLevel: 1, posts: true },
   { key: "actionPostOpportunity", href: "/opportunities/new", minLevel: POSTER_LEVEL, posts: true },
+  { key: "myConnections", href: "/connections", minLevel: 1, posts: false },
+  { key: "savedTitle", href: "/opportunities/saved", minLevel: 1, posts: false },
+  { key: "respMineTitle", href: "/opportunities/responses", minLevel: 1, posts: false },
 ];
 
 type DashboardData = {
@@ -79,49 +83,15 @@ function WelcomeCard({ welcome, today }: { welcome: Welcome; today: Date }) {
   );
 }
 
-function QuickActions({ welcome }: { welcome: Welcome }) {
-  const { t } = useLanguage();
-  const allowed = quickActions.filter(
-    (a) => welcome.level >= a.minLevel && !(a.posts && welcome.postingPaused),
-  );
-  return (
-    <Section title={t.quickActions}>
-      <View className="flex-row flex-wrap gap-2">
-        {allowed.map((a) => (
-          <LinkButton
-            key={a.key}
-            href={a.href}
-            label={t[a.key] as string}
-            className="rounded-lg border border-line bg-surface px-4 py-2.5"
-          >
-            <Text className="font-figtree-semibold text-sm text-blue">{t[a.key] as string}</Text>
-          </LinkButton>
-        ))}
-      </View>
-      {welcome.postingPaused ? (
-        <Text className="font-figtree text-sm text-ink-2">{t.postingPausedNote}</Text>
-      ) : welcome.level < POSTER_LEVEL ? (
-        <LinkButton href="/business" label={t.verifyBusinessLink} className="py-1">
-          <Text className="font-figtree text-sm text-blue">{t.upgradeToPost}</Text>
-        </LinkButton>
-      ) : null}
-    </Section>
-  );
-}
-
-const shortcuts: { key: TextKey; href: string }[] = [
-  { key: "myConnections", href: "/connections" },
-  { key: "savedTitle", href: "/opportunities/saved" },
-  { key: "respMineTitle", href: "/opportunities/responses" },
-];
-
-/** The member's own corner of Home: who they are, what to finish on their profile, and their shortcuts. */
+/** The member's own corner of Home: their photo and profile, what to finish on it, and their links. */
 function MemberColumn({ welcome, profile }: { welcome: Welcome; profile: Profile | null }) {
-  const { t, language } = useLanguage();
-  const place = [welcome.district, welcome.region]
-    .filter((p) => p !== null)
-    .map((p) => p[language])
-    .join(", ");
+  const { t } = useLanguage();
+  const links = homeLinks.filter(
+    (a) =>
+      welcome.level >= a.minLevel &&
+      !(a.posts && welcome.postingPaused) &&
+      !(a.key === "actionScan" && profile),
+  );
   return (
     <View className="gap-4">
       <LinkButton
@@ -130,14 +100,14 @@ function MemberColumn({ welcome, profile }: { welcome: Welcome; profile: Profile
         className="flex-row items-center gap-3 rounded-card border border-line bg-surface p-4"
       >
         <Avatar name={welcome.fullName} url={profile?.photoUrl ?? null} size={52} />
-        <View className="min-w-0 flex-1 gap-0.5">
-          <Text className="font-figtree-bold text-[16px] text-ink">{welcome.fullName}</Text>
-          {place ? <Text className="font-figtree text-[13px] text-ink-2">{place}</Text> : null}
-        </View>
+        <Text className="flex-1 font-figtree-bold text-[16px] text-ink">{t.myProfile}</Text>
+        <Text aria-hidden className="font-figtree text-[15px] text-ink-2">
+          ›
+        </Text>
       </LinkButton>
       {profile ? <NextSteps profile={profile} /> : null}
       <View className="rounded-card border border-line bg-surface">
-        {shortcuts.map((item, i) => (
+        {links.map((item, i) => (
           <LinkButton
             key={item.href}
             href={item.href}
@@ -153,6 +123,13 @@ function MemberColumn({ welcome, profile }: { welcome: Welcome; profile: Profile
           </LinkButton>
         ))}
       </View>
+      {welcome.postingPaused ? (
+        <Text className="font-figtree text-sm text-ink-2">{t.postingPausedNote}</Text>
+      ) : welcome.level < POSTER_LEVEL ? (
+        <LinkButton href="/business" label={t.verifyBusinessLink} className="py-1">
+          <Text className="font-figtree text-sm text-blue">{t.upgradeToPost}</Text>
+        </LinkButton>
+      ) : null}
     </View>
   );
 }
@@ -247,11 +224,7 @@ export function DashboardScreen({
             />
           ))
         ) : (
-          <EmptyState
-            title={t.noRequestsWaiting}
-            message={t.noRequestsMessage}
-            action={{ label: t.findPeople, href: "/people" }}
-          />
+          <Text className="font-figtree text-[15px] text-ink-2">{t.noRequestsWaiting}</Text>
         )}
       </Section>
       {people ? <PeopleYouMayKnow api={people} /> : null}
@@ -271,9 +244,7 @@ export function DashboardScreen({
           <EmptyState title={t.activityEmptyTitle} message={t.activityEmptyMessage} />
         )}
       </Section>
-      {widgets ? <FeaturedOpportunities api={widgets} /> : null}
       {widgets ? <LatestItems api={widgets} /> : null}
-      <QuickActions welcome={loaded.welcome} />
       {news ? <NewsPreview api={news} /> : null}
     </View>
   );

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { AccessibilityInfo, Animated, Easing, Platform } from "react-native";
+import { AccessibilityInfo, Animated, Easing, Platform, View } from "react-native";
 
 /** How long things take to come in and go out, in milliseconds. */
 export const ENTER_MS = 200;
@@ -31,7 +31,8 @@ const offset: Record<From, number> = { fade: 0, above: -6, below: 16 };
 
 /**
  * Shows its children with a short fade and slide while `show` is true, and plays the same in reverse before
- * taking them away. While leaving it is hidden from screen readers and takes no taps.
+ * taking them away. While leaving it is hidden from screen readers and takes no taps. `style` places the
+ * moving layer; `className` styles the content inside it.
  */
 export function Reveal({
   show = true,
@@ -87,7 +88,6 @@ export function Reveal({
   return (
     <Animated.View
       {...rest}
-      className={className}
       aria-hidden={leaving || undefined}
       pointerEvents={leaving ? "none" : undefined}
       style={[
@@ -105,7 +105,7 @@ export function Reveal({
         },
       ]}
     >
-      {children}
+      <View className={className}>{children}</View>
     </Animated.View>
   );
 }
@@ -141,7 +141,6 @@ export function EnterOnChange({
   }, [value, reduced, progress]);
   return (
     <Animated.View
-      className={className}
       style={{
         opacity: progress,
         transform: [
@@ -149,7 +148,7 @@ export function EnterOnChange({
         ],
       }}
     >
-      {children}
+      <View className={className}>{children}</View>
     </Animated.View>
   );
 }

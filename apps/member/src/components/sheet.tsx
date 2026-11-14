@@ -50,7 +50,8 @@ export function Sheet({
           onGone={() => setLeaving(false)}
           role="dialog"
           aria-label={title}
-          className="max-h-[88%] gap-3 rounded-t-[20px] bg-surface px-5 pb-6 pt-4"
+          style={{ maxHeight: "88%" }}
+          className="max-h-full shrink gap-3 rounded-t-[20px] bg-surface px-5 pb-6 pt-4"
         >
           <View className="flex-row items-center justify-between">
             <Text role="heading" aria-level={2} className="font-figtree-bold text-lg text-ink">

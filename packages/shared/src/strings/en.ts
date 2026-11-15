@@ -1848,4 +1848,7 @@ export const en = {
   respWhyHired:
     "Once they confirm, you can rate each other for 14 days. Ratings only come from real work that both sides confirmed. They help members, and help Kingdom Connect pick the most trusted people for other posters.",
   respConfirmWork: "Confirm or rate the work",
+  queueShow: "Show",
+  queueAll: "All",
+  queueFilterMembers: "Members",
 };

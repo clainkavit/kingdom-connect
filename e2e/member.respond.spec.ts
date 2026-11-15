@@ -35,7 +35,7 @@ test("a Member applies, the poster shortlists, and the Member sees it (O03, S18,
 
   await page.goto("/opportunities/responses");
   await expect(page.getByText(title)).toBeVisible();
-  await expect(page.getByText("Shortlisted", { exact: true })).toBeVisible();
+  await expect(page.getByText("Shortlisted", { exact: true }).first()).toBeVisible();
   if (process.env.SCREENSHOT_DIR)
     await page.screenshot({ path: `${process.env.SCREENSHOT_DIR}/o03-mine.png` });
 });

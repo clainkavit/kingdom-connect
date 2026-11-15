@@ -1,8 +1,60 @@
 import { accountItems, growthSections } from "@kingdom-connect/shared";
 import { Text, View } from "react-native";
 import { useLanguage } from "../lib/language";
+import ChevronLeft from "lucide-react-native/icons/chevron-left";
 import { LinkButton } from "./link-button";
+import { usePalette } from "./palette";
+import { usePhone } from "./sheet";
 import { EmptyState } from "./states";
+
+/** The canvas page header: an optional back link, a 32px maroon title, a subtitle and actions on the right. */
+export function PageHeader({
+  back,
+  title,
+  subtitle,
+  children,
+}: {
+  back?: { label: string; href: string };
+  title: string;
+  subtitle?: string;
+  children?: React.ReactNode;
+}) {
+  const palette = usePalette();
+  const phone = usePhone();
+  return (
+    <View className="gap-3">
+      {back ? (
+        <LinkButton
+          href={back.href}
+          label={back.label}
+          className="min-h-[36px] flex-row items-center gap-1.5 self-start"
+        >
+          <ChevronLeft size={16} color={palette.navy} aria-hidden />
+          <Text className="font-figtree-semibold text-[15px] text-navy underline">
+            {back.label}
+          </Text>
+        </LinkButton>
+      ) : null}
+      <View className="flex-row flex-wrap items-start justify-between gap-4">
+        <View className="min-w-0 flex-1 basis-[360px] gap-1.5">
+          <Text
+            role="heading"
+            aria-level={1}
+            className={`font-figtree-extrabold text-navy ${phone ? "text-[24px] leading-[28px]" : "text-[32px] leading-[37px]"}`}
+          >
+            {title}
+          </Text>
+          {subtitle ? (
+            <Text className="font-figtree text-[15px] leading-[22px] text-ink-2">{subtitle}</Text>
+          ) : null}
+        </View>
+        {children ? (
+          <View className="flex-row flex-wrap items-center gap-3">{children}</View>
+        ) : null}
+      </View>
+    </View>
+  );
+}
 
 export function ScreenTitle({ children }: { children: string }) {
   return (

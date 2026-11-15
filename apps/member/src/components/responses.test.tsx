@@ -172,8 +172,9 @@ describe("MyResponses (S19)", () => {
       />,
     );
     expect(screen.getByText("Accountant for a coffee trader")).toBeTruthy();
-    expect(screen.getByText("Job · Application · Sent 10 November 2026")).toBeTruthy();
-    expect(screen.getByText("Shortlisted")).toBeTruthy();
+    expect(screen.getByText("Job · Sent 10 November 2026")).toBeTruthy();
+    expect(screen.getAllByText("Shortlisted")).toHaveLength(2);
+    expect(screen.getByText("Where they stand")).toBeTruthy();
     expect(screen.queryByRole("button", { name: "Withdraw" })).toBeNull();
   });
 

@@ -190,7 +190,7 @@ export const sw: Strings = {
     "Maelezo yanabaki yamefungwa hadi mwenye wazo aidhinishe ombi lako na ukubali NDA.",
   ideaManageMine: "Lisimamie kwenye Mawazo yangu",
   ideaNotFound: "Wazo hili halipatikani.",
-  ideaBackToPool: "Mawazo yote",
+  ideaBackToPool: "Rudi kwa Mawazo",
   profileNoIdeas: "Hakuna mawazo yaliyochapishwa.",
   ideaInvestmentLabel: "Uwekezaji unaotafutwa",
   interestTitle: "Unavutiwa na wazo hili?",
@@ -2129,4 +2129,22 @@ export const sw: Strings = {
   investApplyTitle: "Omba kuwekeza kwenye mawazo",
   investApplyHint:
     "Inapatikana kuanzia Ngazi ya 2. Wafanyakazi wanakagua kwa siri; hakuna mwingine anayeambiwa.",
+  respCvTitle: "CV yako (si lazima)",
+  respFileTitle: "Faili (si lazima)",
+  respApplyOnce: "Unaweza kuomba mara moja. Unaweza kuondoa ombi likiwa bado Jipya.",
+  respInterestOnce: "Unaweza kuonyesha nia mara moja. Unaweza kuiondoa ikiwa bado Mpya.",
+  oppSkillsWanted: "Ujuzi unaohitajika",
+  interestIntro:
+    "Chagua jinsi ungependa kushiriki. Mmiliki anaona jina lako, wasifu wako na chaguo lako.",
+  interestAfter:
+    "Mmiliki akikubali, unakubali masharti ya NDA na haki miliki, kisha taarifa kamili na mazungumzo vinafunguka.",
+  ideaTheProblem: "Tatizo",
+  ideaMembersInterested: (n: number) => `Wanachama ${n} wana nia`,
+  ideaDetailsLocked: "Taarifa kamili zimefungwa",
+  ideaLockedDescription: "Maelezo kamili",
+  ideaLockedModel: "Mfumo wa biashara",
+  ideaLockedMarket: "Soko",
+  ideaLockedFinancials: "Fedha",
+  ideaLockedTeam: "Timu",
+  ideaLockedFiles: "Viambatisho",
 };

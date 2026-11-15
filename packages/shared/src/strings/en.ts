@@ -184,7 +184,7 @@ export const en = {
     "The details stay locked until the owner approves your request and you accept the NDA.",
   ideaManageMine: "Manage it in My ideas",
   ideaNotFound: "This idea is not available.",
-  ideaBackToPool: "All ideas",
+  ideaBackToPool: "Back to Ideas",
   profileNoIdeas: "No published ideas.",
   ideaInvestmentLabel: "Investment sought",
   interestTitle: "Interested in this idea?",
@@ -2087,4 +2087,23 @@ export const en = {
   posterNeedProof: "Proof of address from the last 3 months",
   investApplyTitle: "Apply to invest in ideas",
   investApplyHint: "Available from Level 2. Staff review it privately; nobody else is told.",
+  respCvTitle: "Your CV (optional)",
+  respFileTitle: "A file (optional)",
+  respApplyOnce: "You can apply once. You can withdraw while your application is New.",
+  respInterestOnce: "You can say you are interested once. You can withdraw while it is New.",
+  oppSkillsWanted: "Skills wanted",
+  interestIntro:
+    "Choose how you would like to take part. The owner sees your name, your profile and your choice.",
+  interestAfter:
+    "If the owner says yes, you accept the NDA and IP terms, then the details and a message thread open.",
+  ideaTheProblem: "The problem",
+  ideaMembersInterested: (n: number) =>
+    n === 1 ? "1 member interested" : `${n} members interested`,
+  ideaDetailsLocked: "Details are locked",
+  ideaLockedDescription: "Full description",
+  ideaLockedModel: "Business model",
+  ideaLockedMarket: "Market",
+  ideaLockedFinancials: "Financials",
+  ideaLockedTeam: "Team",
+  ideaLockedFiles: "Attachments",
 };

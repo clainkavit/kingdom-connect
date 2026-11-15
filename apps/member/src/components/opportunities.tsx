@@ -12,6 +12,7 @@ import Bookmark from "lucide-react-native/icons/bookmark";
 import BookOpen from "lucide-react-native/icons/book-open";
 import Briefcase from "lucide-react-native/icons/briefcase";
 import Check from "lucide-react-native/icons/check";
+import ChevronLeft from "lucide-react-native/icons/chevron-left";
 import ChevronRight from "lucide-react-native/icons/chevron-right";
 import CircleDollarSign from "lucide-react-native/icons/circle-dollar-sign";
 import Clock from "lucide-react-native/icons/clock";
@@ -1073,6 +1074,7 @@ export function OpportunityDetailScreen({
   mySkills?: MySkillsApi;
 }) {
   const { t, language } = useLanguage();
+  const palette = usePalette();
   const phone = usePhone();
   const saved = useSavedPosts(api);
   const act = useAct();
@@ -1111,68 +1113,121 @@ export function OpportunityDetailScreen({
       <YourSkillsForPost skills={post.skills} api={mySkills} />
     ) : null;
 
-  if (!phone)
+  if (!phone) {
+    const place = placeLine(t, post, language);
     return (
       <View className="gap-4">
         <LinkButton
           href="/opportunities"
-          label={t.oppBack}
-          className="min-h-[40px] justify-center self-start"
+          label={t.oppBackLink}
+          className="min-h-[36px] flex-row items-center gap-1.5 self-start"
         >
-          <Text className="font-figtree-semibold text-sm text-blue">{t.oppBack}</Text>
+          <ChevronLeft size={16} color={palette.navy} aria-hidden />
+          <Text className="font-figtree-semibold text-[15px] text-navy underline">
+            {t.oppBackLink}
+          </Text>
         </LinkButton>
-        <View className="flex-row items-start gap-6">
+        <View className="flex-row items-start gap-4">
           <View className="min-w-0 flex-1 gap-4">
-            <View className="flex-row flex-wrap items-center gap-2">
-              <Badge text={t[typeLabel[post.type]] as string} />
-              {post.featured ? <Badge tone="gold" text={t.oppFeatured} /> : null}
-            </View>
-            <ScreenTitle>{post.title}</ScreenTitle>
-            <Text className="font-figtree-semibold text-[14px] text-ink-2">{post.posterName}</Text>
-            {post.readOnly ? <Message tone="info" text={t.oppReadOnly} /> : null}
-            <Text className="font-figtree text-[15px] leading-6 text-ink">{post.description}</Text>
-            <View className="gap-3 rounded-card border border-line bg-surface px-5 py-[18px]">
-              <Fact label={t.oppRoleLabel} value={role} />
-              <Fact label={t.oppPlaceLabel} value={placeLine(t, post, language)} />
-              <Fact label={t.filterSector} value={named(post.sector, language)} />
-              <Fact label={t.fieldSkills} value={post.skills.join(", ") || null} />
+            <View className="gap-3 rounded-card border border-line bg-surface px-6 py-6">
+              <View className="flex-row flex-wrap items-center gap-2">
+                <Text className="rounded-full bg-blue-soft px-2.5 py-1 font-figtree-bold text-[12px] text-navy">
+                  {t[typeLabel[post.type]] as string}
+                </Text>
+                {post.employmentType ? (
+                  <Text className="rounded-full bg-surface-2 px-2.5 py-1 font-figtree-bold text-[12px] text-ink">
+                    {t[employmentLabel[post.employmentType]] as string}
+                  </Text>
+                ) : null}
+                <Text className="rounded-full bg-surface-2 px-2.5 py-1 font-figtree-bold text-[12px] text-ink">
+                  {named(post.sector, language)}
+                </Text>
+                {post.featured ? (
+                  <Text className="rounded-full bg-warn-soft px-2.5 py-1 font-figtree-bold text-[12px] text-warn-text">
+                    {t.oppFeatured}
+                  </Text>
+                ) : null}
+              </View>
+              <Text
+                role="heading"
+                aria-level={1}
+                className="font-figtree-extrabold text-[32px] leading-[37px] text-navy"
+              >
+                {post.title}
+              </Text>
+              <Text className="font-figtree text-[13px] text-ink">{post.posterName}</Text>
+              <View className="flex-row flex-wrap items-center gap-x-4 gap-y-1">
+                {place ? (
+                  <View className="flex-row items-center gap-1.5">
+                    <MapPin size={14} color={palette.ink2} aria-hidden />
+                    <Text className="font-figtree text-[14px] text-ink-2">{place}</Text>
+                  </View>
+                ) : null}
+                <View className="flex-row items-center gap-1.5">
+                  <Clock size={14} color={palette.ink2} aria-hidden />
+                  <Text className="font-figtree text-[14px] text-ink-2">
+                    {t.oppCloses(closingDay(post.closingAt, language))}
+                  </Text>
+                </View>
+              </View>
+              {post.readOnly ? <Message tone="info" text={t.oppReadOnly} /> : null}
+              <Text className="font-figtree text-[16px] leading-[26px] text-ink">
+                {post.description}
+              </Text>
+              {role ? <Text className="font-figtree text-[14px] text-ink-2">{role}</Text> : null}
+              {post.skills.length ? (
+                <View className="gap-2">
+                  <Text className="font-figtree-bold text-[14px] text-ink">
+                    {t.oppSkillsWanted}
+                  </Text>
+                  <View className="flex-row flex-wrap gap-1.5">
+                    {post.skills.map((skill) => (
+                      <Text
+                        key={skill}
+                        className="rounded-full border border-line-2 bg-surface px-3 py-1 font-figtree text-[13px] text-ink"
+                      >
+                        {skill}
+                      </Text>
+                    ))}
+                  </View>
+                </View>
+              ) : null}
+              {yourSkills}
             </View>
             {tender ? <TenderSection api={api} tender={tender} closingAt={post.closingAt} /> : null}
           </View>
-          <View className="w-[320px] gap-4">
-            <View className="gap-3 rounded-card border border-line bg-surface px-5 py-[18px]">
-              <Fact label={t.fieldClosing} value={closingDay(post.closingAt, language)} />
-              {post.isMine ? (
-                <LinkButton
-                  href="/opportunities/mine"
-                  label={t.oppYourPost}
-                  className="min-h-[40px] justify-center"
-                >
-                  <Text className="font-figtree-semibold text-sm text-blue">{t.oppYourPost}</Text>
-                </LinkButton>
-              ) : (
-                save
-              )}
-            </View>
+          <View className="w-[536px] max-w-full gap-4">
             {action}
-            <View className="gap-2">
-              <Text className="font-figtree text-[13px] leading-5 text-ink-2">
+            {post.isMine ? (
+              <LinkButton
+                href="/opportunities/mine"
+                label={t.oppYourPost}
+                className="min-h-[44px] items-center justify-center rounded-full border border-line-2 bg-surface px-5"
+              >
+                <Text className="font-figtree-semibold text-[14px] text-navy">{t.oppYourPost}</Text>
+              </LinkButton>
+            ) : (
+              <View className="items-start">{save}</View>
+            )}
+            <View className="flex-row items-start gap-2 px-1">
+              <ShieldCheck size={14} color={palette.ink2} aria-hidden />
+              <Text className="flex-1 font-figtree text-[13px] leading-5 text-ink-2">
                 {t.oppNoFeeNote}
               </Text>
-              {post.isMine ? null : (
-                <View className="items-start">
-                  <ReportLink
-                    target={{ type: "opportunity", id: post.id }}
-                    memberId={post.posterId ?? ""}
-                  />
-                </View>
-              )}
             </View>
-            {yourSkills}
+            {post.isMine ? null : (
+              <View className="items-start">
+                <ReportLink
+                  target={{ type: "opportunity", id: post.id }}
+                  memberId={post.posterId ?? ""}
+                />
+              </View>
+            )}
           </View>
         </View>
       </View>
     );
+  }
 
   return (
     <View className="gap-4">

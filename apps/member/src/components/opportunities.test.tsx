@@ -222,7 +222,8 @@ describe("OpportunityDetailScreen (S17)", () => {
     expect(
       screen.getByText("Keep the books for a coffee trading business in Moshi, full time."),
     ).toBeTruthy();
-    expect(screen.getByText("bookkeeping, excel")).toBeTruthy();
+    expect(screen.getByText("bookkeeping")).toBeTruthy();
+    expect(screen.getByText("excel")).toBeTruthy();
     expect(screen.getByText("Moshi, Kilimanjaro")).toBeTruthy();
     expect(screen.getByRole("link", { name: "Report" }).getAttribute("href")).toBe(
       "/report?type=opportunity&id=o1&member=m2",
@@ -445,7 +446,7 @@ describe("Opportunities layout (13 Nov 2026 redesign)", () => {
 });
 
 describe("Opportunity page layout (13 Nov 2026 redesign)", () => {
-  it("on a computer, puts the closing date and Save, then Apply, then the fee note and Report in a side column", async () => {
+  it("on a computer, puts Apply, then Save, the fee note and Report in the side column (canvas)", async () => {
     await show(
       <OpportunityDetailScreen
         api={fakeApi()}
@@ -457,7 +458,7 @@ describe("Opportunity page layout (13 Nov 2026 redesign)", () => {
     const side = apply.parentElement!;
     expect(apply.style.position).not.toBe("sticky");
     expect(side.textContent).toMatch(
-      new RegExp(`20 November 2026.*${en.oppSave}.*Apply.*${en.oppNoFeeNote.slice(0, 20)}`),
+      new RegExp(`Apply.*${en.oppSave}.*${en.oppNoFeeNote.slice(0, 20)}`),
     );
     expect(side.querySelector('a[href^="/report"]')).toBeTruthy();
     expect(side.textContent).not.toContain("Keep the books");

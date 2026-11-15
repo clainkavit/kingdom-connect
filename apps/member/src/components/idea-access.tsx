@@ -199,9 +199,14 @@ export function IdeaInterest({ api, ideaId }: { api: IdeaAccessApi; ideaId: stri
   };
 
   return (
-    <Section title={t.interestTitle}>
+    <View className="gap-3.5 rounded-card border-2 border-navy bg-surface px-5 py-5">
+      <Text role="heading" aria-level={2} className="font-figtree-bold text-[18px] text-ink">
+        {t.interestTitle}
+      </Text>
+      <Text className="font-figtree text-[14px] leading-[21px] text-ink-2">{t.interestIntro}</Text>
       {anonymous ? null : (
         <Chips<IdeaSeeking>
+          hideLabel
           label={t.interestRoleLabel}
           options={IDEA_SEEKING.map((s) => ({ value: s, label: seekingLabel(t, s) }))}
           value={role}
@@ -218,7 +223,8 @@ export function IdeaInterest({ api, ideaId }: { api: IdeaAccessApi; ideaId: stri
       ) : null}
       <Message text={problem} />
       <Button label={t.interestSend} disabled={busy} onPress={send} />
-    </Section>
+      <Text className="font-figtree text-[13px] leading-5 text-ink-2">{t.interestAfter}</Text>
+    </View>
   );
 }
 

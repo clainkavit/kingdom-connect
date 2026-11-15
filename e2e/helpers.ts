@@ -588,3 +588,24 @@ export async function askPick(opportunityId: string, memberId: string, why: stri
 export async function sendPickList(opportunityId: string) {
   await db`update public.pick_requests set status = 'sent', sent_at = now() where opportunity_id = ${opportunityId}`;
 }
+
+/** D07: an approved post whose poster asked Kingdom Connect to pick. */
+export async function pickedPost(posterId: string, title: string, wanted = 5) {
+  const id = await draftOpportunity(posterId, title);
+  await db`update public.opportunities set find_mode = 'pick' where id = ${id}`;
+  await db`insert into public.pick_requests (opportunity_id, wanted) values (${id}, ${wanted})`;
+  await approveOpportunity(id);
+  return id;
+}
+
+export async function answerPick(opportunityId: string, memberId: string, yes: boolean) {
+  await db`update public.picks p set status = ${yes ? "agreed" : "declined"}, answered_at = now()
+    from public.pick_requests r
+    where r.id = p.request_id and r.opportunity_id = ${opportunityId} and p.member_id = ${memberId}`;
+}
+
+export async function pickRequestStatus(opportunityId: string) {
+  const [row] =
+    await db`select status from public.pick_requests where opportunity_id = ${opportunityId}`;
+  return row?.status as string | undefined;
+}

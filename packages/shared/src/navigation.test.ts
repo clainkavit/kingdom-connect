@@ -66,6 +66,7 @@ describe("admin navigation", () => {
       "Dashboard",
       "Verification queue",
       "Moderation queue",
+      "Picks for posters",
       "Ideas",
       "Reports",
       "Re-verification",

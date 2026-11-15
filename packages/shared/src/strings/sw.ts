@@ -1771,4 +1771,11 @@ export const sw: Strings = {
   oppTendersNeedBusiness: "Zabuni zinahitaji biashara iliyothibitishwa",
   oppTendersNeedBusinessText:
     "Unaweza kusoma kila zabuni. Ili kujibu, thibitisha biashara yako (Ngazi ya 2).",
+  ideasPoolIntro:
+    "Mawazo kutoka kwa wanachama waliothibitishwa. Taarifa kamili zinafunguka tu mmiliki akikubali na ukakubali NDA.",
+  ideasShow: "Onyesha",
+  ideasAll: "Mawazo yote",
+  ideasLookingPartners: "Wanaotafuta washirika",
+  ideasLookingInvestors: "Wanaotafuta wawekezaji",
+  ideaLookingFor: (what: string) => `Wanatafuta: ${what}`,
 };

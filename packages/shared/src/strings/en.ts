@@ -1741,4 +1741,11 @@ export const en = {
   oppTendersNeedBusiness: "Tenders need a verified business",
   oppTendersNeedBusinessText:
     "You can read every tender. To respond, verify your business (Level 2).",
+  ideasPoolIntro:
+    "Ideas from verified members. Details open only when the owner says yes and you accept the NDA.",
+  ideasShow: "Show",
+  ideasAll: "All ideas",
+  ideasLookingPartners: "Looking for partners",
+  ideasLookingInvestors: "Looking for investors",
+  ideaLookingFor: (what: string) => `Looking for: ${what}`,
 };

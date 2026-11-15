@@ -203,10 +203,10 @@ language sql stable security definer set search_path = '' as $$
 $$;
 
 create function access.my_engagements()
-returns table (engagement_id uuid, role text, other_name text, work_title text, marked_at timestamptz,
+returns table (engagement_id uuid, response_id uuid, role text, other_name text, work_title text, marked_at timestamptz,
                confirmed_at timestamptz, denied_at timestamptz, rating_closes_at timestamptz, i_rated boolean)
 language sql stable security definer set search_path = '' as $$
-  select e.id, case when e.poster_member_id = auth.uid() then 'poster' else 'worker' end,
+  select e.id, e.response_id, case when e.poster_member_id = auth.uid() then 'poster' else 'worker' end,
          coalesce(p.full_name, m.username::text), coalesce(o.title, i.title), e.marked_at, e.confirmed_at,
          e.denied_at,
          e.rating_closes_at,
@@ -307,7 +307,7 @@ returns table (rating_id uuid, rater_name text, work_title text, rated_at timest
                total int, again_count int, on_time numeric, quality numeric, communication numeric, honesty numeric)
 language sql stable security invoker set search_path = '' as $$ select * from access.work_references(member); $$;
 create function public.my_engagements()
-returns table (engagement_id uuid, role text, other_name text, work_title text, marked_at timestamptz,
+returns table (engagement_id uuid, response_id uuid, role text, other_name text, work_title text, marked_at timestamptz,
                confirmed_at timestamptz, denied_at timestamptz, rating_closes_at timestamptz, i_rated boolean)
 language sql stable security invoker set search_path = '' as $$ select * from access.my_engagements(); $$;
 revoke all on function public.mark_hired(uuid), public.confirm_work(uuid, boolean),

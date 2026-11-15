@@ -12,9 +12,15 @@ const canvasDir = process.env.CANVAS_DIR;
 const out = process.env.CAPTURE_OUT;
 const only = process.env.CAPTURE_ONLY?.split(",");
 
-type Pair = { board: string; route: string; w: number; h: number; as?: "level3" | "level1" };
+type Pair = { board: string; route: string; w: number; h: number; signedOut?: boolean };
 
 const pairs: Pair[] = [
+  { board: "Web-Login", route: "/login", w: 1440, h: 900, signedOut: true },
+  { board: "Web-Social", route: "/sign-up", w: 1440, h: 900, signedOut: true },
+  { board: "Web-Forgot", route: "/forgot-password", w: 1440, h: 900, signedOut: true },
+  { board: "Phone-Login", route: "/login", w: 430, h: 900, signedOut: true },
+  { board: "Phone-Signup", route: "/sign-up", w: 430, h: 900, signedOut: true },
+  { board: "Web-Recover", route: "/recover", w: 1440, h: 900, signedOut: true },
   { board: "Business-Dashboard", route: "/", w: 1440, h: 2100 },
   { board: "Member-Dashboard", route: "/", w: 1440, h: 2300 },
   { board: "Member-People", route: "/people", w: 1440, h: 1700 },
@@ -73,6 +79,16 @@ for (const pair of pairs.filter((p) => !only || only.includes(p.board))) {
     await page.waitForTimeout(300);
     await page.screenshot({ path: join(out!, `${pair.board}.canvas.png`), fullPage: true });
 
+    if (pair.signedOut) {
+      const fresh = await browser.newContext({ baseURL });
+      const out1 = await fresh.newPage();
+      await out1.setViewportSize({ width: pair.w, height: Math.min(pair.h, 1200) });
+      await out1.goto(pair.route);
+      await out1.waitForTimeout(2000);
+      await out1.screenshot({ path: join(out!, `${pair.board}.live.png`), fullPage: true });
+      await fresh.close();
+      return;
+    }
     const state = join(out!, `session-${account}.json`);
     if (!existsSync(state)) {
       await signInAs(page, account, `${account.replace("_", ".")}@example.test`);

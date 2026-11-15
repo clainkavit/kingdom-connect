@@ -563,10 +563,10 @@ export const sw: Strings = {
   resendIn: (seconds: number) => `Omba msimbo mpya baada ya sekunde ${seconds}`,
 
   forgotPassword: "Umesahau nenosiri?",
-  forgotTitle: "Weka nenosiri jipya",
+  forgotTitle: "Umesahau nenosiri lako?",
   forgotIntro:
-    "Andika jina lako la mtumiaji. Tutatuma msimbo wa tarakimu 6 kwenye barua pepe ya akaunti yako.",
-  sendCode: "Tuma msimbo",
+    "Andika jina lako la mtumiaji. Tunatuma msimbo wa tarakimu 6 kwenye barua pepe ya akaunti yako, kisha unachagua nenosiri jipya.",
+  sendCode: "Nitumie msimbo",
   resetCodeSent:
     "Kama jina la mtumiaji ni sahihi, tumetuma msimbo wa tarakimu 6 kwenye barua pepe yake. Unafanya kazi kwa dakika 10.",
   repeatPassword: "Andika nenosiri jipya tena",
@@ -628,7 +628,7 @@ export const sw: Strings = {
   createAccount: "Fungua akaunti",
   signUpTitle: (platformName: string) => `Jiunge na ${platformName}`,
   signUpIntro: "Ni kwa mtu yeyote aliye Tanzania mwenye utambulisho uliothibitishwa.",
-  haveAccount: "Una akaunti tayari? Ingia",
+  haveAccount: "Una akaunti tayari?",
   phone: "Simu",
   phoneHint: "Namba ya Tanzania, inayoanza na +255 au 0.",
   passwordHint: "Angalau herufi 8, pamoja na namba.",
@@ -1214,7 +1214,7 @@ export const sw: Strings = {
   recoveryUsername: "Jina la mtumiaji",
   recoveryNewEmail: "Barua pepe mpya",
   recoveryDigits: "Tarakimu 4 za mwisho za namba ya kitambulisho",
-  recoveryPhoto: "Piga au chagua picha mpya ya uso wako",
+  recoveryPhoto: "Piga picha mpya ya uso",
   recoveryPhotoAdded: "Picha imeongezwa.",
   recoverySend: "Tuma ombi",
   recoverySent:
@@ -2147,4 +2147,11 @@ export const sw: Strings = {
   ideaLockedFinancials: "Fedha",
   ideaLockedTeam: "Timu",
   ideaLockedFiles: "Viambatisho",
+  loginSubtitle: "Baada ya nenosiri lako, tunatuma msimbo wa tarakimu 6 kwenye barua pepe yako.",
+  newHere: "Mgeni hapa?",
+  authTagline: "Watu · Fursa · Ukuaji",
+  authEveryVerified: "Kila mwanachama amethibitishwa",
+  authPhotoAlt: "Mikono ya watu wa rangi tofauti imeunganishwa pamoja kwa duara",
+  backToLogIn: "Rudi kuingia",
+  noLongerHaveEmail: "Huna tena barua pepe hiyo?",
 };

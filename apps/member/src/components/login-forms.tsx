@@ -65,9 +65,12 @@ function CodeBoxes({ value, onChange }: { value: string; onChange: (v: string) =
 export function LoginForm({
   client,
   onCodeSent,
+  beforeSubmit,
 }: {
   client: LoginClient;
   onCodeSent: (session: Session, resendAfterSeconds: number) => void;
+  /** The canvas puts Forgot password between the password and Log in. */
+  beforeSubmit?: React.ReactNode;
 }) {
   const { t } = useLanguage();
   const [username, setUsername] = useState("");
@@ -96,6 +99,7 @@ export function LoginForm({
       ) : (
         <Message text={message} />
       )}
+      {beforeSubmit}
       <Button label={t.logIn} onPress={submit} disabled={busy || locked} />
     </View>
   );
@@ -144,7 +148,9 @@ export function CodeForm({
 
   return (
     <View className="gap-3">
-      <Text className="font-figtree text-sm leading-5 text-ink-2">{t.codeSent}</Text>
+      <Text className="text-center font-figtree text-[15px] leading-[22px] text-ink-2">
+        {t.codeSent}
+      </Text>
       <CodeBoxes value={code} onChange={setCode} />
       <Message text={message} />
       <Button label={t.verify} onPress={submit} disabled={busy} />
@@ -155,7 +161,7 @@ export function CodeForm({
         disabled={resend.secondsLeft > 0}
       />
       <LinkButton href="/recover" label={t.cantGetCode} className="items-center py-2">
-        <Text className="font-figtree-semibold text-sm text-blue">{t.cantGetCode}</Text>
+        <Text className="font-figtree-semibold text-sm text-navy underline">{t.cantGetCode}</Text>
       </LinkButton>
     </View>
   );
@@ -250,7 +256,9 @@ export function ForgotPasswordForm({
   if (step === "code")
     return (
       <View className="gap-3">
-        <Text className="font-figtree text-sm leading-5 text-ink-2">{t.resetCodeSent}</Text>
+        <Text className="text-center font-figtree text-[15px] leading-[22px] text-ink-2">
+          {t.resetCodeSent}
+        </Text>
         <CodeBoxes value={code} onChange={setCode} />
         <Message text={message} />
         <Button label={t.verify} onPress={checkCode} disabled={busy} />
@@ -261,17 +269,29 @@ export function ForgotPasswordForm({
           disabled={busy || resend.secondsLeft > 0}
         />
         <LinkButton href="/recover" label={t.noEmailAccess} className="items-center py-2">
-          <Text className="font-figtree-semibold text-sm text-blue">{t.noEmailAccess}</Text>
+          <Text className="font-figtree-semibold text-sm text-navy underline">
+            {t.noEmailAccess}
+          </Text>
         </LinkButton>
       </View>
     );
 
   return (
     <View className="gap-3">
-      <Text className="font-figtree text-sm leading-5 text-ink-2">{t.forgotIntro}</Text>
+      <Text className="text-center font-figtree text-[15px] leading-[22px] text-ink-2">
+        {t.forgotIntro}
+      </Text>
       <Field label={t.username} value={username} onChange={setUsername} />
       <Message text={message} />
       <Button label={t.sendCode} onPress={sendCode} disabled={busy} />
+      <View className="flex-row flex-wrap items-center justify-center gap-1">
+        <Text className="font-figtree text-sm text-ink-2">{t.noLongerHaveEmail}</Text>
+        <LinkButton href="/recover" label={t.recoveryTitle} className="min-h-[44px] justify-center">
+          <Text className="font-figtree-semibold text-sm text-navy underline">
+            {t.recoveryTitle}
+          </Text>
+        </LinkButton>
+      </View>
     </View>
   );
 }

@@ -217,7 +217,7 @@ describe("ForgotPasswordForm (S04a)", () => {
     const startPasswordReset = started;
     render(<ForgotPasswordForm client={fakeClient({ startPasswordReset })} onLogIn={vi.fn()} />);
     type("Username", " neema ");
-    await press("Send code");
+    await press("Send me a code");
     expect(startPasswordReset).toHaveBeenCalledWith("neema");
     expect(
       screen.getByText(
@@ -231,7 +231,7 @@ describe("ForgotPasswordForm (S04a)", () => {
   it("asks for the username before sending a code", async () => {
     const startPasswordReset = vi.fn();
     render(<ForgotPasswordForm client={fakeClient({ startPasswordReset })} onLogIn={vi.fn()} />);
-    await press("Send code");
+    await press("Send me a code");
     expect(startPasswordReset).not.toHaveBeenCalled();
     expect(screen.getByText("Enter your username.")).toBeTruthy();
   });
@@ -247,7 +247,7 @@ describe("ForgotPasswordForm (S04a)", () => {
       />,
     );
     type("Username", "neema");
-    await press("Send code");
+    await press("Send me a code");
     type("Email code", "123456");
     await press("Verify");
     expect(checkResetCode).toHaveBeenCalledWith("r-1", "123456");
@@ -281,7 +281,7 @@ describe("ForgotPasswordForm (S04a)", () => {
       />,
     );
     type("Username", "neema");
-    await press("Send code");
+    await press("Send me a code");
     type("Email code", "123456");
     await press("Verify");
     type("New password", "short");
@@ -302,7 +302,7 @@ describe("ForgotPasswordForm (S04a)", () => {
       />,
     );
     type("Username", "neema");
-    await press("Send code");
+    await press("Send me a code");
     type("Email code", "111111");
     await press("Verify");
     expect(screen.getByText("That code is not right. 2 tries left.")).toBeTruthy();
@@ -320,7 +320,7 @@ describe("ForgotPasswordForm (S04a)", () => {
       />,
     );
     type("Username", "neema");
-    await press("Send code");
+    await press("Send me a code");
     type("Email code", "123456");
     await press("Verify");
     type("New password", "newpass12");
@@ -338,7 +338,7 @@ describe("ForgotPasswordForm (S04a)", () => {
       />,
     );
     type("Username", "neema");
-    await press("Send code");
+    await press("Send me a code");
     expect(screen.getByText(/couldn't reach the server/)).toBeTruthy();
   });
 });

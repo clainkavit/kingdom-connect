@@ -47,6 +47,7 @@ module.exports = {
         "figtree-semibold": ["Figtree_600SemiBold"],
         "figtree-bold": ["Figtree_700Bold"],
         "figtree-extrabold": ["Figtree_800ExtraBold"],
+        serif: ["CormorantGaramond_600SemiBold"],
       },
       borderRadius: { card: "22px" },
     },

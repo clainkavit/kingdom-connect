@@ -7,6 +7,10 @@ import {
   Figtree_800ExtraBold,
   useFonts,
 } from "@expo-google-fonts/figtree";
+import {
+  CormorantGaramond_600SemiBold,
+  useFonts as useSerif,
+} from "@expo-google-fonts/cormorant-garamond";
 import { Slot } from "expo-router";
 import { Platform } from "react-native";
 import { StatusBar } from "expo-status-bar";
@@ -24,8 +28,9 @@ export default function RootLayout() {
     Figtree_700Bold,
     Figtree_800ExtraBold,
   });
+  const [serifLoaded] = useSerif({ CormorantGaramond_600SemiBold });
   useEffect(startMonitoring, []);
-  if (!fontsLoaded && Platform.OS !== "web") return null;
+  if ((!fontsLoaded || !serifLoaded) && Platform.OS !== "web") return null;
   return (
     <SafeAreaProvider>
       <SafeAreaView className="flex-1 bg-bg">

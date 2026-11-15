@@ -1,8 +1,10 @@
 import type { EmailRecoveryRequest, EmailRecoveryResult } from "@kingdom-connect/shared";
 import { useState } from "react";
-import { Text, View } from "react-native";
+import User from "lucide-react-native/icons/user";
+import { Pressable, Text, View } from "react-native";
 import { useLanguage } from "../lib/language";
 import { Button, Field, Message } from "./form";
+import { usePalette } from "./palette";
 
 export type PickedPhoto = { base64: string; mime: string; size: number };
 
@@ -17,6 +19,7 @@ export function RecoveryForm({
   pickPhoto: () => Promise<PickedPhoto | null>;
 }) {
   const { t } = useLanguage();
+  const palette = usePalette();
   const [username, setUsername] = useState("");
   const [newEmail, setNewEmail] = useState("");
   const [digits, setDigits] = useState("");
@@ -59,7 +62,9 @@ export function RecoveryForm({
 
   return (
     <View className="gap-3">
-      <Text className="font-figtree text-sm leading-5 text-ink-2">{t.recoveryIntro}</Text>
+      <Text className="text-center font-figtree text-[15px] leading-[22px] text-ink-2">
+        {t.recoveryIntro}
+      </Text>
       <Field label={t.recoveryUsername} value={username} onChange={setUsername} />
       <Field
         label={t.recoveryNewEmail}
@@ -73,7 +78,15 @@ export function RecoveryForm({
         onChange={(v) => setDigits(v.replace(/\D/g, "").slice(0, 4))}
         keyboardType="number-pad"
       />
-      <Button secondary label={t.recoveryPhoto} onPress={choose} />
+      <Pressable
+        role="button"
+        aria-label={t.recoveryPhoto}
+        onPress={choose}
+        className="min-h-[56px] flex-row items-center justify-center gap-2 rounded-full border border-dashed border-line-2 bg-surface px-5"
+      >
+        <User size={18} color={palette.ink} aria-hidden />
+        <Text className="font-figtree-semibold text-[15px] text-ink">{t.recoveryPhoto}</Text>
+      </Pressable>
       {photo ? <Text className="font-figtree text-sm text-ink">{t.recoveryPhotoAdded}</Text> : null}
       <Message text={problem} />
       <Button label={t.recoverySend} onPress={submit} disabled={busy} />

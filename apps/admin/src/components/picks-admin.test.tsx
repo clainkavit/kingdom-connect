@@ -40,18 +40,16 @@ const fakeApi = (over: Partial<PickAdminApi> = {}): PickAdminApi => ({
   suggestions: vi
     .fn()
     .mockResolvedValue([suggestion(), suggestion({ memberId: "m2", fullName: "Grace Swai" })]),
-  people: vi
-    .fn()
-    .mockResolvedValue([
-      {
-        id: "p0",
-        memberId: "m9",
-        fullName: "Daniel Kessy",
-        headline: null,
-        why: "x",
-        status: "asked",
-      },
-    ]),
+  people: vi.fn().mockResolvedValue([
+    {
+      id: "p0",
+      memberId: "m9",
+      fullName: "Daniel Kessy",
+      headline: null,
+      why: "x",
+      status: "asked",
+    },
+  ]),
   findMember: vi.fn().mockResolvedValue(null),
   ask: vi.fn().mockResolvedValue(true),
   send: vi.fn().mockResolvedValue("ok"),

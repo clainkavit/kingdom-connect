@@ -30,6 +30,7 @@ export function VerificationQueue({
   const [items, setItems] = useState<QueueItem[] | null>(null);
   const [failed, setFailed] = useState(false);
   const [attempt, setAttempt] = useState(0);
+  const [kind, setKind] = useState<QueueItem["kind"] | "all">("all");
 
   useEffect(() => {
     let live = true;
@@ -50,6 +51,14 @@ export function VerificationQueue({
 
   const at = now();
   const overdue = items?.filter((i) => isOverdue(i.submittedAt, at)).length ?? 0;
+  const shown = items?.filter((i) => kind === "all" || i.kind === kind) ?? [];
+  const filters: [QueueItem["kind"] | "all", string][] = [
+    ["all", t.queueAll],
+    ["member", t.queueFilterMembers],
+    ["business", t.queueTypeBusiness],
+    ["poster", t.queueTypePoster],
+    ["renewal", t.queueTypeRenewal],
+  ];
 
   return (
     <>
@@ -79,8 +88,27 @@ export function VerificationQueue({
               {t.queueOverdueBanner(overdue)}
             </div>
           ) : null}
+          <div role="radiogroup" aria-label={t.queueShow} className="flex flex-wrap gap-2">
+            {filters.map(([value, label]) => {
+              const count =
+                value === "all" ? items.length : items.filter((i) => i.kind === value).length;
+              const on = kind === value;
+              return (
+                <button
+                  key={value}
+                  type="button"
+                  role="radio"
+                  aria-checked={on}
+                  onClick={() => setKind(value)}
+                  className={`min-h-[40px] rounded-full px-4 text-sm font-semibold ${on ? "bg-primary text-primary-foreground" : "border bg-card text-foreground hover:bg-surface-2"}`}
+                >
+                  {label} · {count}
+                </button>
+              );
+            })}
+          </div>
           <ul className="flex flex-col divide-y rounded-lg border bg-card shadow-card">
-            {items.map((item) => (
+            {shown.map((item) => (
               <li key={item.id}>
                 <Link
                   href={

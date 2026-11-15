@@ -1,4 +1,4 @@
-import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { QueueItem, VerificationApi } from "@/lib/verification";
 import { VerificationQueue } from "./verification-queue";
@@ -62,9 +62,9 @@ describe("VerificationQueue (A02)", () => {
         ]),
     );
     expect(screen.getByText("Pendo Supplies")).toBeTruthy();
-    expect(screen.getByText(/Business, Level 3/)).toBeTruthy();
-    expect(screen.getByText(/Business, Level 2/)).toBeTruthy();
-    expect(screen.getByText(/Business, licence renewal/)).toBeTruthy();
+    expect(within(screen.getByRole("list")).getByText(/Business, Level 3/)).toBeTruthy();
+    expect(within(screen.getByRole("list")).getByText(/Business, Level 2/)).toBeTruthy();
+    expect(within(screen.getByRole("list")).getByText(/Business, licence renewal/)).toBeTruthy();
     const links = screen
       .getAllByRole("link")
       .map((l) => l.getAttribute("href"))
@@ -102,5 +102,29 @@ describe("VerificationQueue (A02)", () => {
     expect(screen.getByText(/couldn't load the queue/)).toBeTruthy();
     await act(async () => fireEvent.click(screen.getByRole("button", { name: "Try again" })));
     expect(screen.getByText("Nothing waiting")).toBeTruthy();
+  });
+
+  it("filters the queue by kind, each with its count (U06)", async () => {
+    await show(
+      vi.fn().mockResolvedValue([
+        item({ id: "m1", username: "member_one" }),
+        item({
+          id: "b1",
+          kind: "business",
+          businessName: "Swai Tax Services",
+          username: "grace",
+        }),
+        item({ id: "p1", kind: "poster", businessName: "Mollel Uniforms", username: "rehema" }),
+      ]),
+    );
+    expect(screen.getByRole("radio", { name: "All · 3" }).getAttribute("aria-checked")).toBe(
+      "true",
+    );
+    await act(async () =>
+      fireEvent.click(screen.getByRole("radio", { name: "Business, Level 2 · 1" })),
+    );
+    expect(screen.getByText("Swai Tax Services")).toBeTruthy();
+    expect(screen.queryByText("Mollel Uniforms")).toBeNull();
+    expect(screen.queryByText("Test Applicant")).toBeNull();
   });
 });

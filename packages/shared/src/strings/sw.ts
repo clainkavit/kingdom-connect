@@ -1881,4 +1881,7 @@ export const sw: Strings = {
   respWhyHired:
     "Akishathibitisha, mnaweza kutathminiana kwa siku 14. Tathmini zinatoka tu kwenye kazi halisi ambayo pande zote zimethibitisha. Zinawasaidia wanachama, na kuisaidia Kingdom Connect kuchagua watu wanaoaminika zaidi kwa watangazaji wengine.",
   respConfirmWork: "Thibitisha au tathmini kazi",
+  queueShow: "Onyesha",
+  queueAll: "Zote",
+  queueFilterMembers: "Wanachama",
 };

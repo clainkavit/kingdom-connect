@@ -1750,4 +1750,18 @@ export const sw: Strings = {
     `Umeingia kama ${email}. Chagua jinsi wanachama wengine watakavyokupata, kisha soma na ukubali maandishi mawili.`,
   firstAccept: "Kubali na uendelee",
   firstFailed: "Hilo halikufanikiwa. Jaribu tena.",
+  homeVerifiedMember: "Mwanachama aliyethibitishwa",
+  myProfilesTitle: "Wasifu wangu",
+  myProfilesCertificates: "Ongeza vyeti vyako ili upate beji ya Mtaalamu aliyethibitishwa.",
+  myProfilesAddCertificates: "Ongeza vyeti",
+  myProfilesBusinessHint:
+    "Thibitisha biashara yako (Ngazi ya 2) ili iorodheshwe na ujibu zabuni. Ngazi ya 3 inakuruhusu kuchapisha fursa.",
+  myProfilesLevel: (level: number) => `Ngazi ya ${level}`,
+  myProfilesYourBusiness: "Biashara yako",
+  jobsForSkillsTitle: "Kazi zinazolingana na ujuzi wako",
+  jobsForSkillsWhy: "Kutoka Tafuta fursa, pamoja na sababu kuu.",
+  tendersForBusinessTitle: "Zabuni za biashara yako",
+  tendersForBusinessWhy: "Katika sekta ya biashara yako, kutoka Tafuta fursa.",
+  scanForMore: "Tafuta zaidi",
+  homeMatchesEmpty: "Bado hakuna zinazolingana. Ongeza ujuzi kwenye wasifu wako uone zaidi.",
 };

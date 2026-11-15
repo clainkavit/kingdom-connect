@@ -14,6 +14,8 @@ const welcome = (over: Partial<Welcome> = {}): Welcome => ({
   district: { en: "Ilemela", sw: "Ilemela" },
   level: 1,
   postingPaused: false,
+  categories: [],
+  businessName: null,
   ...over,
 });
 
@@ -207,31 +209,13 @@ describe("Home layout (13 Nov 2026 redesign)", () => {
     });
   };
 
-  it("is titled Home, with the member's column: profile, next steps and shortcuts", async () => {
+  it("is titled Home, with the welcome, the member's badges and what they can do (canvas, U01)", async () => {
     await showWith(COMPUTER);
     expect(screen.getByRole("heading", { name: "Home" })).toBeTruthy();
-    expect(screen.getByRole("link", { name: "My profile" }).getAttribute("href")).toBe("/profile");
-    expect(screen.getByRole("heading", { name: "Next steps" })).toBeTruthy();
-    expect(screen.getByRole("link", { name: "Saved opportunities" }).getAttribute("href")).toBe(
-      "/opportunities/saved",
-    );
-    expect(screen.getByRole("link", { name: "My connections" }).getAttribute("href")).toBe(
-      "/connections",
-    );
-  });
-
-  it("names the member and their place once, and links Scan once", async () => {
-    await showWith(COMPUTER);
     expect(screen.getByText("Hello, Dash Member")).toBeTruthy();
-    expect(screen.queryByText("Dash Member")).toBeNull();
-    expect(screen.queryByText("Ilemela, Mwanza")).toBeNull();
-    expect(screen.getAllByRole("link", { name: "Scan for opportunities" })).toHaveLength(1);
-  });
-
-  it("has one list of links, not a separate Quick actions section", async () => {
-    await showWith(COMPUTER);
-    expect(screen.queryByRole("heading", { name: "Quick actions" })).toBeNull();
-    for (const name of ["Share an idea", "Post training", "My connections", "My responses"])
+    expect(screen.getByText("Verified member")).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Next steps" })).toBeTruthy();
+    for (const name of ["Share an idea", "Post training"])
       expect(screen.getByRole("link", { name })).toBeTruthy();
   });
 
@@ -245,6 +229,84 @@ describe("Home layout (13 Nov 2026 redesign)", () => {
   it("keeps the same pieces on a phone, stacked", async () => {
     await showWith(PHONE);
     expect(screen.getByRole("heading", { name: "Next steps" })).toBeTruthy();
-    expect(screen.getByRole("link", { name: "My responses" })).toBeTruthy();
+    expect(screen.getByText("No requests waiting")).toBeTruthy();
+  });
+});
+
+describe("Home on the combined canvas (U01)", () => {
+  const scan = {
+    matches: vi.fn().mockResolvedValue([
+      {
+        id: "j1",
+        type: "job",
+        title: "Accountant",
+        closingAt: "2026-11-20",
+        reasons: [{ code: "skills", skills: ["tax"] }],
+      },
+      { id: "t1", type: "tender", title: "School uniforms", closingAt: "2026-12-02", reasons: [] },
+    ]),
+    missing: vi.fn().mockResolvedValue([]),
+  } as never;
+  const widgets = {
+    latest: vi.fn().mockResolvedValue([]),
+    featured: vi.fn().mockResolvedValue([
+      {
+        id: "f1",
+        type: "job",
+        title: "Featured post",
+        sector: { en: "Finance", sw: "Fedha" },
+        posterName: "Poster",
+        closingAt: "2026-11-30",
+      },
+    ]),
+  };
+
+  async function showHome(w: Welcome) {
+    setWidth(COMPUTER);
+    await act(async () => {
+      render(
+        <DashboardScreen
+          api={fakeApi(w)}
+          connections={fakeConnections()}
+          scan={scan}
+          widgets={widgets}
+          today={new Date("2026-11-04T09:00:00+03:00")}
+        />,
+      );
+    });
+  }
+
+  it("shows the categories as chips and a card for each in My profiles, with the business levels", async () => {
+    await showHome(
+      welcome({
+        categories: ["professional", "businessperson"],
+        businessName: "Dash Tailoring",
+        level: 1,
+      }),
+    );
+    expect(screen.getAllByText("Professional").length).toBeGreaterThan(0);
+    expect(screen.getByRole("heading", { name: "My profiles" })).toBeTruthy();
+    expect(screen.getByText("Dash Tailoring")).toBeTruthy();
+    expect(screen.getByText("Level 3")).toBeTruthy();
+    expect(screen.getByRole("link", { name: "Add certificates" }).getAttribute("href")).toBe(
+      "/profile/edit",
+    );
+  });
+
+  it("lists jobs for the member's skills with the reasons, and tenders only for a businessperson", async () => {
+    await showHome(welcome({ categories: ["professional"] }));
+    expect(screen.getByRole("heading", { name: "Jobs for your skills" })).toBeTruthy();
+    expect(screen.getByText("Job · Accountant")).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "Tenders for your business" })).toBeNull();
+    cleanup();
+    await showHome(welcome({ categories: ["businessperson"] }));
+    expect(screen.getByRole("heading", { name: "Tenders for your business" })).toBeTruthy();
+    expect(screen.getByText("Tender · School uniforms")).toBeTruthy();
+  });
+
+  it("shows featured opportunities in their own section", async () => {
+    await showHome(welcome());
+    expect(screen.getByRole("heading", { name: "Featured opportunities" })).toBeTruthy();
+    expect(screen.getByText("Featured post")).toBeTruthy();
   });
 });

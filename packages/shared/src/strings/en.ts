@@ -1719,4 +1719,18 @@ export const en = {
     `You signed in as ${email}. Choose how other members find you, then read and accept the two texts.`,
   firstAccept: "Agree and continue",
   firstFailed: "That did not work. Try again.",
+  homeVerifiedMember: "Verified member",
+  myProfilesTitle: "My profiles",
+  myProfilesCertificates: "Add your certificates to get the Certified professional badge.",
+  myProfilesAddCertificates: "Add certificates",
+  myProfilesBusinessHint:
+    "Verify your business (Level 2) to list it in the directory and respond to tenders. Level 3 lets you post opportunities.",
+  myProfilesLevel: (level: number) => `Level ${level}`,
+  myProfilesYourBusiness: "Your business",
+  jobsForSkillsTitle: "Jobs for your skills",
+  jobsForSkillsWhy: "From Scan for opportunities, with the top reasons.",
+  tendersForBusinessTitle: "Tenders for your business",
+  tendersForBusinessWhy: "In your business's sector, from Scan for opportunities.",
+  scanForMore: "Scan for more",
+  homeMatchesEmpty: "No matches yet. Add skills to your profile to see more.",
 };

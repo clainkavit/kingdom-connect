@@ -10,6 +10,8 @@ type DashboardRow = {
   district_sw: string | null;
   level: number;
   posting_paused: boolean;
+  categories: string[] | null;
+  business_name: string | null;
 };
 
 export type Welcome = {
@@ -18,6 +20,8 @@ export type Welcome = {
   district: BilingualName | null;
   level: number;
   postingPaused: boolean;
+  categories: string[];
+  businessName: string | null;
 };
 
 /** A training or event the member registered for, or waits for (T01). */
@@ -50,6 +54,8 @@ export const dashboardApi: DashboardApi = {
       district: bilingual(row.district_en, row.district_sw),
       level: row.level,
       postingPaused: row.posting_paused,
+      categories: row.categories ?? [],
+      businessName: row.business_name ?? null,
     };
   },
 

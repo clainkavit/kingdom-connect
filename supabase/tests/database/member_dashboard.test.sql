@@ -28,7 +28,8 @@ $$;
 select is((select array_agg(p.parameter_name::text order by p.ordinal_position)
            from information_schema.routines r join information_schema.parameters p on p.specific_name = r.specific_name
            where r.routine_schema = 'public' and r.routine_name = 'member_dashboard' and p.parameter_mode = 'OUT'),
-  array['full_name', 'region_en', 'region_sw', 'district_en', 'district_sw', 'level', 'posting_paused'],
+  array['full_name', 'region_en', 'region_sw', 'district_en', 'district_sw', 'level', 'posting_paused',
+        'categories', 'business_name'],
   'the dashboard returns the member''s own welcome details and level only, never a count (PRD section 7, criterion 1)');
 
 set local role authenticated;

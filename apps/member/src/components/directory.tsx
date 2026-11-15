@@ -1,3 +1,8 @@
+import Award from "lucide-react-native/icons/award";
+import Clock from "lucide-react-native/icons/clock";
+import MapPin from "lucide-react-native/icons/map-pin";
+import UserPlus from "lucide-react-native/icons/user-plus";
+import { usePalette } from "./palette";
 import type { Language, Strings, TextKey } from "@kingdom-connect/shared";
 import { useEffect, useState } from "react";
 import { Pressable, Text, useWindowDimensions, View } from "react-native";
@@ -18,6 +23,7 @@ import { Button, ChoiceList, Field } from "./form";
 import {
   ClearAll,
   FilterBar,
+  FilterCard,
   FilterMenu,
   FilterOptions,
   SearchBox,
@@ -35,9 +41,10 @@ type Relation = DirectoryCard["relation"];
 /** Connect, or where the two members stand, sized for a card ("wide") or a phone row. */
 function RelationAction({ card, wide }: { card: DirectoryCard; wide: boolean }) {
   const { t } = useLanguage();
+  const palette = usePalette();
   const relation: Relation = card.relation;
   const shape = wide
-    ? "min-h-[42px] w-full items-center justify-center rounded-full"
+    ? "min-h-[40px] w-full items-center justify-center rounded-full"
     : "min-h-[38px] items-center justify-center rounded-full px-3.5";
   const text = wide ? "text-sm" : "text-[13px]";
   if (relation === "none" || relation === "received") {
@@ -46,9 +53,10 @@ function RelationAction({ card, wide }: { card: DirectoryCard; wide: boolean }) 
       <LinkButton
         href={relation === "none" ? `/profile/${card.memberId}?connect=1` : "/connections"}
         label={label}
-        className={`${shape} border border-navy bg-surface`}
+        className={`${shape} flex-row gap-1.5 border border-line-2 bg-surface`}
       >
-        <Text className={`font-figtree-bold ${text} text-info-text`}>
+        {relation === "none" ? <UserPlus size={15} color={palette.navy} aria-hidden /> : null}
+        <Text className={`font-figtree-semibold ${text} text-navy`}>
           {wide || relation === "none" ? label : t.answerShort}
         </Text>
       </LinkButton>
@@ -57,9 +65,10 @@ function RelationAction({ card, wide }: { card: DirectoryCard; wide: boolean }) 
   const sent = relation === "sent";
   return (
     <View
-      className={`${shape} ${sent ? "border border-line bg-surface-2" : "bg-good-soft"} ${wide ? "" : "py-1.5"}`}
+      className={`${shape} flex-row gap-1.5 ${sent ? "border border-line-2 bg-surface" : "bg-good-soft"} ${wide ? "" : "py-1.5"}`}
     >
-      <Text className={`font-figtree-bold ${text} ${sent ? "text-ink-2" : "text-good-text"}`}>
+      {sent ? <Clock size={15} color={palette.navy} aria-hidden /> : null}
+      <Text className={`font-figtree-semibold ${text} ${sent ? "text-navy" : "text-good-text"}`}>
         {sent ? (wide ? t.requestSent : t.sentShort) : t.connected}
       </Text>
     </View>
@@ -73,75 +82,58 @@ const placeLine = (card: DirectoryCard) =>
 /** The canvas card badge (U02): a member whose business is verified at Level 2 or 3. */
 function BusinessBadge() {
   const { t } = useLanguage();
+  const palette = usePalette();
   return (
-    <View className="self-start rounded-full bg-good-soft px-2.5 py-0.5">
-      <Text className="font-figtree-bold text-xs text-good-text">{t.badgeBusiness}</Text>
+    <View className="flex-row items-center gap-1 self-start rounded-full bg-warn-soft px-2.5 py-1">
+      <Award size={12} color={palette.warnText} aria-hidden />
+      <Text className="font-figtree-bold text-[12px] text-warn-text">{t.badgeBusiness}</Text>
     </View>
   );
 }
 
 export function DirectoryCardView({ card, fill }: { card: DirectoryCard; fill?: boolean }) {
+  const palette = usePalette();
   return (
     <View
-      className={`${fill ? "flex-1 " : ""}gap-2.5 rounded-[14px] border border-line bg-surface p-[18px]`}
+      className={`${fill ? "flex-1 " : ""}gap-2.5 rounded-card border border-line bg-surface px-[18px] py-[18px]`}
     >
       <LinkButton
         href={`/profile/${card.memberId}`}
         label={[card.fullName, card.headline].filter(Boolean).join(", ")}
         className="flex-row items-center gap-3"
       >
-        <Avatar name={card.fullName} url={card.photoUrl} size={52} />
+        <Avatar name={card.fullName} url={card.photoUrl} size={56} />
         <View className="min-w-0 flex-1 gap-0.5">
-          <Text className="font-figtree-bold text-base text-ink">{card.fullName}</Text>
-          {placeLine(card) ? (
-            <Text className="font-figtree text-[13px] text-ink-2">{placeLine(card)}</Text>
+          <Text className="font-figtree-bold text-[16px] text-navy underline">{card.fullName}</Text>
+          {card.headline ? (
+            <Text numberOfLines={1} className="font-figtree text-[13px] text-ink-2">
+              {card.headline}
+            </Text>
           ) : null}
         </View>
       </LinkButton>
-      {card.business ? <BusinessBadge /> : null}
+      {card.location ? (
+        <View className="flex-row items-center gap-1.5">
+          <MapPin size={13} color={palette.ink2} aria-hidden />
+          <Text className="font-figtree text-[13px] text-ink">{card.location}</Text>
+        </View>
+      ) : null}
       {card.topSkills.length ? (
         <View className="flex-row flex-wrap gap-1.5">
           {card.topSkills.map((skill) => (
             <View
               key={skill}
-              className="rounded-full border border-line bg-surface-2 px-2.5 py-0.5"
+              className="rounded-full border border-line-2 bg-surface px-2.5 py-0.5"
             >
-              <Text className="font-figtree text-xs text-ink">{skill}</Text>
+              <Text className="font-figtree text-[12px] text-ink">{skill}</Text>
             </View>
           ))}
         </View>
       ) : null}
+      {card.business ? <BusinessBadge /> : null}
       <View className="mt-auto">
         <RelationAction card={card} wide />
       </View>
-    </View>
-  );
-}
-
-/** A member on a phone: one row of a list, with Connect on the right. */
-function DirectoryRow({ card, last }: { card: DirectoryCard; last: boolean }) {
-  return (
-    <View
-      className={`flex-row items-center gap-3 p-3.5 ${last ? "" : "border-b border-blue-soft"}`}
-    >
-      <LinkButton
-        href={`/profile/${card.memberId}`}
-        label={[card.fullName, card.headline].filter(Boolean).join(", ")}
-        className="min-w-0 flex-1 flex-row items-center gap-3"
-      >
-        <Avatar name={card.fullName} url={card.photoUrl} size={46} />
-        <View className="min-w-0 flex-1">
-          <Text className="font-figtree-bold text-[15px] text-ink">{card.fullName}</Text>
-          {placeLine(card) ? (
-            <Text className="font-figtree text-[13px] text-ink-2">{placeLine(card)}</Text>
-          ) : null}
-          {card.topSkills.length ? (
-            <Text className="font-figtree text-xs text-ink-2">{card.topSkills.join(" · ")}</Text>
-          ) : null}
-          {card.business ? <BusinessBadge /> : null}
-        </View>
-      </LinkButton>
-      <RelationAction card={card} wide={false} />
     </View>
   );
 }
@@ -246,12 +238,12 @@ function activeFilters(f: DirectoryFilters): number {
 
 const WIDE = 1280;
 
-/** One column on a phone, two on a computer, three on a wide screen. */
+/** One column on a phone, three on a computer, four on a wide screen (the canvas board). */
 function useColumns(): number {
   const phone = usePhone();
   const { width } = useWindowDimensions();
   if (phone) return 1;
-  return width >= WIDE ? 3 : 2;
+  return width >= WIDE ? 4 : 3;
 }
 
 function ResultList<C>({
@@ -318,7 +310,11 @@ function ResultList<C>({
           {grid(part.cards)}
         </View>
       ))}
-      {results.more ? <Button secondary label={t.loadMore} onPress={onMore} /> : null}
+      {results.more ? (
+        <View className="items-center">
+          <Button secondary label={t.loadMore} onPress={onMore} />
+        </View>
+      ) : null}
       {footer}
     </View>
   );
@@ -410,10 +406,10 @@ function SearchRow({
       </View>
     );
   return (
-    <FilterBar>
-      <View className="min-w-[280px] flex-1 basis-[320px] flex-row">{box}</View>
-      {children}
-    </FilterBar>
+    <View className="gap-4" style={{ zIndex: 20 }}>
+      <View className="flex-row">{box}</View>
+      <FilterCard>{children}</FilterCard>
+    </View>
   );
 }
 
@@ -492,6 +488,7 @@ function BusinessesPanel({ api }: { api: DirectoryApi }) {
             <FilterMenu
               label={t.filterSector}
               value={nameOf(sectors, applied.sector)}
+              boxed
               open={menu === "sector"}
               onToggle={() => toggle("sector")}
             >
@@ -504,6 +501,7 @@ function BusinessesPanel({ api }: { api: DirectoryApi }) {
             <FilterMenu
               label={t.filterLevel}
               value={nameOf(levels, applied.level === null ? null : String(applied.level))}
+              boxed
               open={menu === "level"}
               onToggle={() => toggle("level")}
             >
@@ -516,6 +514,7 @@ function BusinessesPanel({ api }: { api: DirectoryApi }) {
             <FilterMenu
               label={t.region}
               value={nameOf(regions, applied.region)}
+              boxed
               open={menu === "region"}
               onToggle={() => toggle("region")}
             >
@@ -644,6 +643,7 @@ function ProfessionalsPanel({
             <FilterMenu
               label={t.region}
               value={nameOf(regions, applied.region)}
+              boxed
               open={menu === "region"}
               onToggle={() => toggle("region")}
             >
@@ -657,6 +657,7 @@ function ProfessionalsPanel({
               <FilterMenu
                 label={t.district}
                 value={nameOf(districts, applied.district)}
+                boxed
                 open={menu === "district"}
                 onToggle={() => toggle("district")}
               >
@@ -670,6 +671,7 @@ function ProfessionalsPanel({
             <FilterMenu
               label={t.filterProfession}
               value={applied.profession || null}
+              boxed
               open={menu === "profession"}
               onToggle={() => toggle("profession")}
             >
@@ -682,6 +684,7 @@ function ProfessionalsPanel({
             <FilterMenu
               label={t.filterSkill}
               value={applied.skill || null}
+              boxed
               open={menu === "skill"}
               onToggle={() => toggle("skill")}
             >
@@ -694,6 +697,7 @@ function ProfessionalsPanel({
             <FilterMenu
               label={t.filterSector}
               value={nameOf(sectors, applied.sector)}
+              boxed
               open={menu === "sector"}
               onToggle={() => toggle("sector")}
             >
@@ -706,6 +710,7 @@ function ProfessionalsPanel({
             <FilterMenu
               label={t.filterStudying}
               value={nameOf(studying, studyingValue(applied.studying) || null)}
+              boxed
               open={menu === "studying"}
               onToggle={() => toggle("studying")}
             >
@@ -750,7 +755,6 @@ function ProfessionalsPanel({
         onRetry={() => run(applied)}
         onMore={loadMore}
         render={(card, fill) => <DirectoryCardView key={card.memberId} card={card} fill={fill} />}
-        row={(card, last) => <DirectoryRow key={card.memberId} card={card} last={last} />}
         sections={applied.q.trim() ? undefined : (cards) => nearSections(t, cards)}
         footer={
           phone ? (
@@ -780,21 +784,21 @@ function Tabs({ value, onChange }: { value: Tab; onChange: (tab: Tab) => void })
       className={
         phone
           ? "flex-row rounded-xl border border-line bg-surface-2 p-1"
-          : "flex-row flex-wrap gap-2"
+          : "flex-row rounded-full border border-line bg-surface p-1"
       }
     >
       {tabs.map((tab) => {
         const selected = tab.key === value;
         const look = phone
           ? `min-h-[38px] flex-1 items-center justify-center rounded-full ${selected ? "bg-surface shadow-sm" : ""}`
-          : `min-h-[40px] justify-center rounded-full px-4 ${selected ? "bg-navy" : "border border-line bg-surface"}`;
+          : `min-h-[40px] justify-center rounded-full px-5 ${selected ? "bg-navy" : ""}`;
         const text = phone
           ? selected
             ? "font-figtree-bold text-ink"
             : "font-figtree-semibold text-ink-2"
           : selected
             ? "font-figtree-bold text-blue-ink"
-            : "font-figtree-semibold text-ink";
+            : "font-figtree-semibold text-navy";
         return (
           <Pressable
             key={tab.key}
@@ -803,7 +807,7 @@ function Tabs({ value, onChange }: { value: Tab; onChange: (tab: Tab) => void })
             onPress={() => onChange(tab.key)}
             className={look}
           >
-            <Text className={`text-sm ${text}`}>{tab.label}</Text>
+            <Text className={`${phone ? "text-sm" : "text-[15px]"} ${text}`}>{tab.label}</Text>
           </Pressable>
         );
       })}
@@ -824,24 +828,31 @@ export function DirectoryScreen({
   const [tab, setTab] = useState<Tab>("professionals");
   return (
     <View className="gap-4">
-      <View className="flex-row flex-wrap items-center justify-between gap-3">
+      <View className="flex-row flex-wrap items-start justify-between gap-3">
         <View className="min-w-0 flex-1 gap-1">
-          <ScreenTitle>{t.navPeople}</ScreenTitle>
+          <Text
+            role="heading"
+            aria-level={1}
+            className={`font-figtree-extrabold text-navy ${phone ? "text-[24px] leading-[28px]" : "text-[32px] leading-[37px]"}`}
+          >
+            {t.navPeople}
+          </Text>
           {phone ? null : (
             <Text className="font-figtree text-[15px] text-ink-2">{t.peopleIntro}</Text>
           )}
         </View>
-        <LinkButton
-          href="/connections"
-          label={t.myConnections}
-          className="min-h-[44px] justify-center"
-        >
-          <Text className={`font-figtree-bold text-blue ${phone ? "text-sm" : "text-[15px]"}`}>
-            {t.myConnections}
-          </Text>
-        </LinkButton>
+        <View className="flex-row flex-wrap items-center gap-3">
+          <LinkButton
+            href="/connections"
+            label={t.myConnections}
+            className="min-h-[48px] items-center justify-center rounded-full border border-line-2 bg-surface px-5"
+          >
+            <Text className="font-figtree-semibold text-[14px] text-navy">{t.myConnections}</Text>
+          </LinkButton>
+          {phone ? null : <Tabs value={tab} onChange={setTab} />}
+        </View>
       </View>
-      <Tabs value={tab} onChange={setTab} />
+      {phone ? <Tabs value={tab} onChange={setTab} /> : null}
       <EnterOnChange value={tab} className="gap-4">
         {tab === "professionals" ? (
           <ProfessionalsPanel api={api} initialQuery={initialQuery} />

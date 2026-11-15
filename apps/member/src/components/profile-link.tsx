@@ -41,6 +41,7 @@ function useMyInitials(): string | null {
 export function ProfileLink({ color }: { color: string }) {
   const { t } = useLanguage();
   const initials = useMyInitials();
+  const onDark = color.toLowerCase() === "#ffffff";
   return (
     <LinkButton
       href="/account"
@@ -48,8 +49,14 @@ export function ProfileLink({ color }: { color: string }) {
       className="h-11 w-11 items-center justify-center rounded-xl"
     >
       {initials ? (
-        <View className="h-9 w-9 items-center justify-center rounded-[10px] bg-navy">
-          <Text className="font-figtree-extrabold text-[15px] text-navy-ink">{initials}</Text>
+        <View
+          className={`h-9 w-9 items-center justify-center rounded-[10px] ${onDark ? "bg-blue-soft" : "bg-navy"}`}
+        >
+          <Text
+            className={`font-figtree-extrabold text-[15px] ${onDark ? "text-navy" : "text-navy-ink"}`}
+          >
+            {initials}
+          </Text>
         </View>
       ) : (
         <CircleUser size={22} color={color} aria-hidden />

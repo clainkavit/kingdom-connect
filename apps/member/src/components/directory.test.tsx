@@ -123,7 +123,8 @@ describe("DirectoryScreen (S10)", () => {
     expect(api.search).toHaveBeenCalledWith(noFilters, 0, "en");
     const link = screen.getByRole("link", { name: /Zawadi Listed/ });
     expect(link.getAttribute("href")).toBe("/profile/m1");
-    expect(screen.getByText("Accountant in Mwanza · Nyamagana, Mwanza")).toBeTruthy();
+    expect(screen.getByText("Accountant in Mwanza")).toBeTruthy();
+    expect(screen.getByText("Nyamagana, Mwanza")).toBeTruthy();
     expect(screen.getByText("tax")).toBeTruthy();
     expect(screen.queryByText("Verified member")).toBeNull();
     expect(screen.getByRole("link", { name: "Connect" }).getAttribute("href")).toBe(
@@ -298,17 +299,16 @@ describe("People layout (13 Nov 2026 redesign)", () => {
     screen.getByRole("link", { name: new RegExp(`^${name}`) }).parentElement!.parentElement!
       .parentElement!;
 
-  it("on a wide computer screen, shows members three to a row", async () => {
+  it("on a wide computer screen, shows members four to a row, as on the canvas", async () => {
+    await show(fakeApi({ search: vi.fn().mockResolvedValue({ cards: four, more: false }) }));
+    expect(rowOf("Joseph Mushi")).toBe(rowOf("Emmanuel Kisanga"));
+  });
+
+  it("on a smaller computer screen, three to a row", async () => {
+    setWidth(1000);
     await show(fakeApi({ search: vi.fn().mockResolvedValue({ cards: four, more: false }) }));
     expect(rowOf("Joseph Mushi")).toBe(rowOf("Pendo Massawe"));
     expect(rowOf("Joseph Mushi")).not.toBe(rowOf("Emmanuel Kisanga"));
-  });
-
-  it("on a smaller computer screen, two to a row", async () => {
-    setWidth(1000);
-    await show(fakeApi({ search: vi.fn().mockResolvedValue({ cards: four, more: false }) }));
-    expect(rowOf("Joseph Mushi")).toBe(rowOf("Zawadi Lyimo"));
-    expect(rowOf("Joseph Mushi")).not.toBe(rowOf("Pendo Massawe"));
   });
 
   it("on a phone, one under another", async () => {
@@ -320,7 +320,7 @@ describe("People layout (13 Nov 2026 redesign)", () => {
     expect(listOf("Joseph Mushi").children.length).toBe(4);
   });
 
-  it("on a phone, shows short labels in each row and the privacy note under the list", async () => {
+  it("on a phone, shows full cards as on the canvas, and the privacy note under the list", async () => {
     setWidth(PHONE);
     await show(
       fakeApi({
@@ -333,9 +333,9 @@ describe("People layout (13 Nov 2026 redesign)", () => {
         }),
       }),
     );
-    expect(screen.getByText("Sent")).toBeTruthy();
-    expect(screen.getByRole("link", { name: "Answer their request" }).textContent).toBe("Answer");
-    expect(screen.getAllByText("bookkeeping · excel · tax")).toHaveLength(2);
+    expect(screen.getByText("Request sent")).toBeTruthy();
+    expect(screen.getByRole("link", { name: "Answer their request" })).toBeTruthy();
+    expect(screen.getAllByText("bookkeeping")).toHaveLength(2);
     expect(
       screen.getByText("Phone and email stay private until you connect and they choose to share."),
     ).toBeTruthy();
@@ -400,7 +400,7 @@ describe("Near you (R25)", () => {
         search: vi.fn().mockResolvedValue({ cards: [card({ business: true })], more: false }),
       }),
     );
-    expect(screen.getByText("Verified Business")).toBeTruthy();
+    expect(screen.getByText("Verified business")).toBeTruthy();
   });
 
   it("shows each filter that is on as a chip, and removes it (canvas, U02)", async () => {

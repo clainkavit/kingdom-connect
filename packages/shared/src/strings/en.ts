@@ -916,7 +916,7 @@ export const en = {
   loadMore: "Load more",
   directoryLoadFailed: "We couldn't load the directory. Check your connection and try again.",
   badgeMember: "Verified member",
-  badgeBusiness: "Verified Business",
+  badgeBusiness: "Verified business",
   connect: "Connect",
   privacyTitle: "Profile privacy and contact sharing",
   privacyIntro:

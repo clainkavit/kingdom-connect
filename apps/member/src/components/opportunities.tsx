@@ -38,7 +38,14 @@ import {
 } from "../lib/opportunity-browse";
 import { useLoad } from "./events";
 import { Button, ChoiceList, Chips, Message } from "./form";
-import { ClearAll, FilterBar, FilterMenu, FilterOptions, SearchBox } from "./filter-menu";
+import {
+  ClearAll,
+  FilterBar,
+  FilterCard,
+  FilterMenu,
+  FilterOptions,
+  SearchBox,
+} from "./filter-menu";
 import { FilterSheet } from "./filter-sheet";
 import { stickToBottom, usePhone } from "./sheet";
 import { LinkButton } from "./link-button";
@@ -428,17 +435,6 @@ const labelOf = (options: Choices, value: string | undefined) =>
   value ? (options.find((o) => o.value === value)?.label ?? null) : null;
 
 /** The computer's filter row: Type, Region, Sector, Employment (jobs only), Posted and Clear all. */
-function FilterCard({ children }: { children: React.ReactNode }) {
-  return (
-    <View
-      className="flex-row flex-wrap gap-3 rounded-card border border-line bg-surface px-4 py-3.5"
-      style={{ zIndex: 20 }}
-    >
-      {children}
-    </View>
-  );
-}
-
 function FilterRow({
   filters,
   apply,

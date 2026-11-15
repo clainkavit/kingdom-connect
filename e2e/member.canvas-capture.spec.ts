@@ -18,6 +18,7 @@ const pairs: Pair[] = [
   { board: "Business-Dashboard", route: "/", w: 1440, h: 2100 },
   { board: "Member-Dashboard", route: "/", w: 1440, h: 2300 },
   { board: "Member-People", route: "/people", w: 1440, h: 1700 },
+  { board: "Member-Phone-People", route: "/people", w: 430, h: 900 },
   { board: "Opp-List", route: "/opportunities", w: 1440, h: 1700 },
   { board: "Ideas-Pool", route: "/ideas", w: 1440, h: 1500 },
   { board: "Web-Growth", route: "/growth", w: 1440, h: 960 },

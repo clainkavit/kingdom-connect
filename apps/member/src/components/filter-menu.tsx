@@ -60,6 +60,18 @@ export function SearchBox({
 }
 
 /** A row of filter buttons that wraps, kept above the results so an open menu covers them. */
+/** The canvas filter card: labelled boxes in a white card (use FilterMenu boxed inside it). */
+export function FilterCard({ children }: { children: React.ReactNode }) {
+  return (
+    <View
+      className="flex-row flex-wrap gap-3 rounded-card border border-line bg-surface px-4 py-3.5"
+      style={{ zIndex: 20 }}
+    >
+      {children}
+    </View>
+  );
+}
+
 export function FilterBar({ children }: { children: React.ReactNode }) {
   return (
     <View className="flex-row flex-wrap items-center gap-2" style={{ zIndex: 20 }}>

@@ -79,9 +79,14 @@ export function Avatar({
   return (
     <View
       style={{ width: size, height: size, borderRadius: size / 2 }}
-      className="items-center justify-center bg-navy"
+      className="items-center justify-center bg-blue-soft"
     >
-      <Text className="font-figtree-bold text-xl text-white">{initials}</Text>
+      <Text
+        className="font-figtree-extrabold text-navy"
+        style={{ fontSize: Math.round(size * 0.34) }}
+      >
+        {initials}
+      </Text>
     </View>
   );
 }

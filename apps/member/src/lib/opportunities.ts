@@ -24,7 +24,11 @@ export type MyPost = {
   closingAt: string | null;
 };
 
-export type SavedPost = { result: OpportunityResult; status: PostStatus | null };
+export type SavedPost = {
+  result: OpportunityResult;
+  status: PostStatus | null;
+  id?: string | null;
+};
 
 export type PickedPdf = { uri: string; name: string; mime: string; size: number };
 
@@ -175,7 +179,11 @@ export const opportunitiesApi: OpportunitiesApi = {
       .select("status")
       .eq("id", row.opportunity_id!)
       .maybeSingle();
-    return { result: "ok", status: (saved?.status as PostStatus | undefined) ?? null };
+    return {
+      result: "ok",
+      status: (saved?.status as PostStatus | undefined) ?? null,
+      id: row.opportunity_id,
+    };
   },
 
   async close(id) {

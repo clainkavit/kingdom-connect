@@ -1,3 +1,5 @@
+import type { PicksApi } from "../lib/picks";
+import { FindModeFields, NOTE_MAX as PICK_NOTE_MAX, type FindMode } from "./picks";
 import {
   draftProblem,
   emptyTender,
@@ -186,7 +188,16 @@ function TenderFields({
 }
 
 /** S20: post an opportunity or a tender, or edit a draft (O01, O04). */
-export function OpportunityFormScreen({ api, id }: { api: OpportunitiesApi; id?: string }) {
+export function OpportunityFormScreen({
+  api,
+  id,
+  picks,
+}: {
+  api: OpportunitiesApi;
+  id?: string;
+  /** O16: Let Kingdom Connect pick on the last step; without it the post is open to applicants. */
+  picks?: PicksApi;
+}) {
   const { t, language } = useLanguage();
   const [form, setForm] = useState<OpportunityInput | null>(id ? null : emptyPost);
   const [skillsText, setSkillsText] = useState("");
@@ -198,6 +209,7 @@ export function OpportunityFormScreen({ api, id }: { api: OpportunitiesApi; id?:
   const [done, setDone] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [step, setStep] = useState(0);
+  const [find, setFind] = useState<FindMode>({ mode: "open", size: undefined, note: "" });
 
   useEffect(() => {
     api.sectors(language).then(setSectors, () => undefined);
@@ -239,6 +251,10 @@ export function OpportunityFormScreen({ api, id }: { api: OpportunitiesApi; id?:
       if (send) setStep(postStepOf(local));
       return show(local);
     }
+    const picking = picks && find.mode === "pick";
+    if (picking && !find.size) return setProblem(t.pickChooseSize);
+    if (picking && find.note.trim().length > PICK_NOTE_MAX)
+      return setProblem(t.pickNoteTooLong(PICK_NOTE_MAX));
     setProblem(null);
     setBusy(true);
     const saved = await api
@@ -246,6 +262,15 @@ export function OpportunityFormScreen({ api, id }: { api: OpportunitiesApi; id?:
       .catch(() => ({ result: "failed" as const, status: null }));
     setBusy(false);
     if (saved.result !== "ok") return setProblem(t[resultText[saved.result]] as string);
+    if (picking && saved.id) {
+      setBusy(true);
+      const asked = await picks
+        .request(saved.id, Number(find.size), find.note.trim())
+        .catch(() => "failed" as const);
+      setBusy(false);
+      if (asked === "contact_details") return setProblem(t.pickNoteContact);
+      if (asked !== "ok" && asked !== "already_requested") return setProblem(t.pickFailed);
+    }
     const key = saved.status ? sentText[saved.status] : undefined;
     setDone(key ? (t[key] as string) : t.postSavedDraft);
   };
@@ -376,6 +401,7 @@ export function OpportunityFormScreen({ api, id }: { api: OpportunitiesApi; id?:
             />
           </>
         ) : null}
+        {last && picks ? <FindModeFields value={find} onChange={setFind} /> : null}
         {last ? (
           <Checkbox label={t.noFeeTick} checked={form.noFee} onChange={(v) => set("noFee", v)} />
         ) : null}

@@ -13,6 +13,7 @@ export type RespondResult =
   | "ok"
   | "not_open"
   | "own_post"
+  | "picked_post"
   | "level2_required"
   | "already_responded"
   | "invalid_note"

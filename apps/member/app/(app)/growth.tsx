@@ -1,14 +1,8 @@
-import { Text, View } from "react-native";
-import { GrowthList, ScreenTitle } from "../../src/components/screens";
-import { useLanguage } from "../../src/lib/language";
+import { GrowthScreen } from "../../src/components/growth";
+import { eventsApi } from "../../src/lib/events";
+import { plansApi } from "../../src/lib/plans-api";
+import { trainingApi } from "../../src/lib/training";
 
-export default function GrowthScreen() {
-  const { t } = useLanguage();
-  return (
-    <View className="gap-4">
-      <ScreenTitle>{t.navGrowth}</ScreenTitle>
-      <Text className="font-figtree text-[15px] leading-6 text-ink-2">{t.growthIntro}</Text>
-      <GrowthList />
-    </View>
-  );
+export default function GrowthPage() {
+  return <GrowthScreen events={eventsApi} training={trainingApi} plans={plansApi} />;
 }

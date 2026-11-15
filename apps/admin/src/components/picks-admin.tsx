@@ -113,10 +113,13 @@ function RequestPanel({
   api,
   item,
   onChanged,
+  onSent,
 }: {
   api: PickAdminApi;
   item: PickQueueItem;
   onChanged: () => void;
+  /** The post leaves the queue once sent, so the page says so instead of the panel. */
+  onSent: () => void;
 }) {
   const { t } = useLanguage();
   const [max, setMax] = useState(PAGE);
@@ -168,7 +171,7 @@ function RequestPanel({
     setBusy(false);
     if (result === "nobody_agreed") return setProblem(t.pickNobodyYet);
     if (result !== "ok") return setProblem(t.pickAdminFailed);
-    setDone(t.pickSent);
+    onSent();
     onChanged();
   };
 
@@ -294,11 +297,13 @@ function RequestPanel({
 /** A18: posts waiting for a pick, with rule-based suggestions (no AI). */
 export function PicksAdmin({ api }: { api: PickAdminApi }) {
   const { t } = useLanguage();
+  const [sent, setSent] = useState<string | null>(null);
   const [queue, reload] = useLoaded(() => api.queue(), [api]);
   return (
     <>
       <ScreenTitle>{t.adminNavPicks}</ScreenTitle>
       <div className="flex flex-col gap-4">
+        <Notice tone="good" text={sent} />
         <p className="text-sm text-ink-2">{t.pickAdminBeta}</p>
         {queue.state === "failed" ? (
           <ErrorState message={t.pickAdminLoadFailed} onRetry={reload} />
@@ -310,7 +315,13 @@ export function PicksAdmin({ api }: { api: PickAdminApi }) {
           <>
             <p className="text-sm font-semibold text-ink-2">{t.pickWaiting(queue.value.length)}</p>
             {queue.value.map((item) => (
-              <RequestPanel key={item.requestId} api={api} item={item} onChanged={reload} />
+              <RequestPanel
+                key={item.requestId}
+                api={api}
+                item={item}
+                onChanged={reload}
+                onSent={() => setSent(t.pickSent)}
+              />
             ))}
           </>
         )}

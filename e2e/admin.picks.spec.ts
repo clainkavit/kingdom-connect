@@ -51,6 +51,6 @@ test("staff pick 2 members, ask them, one says yes, and staff send the list (D07
   if (process.env.SCREENSHOT_DIR)
     await page.screenshot({ path: `${process.env.SCREENSHOT_DIR}/d07-picks.png`, fullPage: true });
   await again.getByRole("button", { name: "Send the list to the poster" }).click();
-  await expect(again.getByText("The list was sent to the poster.")).toBeVisible();
+  await expect(page.getByText("The list was sent to the poster.")).toBeVisible();
   expect(await pickRequestStatus(id)).toBe("sent");
 });

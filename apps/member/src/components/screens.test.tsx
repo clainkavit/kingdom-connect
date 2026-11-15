@@ -22,7 +22,7 @@ describe("GrowthList", () => {
     expect(screen.getAllByRole("link").map((l) => l.getAttribute("href"))).toEqual(
       growthSections.map((g) => g.href),
     );
-    expect(screen.getByText("Share an idea, or find one to invest in or join.")).toBeTruthy();
+    expect(screen.getByText("Share an idea, or find one to join")).toBeTruthy();
   });
 });
 

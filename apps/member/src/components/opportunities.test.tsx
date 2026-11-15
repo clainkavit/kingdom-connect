@@ -70,7 +70,7 @@ const press = (name: string | RegExp) =>
   act(async () => fireEvent.click(screen.getByRole("button", { name })));
 
 describe("OpportunitiesList (S16)", () => {
-  it("lists posts as rows: when, title, poster, place, employment, summary and skills", async () => {
+  it("lists posts as canvas cards: type, title, poster, place, closing date and matching skills", async () => {
     await show(
       <OpportunitiesList
         api={fakeApi({
@@ -86,14 +86,10 @@ describe("OpportunitiesList (S16)", () => {
       />,
     );
     expect(screen.getByText("Accountant for a coffee trader")).toBeTruthy();
-    expect(
-      screen.getByText("Kilimanjaro Coffee Traders · Moshi, Kilimanjaro · Full-time"),
-    ).toBeTruthy();
-    expect(screen.getByText("Posted 2 hours ago ·", { exact: false })).toBeTruthy();
-    expect(screen.getByText("Closes 20 November 2026")).toBeTruthy();
-    expect(screen.getByText("Keep the books for a coffee trader.")).toBeTruthy();
-    expect(screen.getByText("excel ✓")).toBeTruthy();
-    expect(screen.getByText("bookkeeping")).toBeTruthy();
+    expect(screen.getByText("Kilimanjaro Coffee Traders")).toBeTruthy();
+    expect(screen.getByText("Moshi, Kilimanjaro")).toBeTruthy();
+    expect(screen.getByText("Closes 20 Nov")).toBeTruthy();
+    expect(screen.getByText("Matches excel")).toBeTruthy();
     expect(screen.getByText("Job")).toBeTruthy();
   });
 
@@ -117,7 +113,7 @@ describe("OpportunitiesList (S16)", () => {
     await act(async () => fireEvent.keyDown(box, { key: "Enter" }));
     expect(list).toHaveBeenLastCalledWith({ q: "bookkeeper" }, 0, false);
     await act(async () => fireEvent.click(screen.getByRole("radio", { name: "Jobs" })));
-    await press("Region: Any");
+    await press("Location: Any region");
     await act(async () => fireEvent.click(screen.getByRole("option", { name: "Kilimanjaro" })));
     expect(list).toHaveBeenLastCalledWith(
       expect.objectContaining({ q: "bookkeeper", kind: "job", region: "r1" }),
@@ -153,11 +149,11 @@ describe("OpportunitiesList (S16)", () => {
     expect(screen.getByText("Tenders need a verified business")).toBeTruthy();
     expect(screen.queryByRole("button", { name: /^Employment type/ })).toBeNull();
 
-    await press("Region: Any");
+    await press("Location: Any region");
     await act(async () => fireEvent.click(screen.getByRole("option", { name: "Kilimanjaro" })));
     expect(list).toHaveBeenLastCalledWith(expect.objectContaining({ region: "r1" }), 0, false);
 
-    await press("Posted: Any");
+    await press("Posted: Any time");
     await act(async () =>
       fireEvent.click(screen.getByRole("option", { name: "In the last 7 days" })),
     );
@@ -401,11 +397,13 @@ describe("Saving opportunities (O10)", () => {
 });
 
 describe("Opportunities layout (13 Nov 2026 redesign)", () => {
-  it("on a computer, keeps better matches, your opportunities and stay safe in a side column", async () => {
+  it("on a computer, follows the canvas: title and subtitle, top pills, Scan card and the no-fee line", async () => {
     await show(<OpportunitiesList api={fakeApi()} />);
-    expect(screen.getByRole("heading", { name: en.oppBetterMatches })).toBeTruthy();
-    expect(screen.getByRole("heading", { name: en.oppYourSide })).toBeTruthy();
-    expect(screen.getByRole("heading", { name: en.oppStaySafe })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: en.navOpportunities })).toBeTruthy();
+    expect(screen.getByText(en.oppSubtitle)).toBeTruthy();
+    expect(screen.getByRole("heading", { name: en.scanTitle })).toBeTruthy();
+    expect(screen.getByText(en.oppNoFeeNote)).toBeTruthy();
+    expect(screen.getByRole("link", { name: en.respMineTitle })).toBeTruthy();
     expect(screen.getByRole("link", { name: en.myPostsTitle })).toBeTruthy();
     expect(screen.getByRole("link", { name: en.savedCount(0) })).toBeTruthy();
   });
@@ -427,7 +425,7 @@ describe("Opportunities layout (13 Nov 2026 redesign)", () => {
     expect(screen.queryByRole("switch", { name: en.oppRemoteOnly })).toBeNull();
   });
 
-  it("on a phone, shows compact cards with the skills that fit, and no side column", async () => {
+  it("on a phone, follows the canvas: pills, the Scan button and cards with the skills that fit", async () => {
     setWidth(PHONE);
     await show(
       <OpportunitiesList
@@ -437,7 +435,9 @@ describe("Opportunities layout (13 Nov 2026 redesign)", () => {
         now={NOW}
       />,
     );
-    expect(screen.getByText("You have 2 of 3 skills · Full-time")).toBeTruthy();
+    expect(screen.getByText("You have 2 of 3 skills")).toBeTruthy();
+    expect(screen.getByRole("link", { name: en.scanTitle })).toBeTruthy();
+    expect(screen.getByRole("link", { name: en.respMineTitle })).toBeTruthy();
     expect(screen.queryByRole("heading", { name: en.oppStaySafe })).toBeNull();
     expect(screen.getByRole("link", { name: en.myPostsTitle })).toBeTruthy();
     expect(screen.getByText(en.oppNoFeeNote)).toBeTruthy();

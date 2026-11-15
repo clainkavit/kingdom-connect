@@ -1,4 +1,4 @@
-import { mkdirSync } from "node:fs";
+import { existsSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 import { expect, test } from "@playwright/test";
@@ -24,23 +24,34 @@ const pairs: Pair[] = [
   { board: "Opp-Responses", route: "/opportunities/responses", w: 1440, h: 1000 },
   { board: "Opp-Saved", route: "/opportunities/saved", w: 1440, h: 1000 },
   { board: "Biz-Verify", route: "/business", w: 1440, h: 1800 },
-  { board: "Member-Phone-Dashboard", route: "/", w: 390, h: 1600 },
+  { board: "Member-Phone-Dashboard", route: "/", w: 430, h: 900 },
+  { board: "Opp-Phone-List", route: "/opportunities", w: 430, h: 900 },
 ];
 
 test.skip(!canvasDir || !out, "set CANVAS_DIR and CAPTURE_OUT to capture");
 
+const account = process.env.CAPTURE_AS ?? "test_level3";
+
 for (const pair of pairs.filter((p) => !only || only.includes(p.board))) {
-  test(`capture ${pair.board}`, async ({ page }) => {
+  test(`capture ${pair.board}`, async ({ page, browser, baseURL }) => {
     mkdirSync(out!, { recursive: true });
     await page.setViewportSize({ width: pair.w, height: Math.min(pair.h, 1200) });
     await page.goto(pathToFileURL(join(canvasDir!, `${pair.board}.dc.html`)).href);
     await page.waitForTimeout(300);
     await page.screenshot({ path: join(out!, `${pair.board}.canvas.png`), fullPage: true });
 
-    await signInAs(page, "test_level3", "test.level3@example.test");
-    await page.goto(pair.route);
-    await expect(page.locator("body")).toBeVisible();
-    await page.waitForTimeout(1500);
-    await page.screenshot({ path: join(out!, `${pair.board}.live.png`), fullPage: true });
+    const state = join(out!, `session-${account}.json`);
+    if (!existsSync(state)) {
+      await signInAs(page, account, `${account.replace("_", ".")}@example.test`);
+      await page.context().storageState({ path: state });
+    }
+    const context = await browser.newContext({ storageState: state, baseURL });
+    const live = await context.newPage();
+    await live.setViewportSize({ width: pair.w, height: Math.min(pair.h, 1200) });
+    await live.goto(pair.route);
+    await expect(live.locator("body")).toBeVisible();
+    await live.waitForTimeout(2000);
+    await live.screenshot({ path: join(out!, `${pair.board}.live.png`), fullPage: true });
+    await context.close();
   });
 }

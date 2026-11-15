@@ -1981,4 +1981,14 @@ export const en = {
   adminIdeasUnderReview: "Under review",
   adminIdeasNotInPool: "Not in the pool",
   adminIdeasReview: "Review in the moderation queue",
+  oppSubtitle:
+    "Jobs, partnerships, collaborations, investments and tenders from verified members and Kingdom Connect.",
+  oppClosesShort: (date: string) => `Closes ${date}`,
+  oppMatchesSkills: (skills: string) => `Matches ${skills}`,
+  oppVerifyToRespond: "Verify your business to respond",
+  oppAddSkillsShort: "Add more skills to your profile for better matches.",
+  filterLocation: "Location",
+  anyRegion: "Any region",
+  anyTime: "Any time",
+  oppSubtitleShort: "Jobs, partnerships, tenders and more",
 };

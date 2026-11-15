@@ -183,16 +183,19 @@ export function Chips<T extends string>({
   value,
   onChange,
   problem,
+  hideLabel,
 }: {
   label: string;
   options: { value: T; label: string }[];
   value: T | undefined;
   onChange: (value: T) => void;
   problem?: string | null;
+  /** The canvas shows some choice rows without a visible label; screen readers still hear it. */
+  hideLabel?: boolean;
 }) {
   return (
     <View className="gap-1.5">
-      <Label text={label} />
+      {hideLabel ? null : <Label text={label} />}
       <View role="radiogroup" aria-label={label} className="flex-row flex-wrap gap-2">
         {options.map((option) => {
           const on = option.value === value;

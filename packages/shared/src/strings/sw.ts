@@ -2018,4 +2018,14 @@ export const sw: Strings = {
   adminIdeasUnderReview: "Inakaguliwa",
   adminIdeasNotInPool: "Haipo kwenye hazina",
   adminIdeasReview: "Kagua kwenye foleni ya ukaguzi",
+  oppSubtitle:
+    "Kazi, ushirikiano, mashirikiano, uwekezaji na zabuni kutoka kwa wanachama waliothibitishwa na Kingdom Connect.",
+  oppClosesShort: (date: string) => `Inafungwa ${date}`,
+  oppMatchesSkills: (skills: string) => `Inalingana na ${skills}`,
+  oppVerifyToRespond: "Thibitisha biashara yako ili ujibu",
+  oppAddSkillsShort: "Ongeza ujuzi zaidi kwenye wasifu wako upate zinazokufaa zaidi.",
+  filterLocation: "Mahali",
+  anyRegion: "Mkoa wowote",
+  anyTime: "Wakati wowote",
+  oppSubtitleShort: "Kazi, ushirikiano, zabuni na zaidi",
 };

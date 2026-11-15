@@ -1,6 +1,7 @@
 import {
   employmentTypes,
   formatDate,
+  formatShortDate,
   type EmploymentType,
   type Language,
   type Strings,
@@ -8,7 +9,19 @@ import {
 } from "@kingdom-connect/shared";
 import { useState } from "react";
 import Bookmark from "lucide-react-native/icons/bookmark";
+import BookOpen from "lucide-react-native/icons/book-open";
+import Briefcase from "lucide-react-native/icons/briefcase";
+import Check from "lucide-react-native/icons/check";
+import ChevronRight from "lucide-react-native/icons/chevron-right";
+import CircleDollarSign from "lucide-react-native/icons/circle-dollar-sign";
+import Clock from "lucide-react-native/icons/clock";
+import Lock from "lucide-react-native/icons/lock";
+import MapPin from "lucide-react-native/icons/map-pin";
 import Plus from "lucide-react-native/icons/plus";
+import ScanSearch from "lucide-react-native/icons/scan-search";
+import ShieldCheck from "lucide-react-native/icons/shield-check";
+import Store from "lucide-react-native/icons/store";
+import Users from "lucide-react-native/icons/users";
 import { Linking, Pressable, Text, View } from "react-native";
 import type { JobAlertsApi } from "../lib/job-alerts";
 import { useLanguage } from "../lib/language";
@@ -228,26 +241,6 @@ function PosterMark({ name, size }: { name: string; size: number }) {
 }
 
 /** The post's skills; the ones the member has are ticked. */
-function SkillChips({ post }: { post: OpportunityCard }) {
-  const mine = new Set(post.skillsMine ?? []);
-  if (post.skills.length === 0) return null;
-  return (
-    <View className="flex-row flex-wrap gap-1.5">
-      {post.skills.map((skill) =>
-        mine.has(skill) ? (
-          <View key={skill} className="rounded-full bg-good-soft px-2.5 py-1">
-            <Text className="font-figtree-semibold text-[13px] text-good-text">{`${skill} ✓`}</Text>
-          </View>
-        ) : (
-          <View key={skill} className="rounded-full border border-line bg-surface-2 px-2.5 py-1">
-            <Text className="font-figtree text-[13px] text-ink">{skill}</Text>
-          </View>
-        ),
-      )}
-    </View>
-  );
-}
-
 function Badges({ post, withType }: { post: OpportunityCard; withType: boolean }) {
   const { t } = useLanguage();
   if (!withType && !post.featured && !post.isMine) return null;
@@ -260,98 +253,100 @@ function Badges({ post, withType }: { post: OpportunityCard; withType: boolean }
   );
 }
 
-/** S16 on a computer: one post as a row of the list, with its summary and skills. */
-function OpportunityRow({
+const kindIcon = {
+  job: Briefcase,
+  tender: Store,
+  partnership: Users,
+  collaboration: BookOpen,
+  investment: CircleDollarSign,
+} as const;
+
+/** S16 on a computer, as on the canvas board Opp-List: one post as its own card. */
+function OpportunityTile({
   post,
   saved,
   onToggleSave,
-  last,
-  withType,
   now,
 }: {
   post: OpportunityCard;
   saved: boolean;
   onToggleSave: () => void;
-  last: boolean;
-  withType: boolean;
   now: Date;
 }) {
   const { t, language } = useLanguage();
-  const meta = [
-    post.posterName,
-    placeLine(t, post, language),
-    post.employmentType ? (t[employmentLabel[post.employmentType]] as string) : null,
-  ].filter(Boolean);
+  const palette = usePalette();
+  const Icon = kindIcon[post.type];
+  const place = placeLine(t, post, language);
+  const left = daysUntil(post.closingAt, now);
+  const soon = left <= 3;
+  const closes = soon
+    ? t.oppClosesInDays(left)
+    : t.oppClosesShort(formatShortDate(new Date(`${post.closingAt}T12:00:00+03:00`), language));
+  const mine = post.skillsMine ?? [];
   return (
-    <View className={`flex-row gap-4 p-5 ${last ? "" : "border-b border-line"}`}>
+    <View className="flex-row gap-4 rounded-card border border-line bg-surface px-5 py-[18px]">
       <LinkButton
         href={`/opportunities/${post.id}`}
         label={post.title}
         className="min-w-0 flex-1 flex-row gap-4"
       >
-        <PosterMark name={post.posterName} size={48} />
+        <View className="h-11 w-11 items-center justify-center rounded-[12px] bg-blue-soft">
+          <Icon size={20} color={palette.navy} aria-hidden />
+        </View>
         <View className="min-w-0 flex-1 gap-1.5">
-          <Badges post={post} withType={withType} />
-          <WhenLine post={post} now={now} />
-          <Text className="font-figtree-bold text-[18px] text-ink">{post.title}</Text>
-          <Text className="font-figtree text-[14px] text-ink-2">{meta.join(" · ")}</Text>
-          {post.summary ? (
-            <Text numberOfLines={2} className="font-figtree text-[14px] leading-[21px] text-ink">
-              {post.summary}
+          <View className="flex-row flex-wrap items-center gap-2">
+            <Text className="rounded-full bg-blue-soft px-2.5 py-1 font-figtree-bold text-[12px] text-navy">
+              {t[typeLabel[post.type]] as string}
             </Text>
-          ) : null}
-          <SkillChips post={post} />
-        </View>
-      </LinkButton>
-      <SaveButton saved={saved} title={post.title} onPress={onToggleSave} />
-    </View>
-  );
-}
-
-/** S16 on a phone: one post as a compact card. */
-function OpportunityPhoneCard({
-  post,
-  saved,
-  onToggleSave,
-  withType,
-  now,
-}: {
-  post: OpportunityCard;
-  saved: boolean;
-  onToggleSave: () => void;
-  withType: boolean;
-  now: Date;
-}) {
-  const { t, language } = useLanguage();
-  const fit = [
-    post.skillsTotal && post.skillsMatched !== undefined
-      ? t.oppSkillsMatch(post.skillsMatched, post.skillsTotal)
-      : null,
-    post.employmentType ? (t[employmentLabel[post.employmentType]] as string) : null,
-  ].filter(Boolean);
-  return (
-    <View className="relative">
-      <LinkButton
-        href={`/opportunities/${post.id}`}
-        label={post.title}
-        className="gap-2 rounded-[14px] border border-line bg-surface p-4"
-      >
-        <View className="flex-row items-center gap-3 pr-10">
-          <PosterMark name={post.posterName} size={44} />
-          <View className="min-w-0 flex-1">
+            {post.featured ? (
+              <Text className="rounded-full bg-warn-soft px-2.5 py-1 font-figtree-bold text-[12px] text-warn-text">
+                {t.oppFeatured}
+              </Text>
+            ) : null}
+            {post.isMine ? (
+              <Text className="rounded-full bg-blue-soft px-2.5 py-1 font-figtree-bold text-[12px] text-navy">
+                {t.oppYours}
+              </Text>
+            ) : null}
             <Text className="font-figtree-bold text-[16px] text-ink">{post.title}</Text>
-            <Text className="font-figtree text-[13px] text-ink-2">
-              {[post.posterName, placeLine(t, post, language)].filter(Boolean).join(" · ")}
-            </Text>
           </View>
+          <Text className="font-figtree text-[13px] text-ink">{post.posterName}</Text>
+          <View className="flex-row flex-wrap items-center gap-x-3 gap-y-1">
+            {place ? (
+              <View className="flex-row items-center gap-1">
+                <MapPin size={13} color={palette.ink2} aria-hidden />
+                <Text className="font-figtree text-[13px] text-ink-2">{place}</Text>
+              </View>
+            ) : null}
+            <View className="flex-row items-center gap-1">
+              <Clock size={13} color={palette.ink2} aria-hidden />
+              <Text
+                className={`text-[13px] ${soon ? "font-figtree-bold text-warn-text" : "font-figtree text-ink-2"}`}
+              >
+                {closes}
+              </Text>
+            </View>
+          </View>
+          {mine.length || (post.skillsTotal && post.skillsMatched) ? (
+            <View className="flex-row items-center gap-1.5">
+              <Check size={14} color={palette.good} aria-hidden />
+              <Text className="font-figtree text-[13px] text-good-text">
+                {mine.length
+                  ? t.oppMatchesSkills(mine.join(", "))
+                  : t.oppSkillsMatch(post.skillsMatched ?? 0, post.skillsTotal ?? 0)}
+              </Text>
+            </View>
+          ) : null}
+          {post.type === "tender" ? (
+            <View className="flex-row items-center gap-1.5">
+              <Lock size={13} color={palette.ink} aria-hidden />
+              <Text className="font-figtree text-[13px] text-ink">{t.oppVerifyToRespond}</Text>
+            </View>
+          ) : null}
         </View>
-        <Badges post={post} withType={withType} />
-        {fit.length ? (
-          <Text className="font-figtree-semibold text-[13px] text-ink">{fit.join(" · ")}</Text>
-        ) : null}
-        <WhenLine post={post} now={now} small />
+        <ChevronRight size={18} color={palette.ink} aria-hidden />
       </LinkButton>
-      <View style={{ position: "absolute", top: 8, right: 8 }}>
+      <View className="h-11 w-11 items-center justify-center rounded-full border border-line-2">
         <SaveButton saved={saved} title={post.title} onPress={onToggleSave} />
       </View>
     </View>
@@ -433,16 +428,30 @@ const labelOf = (options: Choices, value: string | undefined) =>
   value ? (options.find((o) => o.value === value)?.label ?? null) : null;
 
 /** The computer's filter row: Type, Region, Sector, Employment (jobs only), Posted and Clear all. */
+function FilterCard({ children }: { children: React.ReactNode }) {
+  return (
+    <View
+      className="flex-row flex-wrap gap-3 rounded-card border border-line bg-surface px-4 py-3.5"
+      style={{ zIndex: 20 }}
+    >
+      {children}
+    </View>
+  );
+}
+
 function FilterRow({
   filters,
   apply,
   regions,
   sectors,
+  boxed,
 }: {
   filters: OpportunityFilters;
   apply: (next: OpportunityFilters) => void;
   regions: Choices;
   sectors: Choices;
+  /** The canvas filter card: labelled boxes in a white card. */
+  boxed?: boolean;
 }) {
   const { t } = useLanguage();
   const [menu, setMenu] = useState<string | null>(null);
@@ -459,11 +468,13 @@ function FilterRow({
     filters.employment,
     filters.postedWithin,
   ].some((v) => v !== undefined);
+  const Wrap = boxed ? FilterCard : FilterBar;
   return (
-    <FilterBar>
+    <Wrap>
       <FilterMenu
-        label={t.region}
-        value={labelOf(regions, filters.region)}
+        label={boxed ? t.filterLocation : t.region}
+        value={labelOf(regions, filters.region) ?? (boxed ? t.anyRegion : null)}
+        boxed={boxed}
         open={menu === "region"}
         onToggle={() => toggle("region")}
       >
@@ -476,6 +487,7 @@ function FilterRow({
       <FilterMenu
         label={t.filterSector}
         value={labelOf(sectors, filters.sector)}
+        boxed={boxed}
         open={menu === "sector"}
         onToggle={() => toggle("sector")}
       >
@@ -489,6 +501,7 @@ function FilterRow({
         <FilterMenu
           label={t.fieldEmployment}
           value={labelOf(employmentChoices(t), filters.employment)}
+          boxed={boxed}
           open={menu === "employment"}
           onToggle={() => toggle("employment")}
         >
@@ -501,7 +514,11 @@ function FilterRow({
       ) : null}
       <FilterMenu
         label={t.oppPosted}
-        value={labelOf(postedChoices(t).slice(1), filters.postedWithin?.toString())}
+        value={
+          labelOf(postedChoices(t).slice(1), filters.postedWithin?.toString()) ??
+          (boxed ? t.anyTime : null)
+        }
+        boxed={boxed}
         open={menu === "posted"}
         onToggle={() => toggle("posted")}
       >
@@ -519,7 +536,7 @@ function FilterRow({
           }}
         />
       ) : null}
-    </FilterBar>
+    </Wrap>
   );
 }
 
@@ -534,6 +551,7 @@ function TypePills({
   const { t } = useLanguage();
   return (
     <Chips
+      hideLabel
       label={t.fieldType}
       options={[
         { value: "all", label: t.oppAll },
@@ -548,52 +566,6 @@ function TypePills({
         })
       }
     />
-  );
-}
-
-function SideCard({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <View className="gap-2 rounded-2xl border border-line bg-surface p-5">
-      <Text role="heading" aria-level={2} className="font-figtree-extrabold text-[16px] text-ink">
-        {title}
-      </Text>
-      {children}
-    </View>
-  );
-}
-
-const yourLinks: { key: TextKey; href: string }[] = [
-  { key: "myPostsTitle", href: "/opportunities/mine" },
-  { key: "respMineTitle", href: "/opportunities/responses" },
-  { key: "scanTitle", href: "/opportunities/scan" },
-];
-
-function YourLinks({ row }: { row?: boolean }) {
-  const { t } = useLanguage();
-  return (
-    <View className={row ? "flex-row flex-wrap gap-2" : ""}>
-      {yourLinks.map((item, i) => (
-        <LinkButton
-          key={item.href}
-          href={item.href}
-          label={t[item.key] as string}
-          className={
-            row
-              ? "min-h-[44px] items-center justify-center rounded-full border border-line-2 bg-surface px-4"
-              : `min-h-[44px] flex-row items-center justify-between ${i > 0 ? "border-t border-line" : ""}`
-          }
-        >
-          <Text className="font-figtree-semibold text-[14px] text-ink">
-            {t[item.key] as string}
-          </Text>
-          {row ? null : (
-            <Text aria-hidden className="font-figtree text-[15px] text-ink-2">
-              ›
-            </Text>
-          )}
-        </LinkButton>
-      ))}
-    </View>
   );
 }
 
@@ -749,15 +721,6 @@ export function OpportunitiesList({
           );
         })}
       </View>
-      <LinkButton
-        href="/opportunities/saved"
-        label={t.savedCount(saved.count)}
-        className="min-h-[44px] justify-center border-b-[3px] border-transparent px-0.5"
-      >
-        <Text className="font-figtree-medium text-[15px] text-ink-2">
-          {t.savedCount(saved.count)}
-        </Text>
-      </LinkButton>
     </View>
   );
 
@@ -786,38 +749,25 @@ export function OpportunitiesList({
       )
     ) : (
       <>
-        {phone ? (
+        {
           <View className="gap-3">
             {posts.map((post) => (
-              <OpportunityPhoneCard
+              <OpportunityTile
                 key={post.id}
                 post={post}
                 saved={saved.isSaved(post.id)}
                 onToggleSave={() => act("save", () => saved.toggle(post.id))}
-                withType={withType}
                 now={now}
               />
             ))}
           </View>
-        ) : (
-          <View className="overflow-hidden rounded-[14px] border border-line bg-surface">
-            {posts.map((post, i) => (
-              <OpportunityRow
-                key={post.id}
-                post={post}
-                saved={saved.isSaved(post.id)}
-                onToggleSave={() => act("save", () => saved.toggle(post.id))}
-                last={i === posts.length - 1}
-                withType={withType}
-                now={now}
-              />
-            ))}
-          </View>
-        )}
+        }
         {moreFailed ? (
           <ErrorState message={t.oppLoadFailed} onRetry={loadMore} />
         ) : !done && first.state === "ready" && first.value.length === OPPORTUNITY_PAGE ? (
-          <Button secondary label={t.loadMore} disabled={busy} onPress={loadMore} />
+          <View className="items-center">
+            <Button secondary label={t.loadMore} disabled={busy} onPress={loadMore} />
+          </View>
         ) : null}
       </>
     );
@@ -831,9 +781,44 @@ export function OpportunitiesList({
   if (phone)
     return (
       <View className="gap-3">
-        <View className="flex-row items-center justify-between gap-2">
-          <ScreenTitle>{t.navOpportunities}</ScreenTitle>
+        <View className="flex-row items-start justify-between gap-2">
+          <View className="min-w-0 flex-1 gap-1">
+            <Text
+              role="heading"
+              aria-level={1}
+              className="font-figtree-extrabold text-[24px] leading-[28px] text-navy"
+            >
+              {t.navOpportunities}
+            </Text>
+            <Text className="font-figtree text-[13px] text-ink-2">{t.oppSubtitleShort}</Text>
+          </View>
           {postButton}
+        </View>
+        <View className="flex-row flex-wrap gap-2">
+          <LinkButton
+            href="/opportunities/saved"
+            label={t.savedCount(saved.count)}
+            className="min-h-[44px] flex-row items-center gap-1.5 rounded-full border border-line-2 bg-surface px-4"
+          >
+            <Bookmark size={16} color={palette.navy} aria-hidden />
+            <Text className="font-figtree-semibold text-[14px] text-navy">
+              {t.savedCount(saved.count)}
+            </Text>
+          </LinkButton>
+          <LinkButton
+            href="/opportunities/responses"
+            label={t.respMineTitle}
+            className="min-h-[44px] items-center justify-center rounded-full border border-line-2 bg-surface px-4"
+          >
+            <Text className="font-figtree-semibold text-[14px] text-navy">{t.respMineTitle}</Text>
+          </LinkButton>
+          <LinkButton
+            href="/opportunities/mine"
+            label={t.myPostsTitle}
+            className="min-h-[44px] items-center justify-center rounded-full border border-line-2 bg-surface px-4"
+          >
+            <Text className="font-figtree-semibold text-[14px] text-navy">{t.myPostsTitle}</Text>
+          </LinkButton>
         </View>
         <View className="flex-row items-center gap-2">
           {searchBox}
@@ -848,6 +833,14 @@ export function OpportunitiesList({
             <SheetFilters filters={draft} onChange={setDraft} regions={regions} sectors={sectors} />
           </FilterSheet>
         </View>
+        <LinkButton
+          href="/opportunities/scan"
+          label={t.scanTitle}
+          className="min-h-[52px] flex-row items-center justify-center gap-2 rounded-[18px] bg-navy px-4"
+        >
+          <ScanSearch size={18} color={palette.navyInk} aria-hidden />
+          <Text className="font-figtree-bold text-[15px] text-white">{t.scanTitle}</Text>
+        </LinkButton>
         {tabs}
         {noSkills ? (
           <View className="flex-row flex-wrap items-center justify-between gap-2 rounded-card bg-blue-soft px-4 py-3">
@@ -857,78 +850,144 @@ export function OpportunitiesList({
         ) : null}
         {listLine}
         {list}
-        {alerts ? <AlertSwitch api={alerts} filters={filters} /> : null}
-        <YourLinks row />
-        <Text className="font-figtree text-[13px] leading-5 text-ink-2">{t.oppNoFeeNote}</Text>
+        {alerts ? (
+          <View className="rounded-card border border-line bg-surface px-5 py-3">
+            <AlertSwitch api={alerts} filters={filters} />
+          </View>
+        ) : null}
+        <View className="flex-row items-start gap-2 px-1">
+          <ShieldCheck size={14} color={palette.ink2} aria-hidden />
+          <Text className="flex-1 font-figtree text-[13px] leading-5 text-ink-2">
+            {t.oppNoFeeNote}
+          </Text>
+        </View>
       </View>
     );
 
+  const pill =
+    "min-h-[48px] flex-row items-center justify-center gap-2 rounded-full border border-line-2 bg-surface px-5";
   return (
-    <View className="flex-row flex-wrap items-start gap-6">
-      <View className="min-w-0 flex-1 basis-[600px] gap-4">
-        <View className="flex-row flex-wrap items-center justify-between gap-3">
-          <ScreenTitle>{t.navOpportunities}</ScreenTitle>
-          {postButton}
-        </View>
-        <View className="flex-row">{searchBox}</View>
-        {tabs}
-        <TypePills filters={filters} apply={apply} />
-        <FilterRow filters={filters} apply={apply} regions={regions} sectors={sectors} />
-        {listLine}
-        {list}
-      </View>
-      <View className="w-[300px] gap-4">
-        <SideCard title={t.scanTitle}>
-          <Text className="font-figtree text-sm leading-5 text-ink-2">{t.oppScanCardText}</Text>
-          <LinkButton
-            href="/opportunities/scan"
-            label={t.oppScanNow}
-            className="min-h-[44px] items-center justify-center rounded-full bg-navy px-4"
-          >
-            <Text className="font-figtree-bold text-sm text-navy-ink">{t.oppScanNow}</Text>
-          </LinkButton>
-        </SideCard>
-        {filters.kind === "tender" ? (
-          <SideCard title={t.oppTendersNeedBusiness}>
-            <Text className="font-figtree text-sm leading-5 text-ink-2">
-              {t.oppTendersNeedBusinessText}
-            </Text>
-            <LinkButton
-              href="/business"
-              label={t.verifyBusinessLink}
-              className="min-h-[44px] justify-center self-start"
-            >
-              <Text className="font-figtree-semibold text-sm text-blue">
-                {t.verifyBusinessLink}
-              </Text>
-            </LinkButton>
-          </SideCard>
-        ) : null}
-        {noSkills ? (
-          <SideCard title={t.oppBetterMatches}>
-            <Text className="font-figtree text-sm leading-5 text-ink-2">
-              {t.oppAddSkillsForMatches}
-            </Text>
-            <AddSkillsLink />
-          </SideCard>
-        ) : null}
-        {alerts ? (
-          <SideCard title={t.oppAlertTitle}>
-            <AlertSwitch api={alerts} filters={filters} />
-          </SideCard>
-        ) : null}
-        <SideCard title={t.oppYourSide}>
-          <YourLinks />
-        </SideCard>
-        <View className="gap-2 rounded-2xl border border-line bg-surface-2 p-5">
+    <View className="gap-5">
+      <View className="flex-row flex-wrap items-start justify-between gap-4">
+        <View className="min-w-0 flex-1 basis-[420px] gap-1.5">
           <Text
             role="heading"
-            aria-level={2}
-            className="font-figtree-extrabold text-[15px] text-ink"
+            aria-level={1}
+            className="font-figtree-extrabold text-[32px] leading-[37px] text-navy"
           >
-            {t.oppStaySafe}
+            {t.navOpportunities}
           </Text>
-          <Text className="font-figtree text-sm leading-5 text-ink-2">{t.oppNoFeeNote}</Text>
+          <Text className="font-figtree text-[15px] leading-[22px] text-ink-2">
+            {t.oppSubtitle}
+          </Text>
+        </View>
+        <View className="flex-row flex-wrap items-center gap-3">
+          <LinkButton
+            href="/opportunities/saved"
+            label={t.savedCount(saved.count)}
+            className={pill}
+          >
+            <Bookmark size={18} color={palette.navy} aria-hidden />
+            <Text className="font-figtree-semibold text-[14px] text-navy">
+              {t.savedCount(saved.count)}
+            </Text>
+          </LinkButton>
+          <LinkButton href="/opportunities/responses" label={t.respMineTitle} className={pill}>
+            <Text className="font-figtree-semibold text-[14px] text-navy">{t.respMineTitle}</Text>
+          </LinkButton>
+          <LinkButton href="/opportunities/mine" label={t.myPostsTitle} className={pill}>
+            <Text className="font-figtree-semibold text-[14px] text-navy">{t.myPostsTitle}</Text>
+          </LinkButton>
+          {postButton}
+        </View>
+      </View>
+      <View className="flex-row">{searchBox}</View>
+      <TypePills filters={filters} apply={apply} />
+      <View className="flex-row flex-wrap items-start gap-4">
+        <View className="min-w-0 flex-1 basis-[600px] gap-3">
+          <FilterRow filters={filters} apply={apply} regions={regions} sectors={sectors} boxed />
+          {alerts ? (
+            <View className="rounded-card border border-line bg-surface px-5 py-3">
+              <AlertSwitch api={alerts} filters={filters} />
+            </View>
+          ) : null}
+          <View className="flex-row flex-wrap items-end justify-between gap-3">
+            {listLine}
+            {tabs}
+          </View>
+          {phone ? null : list}
+        </View>
+        <View className="w-[448px] max-w-full gap-4">
+          <View className="gap-3 rounded-card bg-navy px-5 py-5">
+            <View className="flex-row items-center gap-2">
+              <ScanSearch size={20} color={palette.navyInk} aria-hidden />
+              <Text
+                role="heading"
+                aria-level={2}
+                className="font-figtree-bold text-[18px] text-white"
+              >
+                {t.scanTitle}
+              </Text>
+            </View>
+            <Text className="font-figtree text-[14px] leading-[21px] text-white">
+              {t.oppScanCardText}
+            </Text>
+            <LinkButton
+              href="/opportunities/scan"
+              label={t.oppScanNow}
+              className="min-h-[48px] items-center justify-center self-start rounded-full bg-blue-soft px-5"
+            >
+              <Text className="font-figtree-semibold text-[15px] text-navy">{t.oppScanNow}</Text>
+            </LinkButton>
+            {noSkills ? (
+              <View className="flex-row flex-wrap items-center gap-x-2">
+                <Text className="font-figtree text-[12px] text-navy-ink">
+                  {t.oppAddSkillsForMatches}
+                </Text>
+                <LinkButton
+                  href="/profile/edit"
+                  label={t.oppAddSkills}
+                  className="min-h-[32px] justify-center"
+                >
+                  <Text className="font-figtree-bold text-[12px] text-white underline">
+                    {t.oppAddSkills}
+                  </Text>
+                </LinkButton>
+              </View>
+            ) : null}
+          </View>
+          {filters.kind === "tender" ? (
+            <View className="gap-2.5 rounded-card bg-warn-soft px-5 py-[18px]">
+              <View className="flex-row items-center gap-2">
+                <Lock size={16} color={palette.warnText} aria-hidden />
+                <Text
+                  role="heading"
+                  aria-level={2}
+                  className="font-figtree-bold text-[16px] text-warn-text"
+                >
+                  {t.oppTendersNeedBusiness}
+                </Text>
+              </View>
+              <Text className="font-figtree text-[14px] leading-[21px] text-ink">
+                {t.oppTendersNeedBusinessText}
+              </Text>
+              <LinkButton
+                href="/business"
+                label={t.verifyBusinessLink}
+                className="min-h-[40px] items-center justify-center rounded-full bg-navy px-5"
+              >
+                <Text className="font-figtree-semibold text-[14px] text-white">
+                  {t.verifyBusinessLink}
+                </Text>
+              </LinkButton>
+            </View>
+          ) : null}
+          <View className="flex-row items-start gap-2 px-1">
+            <ShieldCheck size={14} color={palette.ink2} aria-hidden />
+            <Text className="flex-1 font-figtree text-[13px] leading-5 text-ink-2">
+              {t.oppNoFeeNote}
+            </Text>
+          </View>
         </View>
       </View>
     </View>

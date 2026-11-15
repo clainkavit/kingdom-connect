@@ -5,6 +5,7 @@ import { memberProfileApi } from "../../src/lib/profile-api";
 import { connectionsApi } from "../../src/lib/connections";
 import { dashboardApi } from "../../src/lib/dashboard";
 import { dashboardWidgetsApi } from "../../src/lib/dashboard-widgets";
+import { loadMyActivity } from "../../src/lib/my-activity";
 import { memberNewsApi } from "../../src/lib/news";
 import { peopleYouMayKnowApi } from "../../src/lib/people-you-may-know";
 import { scanApi } from "../../src/lib/scan";
@@ -31,6 +32,7 @@ export default function DashboardPage() {
       people={peopleYouMayKnowApi}
       scan={scanApi}
       profile={() => memberProfileApi.load(null, language)}
+      activity={loadMyActivity}
     />
   );
 }

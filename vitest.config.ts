@@ -27,7 +27,13 @@ export default defineConfig({
       {
         esbuild: { jsx: "automatic" },
         resolve: {
-          alias: { "react-native": "react-native-web", "lucide-react-native": "lucide-react" },
+          alias: {
+            "react-native": "react-native-web",
+            "lucide-react-native": "lucide-react",
+            "react-native-svg": fileURLToPath(
+              new URL("./apps/member/src/test-svg.tsx", import.meta.url),
+            ),
+          },
         },
         test: {
           name: "member",

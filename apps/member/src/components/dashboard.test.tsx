@@ -50,8 +50,9 @@ async function show(api: DashboardApi, connections: ConnectionsApi) {
 describe("DashboardScreen (S08)", () => {
   it("welcomes the member with the date and their location", async () => {
     await show(fakeApi(), fakeConnections());
-    expect(screen.getByText("Hello, Dash Member")).toBeTruthy();
-    expect(screen.getByText("4 November 2026 · Ilemela, Mwanza")).toBeTruthy();
+    expect(screen.getByText("Welcome, Dash")).toBeTruthy();
+    expect(screen.getByText("4 November 2026")).toBeTruthy();
+    expect(screen.getByText("Ilemela, Mwanza")).toBeTruthy();
   });
 
   it("answers connection requests inline", async () => {
@@ -105,13 +106,13 @@ describe("DashboardScreen (S08)", () => {
     expect(screen.getByRole("link", { name: "Scan for opportunities" })).toBeTruthy();
     expect(screen.getByRole("link", { name: "Post training" })).toBeTruthy();
     expect(screen.queryByRole("link", { name: "Post an opportunity" })).toBeNull();
-    expect(screen.getByText("Verify your business to post opportunities.")).toBeTruthy();
+    expect(screen.getByText("Verify your business to post opportunities")).toBeTruthy();
   });
 
   it("asks a Level 2 business to verify further before posting opportunities", async () => {
     await show(fakeApi(welcome({ level: 2 })), fakeConnections());
     expect(screen.queryByRole("link", { name: "Post an opportunity" })).toBeNull();
-    expect(screen.getByText("Verify your business to post opportunities.")).toBeTruthy();
+    expect(screen.getByText("Verify your business to post opportunities")).toBeTruthy();
   });
 
   it("hides every posting action while posting is paused", async () => {
@@ -129,7 +130,7 @@ describe("DashboardScreen (S08)", () => {
     expect(screen.getByRole("link", { name: "Post an opportunity" }).getAttribute("href")).toBe(
       "/opportunities/new",
     );
-    expect(screen.queryByText("Verify your business to post opportunities.")).toBeNull();
+    expect(screen.queryByText("Verify your business to post opportunities")).toBeNull();
   });
 
   it("shows no community counts at all", async () => {
@@ -209,12 +210,12 @@ describe("Home layout (13 Nov 2026 redesign)", () => {
     });
   };
 
-  it("is titled Home, with the welcome, the member's badges and what they can do (canvas, U01)", async () => {
+  it("opens with the canvas welcome, the member's badges and what they can do (canvas, U01)", async () => {
     await showWith(COMPUTER);
-    expect(screen.getByRole("heading", { name: "Home" })).toBeTruthy();
-    expect(screen.getByText("Hello, Dash Member")).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Welcome, Dash" })).toBeTruthy();
+    expect(screen.getByText("Welcome, Dash")).toBeTruthy();
     expect(screen.getByText("Verified member")).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Next steps" })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Your profile" })).toBeTruthy();
     for (const name of ["Share an idea", "Post training"])
       expect(screen.getByRole("link", { name })).toBeTruthy();
   });
@@ -228,7 +229,7 @@ describe("Home layout (13 Nov 2026 redesign)", () => {
 
   it("keeps the same pieces on a phone, stacked", async () => {
     await showWith(PHONE);
-    expect(screen.getByRole("heading", { name: "Next steps" })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Your profile" })).toBeTruthy();
     expect(screen.getByText("No requests waiting")).toBeTruthy();
   });
 });

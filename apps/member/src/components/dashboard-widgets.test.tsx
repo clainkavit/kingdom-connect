@@ -56,8 +56,8 @@ describe("LatestItems (S08, D01)", () => {
     expect(screen.getByRole("link", { name: "Solar dryers" }).getAttribute("href")).toBe(
       "/ideas/i1",
     );
-    expect(screen.getByText("Training · Online · 10 November 2026")).toBeTruthy();
-    expect(screen.getByText("Idea · Prototype · Agriculture · 10 November 2026")).toBeTruthy();
+    expect(screen.getByText("Online · 10 November 2026")).toBeTruthy();
+    expect(screen.getByText("Prototype · Agriculture · 10 November 2026")).toBeTruthy();
   });
 
   it("loads another tab, and shows no counts on any tab", async () => {
@@ -92,7 +92,9 @@ describe("LatestItems (S08, D01)", () => {
         })}
       />,
     );
-    const links = screen.getAllByRole("link");
+    const links = screen
+      .getAllByRole("link")
+      .filter((l) => l.getAttribute("aria-label") !== "See all");
     expect(links[0]?.getAttribute("href")).toBe("/opportunities/o9");
     expect(screen.getAllByRole("link", { name: "Supply of school uniforms" })).toHaveLength(1);
     expect(

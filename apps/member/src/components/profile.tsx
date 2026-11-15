@@ -14,12 +14,32 @@ import { Button, ChoiceList, Field, Message } from "./form";
 import { LinkButton } from "./link-button";
 import { ScreenTitle } from "./screens";
 
-export function Section({ title, children }: { title: string; children: React.ReactNode }) {
+/** A canvas card: the title (17px bold), an optional "See all ›" style link on the right, then the content. */
+export function Section({
+  title,
+  children,
+  action,
+}: {
+  title: string;
+  children: React.ReactNode;
+  action?: { label: string; href: string };
+}) {
   return (
-    <View className="gap-2 rounded-card border border-line bg-surface px-5 py-[18px]">
-      <Text role="heading" aria-level={2} className="font-figtree-bold text-base text-ink">
-        {title}
-      </Text>
+    <View className="gap-3 rounded-card border border-line bg-surface px-5 py-5">
+      <View className="flex-row flex-wrap items-center justify-between gap-2">
+        <Text role="heading" aria-level={2} className="font-figtree-bold text-[17px] text-ink">
+          {title}
+        </Text>
+        {action ? (
+          <LinkButton
+            href={action.href}
+            label={action.label}
+            className="min-h-[32px] justify-center"
+          >
+            <Text className="font-figtree-semibold text-[14px] text-navy">{action.label} ›</Text>
+          </LinkButton>
+        ) : null}
+      </View>
       {children}
     </View>
   );

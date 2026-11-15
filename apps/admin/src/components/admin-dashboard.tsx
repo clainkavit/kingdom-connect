@@ -221,7 +221,7 @@ export function AdminDashboard({
         {overview?.staffName ? greeting(overview.staffName.split(" ")[0]!) : t.adminDashboardTitle}
       </ScreenTitle>
       <div className="flex flex-col gap-4">
-        <nav aria-label={t.quickActions} className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2">
           {(
             [
               [t.adminQuickPost, "/post"],
@@ -233,7 +233,7 @@ export function AdminDashboard({
               {label}
             </Link>
           ))}
-        </nav>
+        </div>
         <Notice tone="warn" text={failed ? t.adminStatsStale : null} />
         <SecurityAlerts api={api} />
         {overdue > 0 ? (

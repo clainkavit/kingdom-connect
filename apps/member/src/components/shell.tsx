@@ -1,8 +1,9 @@
 import { isCurrent, memberNav, memberPhoneTabs, type NavItem } from "@kingdom-connect/shared";
+import logo from "../../assets/brand/logo.jpg";
 import { usePathname, useRouter } from "expo-router";
 import Search from "lucide-react-native/icons/search";
 import { useState } from "react";
-import { ScrollView, Text, TextInput, useWindowDimensions, View } from "react-native";
+import { Image, ScrollView, Text, TextInput, View, useWindowDimensions } from "react-native";
 import { useLanguage } from "../lib/language";
 import { LanguageMenu } from "./language-menu";
 import { EnterOnChange } from "./motion";
@@ -23,18 +24,15 @@ function Wordmark({ phone }: { phone?: boolean }) {
   );
 }
 
+/** The crown logo, cropped as on the canvas header: 40 by 36 with 10px corners. */
 function Mark() {
-  const { platformName } = useLanguage();
-  const initials = platformName
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((w) => w[0]!.toUpperCase())
-    .join("");
   return (
-    <View aria-hidden className="h-9 w-9 items-center justify-center rounded-full bg-navy">
-      <Text className="font-figtree-extrabold text-[15px] text-navy-ink">{initials}</Text>
-    </View>
+    <Image
+      source={logo}
+      aria-hidden
+      resizeMode="cover"
+      style={{ width: 40, height: 36, borderRadius: 10 }}
+    />
   );
 }
 
@@ -231,8 +229,11 @@ export function MemberShell({
           </View>
         </View>
       )}
-      <ScrollView className="flex-1" contentContainerClassName={wide ? "px-7 py-6" : "px-5 py-4"}>
-        <View role="main">
+      <ScrollView
+        className="flex-1"
+        contentContainerClassName={wide ? "items-center px-10 py-6" : "px-5 py-4"}
+      >
+        <View role="main" className={wide ? "w-full max-w-[1360px]" : ""}>
           <EnterOnChange value={pathname}>{children}</EnterOnChange>
         </View>
       </ScrollView>

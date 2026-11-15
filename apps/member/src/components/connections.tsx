@@ -1,5 +1,9 @@
+import { useRouter } from "expo-router";
+import Clock from "lucide-react-native/icons/clock";
+import Flag from "lucide-react-native/icons/flag";
+import UserPlus from "lucide-react-native/icons/user-plus";
 import { useEffect, useState } from "react";
-import { Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 import {
   MAX_NOTE_LENGTH,
   MAX_REQUESTS_PER_DAY,
@@ -18,6 +22,8 @@ import { Button, ConfirmButton, Field, Message } from "./form";
 import { LinkButton } from "./link-button";
 import { MessageButton } from "./messages";
 import { ReportLink } from "./report-link";
+import { reportHref } from "../lib/reports";
+import { usePalette } from "./palette";
 import { Avatar, Section } from "./profile";
 import { ScreenTitle } from "./screens";
 import { EmptyState, ErrorState, LoadingRows } from "./states";
@@ -176,6 +182,7 @@ export function ConnectPanel({
   messagesApi,
   startWriting = false,
   onBlocked,
+  split,
 }: {
   memberId: string;
   name: string;
@@ -183,8 +190,13 @@ export function ConnectPanel({
   messagesApi: MessagesApi;
   startWriting?: boolean;
   onBlocked: () => void;
+  /** The canvas profile on a computer: pills for the maroon hero, and a card for the side column. */
+  split?: (hero: React.ReactNode, side: React.ReactNode) => React.ReactNode;
 }) {
   const { t } = useLanguage();
+  const palette = usePalette();
+  const router = useRouter();
+  const [confirming, setConfirming] = useState<"block" | "remove" | null>(null);
   const [relation, setRelation] = useState<Relation | null>(null);
   const [writing, setWriting] = useState(startWriting);
   const [note, setNote] = useState("");
@@ -218,6 +230,126 @@ export function ConnectPanel({
   };
 
   if (!relation) return null;
+
+  if (split) {
+    const first = name.split(/\s+/)[0] ?? name;
+    const pill = "min-h-[48px] flex-row items-center justify-center gap-2 rounded-full px-5";
+    const outline = `${pill} border border-white/40`;
+    const primary = (label: string, onPress: () => void, Icon?: typeof UserPlus) => (
+      <Pressable
+        role="button"
+        aria-label={label}
+        onPress={onPress}
+        className={`${pill} bg-blue-soft`}
+      >
+        {Icon ? <Icon size={18} color={palette.navy} aria-hidden /> : null}
+        <Text className="font-figtree-semibold text-[15px] text-navy">{label}</Text>
+      </Pressable>
+    );
+    const openThread = async () => {
+      setActionFailed(false);
+      const id = await messagesApi.openThread(memberId).catch(() => null);
+      if (id) router.push(`/messages/${id}`);
+      else setActionFailed(true);
+    };
+    const hero = (
+      <View className="flex-row flex-wrap items-center gap-3">
+        {relation === "none" ? primary(t.connect, () => setWriting(true), UserPlus) : null}
+        {relation === "sent" ? (
+          <View className={`${pill} bg-blue-soft`}>
+            <Clock size={18} color={palette.navy} aria-hidden />
+            <Text className="font-figtree-semibold text-[15px] text-navy">{t.requestSent}</Text>
+          </View>
+        ) : null}
+        {relation === "received"
+          ? primary(t.respondInConnections, () => router.push("/connections"))
+          : null}
+        {relation === "connected" ? primary(t.messageButton, openThread) : null}
+        <LinkButton
+          href={reportHref({ type: "profile", id: memberId }, memberId)}
+          label={t.reportAction}
+          className={outline}
+        >
+          <Flag size={16} color="#ffffff" aria-hidden />
+          <Text className="font-figtree-semibold text-[15px] text-white">{t.reportAction}</Text>
+        </LinkButton>
+        <Pressable
+          role="button"
+          aria-label={t.blockMember}
+          onPress={() => setConfirming("block")}
+          className={outline}
+        >
+          <Text className="font-figtree-semibold text-[15px] text-white">{t.blockMember}</Text>
+        </Pressable>
+      </View>
+    );
+    const confirmCard = confirming ? (
+      <View className="gap-3 rounded-card border border-line bg-surface px-5 py-5">
+        <Text className="font-figtree text-[15px] text-ink">
+          {confirming === "block" ? t.confirmBlock(name) : t.confirmRemove(name)}
+        </Text>
+        <View className="flex-row flex-wrap gap-2">
+          <Button
+            label={confirming === "block" ? t.confirmBlockButton : t.confirmRemoveButton}
+            onPress={async () => {
+              setActionFailed(false);
+              if (confirming === "block") {
+                if (await api.block(memberId).catch(() => false)) onBlocked();
+                else setActionFailed(true);
+              } else if (await api.remove(memberId).catch(() => false)) setRelation("none");
+              else setActionFailed(true);
+              setConfirming(null);
+            }}
+          />
+          <Button secondary label={t.cancel} onPress={() => setConfirming(null)} />
+        </View>
+      </View>
+    ) : null;
+    const side = (
+      <View className="gap-4">
+        {confirmCard}
+        {relation === "none" ? (
+          <View
+            className={`gap-3 rounded-card border-[1.5px] bg-surface px-5 py-5 ${writing ? "border-navy" : "border-line"}`}
+          >
+            <Text role="heading" aria-level={2} className="font-figtree-bold text-[17px] text-ink">
+              {t.connectWith(first)}
+            </Text>
+            <Field
+              label={t.connectNote}
+              value={note}
+              onChange={(v) => {
+                setNote(v);
+                setWriting(true);
+              }}
+              multiline
+              hint={t.connectNoteHint(MAX_NOTE_LENGTH)}
+              problem={noteLength(note) > MAX_NOTE_LENGTH ? t.tooLongField(MAX_NOTE_LENGTH) : null}
+            />
+            <Button
+              label={t.sendRequest}
+              onPress={send}
+              disabled={busy || noteLength(note) > MAX_NOTE_LENGTH}
+            />
+            <Text className="font-figtree text-[13px] text-ink-2">
+              {t.connectAfterAccept(first)}
+            </Text>
+          </View>
+        ) : null}
+        {relation === "connected" ? (
+          <View className="gap-3 rounded-card border border-line bg-surface px-5 py-5">
+            <Text className="font-figtree-semibold text-[15px] text-good-text">{t.connected}</Text>
+            <Button secondary label={t.removeConnection} onPress={() => setConfirming("remove")} />
+          </View>
+        ) : null}
+        {result && result !== "sent" && result !== "connected" ? (
+          <Message text={refusalMessage[result]} />
+        ) : null}
+        <Message text={actionFailed ? t.actionFailed : null} />
+      </View>
+    );
+    return <>{split(hero, side)}</>;
+  }
 
   return (
     <View className="gap-3">

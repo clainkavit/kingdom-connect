@@ -19,6 +19,18 @@ const pairs: Pair[] = [
   { board: "Member-Dashboard", route: "/", w: 1440, h: 2300 },
   { board: "Member-People", route: "/people", w: 1440, h: 1700 },
   { board: "Member-Phone-People", route: "/people", w: 430, h: 900 },
+  {
+    board: "Member-Profile",
+    route: "/profile/5eed0000-0000-4000-8000-000000000002",
+    w: 1440,
+    h: 1500,
+  },
+  {
+    board: "Member-Phone-Profile",
+    route: "/profile/5eed0000-0000-4000-8000-000000000002",
+    w: 430,
+    h: 900,
+  },
   { board: "Opp-List", route: "/opportunities", w: 1440, h: 1700 },
   { board: "Ideas-Pool", route: "/ideas", w: 1440, h: 1500 },
   { board: "Web-Growth", route: "/growth", w: 1440, h: 960 },

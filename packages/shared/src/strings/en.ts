@@ -2017,4 +2017,13 @@ export const en = {
       withdrawn: "Withdrawn",
       hired: "Hired",
     })[status] ?? status,
+  connectWith: (name: string) => `Connect with ${name}`,
+  connectAfterAccept: (name: string) => `You can message each other once ${name} accepts.`,
+  backToPeople: "Back to People",
+  studiedLine: (study: string) => `Studied: ${study}`,
+  contactMaskedPhone: "Phone: +255 ••• ••• •••",
+  contactMaskedEmail: "Email: •••••@•••••",
+  contactMaskedNote: (name: string) =>
+    `${name} chooses whether connections can see these. Connect to talk through Kingdom Connect.`,
+  contactDetailsTitle: "Contact details",
 };

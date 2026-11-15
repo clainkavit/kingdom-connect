@@ -2054,4 +2054,13 @@ export const sw: Strings = {
       withdrawn: "Limeondolewa",
       hired: "Ameajiriwa",
     })[status] ?? status,
+  connectWith: (name: string) => `Unganika na ${name}`,
+  connectAfterAccept: (name: string) => `Mtaweza kutumiana ujumbe ${name} akikubali.`,
+  backToPeople: "Rudi kwa Watu",
+  studiedLine: (study: string) => `Alisoma: ${study}`,
+  contactMaskedPhone: "Simu: +255 ••• ••• •••",
+  contactMaskedEmail: "Barua pepe: •••••@•••••",
+  contactMaskedNote: (name: string) =>
+    `${name} anaamua kama waliounganika wanaweza kuona haya. Unganika ili kuzungumza kupitia Kingdom Connect.`,
+  contactDetailsTitle: "Mawasiliano",
 };

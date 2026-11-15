@@ -473,7 +473,8 @@ function FilterRow({
     <Wrap>
       <FilterMenu
         label={boxed ? t.filterLocation : t.region}
-        value={labelOf(regions, filters.region) ?? (boxed ? t.anyRegion : null)}
+        value={labelOf(regions, filters.region)}
+        placeholder={t.anyRegion}
         boxed={boxed}
         open={menu === "region"}
         onToggle={() => toggle("region")}
@@ -514,10 +515,8 @@ function FilterRow({
       ) : null}
       <FilterMenu
         label={t.oppPosted}
-        value={
-          labelOf(postedChoices(t).slice(1), filters.postedWithin?.toString()) ??
-          (boxed ? t.anyTime : null)
-        }
+        value={labelOf(postedChoices(t).slice(1), filters.postedWithin?.toString())}
+        placeholder={t.anyTime}
         boxed={boxed}
         open={menu === "posted"}
         onToggle={() => toggle("posted")}

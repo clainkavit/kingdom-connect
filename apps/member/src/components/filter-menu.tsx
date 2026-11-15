@@ -79,6 +79,7 @@ export function FilterMenu({
   onToggle,
   children,
   boxed,
+  placeholder,
 }: {
   label: string;
   value: string | null;
@@ -87,6 +88,8 @@ export function FilterMenu({
   children: React.ReactNode;
   /** The canvas filter card: the label above a full-width box showing the choice or Any. */
   boxed?: boolean;
+  /** What the box says while nothing is chosen, e.g. "Any region". */
+  placeholder?: string;
 }) {
   const { t } = useLanguage();
   const palette = usePalette();
@@ -97,13 +100,13 @@ export function FilterMenu({
         <Text className="pl-3.5 font-figtree-semibold text-[13px] text-ink-2">{label}</Text>
         <Pressable
           role="button"
-          aria-label={`${label}: ${value ?? t.anyOption}`}
+          aria-label={`${label}: ${value ?? placeholder ?? t.anyOption}`}
           aria-expanded={open}
           onPress={onToggle}
           className={`min-h-[44px] flex-row items-center justify-between gap-2 rounded-full border bg-surface px-4 ${on ? "border-navy" : "border-line-2"}`}
         >
           <Text numberOfLines={1} className="flex-1 font-figtree text-[15px] text-ink">
-            {value ?? t.anyOption}
+            {value ?? placeholder ?? t.anyOption}
           </Text>
           <ChevronDown
             size={16}

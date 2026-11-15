@@ -5,7 +5,7 @@ const BUCKET = "response-files";
 export const RESPONSE_FILE_MAX = 5 * 1024 * 1024;
 export const NOTE_MAX = 2000;
 
-export type ResponseStatus = "new" | "shortlisted" | "declined" | "withdrawn";
+export type ResponseStatus = "new" | "shortlisted" | "declined" | "withdrawn" | "hired";
 export type ResponseKind = "application" | "interest";
 export type PickedPdf = { uri: string; name: string; mime: string; size: number };
 

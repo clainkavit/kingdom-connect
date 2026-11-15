@@ -4,10 +4,12 @@ import { ConnectPanel } from "../../../src/components/connections";
 import { ProfileIdeas } from "../../../src/components/ideas-pool";
 import { ProfileView } from "../../../src/components/profile";
 import { ProfileLoader } from "../../../src/components/profile-screen";
+import { ProfileReferences } from "../../../src/components/work";
 import { connectionsApi } from "../../../src/lib/connections";
 import { ideasApi } from "../../../src/lib/ideas";
 import { memberMessagesApi } from "../../../src/lib/messages-api";
 import { memberProfileApi } from "../../../src/lib/profile-api";
+import { workApi } from "../../../src/lib/work";
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const NO_SUCH_MEMBER = "00000000-0000-0000-0000-000000000000";
@@ -25,6 +27,14 @@ export default function MemberProfileScreen() {
         <ProfileView
           profile={profile}
           ideas={<ProfileIdeas api={ideasApi} memberId={profile.memberId} />}
+          references={
+            <ProfileReferences
+              api={workApi}
+              memberId={profile.memberId}
+              name={profile.fullName}
+              own={profile.own}
+            />
+          }
           actions={
             <ConnectPanel
               memberId={profile.memberId}

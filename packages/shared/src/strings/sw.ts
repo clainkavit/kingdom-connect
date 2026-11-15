@@ -1813,4 +1813,72 @@ export const sw: Strings = {
   adminModOpportunities: "Fursa",
   adminModIdeas: "Mawazo",
   adminModTenders: "Zabuni",
+  workTitle: "Kazi za kuthibitisha na kutathmini",
+  workIntro:
+    "Tathmini zinatoka tu kwenye kazi ambayo pande zote mbili zimethibitisha. Hakuna anayeona tathmini ya mwenzake hadi wote watoe, au siku 14 zipite.",
+  workLoadFailed: "Hatukuweza kupakia kazi zako. Jaribu tena.",
+  workEmpty: "Hakuna kazi ya kuthibitisha au kutathmini",
+  workEmptyHint: "Mtangazaji akikuweka kama aliyeajiriwa, au ukimweka mtu, itaonekana hapa.",
+  workNotFound: "Kazi hii haipo hapa",
+  workFailed: "Haikufanikiwa. Jaribu tena.",
+  workYouHired: (name: string) => `Ulimwajiri ${name}`,
+  workHiredYou: (name: string) => `${name} alikuajiri`,
+  workConfirmTitle: "Ulifanya kazi hii?",
+  workConfirmMarked: (name: string, title: string) =>
+    `${name} amekuweka kama aliyeajiriwa kwa ${title}.`,
+  workConfirmYesMeans:
+    "Ukisema ndiyo, mnaweza kutathminiana kwa siku 14. Hakuna anayeona tathmini ya mwenzake hadi wote watoe, au siku 14 ziishe.",
+  workConfirmNoMeans: "Ukisema hapana, hakuna kinachoshirikiwa na hakuna tathmini inayofunguka.",
+  workConfirmYes: "Ndiyo, nilifanya kazi hii",
+  workConfirmNo: "Hapana, sikufanya",
+  workConfirmPrivate:
+    "Kusema hapana ni siri. Mtu akikuweka kama aliyeajiriwa kimakosa zaidi ya mara moja, wafanyakazi wanalifuatilia.",
+  workWaiting: (name: string) => `Tunasubiri ${name} athibitishe kazi.`,
+  workDenied: "Haijathibitishwa. Hakuna tathmini inayofunguka kwa kazi hii.",
+  workSent: "Tathmini imetumwa. Haiwezi kubadilishwa.",
+  workClosed: "Siku 14 za kutathmini kazi hii zimeisha.",
+  workDaysLeft: (days: number) =>
+    days === 1 ? "Imebaki siku 1 kutathmini" : `Zimebaki siku ${days} kutathmini`,
+  workRate: "Tathmini kazi",
+  workContactDetails: "Ondoa namba za simu na barua pepe, kisha tuma tena.",
+  rateTitle: (name: string) => `Kufanya kazi na ${name} kulikuwaje?`,
+  rateHidden: (name: string, days: number) =>
+    `Imefichwa. ${name} hataiona tathmini yako hadi naye akutathmini, au muda uishe. Zimebaki siku ${days}. Ukishatuma, tathmini haiwezi kubadilishwa.`,
+  rateOnTime: "Alifanya alichoahidi, kwa wakati",
+  rateQuality: "Ubora wa kazi",
+  rateCommunication: "Mawasiliano",
+  rateHonesty: "Uaminifu na heshima",
+  rateAgain: (name: string) => `Ungefanya kazi na ${name} tena?`,
+  rateComment: "Maneno machache kwa wasifu wake (si lazima)",
+  rateCommentHint: (name: string) =>
+    `Yanaonekana kwenye wasifu wa ${name} mkishatathminiana wote, na baada ya kuwa na tathmini 3 au zaidi. ${name} anaweza kujibu mara moja.`,
+  rateNote: "Ujumbe wa siri kwa Kingdom Connect (si lazima)",
+  rateNoteHint: (name: string) =>
+    `${name} haoni hili kamwe. Wafanyakazi wanalisoma wanapochagua watu kwa Kingdom Connect ikuchagulie.`,
+  rateSend: "Tuma tathmini",
+  rateIncomplete: "Toa alama zote nne na useme kama ungefanya naye kazi tena.",
+  rateTooLong: (max: number) => `Isizidi herufi ${max}.`,
+  rateRules:
+    "Bila namba za simu, barua pepe wala matusi. Wafanyakazi huondoa tathmini zinazovunja kanuni za jamii.",
+  refTitle: "Marejeo ya kazi",
+  refFromConfirmed: "Kutoka kazi iliyothibitishwa tu",
+  refAgain: (again: number, total: number, name: string) =>
+    `Wanachama ${again} kati ya ${total} waliofanya kazi na ${name} wangefanya naye kazi tena`,
+  refReplied: (name: string) => `${name} alijibu:`,
+  refReply: "Jibu",
+  refReplyHint: "Unaweza kujibu mara moja. Jibu linaonekana chini ya tathmini.",
+  refReplySend: "Tuma jibu",
+  refReplyEmpty: "Andika jibu lako kwanza.",
+  refOwnUnder3: "Marejeo yako yataonekana ukishakuwa na 3.",
+  refFootnote:
+    "Marejeo ya mwanachama yanaonekana akishakuwa na 3 au zaidi. Tathmini zinabaki zimefichwa hadi pande zote zitoe, ili hakuna anayeweza kulipiza.",
+  respStatusHired: "Ameajiriwa",
+  respHiredWaiting: (name: string) => `Ameajiriwa · tunamsubiri ${name}`,
+  respMarkHired: "Weka kama aliyeajiriwa",
+  respMarkHiredConfirm: (name: string) =>
+    `Mweke ${name} kama aliyeajiriwa? Ataombwa athibitishe, kisha mnaweza kutathminiana kwa siku 14.`,
+  respWhyHiredTitle: "Kwa nini umweke mtu kama aliyeajiriwa?",
+  respWhyHired:
+    "Akishathibitisha, mnaweza kutathminiana kwa siku 14. Tathmini zinatoka tu kwenye kazi halisi ambayo pande zote zimethibitisha. Zinawasaidia wanachama, na kuisaidia Kingdom Connect kuchagua watu wanaoaminika zaidi kwa watangazaji wengine.",
+  respConfirmWork: "Thibitisha au tathmini kazi",
 };

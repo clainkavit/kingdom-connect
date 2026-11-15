@@ -13,6 +13,7 @@ import {
   type ResponsesApi,
   type ResponseStatus,
 } from "../lib/responses";
+import type { Engagement, WorkApi } from "../lib/work";
 import { useLoad } from "./events";
 import { Button, ConfirmButton, Field, Message } from "./form";
 import { LinkButton } from "./link-button";
@@ -27,6 +28,7 @@ const statusLabel: Record<ResponseStatus, TextKey> = {
   shortlisted: "respStatusShortlisted",
   declined: "respStatusDeclined",
   withdrawn: "respStatusWithdrawn",
+  hired: "respStatusHired",
 };
 
 const statusTone: Record<ResponseStatus, string> = {
@@ -34,15 +36,16 @@ const statusTone: Record<ResponseStatus, string> = {
   shortlisted: "bg-good-soft text-good-text",
   declined: "bg-bad-soft text-bad-text",
   withdrawn: "bg-surface-2 text-ink-2",
+  hired: "bg-navy text-navy-ink",
 };
 
-function StatusBadge({ status }: { status: ResponseStatus }) {
+function StatusBadge({ status, label }: { status: ResponseStatus; label?: string }) {
   const { t } = useLanguage();
   return (
     <Text
       className={`self-start rounded-full px-2.5 py-0.5 font-figtree-bold text-[12px] ${statusTone[status]}`}
     >
-      {t[statusLabel[status]] as string}
+      {label ?? (t[statusLabel[status]] as string)}
     </Text>
   );
 }
@@ -299,6 +302,15 @@ export function MyResponses({ api }: { api: ResponsesApi }) {
               </Text>
             </LinkButton>
             <StatusBadge status={r.status} />
+            {r.status === "hired" ? (
+              <LinkButton
+                href="/work"
+                label={t.respConfirmWork}
+                className="min-h-[40px] justify-center self-start"
+              >
+                <Text className="font-figtree-semibold text-sm text-blue">{t.respConfirmWork}</Text>
+              </LinkButton>
+            ) : null}
             {r.status === "new" ? (
               <View className="items-start">
                 <ConfirmButton
@@ -323,11 +335,15 @@ export function MyResponses({ api }: { api: ResponsesApi }) {
 
 function ResponseCard({
   api,
+  work,
+  hire,
   opportunityId,
   response,
   onChanged,
 }: {
   api: ResponsesApi;
+  work?: WorkApi;
+  hire?: Engagement;
   opportunityId: string;
   response: PostResponse;
   onChanged: () => void;
@@ -359,7 +375,14 @@ function ResponseCard({
           t.respSentOn(formatDate(response.sentAt, language)),
         ].join(" · ")}
       </Text>
-      <StatusBadge status={response.status} />
+      <StatusBadge
+        status={response.status}
+        label={
+          response.status === "hired" && hire && !hire.confirmedAt && !hire.deniedAt
+            ? t.respHiredWaiting(response.memberName)
+            : undefined
+        }
+      />
       {response.note ? (
         <Text className="font-figtree text-[15px] leading-6 text-ink">{response.note}</Text>
       ) : null}
@@ -379,6 +402,17 @@ function ResponseCard({
           {response.status === "new" ? (
             <Button label={t.respShortlist} onPress={() => decide("shortlisted")} />
           ) : null}
+          {response.status === "shortlisted" && work ? (
+            <ConfirmButton
+              label={t.respMarkHired}
+              question={t.respMarkHiredConfirm(response.memberName)}
+              confirmLabel={t.respMarkHired}
+              onConfirm={async () => {
+                if (await work.markHired(response.id).catch(() => false)) onChanged();
+                else setProblem(t.respFailed);
+              }}
+            />
+          ) : null}
           <ConfirmButton
             label={t.respDecline}
             question={t.respDeclineConfirm}
@@ -395,14 +429,23 @@ function ResponseCard({
 /** S21: the responses to one of my posts, newest first, to shortlist or decline (O03). */
 export function PostResponses({
   api,
+  work,
   opportunityId,
 }: {
   api: ResponsesApi;
+  /** O18: mark a shortlisted response as hired and show who has confirmed. */
+  work?: WorkApi;
   opportunityId: string;
 }) {
   const { t } = useLanguage();
   const [attempt, setAttempt] = useState(0);
   const loaded = useLoad(() => api.forPost(opportunityId), attempt);
+  const hires = useLoad(
+    () => (work ? work.engagements().catch(() => []) : Promise.resolve([])),
+    attempt,
+  );
+  const hireFor = (responseId: string) =>
+    hires.state === "ready" ? hires.value.find((h) => h.responseId === responseId) : undefined;
   return (
     <View className="gap-3">
       <LinkButton
@@ -424,12 +467,20 @@ export function PostResponses({
           <ResponseCard
             key={r.id}
             api={api}
+            work={work}
+            hire={hireFor(r.id)}
             opportunityId={opportunityId}
             response={r}
             onChanged={() => setAttempt((a) => a + 1)}
           />
         ))
       )}
+      {work && loaded.state === "ready" && loaded.value.some((r) => r.status === "shortlisted") ? (
+        <View className="gap-1 rounded-card border border-line bg-surface-2 p-4">
+          <Text className="font-figtree-bold text-[15px] text-ink">{t.respWhyHiredTitle}</Text>
+          <Text className="font-figtree text-sm leading-5 text-ink-2">{t.respWhyHired}</Text>
+        </View>
+      ) : null}
     </View>
   );
 }

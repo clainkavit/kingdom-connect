@@ -76,6 +76,8 @@ const opensByCode: [RegExp, string][] = [
   [/^C3$/, "/messages"],
   [/^E\d+$/, "/settings/privacy"],
   [/^X3$/, "/"],
+  [/^O1[123]$/, "/work"],
+  [/^O14$/, "/profile"],
   [/^[OX]\d+$/, "/opportunities"],
   [/^[IH]\d+$/, "/ideas"],
   [/^P\d+$/, "/ideas"],
@@ -531,7 +533,7 @@ export const notificationCopy = {
     inApp: true,
     email: "yes",
     push: true,
-    opens: "/opportunities",
+    opens: "/work",
     en: {
       title: "Did you work on {title}?",
       message: "{name} marked you as hired. Confirm it so you can rate each other.",
@@ -546,7 +548,7 @@ export const notificationCopy = {
     inApp: true,
     email: "yes",
     push: false,
-    opens: "/opportunities",
+    opens: "/work",
     en: {
       title: "How was working with {name}?",
       message:
@@ -563,7 +565,7 @@ export const notificationCopy = {
     inApp: true,
     email: "yes",
     push: false,
-    opens: "/opportunities",
+    opens: "/work",
     en: {
       title: "{days} days left to rate {name}",
       message: "Your rating of the work on {title} helps other members know who to trust.",
@@ -579,7 +581,7 @@ export const notificationCopy = {
     inApp: true,
     email: "no",
     push: false,
-    opens: "/opportunities",
+    opens: "/profile",
     en: {
       title: "New work reference",
       message: "A rating from your work on {title} is now on your profile. You can reply once.",

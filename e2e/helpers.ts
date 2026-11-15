@@ -541,3 +541,21 @@ export async function newSignInWithoutAccount(page: Page, email: string) {
   );
   return claims.sub as string;
 }
+
+/** O18: a shortlisted response, and earlier revealed ratings of a member from other confirmed work. */
+export async function shortlistResponse(opportunityId: string, memberId: string) {
+  await db`insert into public.responses (opportunity_id, member_id, kind, status)
+    values (${opportunityId}, ${memberId}, 'application', 'shortlisted')`;
+}
+
+export async function pastRatings(rateeId: string, raterIds: string[], opportunityId: string) {
+  for (const rater of raterIds) {
+    const [e] = await db`insert into public.engagements
+        (opportunity_id, poster_member_id, worker_member_id, confirmed_at, rating_closes_at)
+      values (${opportunityId}, ${rater}, ${rateeId}, now() - interval '20 days', now() - interval '6 days')
+      returning id`;
+    await db`insert into public.ratings
+        (engagement_id, rater_id, ratee_id, on_time, quality, communication, honesty, again, comment, revealed_at)
+      values (${e!.id}, ${rater}, ${rateeId}, 5, 5, 4, 5, true, 'Good work, on time.', now())`;
+  }
+}

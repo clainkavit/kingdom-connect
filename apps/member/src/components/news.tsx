@@ -9,7 +9,10 @@ import { EmptyState, ErrorState, LoadingRows } from "./states";
 function NewsCard({ item }: { item: MemberNewsItem }) {
   const { t, language } = useLanguage();
   return (
-    <View role="article" className="gap-2 rounded-card border border-line bg-surface p-4">
+    <View
+      role="article"
+      className="gap-2 rounded-card border border-line bg-surface px-5 py-[18px]"
+    >
       {item.imageUrl ? (
         <Image
           source={{ uri: item.imageUrl }}

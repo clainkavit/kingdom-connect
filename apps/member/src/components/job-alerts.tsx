@@ -112,7 +112,7 @@ export function JobAlertsScreen({ api }: { api: JobAlertsApi }) {
                   role="button"
                   aria-label={t.alertsRemoveThis(words)}
                   onPress={() => remove(alert.id)}
-                  className="min-h-[44px] items-center justify-center rounded-[9px] border border-line bg-surface px-4"
+                  className="min-h-[44px] items-center justify-center rounded-full border border-line-2 bg-surface px-4"
                 >
                   <Text className="font-figtree-semibold text-sm text-ink">{t.savedRemove}</Text>
                 </Pressable>

@@ -16,7 +16,7 @@ import { ScreenTitle } from "./screens";
 
 export function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <View className="gap-2 rounded-card border border-line bg-surface p-4">
+    <View className="gap-2 rounded-card border border-line bg-surface px-5 py-[18px]">
       <Text role="heading" aria-level={2} className="font-figtree-bold text-base text-ink">
         {title}
       </Text>
@@ -183,7 +183,7 @@ export function ProfileView({
           <LinkButton
             href="/profile/edit"
             label={t.editProfile}
-            className="min-h-[44px] justify-center rounded-[9px] border border-line bg-surface px-4"
+            className="min-h-[44px] justify-center rounded-full border border-line-2 bg-surface px-4"
           >
             <Text className="font-figtree-semibold text-sm text-ink-2">{t.editProfile}</Text>
           </LinkButton>

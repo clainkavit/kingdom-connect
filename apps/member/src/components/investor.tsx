@@ -148,21 +148,21 @@ export function InvestorPool({ ideas, investor }: { ideas: IdeasApi; investor: I
         <LinkButton
           href="/ideas/saved"
           label={t.investorSaved}
-          className="min-h-[48px] items-center justify-center rounded-[10px] border border-line bg-surface px-4"
+          className="min-h-[48px] items-center justify-center rounded-full border border-line-2 bg-surface px-4"
         >
           <Text className="font-figtree-semibold text-[15px] text-ink">{t.investorSaved}</Text>
         </LinkButton>
         <LinkButton
           href="/ideas/mine"
           label={t.ideasMine}
-          className="min-h-[48px] items-center justify-center rounded-[10px] border border-line bg-surface px-4"
+          className="min-h-[48px] items-center justify-center rounded-full border border-line-2 bg-surface px-4"
         >
           <Text className="font-figtree-semibold text-[15px] text-ink">{t.ideasMine}</Text>
         </LinkButton>
         <LinkButton
           href="/plans"
           label={t.plansTitle}
-          className="min-h-[48px] items-center justify-center rounded-[10px] border border-line bg-surface px-4"
+          className="min-h-[48px] items-center justify-center rounded-full border border-line-2 bg-surface px-4"
         >
           <Text className="font-figtree-semibold text-[15px] text-ink">{t.plansTitle}</Text>
         </LinkButton>

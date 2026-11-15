@@ -40,7 +40,7 @@ function CodeBoxes({ value, onChange }: { value: string; onChange: (v: string) =
         {Array.from({ length: CODE_LENGTH }, (_, i) => (
           <View
             key={i}
-            className={`min-h-[48px] flex-1 items-center justify-center rounded-[9px] border ${focused && i === active ? "border-blue" : "border-field"}`}
+            className={`min-h-[48px] flex-1 items-center justify-center rounded-full border ${focused && i === active ? "border-blue" : "border-field"}`}
           >
             <Text className="font-figtree-extrabold text-xl text-ink">{value[i] ?? ""}</Text>
           </View>

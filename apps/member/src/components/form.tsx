@@ -54,7 +54,7 @@ export function Field(props: {
         autoCorrect={false}
         keyboardType={props.keyboardType ?? "default"}
         multiline={props.multiline}
-        className={`min-h-[44px] rounded-[9px] border bg-surface px-3 font-figtree text-[15px] text-ink ${props.problem ? "border-bad" : "border-field"} ${props.multiline ? "py-2.5" : ""}`}
+        className={`border bg-surface font-figtree text-[15px] text-ink ${props.problem ? "border-bad" : "border-field"} ${props.multiline ? "min-h-[96px] rounded-[18px] px-4 py-3" : "min-h-[52px] rounded-full px-5"}`}
       />
       {props.hint && !props.problem ? (
         <Text className="font-figtree text-[13px] text-ink-2">{props.hint}</Text>
@@ -78,13 +78,13 @@ export function Button(props: {
       aria-disabled={props.disabled}
       disabled={props.disabled}
       onPress={props.onPress}
-      className={`items-center justify-center px-4 active:opacity-80 ${props.secondary ? "min-h-[44px] rounded-[9px] border border-line bg-surface" : "min-h-[48px] rounded-[10px] bg-blue"} ${props.disabled ? "opacity-50" : ""}`}
+      className={`items-center justify-center rounded-full px-5 active:opacity-80 ${props.secondary ? "min-h-[44px] border border-line-2 bg-surface" : "min-h-[48px] border border-blue bg-blue"} ${props.disabled ? "opacity-50" : ""}`}
     >
       <Text
         className={
           props.secondary
-            ? "font-figtree-semibold text-sm text-ink-2"
-            : "font-figtree-bold text-[15px] text-blue-ink"
+            ? "font-figtree-semibold text-[14px] text-navy"
+            : "font-figtree-semibold text-[15px] text-blue-ink"
         }
       >
         {props.label}
@@ -134,7 +134,7 @@ export function Message({ text, tone = "bad" }: { text: string | null; tone?: "b
   return (
     <View
       role="alert"
-      className={`rounded-[10px] px-3 py-2.5 ${tone === "info" ? "bg-blue-soft" : "bg-bad-soft"}`}
+      className={`rounded-full px-3 py-2.5 ${tone === "info" ? "bg-blue-soft" : "bg-bad-soft"}`}
     >
       <Text
         className={`font-figtree text-[13px] leading-[19px] ${tone === "info" ? "text-info-text" : "text-bad-text"}`}
@@ -249,7 +249,7 @@ export function ChoiceList({
         aria-expanded={open}
         disabled={disabled}
         onPress={() => setOpen(!open)}
-        className={`min-h-[44px] justify-center rounded-[9px] border bg-surface px-3 ${problem ? "border-bad" : "border-field"} ${disabled ? "opacity-50" : ""}`}
+        className={`min-h-[44px] justify-center rounded-full border bg-surface px-3 ${problem ? "border-bad" : "border-field"} ${disabled ? "opacity-50" : ""}`}
       >
         <Text className={`font-figtree text-[15px] ${chosen ? "text-ink" : "text-ink-2"}`}>
           {chosen ?? t.choose}
@@ -258,7 +258,7 @@ export function ChoiceList({
       <Reveal
         show={open}
         from="above"
-        className="gap-2 rounded-[9px] border border-line bg-surface p-2"
+        className="gap-2 rounded-full border border-line-2 bg-surface p-2"
       >
         <TextInput
           aria-label={`${t.searchList}: ${label}`}

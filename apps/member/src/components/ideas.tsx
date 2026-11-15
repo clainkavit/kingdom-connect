@@ -57,7 +57,7 @@ function MyIdeaRow({
   const { t } = useLanguage();
   const [problem, setProblem] = useState<string | null>(null);
   return (
-    <View className="gap-2 rounded-card border border-line bg-surface p-4">
+    <View className="gap-2 rounded-card border border-line bg-surface px-5 py-[18px]">
       <Text className="font-figtree-bold text-[16px] text-ink">{idea.title}</Text>
       <Text className="font-figtree-semibold text-[13px] text-ink-2">
         {idea.status === "draft" && idea.reviewReason
@@ -71,7 +71,7 @@ function MyIdeaRow({
           <LinkButton
             href={`/ideas/new?id=${idea.id}`}
             label={t.eventsEdit}
-            className="min-h-[44px] items-center justify-center rounded-[9px] border border-line bg-surface px-4"
+            className="min-h-[44px] items-center justify-center rounded-full border border-line-2 bg-surface px-4"
           >
             <Text className="font-figtree-semibold text-sm text-ink-2">{t.eventsEdit}</Text>
           </LinkButton>
@@ -80,7 +80,7 @@ function MyIdeaRow({
           <LinkButton
             href={`/ideas/${idea.id}`}
             label={t.ideaOpenAccess}
-            className="min-h-[44px] items-center justify-center rounded-[9px] border border-line bg-surface px-4"
+            className="min-h-[44px] items-center justify-center rounded-full border border-line-2 bg-surface px-4"
           >
             <Text className="font-figtree-semibold text-sm text-ink-2">{t.ideaOpenAccess}</Text>
           </LinkButton>
@@ -115,7 +115,7 @@ export function MyIdeas({ api }: { api: IdeasApi }) {
       <LinkButton
         href="/ideas/new"
         label={t.ideasShare}
-        className="min-h-[48px] items-center justify-center rounded-[10px] bg-blue px-4"
+        className="min-h-[48px] items-center justify-center rounded-full bg-blue px-4"
       >
         <Text className="font-figtree-bold text-[15px] text-blue-ink">{t.ideasShare}</Text>
       </LinkButton>

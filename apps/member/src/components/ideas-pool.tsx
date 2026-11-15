@@ -43,7 +43,7 @@ export function IdeaCard({ idea, children }: { idea: IdeaSummary; children?: Rea
     <LinkButton
       href={`/ideas/${idea.id}`}
       label={idea.title}
-      className="flex-1 gap-1.5 rounded-card border border-line bg-surface p-4"
+      className="flex-1 gap-1.5 rounded-card border border-line bg-surface px-5 py-[18px]"
     >
       <View className="flex-row flex-wrap gap-1.5">
         <CardChip text={language === "sw" ? idea.sectorSw : idea.sectorEn} />
@@ -118,21 +118,21 @@ function MemberPool({ api, showApply }: { api: IdeasApi; showApply: boolean }) {
         <LinkButton
           href="/ideas/new"
           label={t.ideasShare}
-          className="min-h-[48px] items-center justify-center rounded-[10px] bg-blue px-4"
+          className="min-h-[48px] items-center justify-center rounded-full bg-blue px-4"
         >
           <Text className="font-figtree-bold text-[15px] text-blue-ink">{t.ideasShare}</Text>
         </LinkButton>
         <LinkButton
           href="/ideas/mine"
           label={t.ideasMine}
-          className="min-h-[48px] items-center justify-center rounded-[10px] border border-line bg-surface px-4"
+          className="min-h-[48px] items-center justify-center rounded-full border border-line-2 bg-surface px-4"
         >
           <Text className="font-figtree-semibold text-[15px] text-ink">{t.ideasMine}</Text>
         </LinkButton>
         <LinkButton
           href="/plans"
           label={t.plansTitle}
-          className="min-h-[48px] items-center justify-center rounded-[10px] border border-line bg-surface px-4"
+          className="min-h-[48px] items-center justify-center rounded-full border border-line-2 bg-surface px-4"
         >
           <Text className="font-figtree-semibold text-[15px] text-ink">{t.plansTitle}</Text>
         </LinkButton>
@@ -227,7 +227,7 @@ export function IdeaSummaryScreen({
     <View className="gap-4">
       <ScreenTitle>{idea.title}</ScreenTitle>
       <Text className="font-figtree text-[15px] leading-6 text-ink">{idea.problem}</Text>
-      <View className="gap-2 rounded-card border border-line bg-surface p-4">
+      <View className="gap-2 rounded-card border border-line bg-surface px-5 py-[18px]">
         {facts.map(([label, value]) =>
           value ? (
             <View key={label} className="gap-0.5">
@@ -247,7 +247,7 @@ export function IdeaSummaryScreen({
           <LinkButton
             href="/ideas/mine"
             label={t.ideaManageMine}
-            className="min-h-[44px] items-center justify-center rounded-[9px] border border-line bg-surface px-4"
+            className="min-h-[44px] items-center justify-center rounded-full border border-line-2 bg-surface px-4"
           >
             <Text className="font-figtree-semibold text-sm text-ink-2">{t.ideaManageMine}</Text>
           </LinkButton>

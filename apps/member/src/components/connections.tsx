@@ -251,7 +251,7 @@ export function ConnectPanel({
         <LinkButton
           href="/connections"
           label={t.respondInConnections}
-          className="min-h-[44px] items-center justify-center rounded-[9px] bg-blue px-4"
+          className="min-h-[44px] items-center justify-center rounded-full bg-blue px-4"
         >
           <Text className="font-figtree-bold text-sm text-blue-ink">{t.respondInConnections}</Text>
         </LinkButton>

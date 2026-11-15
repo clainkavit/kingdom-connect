@@ -126,7 +126,7 @@ export function RespondPanel({ api, post }: { api: ResponsesApi; post: Opportuni
 
   if (mine) {
     const card = (
-      <View className="gap-3 rounded-card border border-line bg-surface p-4">
+      <View className="gap-3 rounded-card border border-line bg-surface px-5 py-[18px]">
         <Text role="heading" aria-level={2} className="font-figtree-bold text-[16px] text-ink">
           {application ? t.respYourApplication : t.respYourInterest}
         </Text>
@@ -168,7 +168,7 @@ export function RespondPanel({ api, post }: { api: ResponsesApi; post: Opportuni
 
   if (post.type === "tender" && level < 2)
     return (
-      <View className="gap-2 rounded-card border border-line bg-surface p-4">
+      <View className="gap-2 rounded-card border border-line bg-surface px-5 py-[18px]">
         <Text role="heading" aria-level={2} className="font-figtree-bold text-[16px] text-ink">
           {t.respLevel2}
         </Text>
@@ -254,7 +254,7 @@ export function RespondPanel({ api, post }: { api: ResponsesApi; post: Opportuni
     );
 
   return (
-    <View className="gap-3 rounded-card border border-line bg-surface p-4">
+    <View className="gap-3 rounded-card border border-line bg-surface px-5 py-[18px]">
       <Text role="heading" aria-level={2} className="font-figtree-bold text-[16px] text-ink">
         {formTitle}
       </Text>
@@ -287,7 +287,10 @@ export function MyResponses({ api }: { api: ResponsesApi }) {
         />
       ) : (
         loaded.value.map((r) => (
-          <View key={r.id} className="gap-2 rounded-card border border-line bg-surface p-4">
+          <View
+            key={r.id}
+            className="gap-2 rounded-card border border-line bg-surface px-5 py-[18px]"
+          >
             <LinkButton
               href={`/opportunities/${r.opportunityId}`}
               label={r.title}
@@ -362,7 +365,7 @@ function ResponseCard({
     else setProblem(t.respFileFailed);
   };
   return (
-    <View className="gap-2 rounded-card border border-line bg-surface p-4">
+    <View className="gap-2 rounded-card border border-line bg-surface px-5 py-[18px]">
       <LinkButton
         href={`/profile/${response.memberId}`}
         label={response.memberName}

@@ -18,6 +18,7 @@ export const colors = {
     surface: "#ffffff",
     surface2: "#fbf7f2",
     line: "#e4d9cc",
+    line2: "#d9cbbb",
     field: "#9a877d",
     ink: "#2a1a1e",
     ink2: "#5a4a4e",
@@ -51,6 +52,7 @@ export const colors = {
     surface: "#211417",
     surface2: "#2a1a1e",
     line: "#3d2a2f",
+    line2: "#54393f",
     field: "#86707a",
     ink: "#f5ede6",
     ink2: "#cdbdb8",
@@ -76,7 +78,7 @@ export const colors = {
 
 export type ColorToken = keyof typeof colors.light;
 
-export const radius = 12;
+export const radius = 22;
 export const shadow = {
   light: "0 1px 2px rgba(74,14,26,.06), 0 4px 14px rgba(74,14,26,.05)",
   dark: "0 1px 2px rgba(0,0,0,.3)",

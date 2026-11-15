@@ -230,7 +230,7 @@ export function IdeaDetailsScreen({
     <View className="gap-4">
       <ScreenTitle>{details.title}</ScreenTitle>
       <Message tone="info" text={t.ideaOpenedBy(line)} />
-      <View className="relative overflow-hidden rounded-card border border-line bg-surface p-4">
+      <View className="relative overflow-hidden rounded-card border border-line bg-surface px-5 py-[18px]">
         <Body details={details} />
         <Watermark line={line} />
       </View>

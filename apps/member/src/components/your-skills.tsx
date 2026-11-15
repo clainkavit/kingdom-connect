@@ -34,7 +34,7 @@ export function YourSkillsForPost({ skills, api }: { skills: string[]; api: MySk
   };
 
   return (
-    <View className="gap-2 rounded-card border border-line bg-surface p-4">
+    <View className="gap-2 rounded-card border border-line bg-surface px-5 py-[18px]">
       <View className="flex-row flex-wrap items-baseline justify-between gap-2">
         <Text role="heading" aria-level={2} className="font-figtree-bold text-[16px] text-ink">
           {t.oppYourSkillsTitle}

@@ -56,7 +56,7 @@ function PlanCard({ plan }: { plan: PlanSummary }) {
     <LinkButton
       href={`/plans/${plan.id}`}
       label={`${plan.itemTitle} · ${plan.otherName}`}
-      className="gap-1 rounded-card border border-line bg-surface p-4"
+      className="gap-1 rounded-card border border-line bg-surface px-5 py-[18px]"
     >
       <Text className="font-figtree-bold text-[16px] text-ink">{plan.itemTitle}</Text>
       <Text className="font-figtree text-[14px] text-ink">{t.planWith(plan.otherName)}</Text>
@@ -78,7 +78,7 @@ export function MyPlans({ api }: { api: PlansApi }) {
       <LinkButton
         href="/plans/new"
         label={t.planPropose}
-        className="min-h-[48px] items-center justify-center rounded-[10px] bg-blue px-4"
+        className="min-h-[48px] items-center justify-center rounded-full bg-blue px-4"
       >
         <Text className="font-figtree-bold text-[15px] text-blue-ink">{t.planPropose}</Text>
       </LinkButton>

@@ -98,7 +98,7 @@ export function EventsList({ api }: { api: EventsApi }) {
             <LinkButton
               href="/events/new"
               label={t.eventsPost}
-              className="min-h-[48px] items-center justify-center rounded-[10px] bg-blue px-4"
+              className="min-h-[48px] items-center justify-center rounded-full bg-blue px-4"
             >
               <Text className="font-figtree-bold text-[15px] text-blue-ink">{t.eventsPost}</Text>
             </LinkButton>
@@ -117,7 +117,7 @@ export function EventsList({ api }: { api: EventsApi }) {
                 key={event.id}
                 href={`/events/${event.id}`}
                 label={event.title}
-                className="gap-1 rounded-card border border-line bg-surface p-4"
+                className="gap-1 rounded-card border border-line bg-surface px-5 py-[18px]"
               >
                 <Text className="font-figtree-bold text-[16px] text-ink">{event.title}</Text>
                 <Text className="font-figtree text-[14px] text-ink">
@@ -277,7 +277,7 @@ export function EventDetail({ api, eventId }: { api: EventsApi; eventId: string 
         <LinkButton
           href={`/events/new?id=${event.id}`}
           label={t.eventsEdit}
-          className="min-h-[44px] items-center justify-center rounded-[9px] border border-line bg-surface px-4"
+          className="min-h-[44px] items-center justify-center rounded-full border border-line-2 bg-surface px-4"
         >
           <Text className="font-figtree-semibold text-sm text-ink-2">{t.eventsEdit}</Text>
         </LinkButton>

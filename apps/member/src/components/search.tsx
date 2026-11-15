@@ -43,7 +43,7 @@ function TrainingResult({ item }: { item: TrainingItem }) {
     <LinkButton
       href={`/training/${item.id}`}
       label={item.title}
-      className="gap-1 rounded-card border border-line bg-surface p-4"
+      className="gap-1 rounded-card border border-line bg-surface px-5 py-[18px]"
     >
       <Text className="font-figtree-bold text-[15px] text-ink">{item.title}</Text>
       {item.provider ? (

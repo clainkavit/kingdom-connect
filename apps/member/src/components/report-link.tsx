@@ -9,7 +9,7 @@ export function ReportLink({ target, memberId }: { target: ReportTarget; memberI
     <LinkButton
       href={reportHref(target, memberId)}
       label={t.reportAction}
-      className="min-h-[40px] items-center justify-center rounded-[9px] border border-line px-4"
+      className="min-h-[40px] items-center justify-center rounded-full border border-line px-4"
     >
       <Text className="font-figtree-semibold text-sm text-bad-text">{t.reportAction}</Text>
     </LinkButton>

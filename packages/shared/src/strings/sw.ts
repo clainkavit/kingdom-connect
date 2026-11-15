@@ -954,8 +954,7 @@ export const sw: Strings = {
   myConnections: "Watu niliounganishwa nao",
   nearYouIn: (region: string) => `Karibu nawe, ${region}`,
   moreMembers: "Wanachama wengine",
-  peopleIntro:
-    "Wanachama waliothibitishwa wa jumuiya. Mawasiliano yanabaki siri hadi mtakapounganishwa.",
+  peopleIntro: "Kila mwanachama hapa ana utambulisho uliothibitishwa. Mchanganyiko mpya kila siku.",
   accept: "Kubali",
   decline: "Kataa",
   withdraw: "Ondoa ombi",
@@ -1764,4 +1763,6 @@ export const sw: Strings = {
   tendersForBusinessWhy: "Katika sekta ya biashara yako, kutoka Tafuta fursa.",
   scanForMore: "Tafuta zaidi",
   homeMatchesEmpty: "Bado hakuna zinazolingana. Ongeza ujuzi kwenye wasifu wako uone zaidi.",
+  peopleShowingMatch: "Inaonyesha wanachama wanaolingana na:",
+  removeFilter: (filter: string) => `Ondoa kichujio: ${filter}`,
 };

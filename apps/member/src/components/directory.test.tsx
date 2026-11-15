@@ -340,18 +340,14 @@ describe("People layout (13 Nov 2026 redesign)", () => {
       screen.getByText("Phone and email stay private until you connect and they choose to share."),
     ).toBeTruthy();
     expect(
-      screen.queryByText(
-        "Verified members of the community. Contact details stay private until you connect.",
-      ),
+      screen.queryByText("Every member here has a verified identity. A fresh mix every day."),
     ).toBeNull();
   });
 
   it("says contact details stay private, and links to My connections", async () => {
     await show(fakeApi());
     expect(
-      screen.getByText(
-        "Verified members of the community. Contact details stay private until you connect.",
-      ),
+      screen.getByText("Every member here has a verified identity. A fresh mix every day."),
     ).toBeTruthy();
     expect(screen.getByRole("link", { name: "My connections" }).getAttribute("href")).toBe(
       "/connections",
@@ -395,5 +391,31 @@ describe("Near you (R25)", () => {
       );
     });
     expect(screen.queryByRole("heading", { name: /Near you/ })).toBeNull();
+  });
+
+  it("marks a member with a verified business on their card (canvas, U02)", async () => {
+    setWidth(COMPUTER);
+    await show(
+      fakeApi({
+        search: vi.fn().mockResolvedValue({ cards: [card({ business: true })], more: false }),
+      }),
+    );
+    expect(screen.getByText("Verified Business")).toBeTruthy();
+  });
+
+  it("shows each filter that is on as a chip, and removes it (canvas, U02)", async () => {
+    setWidth(COMPUTER);
+    const api = fakeApi();
+    await show(api);
+    await click("Region: Any");
+    await act(async () => fireEvent.click(screen.getByRole("option", { name: "Mwanza" })));
+    expect(screen.getByText("Showing members who match:")).toBeTruthy();
+    await click("Remove the filter: Mwanza");
+    expect(api.search).toHaveBeenLastCalledWith(
+      expect.objectContaining({ region: null, district: null }),
+      0,
+      "en",
+    );
+    expect(screen.queryByText("Showing members who match:")).toBeNull();
   });
 });

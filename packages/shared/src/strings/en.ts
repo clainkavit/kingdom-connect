@@ -936,7 +936,7 @@ export const en = {
   myConnections: "My connections",
   nearYouIn: (region: string) => `Near you in ${region}`,
   moreMembers: "More members",
-  peopleIntro: "Verified members of the community. Contact details stay private until you connect.",
+  peopleIntro: "Every member here has a verified identity. A fresh mix every day.",
   accept: "Accept",
   decline: "Decline",
   withdraw: "Withdraw",
@@ -1733,4 +1733,6 @@ export const en = {
   tendersForBusinessWhy: "In your business's sector, from Scan for opportunities.",
   scanForMore: "Scan for more",
   homeMatchesEmpty: "No matches yet. Add skills to your profile to see more.",
+  peopleShowingMatch: "Showing members who match:",
+  removeFilter: (filter: string) => `Remove the filter: ${filter}`,
 };

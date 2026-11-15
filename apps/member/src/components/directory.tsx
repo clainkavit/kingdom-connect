@@ -70,6 +70,16 @@ const placeLine = (card: DirectoryCard) =>
   [card.headline, card.location].filter(Boolean).join(" · ");
 
 /** A member on a computer: photo, name, what they do and where, top skills, and Connect. */
+/** The canvas card badge (U02): a member whose business is verified at Level 2 or 3. */
+function BusinessBadge() {
+  const { t } = useLanguage();
+  return (
+    <View className="self-start rounded-full bg-good-soft px-2.5 py-0.5">
+      <Text className="font-figtree-bold text-xs text-good-text">{t.badgeBusiness}</Text>
+    </View>
+  );
+}
+
 export function DirectoryCardView({ card, fill }: { card: DirectoryCard; fill?: boolean }) {
   return (
     <View
@@ -88,6 +98,7 @@ export function DirectoryCardView({ card, fill }: { card: DirectoryCard; fill?: 
           ) : null}
         </View>
       </LinkButton>
+      {card.business ? <BusinessBadge /> : null}
       {card.topSkills.length ? (
         <View className="flex-row flex-wrap gap-1.5">
           {card.topSkills.map((skill) => (
@@ -127,6 +138,7 @@ function DirectoryRow({ card, last }: { card: DirectoryCard; last: boolean }) {
           {card.topSkills.length ? (
             <Text className="font-figtree text-xs text-ink-2">{card.topSkills.join(" · ")}</Text>
           ) : null}
+          {card.business ? <BusinessBadge /> : null}
         </View>
       </LinkButton>
       <RelationAction card={card} wide={false} />
@@ -326,6 +338,40 @@ function nearSections(t: Strings, cards: DirectoryCard[]): Section<DirectoryCard
 }
 
 const levelChoice: Record<string, BusinessLevel | null> = { "": null, "2": 2, "3": 3 };
+
+type FilterChip = { label: string; clear: Partial<DirectoryFilters> } | null;
+
+/** "Showing members who match:" with one chip per filter that is on, each removable (canvas, U02). */
+function ActiveFilters({
+  chips,
+  onClear,
+}: {
+  chips: FilterChip[];
+  onClear: (clear: Partial<DirectoryFilters>) => void;
+}) {
+  const { t } = useLanguage();
+  const on = chips.filter((c): c is NonNullable<FilterChip> => c !== null && c.label !== "");
+  if (on.length === 0) return null;
+  return (
+    <View className="flex-row flex-wrap items-center gap-2">
+      <Text className="font-figtree text-sm text-ink-2">{t.peopleShowingMatch}</Text>
+      {on.map((chip) => (
+        <Pressable
+          key={chip.label}
+          role="button"
+          aria-label={t.removeFilter(chip.label)}
+          onPress={() => onClear(chip.clear)}
+          className="min-h-[36px] flex-row items-center gap-1.5 rounded-full bg-blue-soft px-3"
+        >
+          <Text className="font-figtree-semibold text-[13px] text-navy">{chip.label}</Text>
+          <Text aria-hidden className="font-figtree-bold text-[13px] text-navy">
+            ×
+          </Text>
+        </Pressable>
+      ))}
+    </View>
+  );
+}
 
 const nameOf = (options: Option[], id: string | null) =>
   id ? (options.find((o) => o.value === id)?.label ?? null) : null;
@@ -673,6 +719,30 @@ function ProfessionalsPanel({
           </>
         )}
       </SearchRow>
+      {!phone ? (
+        <ActiveFilters
+          chips={[
+            applied.profession ? { label: applied.profession, clear: { profession: "" } } : null,
+            applied.skill ? { label: applied.skill, clear: { skill: "" } } : null,
+            applied.sector
+              ? { label: nameOf(sectors, applied.sector) ?? "", clear: { sector: null } }
+              : null,
+            applied.region
+              ? {
+                  label: nameOf(regions, applied.region) ?? "",
+                  clear: { region: null, district: null },
+                }
+              : null,
+            applied.district
+              ? { label: nameOf(districts, applied.district) ?? "", clear: { district: null } }
+              : null,
+            applied.studying !== null
+              ? { label: t.filterStudying, clear: { studying: null } }
+              : null,
+          ]}
+          onClear={(clear) => apply(clear)}
+        />
+      ) : null}
       <ResultList
         failed={failed}
         results={results}

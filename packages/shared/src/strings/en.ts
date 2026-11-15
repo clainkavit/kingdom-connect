@@ -2065,4 +2065,11 @@ export const en = {
   unreadCount: (n: number) => `Unread · ${n}`,
   threadPrivacy: (name: string) =>
     `Only you and ${name} can read this. Never send money or ID numbers here.`,
+  oppBackLink: "Back to Opportunities",
+  respMineSubtitle: "Your applications and expressions of interest.",
+  respKindApplied: "Applied",
+  respKindInterested: "Interested",
+  respWhereTheyStand: "Where they stand",
+  respResponsesUnit: "responses",
+  savedSubtitle: "Only you see what you saved. Tap the bookmark again to remove a post.",
 };

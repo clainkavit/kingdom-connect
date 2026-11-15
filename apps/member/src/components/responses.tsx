@@ -20,7 +20,9 @@ import { LinkButton } from "./link-button";
 import { useLook } from "./look";
 import { Sheet, usePhone } from "./sheet";
 import { typeLabel } from "./opportunity-form";
-import { ScreenTitle } from "./screens";
+import { PageHeader, ScreenTitle } from "./screens";
+import { Donut } from "./donut";
+import { usePalette } from "./palette";
 import { EmptyState, ErrorState, LoadingRows } from "./states";
 
 const statusLabel: Record<ResponseStatus, TextKey> = {
@@ -32,7 +34,7 @@ const statusLabel: Record<ResponseStatus, TextKey> = {
 };
 
 const statusTone: Record<ResponseStatus, string> = {
-  new: "bg-blue-soft text-info-text",
+  new: "bg-blue-soft text-navy",
   shortlisted: "bg-good-soft text-good-text",
   declined: "bg-bad-soft text-bad-text",
   withdrawn: "bg-surface-2 text-ink-2",
@@ -267,40 +269,44 @@ export function RespondPanel({ api, post }: { api: ResponsesApi; post: Opportuni
 /** S19: the member's applications and expressions of interest with their status (O03). */
 export function MyResponses({ api }: { api: ResponsesApi }) {
   const { t, language } = useLanguage();
+  const palette = usePalette();
+  const phone = usePhone();
   const [attempt, setAttempt] = useState(0);
   const loaded = useLoad(() => api.myResponses(), attempt);
   const [problem, setProblem] = useState<string | null>(null);
+  const items = loaded.state === "ready" ? loaded.value : [];
+  const count = (status: ResponseStatus) => items.filter((r) => r.status === status).length;
 
-  return (
-    <View className="gap-3">
-      <ScreenTitle>{t.respMineTitle}</ScreenTitle>
-      <Message text={problem} />
-      {loaded.state === "failed" ? (
-        <ErrorState message={t.respLoadFailed} onRetry={() => setAttempt((a) => a + 1)} />
-      ) : loaded.state === "loading" ? (
-        <LoadingRows />
-      ) : loaded.value.length === 0 ? (
-        <EmptyState
-          title={t.respMineEmpty}
-          message={t.respMineEmptyHint}
-          action={{ label: t.navOpportunities, href: "/opportunities" }}
-        />
-      ) : (
-        loaded.value.map((r) => (
+  const list =
+    loaded.state === "failed" ? (
+      <ErrorState message={t.respLoadFailed} onRetry={() => setAttempt((a) => a + 1)} />
+    ) : loaded.state === "loading" ? (
+      <LoadingRows />
+    ) : items.length === 0 ? (
+      <EmptyState
+        title={t.respMineEmpty}
+        message={t.respMineEmptyHint}
+        action={{ label: t.navOpportunities, href: "/opportunities" }}
+      />
+    ) : (
+      <View className="rounded-card border border-line bg-surface px-5 py-2">
+        {items.map((r, i) => (
           <View
             key={r.id}
-            className="gap-2 rounded-card border border-line bg-surface px-5 py-[18px]"
+            className={`flex-row flex-wrap items-center gap-3 py-4 ${i > 0 ? "border-t border-line" : ""}`}
           >
             <LinkButton
               href={`/opportunities/${r.opportunityId}`}
               label={r.title}
-              className="gap-1"
+              className="min-w-0 flex-1 basis-[240px] gap-0.5"
             >
+              <Text className="font-figtree-bold text-[12px] uppercase tracking-wide text-ink-2">
+                {r.kind === "application" ? t.respKindApplied : t.respKindInterested}
+              </Text>
               <Text className="font-figtree-bold text-[16px] text-ink">{r.title}</Text>
               <Text className="font-figtree text-[13px] text-ink-2">
                 {[
                   t[typeLabel[r.type]] as string,
-                  r.kind === "application" ? t.respKindApplication : t.respKindInterest,
                   t.respSentOn(formatDate(r.sentAt, language)),
                 ].join(" · ")}
               </Text>
@@ -310,29 +316,62 @@ export function MyResponses({ api }: { api: ResponsesApi }) {
               <LinkButton
                 href="/work"
                 label={t.respConfirmWork}
-                className="min-h-[40px] justify-center self-start"
+                className="min-h-[40px] items-center justify-center rounded-full border border-line-2 bg-surface px-4"
               >
-                <Text className="font-figtree-semibold text-sm text-blue">{t.respConfirmWork}</Text>
+                <Text className="font-figtree-semibold text-[14px] text-navy">
+                  {t.respConfirmWork}
+                </Text>
               </LinkButton>
             ) : null}
             {r.status === "new" ? (
-              <View className="items-start">
-                <ConfirmButton
-                  label={t.respWithdraw}
-                  question={t.respWithdrawConfirm}
-                  confirmLabel={t.respWithdraw}
-                  onConfirm={async () => {
-                    if (await api.withdraw(r.id).catch(() => false)) {
-                      setProblem(null);
-                      setAttempt((a) => a + 1);
-                    } else setProblem(t.respFailed);
-                  }}
-                />
-              </View>
+              <ConfirmButton
+                label={t.respWithdraw}
+                question={t.respWithdrawConfirm}
+                confirmLabel={t.respWithdraw}
+                onConfirm={async () => {
+                  if (await api.withdraw(r.id).catch(() => false)) {
+                    setProblem(null);
+                    setAttempt((a) => a + 1);
+                  } else setProblem(t.respFailed);
+                }}
+              />
             ) : null}
           </View>
-        ))
-      )}
+        ))}
+      </View>
+    );
+
+  const hired = count("hired");
+  const chart = items.length ? (
+    <View className="gap-3 rounded-card border border-line bg-surface px-5 py-5">
+      <Text role="heading" aria-level={2} className="font-figtree-bold text-[17px] text-ink">
+        {t.respWhereTheyStand}
+      </Text>
+      <Donut
+        unit={t.respResponsesUnit}
+        parts={[
+          { label: t.respStatusNew, value: count("new"), color: palette.rose },
+          { label: t.respStatusShortlisted, value: count("shortlisted"), color: palette.warn },
+          { label: t.respStatusDeclined, value: count("declined"), color: palette.teal },
+          { label: t.respStatusWithdrawn, value: count("withdrawn"), color: palette.violet },
+          ...(hired ? [{ label: t.respStatusHired, value: hired, color: palette.navy }] : []),
+        ]}
+      />
+    </View>
+  ) : null;
+
+  return (
+    <View className="gap-5">
+      <PageHeader
+        back={{ label: t.oppBackLink, href: "/opportunities" }}
+        title={t.respMineTitle}
+        subtitle={t.respMineSubtitle}
+      />
+      <Message text={problem} />
+      <View className={phone ? "gap-4" : "flex-row items-start gap-4"}>
+        <View className="min-w-0 flex-1">{list}</View>
+        {chart ? <View className={phone ? "" : "w-[448px]"}>{chart}</View> : null}
+      </View>
     </View>
   );
 }

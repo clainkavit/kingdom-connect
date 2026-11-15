@@ -2105,4 +2105,11 @@ export const sw: Strings = {
   unreadCount: (n: number) => `Haujasomwa · ${n}`,
   threadPrivacy: (name: string) =>
     `Wewe na ${name} pekee mnaweza kusoma hii. Usitume pesa wala namba za vitambulisho hapa.`,
+  oppBackLink: "Rudi kwa Fursa",
+  respMineSubtitle: "Maombi yako na ulivyoonyesha nia.",
+  respKindApplied: "Umeomba",
+  respKindInterested: "Una nia",
+  respWhereTheyStand: "Yalipofikia",
+  respResponsesUnit: "majibu",
+  savedSubtitle: "Wewe pekee unaona ulichohifadhi. Gusa alama tena kuondoa tangazo.",
 };

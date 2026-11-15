@@ -54,7 +54,7 @@ import { AlertSwitch } from "./job-alerts";
 import { typeLabel } from "./opportunity-form";
 import { YourSkillsForPost, type MySkillsApi } from "./your-skills";
 import { ReportLink } from "./report-link";
-import { ScreenTitle } from "./screens";
+import { PageHeader, ScreenTitle } from "./screens";
 import { EmptyState, ErrorState, LoadingRows } from "./states";
 
 const KINDS: PostKind[] = ["job", "partnership", "collaboration", "investment", "tender"];
@@ -1227,8 +1227,15 @@ export function OpportunityDetailScreen({
 }
 
 /** O10: the member's saved posts. A closed post says so; one that is gone can only be removed. */
-export function SavedOpportunities({ api }: { api: OpportunityBrowseApi }) {
-  const { t } = useLanguage();
+export function SavedOpportunities({
+  api,
+  now = new Date(),
+}: {
+  api: OpportunityBrowseApi;
+  now?: Date;
+}) {
+  const { t, language } = useLanguage();
+  const phone = usePhone();
   const [attempt, setAttempt] = useState(0);
   const loaded = useLoad(() => api.saved(), attempt);
   const [removed, setRemoved] = useState<Set<string>>(new Set());
@@ -1236,42 +1243,81 @@ export function SavedOpportunities({ api }: { api: OpportunityBrowseApi }) {
   const remove = async (id: string) => {
     if (await api.setSaved(id, false).catch(() => false)) setRemoved((r) => new Set(r).add(id));
   };
+  const shown = loaded.state === "ready" ? loaded.value.filter((s) => !removed.has(s.id)) : [];
 
   return (
-    <View className="gap-3">
-      <LinkButton href="/opportunities" label={t.oppBack} className="min-h-[40px] justify-center">
-        <Text className="font-figtree-semibold text-sm text-blue">{t.oppBack}</Text>
-      </LinkButton>
-      <ScreenTitle>{t.savedTitle}</ScreenTitle>
+    <View className="w-full max-w-[1200px] gap-5 self-center">
+      <PageHeader
+        back={{ label: t.navOpportunities, href: "/opportunities" }}
+        title={t.savedTitle}
+        subtitle={t.savedSubtitle}
+      />
       {loaded.state === "failed" ? (
         <ErrorState message={t.savedLoadFailed} onRetry={() => setAttempt((a) => a + 1)} />
       ) : loaded.state === "loading" ? (
         <LoadingRows />
-      ) : loaded.value.filter((s) => !removed.has(s.id)).length === 0 ? (
+      ) : shown.length === 0 ? (
         <EmptyState
           title={t.savedEmpty}
           message={t.savedEmptyHint}
           action={{ label: t.navOpportunities, href: "/opportunities" }}
         />
       ) : (
-        loaded.value
-          .filter((s) => !removed.has(s.id))
-          .map((s) =>
-            s.card ? (
-              <View key={s.id} className="gap-1">
-                {s.open ? null : <Badge text={t.savedClosed} />}
-                <OpportunityCardView post={s.card} saved onToggleSave={() => remove(s.id)} />
-              </View>
-            ) : (
+        <View className={phone ? "gap-3" : "flex-row flex-wrap gap-4"}>
+          {shown.map((s) => {
+            const post = s.card;
+            const box = phone ? "" : "w-[31%] min-w-[260px] flex-grow";
+            if (!post)
+              return (
+                <View
+                  key={s.id}
+                  className={`gap-3 rounded-card border border-line bg-surface px-5 py-[18px] ${box}`}
+                >
+                  <Text className="font-figtree text-[14px] text-ink-2">{t.savedGone}</Text>
+                  <Button secondary label={t.savedRemove} onPress={() => remove(s.id)} />
+                </View>
+              );
+            const left = daysUntil(post.closingAt, now);
+            const soon = s.open && left <= 3;
+            const closes = !s.open
+              ? t.savedClosed
+              : soon
+                ? t.oppClosesInDays(left)
+                : t.oppClosesShort(
+                    formatShortDate(new Date(`${post.closingAt}T12:00:00+03:00`), language),
+                  );
+            return (
               <View
                 key={s.id}
-                className="flex-row flex-wrap items-center justify-between gap-3 rounded-card border border-line bg-surface px-5 py-[18px]"
+                className={`flex-row gap-3 rounded-card border border-line bg-surface px-5 py-[18px] ${box}`}
               >
-                <Text className="font-figtree text-[14px] text-ink-2">{t.savedGone}</Text>
-                <Button secondary label={t.savedRemove} onPress={() => remove(s.id)} />
+                <LinkButton
+                  href={`/opportunities/${post.id}`}
+                  label={post.title}
+                  className="min-w-0 flex-1 gap-2"
+                >
+                  <View className="flex-row flex-wrap gap-1.5">
+                    <Text className="rounded-full bg-blue-soft px-2.5 py-1 font-figtree-bold text-[12px] text-navy">
+                      {t[typeLabel[post.type]] as string}
+                    </Text>
+                    <Text
+                      className={`rounded-full px-2.5 py-1 font-figtree-bold text-[12px] ${soon ? "bg-warn-soft text-warn-text" : "bg-surface-2 text-ink-2"}`}
+                    >
+                      {closes}
+                    </Text>
+                  </View>
+                  <Text className="font-figtree-bold text-[17px] text-ink">{post.title}</Text>
+                  <Text className="font-figtree text-[14px] text-ink-2">
+                    {[post.posterName, placeLine(t, post, language)].filter(Boolean).join(" · ")}
+                  </Text>
+                </LinkButton>
+                <View className="h-11 w-11 items-center justify-center rounded-full bg-blue-soft">
+                  <SaveButton saved title={post.title} onPress={() => remove(s.id)} />
+                </View>
               </View>
-            ),
-          )
+            );
+          })}
+        </View>
       )}
     </View>
   );

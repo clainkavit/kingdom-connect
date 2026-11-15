@@ -116,8 +116,7 @@ describe("OpportunitiesList (S16)", () => {
     fireEvent.change(box, { target: { value: "bookkeeper" } });
     await act(async () => fireEvent.keyDown(box, { key: "Enter" }));
     expect(list).toHaveBeenLastCalledWith({ q: "bookkeeper" }, 0, false);
-    await press("Type: Any");
-    await act(async () => fireEvent.click(screen.getByRole("option", { name: "Job" })));
+    await act(async () => fireEvent.click(screen.getByRole("radio", { name: "Jobs" })));
     await press("Region: Any");
     await act(async () => fireEvent.click(screen.getByRole("option", { name: "Kilimanjaro" })));
     expect(list).toHaveBeenLastCalledWith(
@@ -146,10 +145,12 @@ describe("OpportunitiesList (S16)", () => {
     await show(<OpportunitiesList api={fakeApi({ list })} />);
     expect(list).toHaveBeenLastCalledWith({}, 0, false);
 
-    await press("Type: Any");
-    await act(async () => fireEvent.click(screen.getByRole("option", { name: "Tender" })));
+    await act(async () => fireEvent.click(screen.getByRole("radio", { name: "Tenders" })));
     expect(list).toHaveBeenLastCalledWith({ kind: "tender", employment: undefined }, 0, false);
-    expect(screen.getByRole("button", { name: "Type: Tender" })).toBeTruthy();
+    expect(screen.getByRole("radio", { name: "Tenders" }).getAttribute("aria-checked")).toBe(
+      "true",
+    );
+    expect(screen.getByText("Tenders need a verified business")).toBeTruthy();
     expect(screen.queryByRole("button", { name: /^Employment type/ })).toBeNull();
 
     await press("Region: Any");
@@ -207,8 +208,7 @@ describe("OpportunitiesList (S16)", () => {
     const list = vi.fn().mockResolvedValue([]);
     await show(<OpportunitiesList api={fakeApi({ list })} />);
     expect(screen.getByText("No open opportunities yet")).toBeTruthy();
-    await press("Type: Any");
-    await act(async () => fireEvent.click(screen.getByRole("option", { name: "Job" })));
+    await act(async () => fireEvent.click(screen.getByRole("radio", { name: "Jobs" })));
     expect(screen.getByText("No opportunities match")).toBeTruthy();
   });
 
@@ -502,5 +502,12 @@ describe("Post an opportunity button (O14)", () => {
       <OpportunitiesList api={fakeApi()} canPost={() => Promise.reject(new Error("down"))} />,
     );
     expect(screen.queryByRole("link", { name: en.actionPostOpportunity })).toBeNull();
+  });
+
+  it("offers Scan for opportunities in the side column (canvas, U03)", async () => {
+    await show(<OpportunitiesList api={fakeApi()} />);
+    expect(screen.getByRole("link", { name: "Scan now" }).getAttribute("href")).toBe(
+      "/opportunities/scan",
+    );
   });
 });

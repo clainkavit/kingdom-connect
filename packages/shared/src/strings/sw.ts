@@ -1765,4 +1765,10 @@ export const sw: Strings = {
   homeMatchesEmpty: "Bado hakuna zinazolingana. Ongeza ujuzi kwenye wasifu wako uone zaidi.",
   peopleShowingMatch: "Inaonyesha wanachama wanaolingana na:",
   removeFilter: (filter: string) => `Ondoa kichujio: ${filter}`,
+  oppScanCardText:
+    "Tunalinganisha ujuzi, taaluma, sekta na mkoa wako na matangazo yaliyo wazi, na kuonyesha sababu mbili kuu kwa kila moja.",
+  oppScanNow: "Tafuta sasa",
+  oppTendersNeedBusiness: "Zabuni zinahitaji biashara iliyothibitishwa",
+  oppTendersNeedBusinessText:
+    "Unaweza kusoma kila zabuni. Ili kujibu, thibitisha biashara yako (Ngazi ya 2).",
 };

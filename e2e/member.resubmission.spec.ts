@@ -26,9 +26,10 @@ async function reject(admin: Page, username: string, reason: string) {
 }
 
 async function resubmitFromReview(page: Page) {
+  await page.getByRole("button", { name: "Continue: Check and send" }).click();
   await expect(page.getByText("Step 5 of 5")).toBeVisible();
-  await page.getByRole("button", { name: "Submit application" }).click();
-  await expect(page.getByText("Under review")).toBeVisible();
+  await page.getByRole("button", { name: "Send to staff" }).click();
+  await expect(page.getByText("Under review").first()).toBeVisible();
 }
 
 test("a rejected Applicant fixes and resubmits once, an Administrator reopens the final rejection, then approves (REG-2, S06)", async ({
@@ -41,7 +42,7 @@ test("a rejected Applicant fixes and resubmits once, an Administrator reopens th
   await signInToAdmin(admin);
 
   await signInAsApplicant(page, username, email);
-  await expect(page.getByText("Under review")).toBeVisible();
+  await expect(page.getByText("Under review").first()).toBeVisible();
   await expect(page.getByText(/notification when the review is done\.$/)).toBeVisible();
   await expect(page.getByText(/working days?/)).toHaveCount(0);
 

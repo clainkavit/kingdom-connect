@@ -29,13 +29,41 @@ async function show(step: number, data: object, api: WizardApi, onSubmitted = vi
       />,
     );
   });
+  await act(async () =>
+    fireEvent.click(screen.getByRole("button", { name: /^Continue: /, hidden: true })),
+  );
 }
 
 describe("Verify your identity (S05, R28)", () => {
+  it("opens on the step overview, with Continue on the saved step", async () => {
+    await act(async () => {
+      render(
+        <RegistrationWizard
+          initial={{ step: 2, data: {}, submitted: false }}
+          api={fakeApi()}
+          onSubmitted={vi.fn()}
+        />,
+      );
+    });
+    expect(screen.getByText("0 of 5 steps done")).toBeTruthy();
+    expect(screen.getByRole("progressbar")).toBeTruthy();
+    await click("Continue: What you do");
+    expect(screen.getByText("Step 2 of 5")).toBeTruthy();
+    expect(screen.queryByText("0 of 5 steps done")).toBeNull();
+  });
+
+  it("goes back to the overview from the first step without saving", async () => {
+    const api = fakeApi();
+    await show(1, {}, api);
+    await click("Back");
+    expect(screen.getByText("0 of 5 steps done")).toBeTruthy();
+    expect(api.saveDraft).not.toHaveBeenCalled();
+  });
+
   it("will not move on until the step is complete, then saves it", async () => {
     const api = fakeApi();
     await show(1, {}, api);
-    await click("Next");
+    await click("Save and continue");
     expect(api.saveDraft).not.toHaveBeenCalled();
     expect(screen.getAllByText("This is needed.").length).toBeGreaterThan(0);
 
@@ -49,7 +77,7 @@ describe("Verify your identity (S05, R28)", () => {
     fireEvent.change(screen.getByLabelText("Address (street, area or plot)"), {
       target: { value: "Plot 1" },
     });
-    await click("Next");
+    await click("Save and continue");
     expect(api.saveDraft).toHaveBeenCalledWith(
       2,
       expect.objectContaining({ fullName: "Test Applicant", regionId: "r1", districtId: "d1" }),
@@ -69,7 +97,7 @@ describe("Verify your identity (S05, R28)", () => {
     await show(2, {}, api);
     expect(screen.queryByRole("checkbox", { name: "Entrepreneur" })).toBeNull();
     expect(screen.queryByRole("checkbox", { name: "Student" })).toBeNull();
-    await click("Next");
+    await click("Save and continue");
     expect(screen.getByText("This is needed.")).toBeTruthy();
     expect(api.saveDraft).not.toHaveBeenCalled();
 
@@ -80,7 +108,7 @@ describe("Verify your identity (S05, R28)", () => {
     expect(
       screen.getByRole("checkbox", { name: "Professional" }).getAttribute("aria-checked"),
     ).toBe("true");
-    await click("Next");
+    await click("Save and continue");
     expect(api.saveDraft).toHaveBeenCalledWith(
       3,
       expect.objectContaining({ categories: ["professional", "businessperson"] }),
@@ -102,7 +130,7 @@ describe("Verify your identity (S05, R28)", () => {
     await act(async () =>
       fireEvent.click(screen.getByRole("checkbox", { name: "Businessperson" })),
     );
-    await click("Next");
+    await click("Save and continue");
     const saved = vi.mocked(api.saveDraft).mock.calls[0]![1];
     expect(saved).toMatchObject({
       categories: ["professional"],
@@ -168,7 +196,7 @@ describe("Verify your identity (S05, R28)", () => {
     const onSubmitted = vi.fn();
     const api = fakeApi({ submit: vi.fn().mockResolvedValue({ kind: "incomplete", step: 4 }) });
     await show(6, {}, api, onSubmitted);
-    await click("Submit application");
+    await click("Send to staff");
     expect(onSubmitted).not.toHaveBeenCalled();
     expect(screen.getByText("Step 4 of 5")).toBeTruthy();
   });
@@ -190,7 +218,7 @@ describe("Verify your identity (S05, R28)", () => {
   it("finishes when the application is submitted", async () => {
     const onSubmitted = vi.fn();
     await show(6, {}, fakeApi(), onSubmitted);
-    await click("Submit application");
+    await click("Send to staff");
     expect(onSubmitted).toHaveBeenCalled();
   });
 });

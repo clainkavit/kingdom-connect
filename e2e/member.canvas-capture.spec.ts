@@ -12,7 +12,14 @@ const canvasDir = process.env.CANVAS_DIR;
 const out = process.env.CAPTURE_OUT;
 const only = process.env.CAPTURE_ONLY?.split(",");
 
-type Pair = { board: string; route: string; w: number; h: number; signedOut?: boolean };
+type Pair = {
+  board: string;
+  route: string;
+  w: number;
+  h: number;
+  signedOut?: boolean;
+  press?: string;
+};
 
 const pairs: Pair[] = [
   { board: "Web-Login", route: "/login", w: 1440, h: 900, signedOut: true },
@@ -63,6 +70,15 @@ const pairs: Pair[] = [
     h: 1200,
   },
   { board: "Biz-Verify", route: "/business", w: 1440, h: 1800 },
+  { board: "Web-Verify-Start", route: "/profile/verify", w: 1440, h: 1000 },
+  {
+    board: "Web-Verify-About",
+    route: "/profile/verify",
+    w: 1440,
+    h: 1000,
+    press: "Continue: About you",
+  },
+  { board: "Phone-Verify-Start", route: "/profile/verify", w: 430, h: 900 },
   { board: "Member-Phone-Dashboard", route: "/", w: 430, h: 900 },
   { board: "Opp-Phone-List", route: "/opportunities", w: 430, h: 900 },
 ];
@@ -100,6 +116,10 @@ for (const pair of pairs.filter((p) => !only || only.includes(p.board))) {
     await live.goto(pair.route);
     await expect(live.locator("body")).toBeVisible();
     await live.waitForTimeout(2000);
+    if (pair.press) {
+      await live.getByRole("button", { name: pair.press }).click();
+      await live.waitForTimeout(500);
+    }
     await live.screenshot({ path: join(out!, `${pair.board}.live.png`), fullPage: true });
     await context.close();
   });

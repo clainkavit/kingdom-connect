@@ -5,13 +5,38 @@ import { View } from "react-native";
 import { RegistrationStatus } from "../../../src/components/registration-status";
 import { RegistrationWizard } from "../../../src/components/registration-wizard";
 import { ScreenTitle } from "../../../src/components/screens";
+import { usePhone } from "../../../src/components/sheet";
 import { ErrorState } from "../../../src/components/states";
+import { VerifySideCard } from "../../../src/components/verify-overview";
 import { useLanguage } from "../../../src/lib/language";
 import { accessToken, loadDraft, type SavedDraft } from "../../../src/lib/registration";
 import { registrationClient, supabase } from "../../../src/lib/supabase";
 import { wizardApi } from "../../../src/lib/wizard-api";
 
 type Loaded = { status: ApplicationStatus; draft: SavedDraft | null };
+
+/** The signed-in member's profile name, for the card beside the steps. */
+function useProfileName(): string | null {
+  const [name, setName] = useState<string | null>(null);
+  useEffect(() => {
+    let live = true;
+    (async () => {
+      const { data } = await supabase.auth.getUser();
+      const id = data.user?.id;
+      if (!id) return;
+      const { data: row } = await supabase
+        .from("profiles")
+        .select("full_name")
+        .eq("member_id", id)
+        .maybeSingle();
+      if (live) setName((row as { full_name: string | null } | null)?.full_name ?? null);
+    })().catch(() => undefined);
+    return () => {
+      live = false;
+    };
+  }, []);
+  return name;
+}
 
 /** The full name a provider such as Google gave, for a draft that has none yet (R28). */
 async function nameFromProvider(): Promise<string | undefined> {
@@ -49,6 +74,8 @@ export default function VerifyIdentityScreen() {
   const [failed, setFailed] = useState(false);
   const [round, setRound] = useState(0);
   const api = useMemo(() => wizardApi(language), [language]);
+  const phone = usePhone();
+  const profileName = useProfileName();
 
   useEffect(() => {
     let live = true;
@@ -74,9 +101,10 @@ export default function VerifyIdentityScreen() {
     setRound((r) => r + 1);
   };
 
-  return (
-    <View className="w-full max-w-[640px] gap-4 self-center">
-      <ScreenTitle>{t.verifyTitle}</ScreenTitle>
+  const drafting = !failed && loaded?.status.kind === "drafting" && loaded.draft;
+  const main = (
+    <View className="min-w-0 flex-1 gap-4">
+      {drafting ? null : <ScreenTitle>{t.verifyTitle}</ScreenTitle>}
       {failed ? <ErrorState message={t.statusLoadFailed} onRetry={reload} /> : null}
       {!failed && loaded?.status.kind === "drafting" && loaded.draft ? (
         <RegistrationWizard initial={loaded.draft} api={api} onSubmitted={reload} />
@@ -91,6 +119,16 @@ export default function VerifyIdentityScreen() {
           }}
         />
       ) : null}
+    </View>
+  );
+  if (phone) return main;
+  return (
+    <View className="w-full max-w-[1200px] flex-row items-start gap-6 self-center">
+      <VerifySideCard
+        name={loaded?.draft?.data.fullName || profileName}
+        underReview={loaded?.status.kind === "under_review"}
+      />
+      {main}
     </View>
   );
 }

@@ -5,19 +5,19 @@ import {
   previousVerifyStep,
   VERIFY_STEPS,
   shownStepNumber,
-  verifyProgress,
   CHECK_AND_SEND,
   type RegistrationDraft,
   type SaveIdentityResult,
   stepProblems,
   type SubmitResult,
-  type TextKey,
 } from "@kingdom-connect/shared";
 import { useEffect, useState } from "react";
 import { Text, View } from "react-native";
 import { useLanguage } from "../lib/language";
 import type { Option, SavedDraft } from "../lib/registration";
 import { Button, Message } from "./form";
+import { usePhone } from "./sheet";
+import { VerifyOverview, verifyStepTitles } from "./verify-overview";
 import { CategoryStep, DetailsStep, IdentityStep, PersonalStep, ReviewStep } from "./wizard-steps";
 
 export type WizardApi = {
@@ -34,16 +34,8 @@ export type WizardApi = {
   sectors: () => Promise<Option[]>;
 };
 
-const stepTitles: Record<number, TextKey> = {
-  1: "stepPersonal",
-  2: "stepCategory",
-  3: "stepCategoryDetails",
-  4: "stepIdentity",
-  6: "stepReview",
-};
-
 /** A draft saved on a step that is not shown, such as the terms, opens on Check and send. */
-const shownStep = (step: number) => (stepTitles[step] ? step : CHECK_AND_SEND);
+const shownStep = (step: number) => (verifyStepTitles[step] ? step : CHECK_AND_SEND);
 
 /** Verify your identity (S05, R28): five steps in the profile, each saved before moving on. */
 export function RegistrationWizard({
@@ -56,6 +48,8 @@ export function RegistrationWizard({
   onSubmitted: () => void;
 }) {
   const { t } = useLanguage();
+  const phone = usePhone();
+  const [overview, setOverview] = useState(true);
   const [step, setStep] = useState(shownStep(initial.step));
   const [draft, setDraft] = useState<RegistrationDraft>(initial.data);
   const [problems, setProblems] = useState<Record<string, FieldProblem>>({});
@@ -141,6 +135,7 @@ export function RegistrationWizard({
     setBusy(false);
     if (result.kind === "submitted") return onSubmitted();
     if (result.kind === "incomplete") {
+      setOverview(false);
       setStep(shownStep(result.step));
       setProblems(stepProblems(result.step, draft));
       return;
@@ -153,50 +148,67 @@ export function RegistrationWizard({
       ?.label;
 
   const props = { draft, update, problems };
+  const titleClass = `font-figtree-extrabold text-navy ${phone ? "text-[24px] leading-[29px]" : "text-[32px] leading-[37px]"}`;
+
+  if (overview)
+    return (
+      <View className="gap-4">
+        <Text role="heading" aria-level={1} className={titleClass}>
+          {t.verifyTitle}
+        </Text>
+        <VerifyOverview
+          draft={draft}
+          current={step}
+          onOpen={(next) => {
+            setStep(next);
+            setProblems({});
+            setOverview(false);
+          }}
+        />
+      </View>
+    );
+
+  const back = () => {
+    if (step === VERIFY_STEPS[0]) {
+      setMessage(null);
+      setOverview(true);
+      return;
+    }
+    go(previousVerifyStep(step));
+  };
+
   return (
     <View className="gap-4">
-      <View className="gap-1">
-        <Text className="font-figtree-semibold text-xs text-blue">
+      <View className="items-start gap-2">
+        <Text className="rounded-full bg-surface-2 px-2.5 py-1 font-figtree-bold text-[12px] text-ink">
           {t.stepOf(shownStepNumber(step), VERIFY_STEPS.length)}
         </Text>
-        <Text role="heading" aria-level={2} className="font-figtree-extrabold text-lg text-ink">
-          {t[stepTitles[step]!]}
-        </Text>
-        <Text className="font-figtree text-[13px] text-ink-2">
-          {t.lookProgress(verifyProgress(draft), VERIFY_STEPS.length)} · {t.savedProgress}
+        <Text role="heading" aria-level={1} className={titleClass}>
+          {t[verifyStepTitles[step]!] as string}
         </Text>
       </View>
 
-      {step === 1 ? <PersonalStep {...props} regions={regions} districts={districts} /> : null}
-      {step === 2 ? <CategoryStep {...props} /> : null}
-      {step === 3 ? <DetailsStep {...props} sectors={sectors} /> : null}
-      {step === 4 ? (
-        <IdentityStep
-          {...props}
-          busy={busy}
-          onSaveId={saveId}
-          onPickPhoto={pickPhoto}
-          idMessage={idMessage}
-          idProblem={idProblem}
-        />
-      ) : null}
-      {step === 6 ? <ReviewStep draft={draft} labelOf={labelOf} onEdit={(n) => go(n)} /> : null}
-
-      <Message text={message} />
-      <View className="flex-row gap-3">
-        {step > 1 ? (
-          <View className="flex-1">
-            <Button
-              secondary
-              label={t.back}
-              onPress={() => go(previousVerifyStep(step))}
-              disabled={busy}
-            />
-          </View>
+      <View className="gap-4 rounded-card border border-line bg-surface px-6 py-6">
+        {step === 1 ? <PersonalStep {...props} regions={regions} districts={districts} /> : null}
+        {step === 2 ? <CategoryStep {...props} /> : null}
+        {step === 3 ? <DetailsStep {...props} sectors={sectors} /> : null}
+        {step === 4 ? (
+          <IdentityStep
+            {...props}
+            busy={busy}
+            onSaveId={saveId}
+            onPickPhoto={pickPhoto}
+            idMessage={idMessage}
+            idProblem={idProblem}
+          />
         ) : null}
-        <View className="flex-1">
+        {step === 6 ? <ReviewStep draft={draft} labelOf={labelOf} onEdit={(n) => go(n)} /> : null}
+
+        <Message text={message} />
+        <View className="flex-row flex-wrap gap-2.5">
+          <Button secondary label={t.back} onPress={back} disabled={busy} />
           {step < CHECK_AND_SEND ? (
-            <Button label={t.next} onPress={nextStep} disabled={busy} />
+            <Button label={t.verifySaveContinue} onPress={nextStep} disabled={busy} />
           ) : (
             <Button label={t.submitApplication} onPress={submit} disabled={busy} />
           )}

@@ -13,6 +13,12 @@ import type { Profile, ProfileApi, ProfileChanges } from "../lib/profile";
 import { Button, ChoiceList, Field, Message } from "./form";
 import { LinkButton } from "./link-button";
 import { ScreenTitle } from "./screens";
+import ChevronLeft from "lucide-react-native/icons/chevron-left";
+import Lock from "lucide-react-native/icons/lock";
+import MapPin from "lucide-react-native/icons/map-pin";
+import ShieldCheck from "lucide-react-native/icons/shield-check";
+import { usePalette } from "./palette";
+import { usePhone } from "./sheet";
 
 /** A canvas card: the title (17px bold), an optional "See all ›" style link on the right, then the content. */
 export function Section({
@@ -98,9 +104,13 @@ function SkillChips({ skills, onRemove }: { skills: string[]; onRemove?: (s: str
       {skills.map((skill) => (
         <View
           key={skill}
-          className="flex-row items-center gap-1.5 rounded-full bg-blue-soft px-3 py-1.5"
+          className={`flex-row items-center gap-1.5 rounded-full px-3.5 py-1.5 ${onRemove ? "bg-blue-soft" : "border border-line-2 bg-surface"}`}
         >
-          <Text className="font-figtree-semibold text-sm text-info-text">{skill}</Text>
+          <Text
+            className={`text-sm ${onRemove ? "font-figtree-semibold text-info-text" : "font-figtree text-ink"}`}
+          >
+            {skill}
+          </Text>
           {onRemove ? (
             <Pressable
               role="button"
@@ -177,6 +187,8 @@ export function ProfileView({
   actions,
   ideas,
   references,
+  hero,
+  side,
 }: {
   profile: Profile;
   actions?: React.ReactNode;
@@ -184,11 +196,167 @@ export function ProfileView({
   ideas?: React.ReactNode;
   /** Work references (O18), which render their own section or nothing. */
   references?: React.ReactNode;
+  /** The canvas computer layout: pills for the maroon hero and cards for the side column. */
+  hero?: React.ReactNode;
+  side?: React.ReactNode;
 }) {
   const { t } = useLanguage();
-  const study = [profile.study.institution, profile.study.course, profile.study.year?.toString()]
+  const palette = usePalette();
+  const phone = usePhone();
+  const split = !phone;
+  const first = profile.fullName.split(/\s+/)[0] ?? profile.fullName;
+  const study = [profile.study.course, profile.study.institution, profile.study.year?.toString()]
     .filter(Boolean)
     .join(", ");
+
+  const about = (
+    <Section title={t.aboutTitle}>
+      {profile.bio ? <Body text={profile.bio} /> : null}
+      {profile.profession ? <Body text={profile.profession} /> : null}
+      {profile.experience ? (
+        <>
+          <Muted text={t.experienceLabel} />
+          <Body text={profile.experience} />
+        </>
+      ) : null}
+      {profile.certifications ? (
+        <>
+          <Muted text={t.certificationsTitle} />
+          <Body text={profile.certifications} />
+        </>
+      ) : null}
+      {study ? <Muted text={t.studiedLine(study)} /> : null}
+      {!profile.profession && !profile.bio && !profile.experience && !profile.certifications ? (
+        profile.own ? (
+          <AddLink href="/profile/edit" label={t.addAbout} />
+        ) : (
+          <Muted text={t.notGiven} />
+        )
+      ) : null}
+    </Section>
+  );
+  const contact = profile.contact ? (
+    <Section title={t.contactTitle}>
+      {(
+        [
+          [t.phone, profile.contact.phone],
+          [t.email, profile.contact.email],
+          [t.address, profile.contact.address],
+        ] as const
+      ).map(([label, value]) =>
+        value ? (
+          <View key={label} className="gap-0.5">
+            <Muted text={label} />
+            <Body text={value} />
+          </View>
+        ) : null,
+      )}
+    </Section>
+  ) : !profile.own ? (
+    <Section title={t.contactDetailsTitle}>
+      {[t.contactMaskedPhone, t.contactMaskedEmail].map((line) => (
+        <View key={line} className="min-h-[40px] flex-row items-center gap-2.5">
+          <Lock size={15} color={palette.ink2} aria-hidden />
+          <Text className="font-figtree text-[14px] text-ink">{line}</Text>
+        </View>
+      ))}
+      <Text className="font-figtree text-[13px] leading-5 text-ink-2">
+        {t.contactMaskedNote(first)}
+      </Text>
+    </Section>
+  ) : null;
+  const skills = (
+    <Section title={t.skillsTitle}>
+      {profile.skills.length ? (
+        <SkillChips skills={profile.skills} />
+      ) : profile.own ? (
+        <>
+          <Muted text={t.noSkillsNudge} />
+          <AddLink href="/profile/edit" label={t.addSkills} />
+        </>
+      ) : (
+        <Muted text={t.notGiven} />
+      )}
+    </Section>
+  );
+  const ideasSection = (
+    <Section title={t.ideasTitle}>{ideas ?? <Muted text={t.ideasComingSoon} />}</Section>
+  );
+
+  if (split)
+    return (
+      <View className="gap-4">
+        {profile.own ? null : (
+          <LinkButton
+            href="/people"
+            label={t.backToPeople}
+            className="min-h-[36px] flex-row items-center gap-1.5 self-start"
+          >
+            <ChevronLeft size={16} color={palette.navy} aria-hidden />
+            <Text className="font-figtree-semibold text-[15px] text-navy underline">
+              {t.backToPeople}
+            </Text>
+          </LinkButton>
+        )}
+        <View className="flex-row flex-wrap items-center gap-6 rounded-card bg-navy px-7 py-7">
+          <View className="rounded-full border-4 border-white">
+            <Avatar name={profile.fullName} url={profile.photoUrl} size={108} />
+          </View>
+          <View className="min-w-[240px] flex-1 gap-1.5">
+            <Text
+              role="heading"
+              aria-level={1}
+              className="font-figtree-extrabold text-[32px] leading-[37px] text-white"
+            >
+              {profile.fullName}
+            </Text>
+            {profile.headline ? (
+              <Text className="font-figtree text-[16px] text-navy-ink">{profile.headline}</Text>
+            ) : null}
+            {profile.location ? (
+              <View className="flex-row items-center gap-1.5">
+                <MapPin size={14} color={palette.navyInk} aria-hidden />
+                <Text className="font-figtree text-[14px] text-navy-ink">{profile.location}</Text>
+              </View>
+            ) : null}
+            <View className="flex-row flex-wrap gap-2 pt-1">
+              <View className="flex-row items-center gap-1 rounded-full bg-good-soft px-2.5 py-1">
+                <ShieldCheck size={12} color={palette.good} aria-hidden />
+                <Text className="font-figtree-bold text-[12px] text-good-text">
+                  {t.homeVerifiedMember}
+                </Text>
+              </View>
+            </View>
+          </View>
+          {profile.own ? (
+            <LinkButton
+              href="/profile/edit"
+              label={t.editProfile}
+              className="min-h-[48px] items-center justify-center rounded-full bg-blue-soft px-5"
+            >
+              <Text className="font-figtree-semibold text-[15px] text-navy">{t.editProfile}</Text>
+            </LinkButton>
+          ) : (
+            hero
+          )}
+        </View>
+        {profile.own && profile.hidden ? <Message tone="info" text={t.hiddenProfileNote} /> : null}
+        <View className="flex-row flex-wrap items-start gap-4">
+          <View className="min-w-0 flex-1 basis-[560px] gap-4">
+            {profile.own ? <NextSteps profile={profile} /> : null}
+            {about}
+            {skills}
+            {ideasSection}
+            {references}
+          </View>
+          <View className="w-[448px] max-w-full gap-4">
+            {profile.own ? null : (side ?? actions)}
+            {contact}
+          </View>
+        </View>
+      </View>
+    );
+
   return (
     <View className="gap-4">
       <View className="flex-row flex-wrap items-center gap-4">
@@ -197,7 +365,7 @@ export function ProfileView({
           <Text
             role="heading"
             aria-level={1}
-            className="font-figtree-extrabold text-[24px] text-ink"
+            className="font-figtree-extrabold text-[24px] text-navy"
           >
             {profile.fullName}
           </Text>
@@ -210,72 +378,17 @@ export function ProfileView({
             label={t.editProfile}
             className="min-h-[44px] justify-center rounded-full border border-line-2 bg-surface px-4"
           >
-            <Text className="font-figtree-semibold text-sm text-ink-2">{t.editProfile}</Text>
+            <Text className="font-figtree-semibold text-sm text-navy">{t.editProfile}</Text>
           </LinkButton>
         ) : null}
       </View>
       {!profile.own && actions ? actions : null}
       {profile.own && profile.hidden ? <Message tone="info" text={t.hiddenProfileNote} /> : null}
       {profile.own ? <NextSteps profile={profile} /> : null}
-      <Section title={t.aboutTitle}>
-        {profile.profession ? <Body text={profile.profession} /> : null}
-        {profile.bio ? <Body text={profile.bio} /> : null}
-        {profile.experience ? (
-          <>
-            <Muted text={t.experienceLabel} />
-            <Body text={profile.experience} />
-          </>
-        ) : null}
-        {profile.certifications ? (
-          <>
-            <Muted text={t.certificationsTitle} />
-            <Body text={profile.certifications} />
-          </>
-        ) : null}
-        {!profile.profession && !profile.bio && !profile.experience && !profile.certifications ? (
-          profile.own ? (
-            <AddLink href="/profile/edit" label={t.addAbout} />
-          ) : (
-            <Muted text={t.notGiven} />
-          )
-        ) : null}
-      </Section>
-      {profile.contact ? (
-        <Section title={t.contactTitle}>
-          {(
-            [
-              [t.phone, profile.contact.phone],
-              [t.email, profile.contact.email],
-              [t.address, profile.contact.address],
-            ] as const
-          ).map(([label, value]) =>
-            value ? (
-              <View key={label} className="gap-0.5">
-                <Muted text={label} />
-                <Body text={value} />
-              </View>
-            ) : null,
-          )}
-        </Section>
-      ) : null}
-      <Section title={t.skillsTitle}>
-        {profile.skills.length ? (
-          <SkillChips skills={profile.skills} />
-        ) : profile.own ? (
-          <>
-            <Muted text={t.noSkillsNudge} />
-            <AddLink href="/profile/edit" label={t.addSkills} />
-          </>
-        ) : (
-          <Muted text={t.notGiven} />
-        )}
-      </Section>
-      {study ? (
-        <Section title={t.studyTitle}>
-          <Body text={study} />
-        </Section>
-      ) : null}
-      <Section title={t.ideasTitle}>{ideas ?? <Muted text={t.ideasComingSoon} />}</Section>
+      {about}
+      {contact}
+      {skills}
+      {ideasSection}
       {references}
     </View>
   );

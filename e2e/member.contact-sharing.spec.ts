@@ -32,12 +32,12 @@ test("contact details reach only a connection, only what the owner shares (PRD s
   await signInAs(page, `e2e_viewer_${stamp}`, viewer.email);
   await page.goto(`/profile/${owner.id}`);
   await expect(page.getByText(`Sharing Owner ${stamp}`)).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Contact" })).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "Contact", exact: true })).toHaveCount(0);
   await expect(page.getByText("+255700000000")).toHaveCount(0);
 
   await connect(owner.id, viewer.id);
   await page.reload();
-  await expect(page.getByRole("heading", { name: "Contact" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Contact", exact: true })).toBeVisible();
   await expect(page.getByText("+255700000000")).toBeVisible();
   await expect(page.getByText(owner.email)).toHaveCount(0);
   await expect(page.getByText("Address", { exact: true })).toHaveCount(0);

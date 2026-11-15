@@ -48,9 +48,11 @@ describe("ProfileView (S11)", () => {
     expect(screen.getByText("Nyamagana, Mwanza")).toBeTruthy();
     expect(screen.getByText("bookkeeping")).toBeTruthy();
     expect(screen.getByText("Ideas will appear here once the Ideas pool opens.")).toBeTruthy();
-    expect(screen.queryByText(/@|\+255/)).toBeNull();
+    expect(screen.queryByText(/\w@\w|\+255\s*\d/)).toBeNull();
+    expect(screen.getByText("Phone: +255 ••• ••• •••")).toBeTruthy();
     expect(screen.queryByRole("link", { name: "Edit profile" })).toBeNull();
     expect(screen.queryByRole("heading", { name: "Contact" })).toBeNull();
+    expect(screen.getByRole("heading", { name: "Contact details" })).toBeTruthy();
   });
 
   it("shows a connection only the contact details they share", () => {

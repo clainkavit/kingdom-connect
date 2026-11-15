@@ -33,6 +33,7 @@ const pairs: Pair[] = [
   },
   { board: "Opp-List", route: "/opportunities", w: 1440, h: 1700 },
   { board: "Ideas-Pool", route: "/ideas", w: 1440, h: 1500 },
+  { board: "Ideas-Phone-Pool", route: "/ideas", w: 430, h: 900 },
   { board: "Web-Growth", route: "/growth", w: 1440, h: 960 },
   { board: "Web-Messages", route: "/messages", w: 1440, h: 960 },
   { board: "Opp-Responses", route: "/opportunities/responses", w: 1440, h: 1000 },

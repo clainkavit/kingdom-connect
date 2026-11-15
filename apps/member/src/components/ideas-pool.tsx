@@ -10,7 +10,12 @@ import { Button, Chips } from "./form";
 import { AccessManager, DetailsLink, IdeaInterest } from "./idea-access";
 import { InvestorPool } from "./investor";
 import { seekingLabel, stageLabel } from "./ideas";
+import Lightbulb from "lucide-react-native/icons/lightbulb";
+import ShieldCheck from "lucide-react-native/icons/shield-check";
+import Star from "lucide-react-native/icons/star";
 import { LinkButton } from "./link-button";
+import { usePalette } from "./palette";
+import { Avatar } from "./profile";
 import { ScreenTitle } from "./screens";
 import { usePhone } from "./sheet";
 import { EmptyState, ErrorState, LoadingRows } from "./states";
@@ -34,30 +39,86 @@ function CardChip({ text }: { text: string }) {
 }
 
 /** An idea card as on the canvas (U04): sector and stage chips, the problem, what it looks for, owner and interest. */
+const millions = (n: number) => {
+  const m = n / 1_000_000;
+  return Number.isInteger(m) ? `${m}` : m.toFixed(1);
+};
+
+/** The canvas range chip: "TZS 10–50M", "Under TZS 10M", "Over TZS 50M". */
+export function shortRange(t: Strings, idea: IdeaSummary): string | null {
+  const { investmentMin: min, investmentMax: max } = idea;
+  if (min !== null && max !== null) return t.ideaShortBoth(millions(min), millions(max));
+  if (min !== null) return t.ideaShortFrom(millions(min));
+  if (max !== null) return t.ideaShortUpTo(millions(max));
+  return null;
+}
+
+const stageTone: Record<IdeaSummary["stage"], string> = {
+  idea: "bg-blue-soft text-navy",
+  prototype: "bg-violet-soft text-violet",
+  early_revenue: "bg-teal-soft text-teal",
+  growing: "bg-good-soft text-good-text",
+};
+
+function ToneChip({ text, tone }: { text: string; tone: string }) {
+  const [bg, fg] = tone.split(" ");
+  return (
+    <View className={`rounded-full px-2.5 py-1 ${bg}`}>
+      <Text className={`font-figtree-bold text-[12px] ${fg}`}>{text}</Text>
+    </View>
+  );
+}
+
+/** An idea card as on the canvas (U04, V07): chips, title, problem, what it looks for, owner and interest. */
 export function IdeaCard({ idea, children }: { idea: IdeaSummary; children?: React.ReactNode }) {
   const { t, language } = useLanguage();
-  const looking = [t.ideaLookingFor(seekingLabel(t, idea.seeking)), rangeLine(t, idea)]
-    .filter(Boolean)
-    .join(" · ");
+  const palette = usePalette();
+  const range = shortRange(t, idea);
+  const owner = idea.isMine ? t.ideaYours : (idea.ownerName ?? t.ideaVerifiedMember);
   const card = (
     <LinkButton
       href={`/ideas/${idea.id}`}
       label={idea.title}
-      className="flex-1 gap-1.5 rounded-card border border-line bg-surface px-5 py-[18px]"
+      className="flex-1 gap-2.5 rounded-card border border-line bg-surface px-[18px] py-[18px]"
     >
       <View className="flex-row flex-wrap gap-1.5">
-        <CardChip text={language === "sw" ? idea.sectorSw : idea.sectorEn} />
-        <CardChip text={stageLabel(t, idea.stage)} />
+        <ToneChip
+          text={language === "sw" ? idea.sectorSw : idea.sectorEn}
+          tone="bg-blue-soft text-navy"
+        />
+        <ToneChip text={stageLabel(t, idea.stage)} tone={stageTone[idea.stage]} />
       </View>
-      <Text className="font-figtree-bold text-[16px] text-ink">{idea.title}</Text>
-      <Text numberOfLines={2} className="font-figtree text-[14px] text-ink">
+      <Text className="font-figtree-bold text-[17px] text-ink">{idea.title}</Text>
+      <Text numberOfLines={2} className="font-figtree text-[14px] leading-[21px] text-ink-2">
         {idea.problem}
       </Text>
-      <Text className="font-figtree-semibold text-[13px] text-navy">{looking}</Text>
-      <Text className="font-figtree-semibold text-[13px] text-ink-2">
-        {idea.isMine ? t.ideaYours : (idea.ownerName ?? t.ideaVerifiedMember)} ·{" "}
-        {t.ideaInterested(idea.interestCount)}
-      </Text>
+      <View className="flex-row flex-wrap gap-1.5">
+        <ToneChip text={t.ideaLookingForShort(idea.seeking)} tone="bg-surface-2 text-ink" />
+        {range ? <ToneChip text={range} tone="bg-warn-soft text-warn-text" /> : null}
+      </View>
+      <View className="mt-auto flex-row items-center justify-between gap-2 border-t border-line pt-3">
+        <View className="min-w-0 flex-1 flex-row items-center gap-2">
+          {idea.ownerName || idea.isMine ? (
+            <Avatar name={idea.ownerName ?? owner} url={null} size={28} />
+          ) : (
+            <View className="h-7 w-7 items-center justify-center rounded-full bg-surface-2">
+              <ShieldCheck size={14} color={palette.ink2} aria-hidden />
+            </View>
+          )}
+          <Text
+            numberOfLines={1}
+            className={`flex-1 text-[13px] ${idea.isMine ? "font-figtree-semibold text-ink" : "font-figtree text-ink"}`}
+          >
+            {owner}
+          </Text>
+        </View>
+        <View className="flex-row items-center gap-1">
+          <Star size={14} color={palette.ink} aria-hidden />
+          <Text className="font-figtree-bold text-[13px] text-ink">
+            {t.ideaInterested(idea.interestCount)}
+          </Text>
+        </View>
+      </View>
     </LinkButton>
   );
   if (!children) return card;
@@ -86,6 +147,7 @@ const looksFor = (idea: IdeaSummary, looking: Looking) =>
 
 function MemberPool({ api, showApply }: { api: IdeasApi; showApply: boolean }) {
   const { t } = useLanguage();
+  const palette = usePalette();
   const phone = usePhone();
   const [looking, setLooking] = useState<Looking>("all");
   const [attempt, setAttempt] = useState(0);
@@ -111,31 +173,44 @@ function MemberPool({ api, showApply }: { api: IdeasApi; showApply: boolean }) {
   };
 
   return (
-    <View className="gap-3">
-      <ScreenTitle>{t.navIdeas}</ScreenTitle>
-      <Text className="font-figtree text-[15px] leading-[22px] text-ink-2">{t.ideasPoolIntro}</Text>
-      <View className="flex-row flex-wrap gap-2">
-        <LinkButton
-          href="/ideas/new"
-          label={t.ideasShare}
-          className="min-h-[48px] items-center justify-center rounded-full bg-blue px-4"
-        >
-          <Text className="font-figtree-bold text-[15px] text-blue-ink">{t.ideasShare}</Text>
-        </LinkButton>
-        <LinkButton
-          href="/ideas/mine"
-          label={t.ideasMine}
-          className="min-h-[48px] items-center justify-center rounded-full border border-line-2 bg-surface px-4"
-        >
-          <Text className="font-figtree-semibold text-[15px] text-ink">{t.ideasMine}</Text>
-        </LinkButton>
-        <LinkButton
-          href="/plans"
-          label={t.plansTitle}
-          className="min-h-[48px] items-center justify-center rounded-full border border-line-2 bg-surface px-4"
-        >
-          <Text className="font-figtree-semibold text-[15px] text-ink">{t.plansTitle}</Text>
-        </LinkButton>
+    <View className="gap-4">
+      <View className="flex-row flex-wrap items-start justify-between gap-4">
+        <View className="min-w-0 flex-1 basis-[420px] gap-1.5">
+          <Text
+            role="heading"
+            aria-level={1}
+            className={`font-figtree-extrabold text-navy ${phone ? "text-[24px] leading-[28px]" : "text-[32px] leading-[37px]"}`}
+          >
+            {t.navIdeas}
+          </Text>
+          <Text className="font-figtree text-[15px] leading-[22px] text-ink-2">
+            {t.ideasPoolIntro}
+          </Text>
+        </View>
+        <View className="flex-row flex-wrap items-center gap-3">
+          <LinkButton
+            href="/ideas/new"
+            label={t.ideasShare}
+            className="min-h-[48px] flex-row items-center justify-center gap-2 rounded-full bg-navy px-5"
+          >
+            <Lightbulb size={18} color={palette.navyInk} aria-hidden />
+            <Text className="font-figtree-semibold text-[15px] text-white">{t.ideasShare}</Text>
+          </LinkButton>
+          <LinkButton
+            href="/ideas/mine"
+            label={t.ideasMine}
+            className="min-h-[48px] items-center justify-center rounded-full border border-line-2 bg-surface px-5"
+          >
+            <Text className="font-figtree-semibold text-[15px] text-navy">{t.ideasMine}</Text>
+          </LinkButton>
+          <LinkButton
+            href="/plans"
+            label={t.plansTitle}
+            className="min-h-[48px] items-center justify-center rounded-full border border-line-2 bg-surface px-5"
+          >
+            <Text className="font-figtree-semibold text-[15px] text-navy">{t.plansTitle}</Text>
+          </LinkButton>
+        </View>
       </View>
       {first.state === "failed" ? (
         <ErrorState message={t.ideasPoolLoadFailed} onRetry={() => setAttempt((a) => a + 1)} />
@@ -150,6 +225,7 @@ function MemberPool({ api, showApply }: { api: IdeasApi; showApply: boolean }) {
       ) : (
         <>
           <Chips
+            hideLabel
             label={t.ideasShow}
             options={[
               { value: "all", label: t.ideasAll },
@@ -163,7 +239,7 @@ function MemberPool({ api, showApply }: { api: IdeasApi; showApply: boolean }) {
             {[...first.value, ...more]
               .filter((idea) => looksFor(idea, looking))
               .map((idea) => (
-                <View key={idea.id} className={phone ? "" : "w-[48%] min-w-[280px] flex-grow"}>
+                <View key={idea.id} className={phone ? "" : "w-[32%] min-w-[260px] flex-grow"}>
                   <IdeaCard idea={idea} />
                 </View>
               ))}
@@ -171,7 +247,9 @@ function MemberPool({ api, showApply }: { api: IdeasApi; showApply: boolean }) {
           {moreFailed ? (
             <ErrorState message={t.ideasPoolLoadFailed} onRetry={loadMore} />
           ) : !done && first.value.length === POOL_PAGE ? (
-            <Button secondary label={t.loadMore} disabled={busy} onPress={loadMore} />
+            <View className="items-center">
+              <Button secondary label={t.loadMore} disabled={busy} onPress={loadMore} />
+            </View>
           ) : null}
         </>
       )}

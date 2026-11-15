@@ -16,6 +16,7 @@ type Pair = { board: string; route: string; w: number; h: number; as?: "level3" 
 
 const pairs: Pair[] = [
   { board: "Business-Dashboard", route: "/", w: 1440, h: 2100 },
+  { board: "Member-Dashboard", route: "/", w: 1440, h: 2300 },
   { board: "Member-People", route: "/people", w: 1440, h: 1700 },
   { board: "Opp-List", route: "/opportunities", w: 1440, h: 1700 },
   { board: "Ideas-Pool", route: "/ideas", w: 1440, h: 1500 },

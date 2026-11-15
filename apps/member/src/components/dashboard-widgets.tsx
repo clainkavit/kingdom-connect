@@ -7,7 +7,17 @@ import {
   type LatestItem,
   type LatestTab,
 } from "../lib/dashboard-widgets";
+import BookOpen from "lucide-react-native/icons/book-open";
+import Briefcase from "lucide-react-native/icons/briefcase";
+import ChevronRight from "lucide-react-native/icons/chevron-right";
+import CircleDollarSign from "lucide-react-native/icons/circle-dollar-sign";
+import Lightbulb from "lucide-react-native/icons/lightbulb";
+import Star from "lucide-react-native/icons/star";
+import Store from "lucide-react-native/icons/store";
+import Users from "lucide-react-native/icons/users";
 import { useLanguage } from "../lib/language";
+import { usePalette } from "./palette";
+import { usePhone } from "./sheet";
 import type { MemberNewsApi } from "../lib/news";
 import type { PostKind } from "../lib/opportunity-browse";
 import { useLoad } from "./events";
@@ -48,9 +58,47 @@ function kindLine(t: Strings, item: LatestItem): string {
 
 function ItemLink({ href, title, line }: { href: string; title: string; line: string }) {
   return (
-    <LinkButton href={href} label={title} className="gap-0.5 border-b border-line py-2.5">
+    <LinkButton href={href} label={title} className="gap-0.5 border-t border-line py-3">
       <Text className="font-figtree-semibold text-[15px] text-ink">{title}</Text>
       <Text className="font-figtree text-[13px] text-ink-2">{line}</Text>
+    </LinkButton>
+  );
+}
+
+const itemIcon = (item: LatestItem) =>
+  item.kind === "training"
+    ? BookOpen
+    : item.kind === "idea"
+      ? Lightbulb
+      : item.subtype === "tender"
+        ? Store
+        : item.subtype === "investment"
+          ? CircleDollarSign
+          : item.subtype === "job"
+            ? Briefcase
+            : Users;
+
+/** A Latest row as on the canvas: an icon tile, the kind chip and title, then where and when. */
+function LatestRow({ item, href, line }: { item: LatestItem; href: string; line: string }) {
+  const { t } = useLanguage();
+  const palette = usePalette();
+  const Icon = itemIcon(item);
+  const chip = kindLine(t, item).split(" · ")[0];
+  return (
+    <LinkButton href={href} label={item.title} className="flex-row gap-3 border-t border-line py-3">
+      <View className="h-10 w-10 items-center justify-center rounded-[12px] bg-blue-soft">
+        <Icon size={18} color={palette.navy} aria-hidden />
+      </View>
+      <View className="min-w-0 flex-1 gap-1">
+        <View className="flex-row flex-wrap items-center gap-2">
+          <Text className="rounded-full bg-blue-soft px-2.5 py-0.5 font-figtree-bold text-[12px] text-navy">
+            {chip}
+          </Text>
+          <Text className="font-figtree-bold text-[15px] text-ink">{item.title}</Text>
+        </View>
+        <Text className="font-figtree text-[13px] text-ink-2">{line}</Text>
+      </View>
+      <ChevronRight size={18} color={palette.ink} aria-hidden />
     </LinkButton>
   );
 }
@@ -78,8 +126,9 @@ export function LatestItems({
     setAttempt((a) => a + 1);
   };
   return (
-    <Section title={t.latestTitle}>
+    <Section title={t.latestTitle} action={{ label: t.homeSeeAll, href: "/opportunities" }}>
       <Chips
+        hideLabel
         label={t.latestShow}
         options={LATEST_TABS.map((k) => ({ value: k, label: tabLabel(t, k) }))}
         value={tab}
@@ -109,12 +158,12 @@ export function LatestItems({
           {loaded.value
             .filter((item) => !(item.kind === "opportunity" && pinnedIds.has(item.id)))
             .map((item) => (
-              <ItemLink
+              <LatestRow
                 key={`${item.kind}-${item.id}`}
                 href={hrefOf(item)}
-                title={item.title}
+                item={item}
                 line={[
-                  kindLine(t, item),
+                  kindLine(t, item).split(" · ").slice(1).join(" · ") || null,
                   item.sector ? (language === "sw" ? item.sector.sw : item.sector.en) : null,
                   item.publishedAt ? formatDate(item.publishedAt, language) : null,
                 ]
@@ -131,22 +180,33 @@ export function LatestItems({
 /** S08 on the combined canvas (U01): up to 5 featured opportunities in a section of their own. No counts. */
 export function FeaturedList({ api }: { api: DashboardWidgetsApi }) {
   const { t, language } = useLanguage();
+  const palette = usePalette();
+  const phone = usePhone();
   const loaded = useLoad(() => api.featured().catch(() => []), 0);
   if (loaded.state !== "ready" || loaded.value.length === 0) return null;
   return (
     <Section title={t.featuredTitle}>
-      {loaded.value.map((p) => (
-        <ItemLink
-          key={p.id}
-          href={`/opportunities/${p.id}`}
-          title={p.title}
-          line={[
-            `${t.featuredTag} · ${t[typeLabel[p.type]] as string}`,
-            p.posterName,
-            t.oppCloses(closingDay(p.closingAt, language)),
-          ].join(" · ")}
-        />
-      ))}
+      <View className={phone ? "gap-3" : "flex-row flex-wrap gap-3"}>
+        {loaded.value.slice(0, 3).map((p) => (
+          <LinkButton
+            key={p.id}
+            href={`/opportunities/${p.id}`}
+            label={p.title}
+            className={`gap-1 rounded-[14px] border border-line bg-surface-2 p-3.5 ${phone ? "" : "min-w-[180px] flex-1"}`}
+          >
+            <View className="flex-row items-center gap-1.5">
+              <Star size={13} color={palette.warnText} aria-hidden />
+              <Text className="font-figtree-bold text-[12px] text-warn-text">
+                {`${t.featuredTag} · ${t[typeLabel[p.type]] as string}`}
+              </Text>
+            </View>
+            <Text className="font-figtree-bold text-[15px] text-ink">{p.title}</Text>
+            <Text className="font-figtree text-[13px] text-ink-2">
+              {[p.posterName, t.oppCloses(closingDay(p.closingAt, language))].join(" · ")}
+            </Text>
+          </LinkButton>
+        ))}
+      </View>
     </Section>
   );
 }
@@ -157,7 +217,7 @@ export function NewsPreview({ api }: { api: MemberNewsApi }) {
   const [attempt, setAttempt] = useState(0);
   const loaded = useLoad(() => api.list(), attempt);
   return (
-    <Section title={t.newsTitle}>
+    <Section title={t.newsTitle} action={{ label: t.newsAll, href: "/news" }}>
       {loaded.state === "failed" ? (
         <ErrorState message={t.widgetLoadFailed} onRetry={() => setAttempt((a) => a + 1)} />
       ) : loaded.state === "loading" ? (
@@ -174,9 +234,6 @@ export function NewsPreview({ api }: { api: MemberNewsApi }) {
               line={formatDate(new Date(n.publishedAt), language)}
             />
           ))}
-          <LinkButton href="/news" label={t.newsAll} className="min-h-[44px] justify-center">
-            <Text className="font-figtree-semibold text-sm text-blue">{t.newsAll}</Text>
-          </LinkButton>
         </View>
       )}
     </Section>

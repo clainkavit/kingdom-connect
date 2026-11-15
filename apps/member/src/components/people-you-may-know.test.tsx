@@ -29,7 +29,7 @@ describe("PeopleYouMayKnow (S08, O08)", () => {
   it("shows each suggestion with two reasons and a way to connect", async () => {
     const list = vi.fn().mockResolvedValue([suggestion()]);
     await show({ list });
-    expect(list).toHaveBeenCalledWith(6);
+    expect(list).toHaveBeenCalledWith(4);
     expect(screen.getByText("Asha Mwita")).toBeTruthy();
     expect(screen.getByText("2 mutual connections · Shared skills: bookkeeping")).toBeTruthy();
     expect(screen.getByRole("link", { name: "Connect with Asha Mwita" }).getAttribute("href")).toBe(

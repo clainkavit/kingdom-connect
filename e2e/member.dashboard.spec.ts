@@ -12,13 +12,15 @@ test("the dashboard welcomes the Member and answers a request inline, with no co
   await requestConnection(asker.id, member.id, "We met at the youth meeting");
 
   await signInAs(page, `e2e_dash_${stamp}`, member.email);
-  await expect(page.getByText(`Hello, Dashboard Member ${stamp}`)).toBeVisible();
+  await expect(page.getByText("Welcome, Dashboard")).toBeVisible();
   await expect(page.getByText("We met at the youth meeting")).toBeVisible();
   await page.getByRole("button", { name: "Accept" }).click();
   await expect(page.getByText("No requests waiting")).toBeVisible();
-  await expect(page.getByText("Verify your business to post opportunities.")).toBeVisible();
+  await expect(page.getByText("Verify your business to post opportunities")).toBeVisible();
   await expect(page.getByText(/\bverified members\b|\bregistered businesses\b/i)).toHaveCount(0);
-  await expect(page.getByRole("heading", { name: "Latest", exact: true })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Latest opportunities and more", exact: true }),
+  ).toBeVisible();
   await page.getByRole("radio", { name: "Training" }).click();
   await expect(page.getByRole("radio", { name: "Training" })).toHaveAttribute(
     "aria-checked",

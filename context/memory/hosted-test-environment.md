@@ -1,6 +1,6 @@
 # Hosted test environment (6 Nov 2026)
 
-Supabase project `kingdom-connect-test` (ref `palsowodunzxqbbyenvb`, eu-central-1, free plan, test data only) and two Vercel projects on the personal team `light-8f71`: `kingdom-connect-member` (root `apps/member`) and `kingdom-connect-admin` (root `apps/admin`), both linked to `clainkavit/kingdom-connect` with git deployments disabled (deploy by hand).
+Supabase project `kingdom-connect-test` (ref `palsowodunzxqbbyenvb`, eu-central-1, free plan, test data only) and two Vercel projects on the personal team `light-8f71`: `kingdom-connect-member` (root `apps/member`) and `kingdom-connect-admin` (root `apps/admin`), both linked to `clainkavit/kingdom-connect`. Seen 15 Nov 2026: every merge to `main` deploys both sites by itself (the Vercel statuses on the merge commit, and the live member bundle carried U05 without a manual deploy); earlier notes said deploy by hand.
 
 - Secrets (DB password, service key, OTP and vault keys, seed password) live in the gitignored `.env.hosted` at the repo root. Nothing in git.
 - Database: `supabase db push --linked`, then a seed copy with a random password and hosted vault values (the local `supabase/seed.sql` has the known local password and keys, never run it hosted). Legal texts: `pnpm legal:load` with `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY`. Functions: `supabase functions deploy --use-api`. Secrets: `OTP_SECRET`, `MAIL_FROM`, `MAIL_API_URL`; do not set `DB_URL` hosted, the built-in `SUPABASE_DB_URL` is used.

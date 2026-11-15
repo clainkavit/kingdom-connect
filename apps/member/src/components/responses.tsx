@@ -2,6 +2,7 @@ import { formatDate, type Strings, type TextKey } from "@kingdom-connect/shared"
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { Linking, Pressable, Text, View } from "react-native";
+import SquarePlus from "lucide-react-native/icons/square-plus";
 import { useLanguage } from "../lib/language";
 import type { OpportunityDetail } from "../lib/opportunity-browse";
 import {
@@ -97,6 +98,7 @@ function ThreadButton({
 /** S18 on S17: apply to a job or express interest in any other post; once responded, the status (O03). */
 export function RespondPanel({ api, post }: { api: ResponsesApi; post: OpportunityDetail }) {
   const { t } = useLanguage();
+  const palette = usePalette();
   const [attempt, setAttempt] = useState(0);
   const loaded = useLoad(async () => {
     const [mine, level] = await Promise.all([
@@ -209,6 +211,42 @@ export function RespondPanel({ api, post }: { api: ResponsesApi; post: Opportuni
 
   const fields = (
     <>
+      <View
+        className={`min-h-[64px] flex-row items-center gap-3 rounded-[14px] border px-3.5 py-3 ${file ? "border-good bg-good-soft" : "border-dashed border-line-2 bg-surface"}`}
+      >
+        <View className="h-9 w-9 items-center justify-center rounded-[10px] bg-blue-soft">
+          <SquarePlus size={18} color={palette.navy} aria-hidden />
+        </View>
+        <View className="min-w-0 flex-1">
+          <Text className="font-figtree-bold text-[14px] text-ink">
+            {application ? t.respCvTitle : t.respFileTitle}
+          </Text>
+          <Text numberOfLines={1} className="font-figtree text-[12px] text-ink-2">
+            {file ? file.name : t.respFileHint}
+          </Text>
+        </View>
+        {file ? (
+          <Pressable
+            role="button"
+            aria-label={t.respRemoveFile}
+            onPress={() => setFile(null)}
+            className="min-h-[40px] justify-center"
+          >
+            <Text className="font-figtree-semibold text-[13px] text-navy underline">
+              {t.respRemoveFile}
+            </Text>
+          </Pressable>
+        ) : (
+          <Pressable
+            role="button"
+            aria-label={application ? t.respAddCv : t.respAddFile}
+            onPress={pick}
+            className="min-h-[40px] justify-center"
+          >
+            <Text className="font-figtree-semibold text-[13px] text-navy">{t.chooseFile}</Text>
+          </Pressable>
+        )}
+      </View>
       <Field
         label={application ? t.respNoteApply : t.respNoteInterest}
         value={note}
@@ -216,24 +254,9 @@ export function RespondPanel({ api, post }: { api: ResponsesApi; post: Opportuni
         multiline
         hint={t.respNoteHint}
       />
-      <View className="flex-row flex-wrap items-center gap-3">
-        <Button secondary label={application ? t.respAddCv : t.respAddFile} onPress={pick} />
-        {file ? (
-          <>
-            <Text className="font-figtree text-sm text-ink">{file.name}</Text>
-            <Pressable
-              role="button"
-              aria-label={t.respRemoveFile}
-              onPress={() => setFile(null)}
-              className="min-h-[40px] justify-center"
-            >
-              <Text className="font-figtree-semibold text-sm text-blue">{t.respRemoveFile}</Text>
-            </Pressable>
-          </>
-        ) : (
-          <Text className="font-figtree text-[13px] text-ink-2">{t.respFileHint}</Text>
-        )}
-      </View>
+      <Text className="font-figtree text-[13px] text-ink-2">
+        {application ? t.respApplyOnce : t.respInterestOnce}
+      </Text>
       <Message text={problem} />
     </>
   );
@@ -256,8 +279,8 @@ export function RespondPanel({ api, post }: { api: ResponsesApi; post: Opportuni
     );
 
   return (
-    <View className="gap-3 rounded-card border border-line bg-surface px-5 py-[18px]">
-      <Text role="heading" aria-level={2} className="font-figtree-bold text-[16px] text-ink">
+    <View className="gap-4 rounded-card border-2 border-navy bg-surface px-6 py-6">
+      <Text role="heading" aria-level={2} className="font-figtree-bold text-[20px] text-ink">
         {formTitle}
       </Text>
       {fields}

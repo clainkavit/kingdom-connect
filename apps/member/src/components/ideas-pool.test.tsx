@@ -103,7 +103,7 @@ describe("IdeasPool (S22)", () => {
 describe("IdeaSummaryScreen (S23)", () => {
   it("shows the summary, the owner and that the details are locked", async () => {
     await show(<IdeaSummaryScreen api={fakeApi()} access={fakeAccess()} ideaId="i1" />);
-    expect(screen.getByText("TZS 10,000,000 to 50,000,000")).toBeTruthy();
+    expect(screen.getByText("TZS 10–50M")).toBeTruthy();
     expect(screen.getByRole("link", { name: "Asha Mwita" }).getAttribute("href")).toBe(
       "/profile/m1",
     );

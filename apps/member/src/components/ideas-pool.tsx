@@ -10,7 +10,9 @@ import { Button, Chips } from "./form";
 import { AccessManager, DetailsLink, IdeaInterest } from "./idea-access";
 import { InvestorPool } from "./investor";
 import { seekingLabel, stageLabel } from "./ideas";
+import ChevronLeft from "lucide-react-native/icons/chevron-left";
 import Lightbulb from "lucide-react-native/icons/lightbulb";
+import Lock from "lucide-react-native/icons/lock";
 import ShieldCheck from "lucide-react-native/icons/shield-check";
 import Star from "lucide-react-native/icons/star";
 import { LinkButton } from "./link-button";
@@ -277,6 +279,8 @@ export function IdeaSummaryScreen({
   ideaId: string;
 }) {
   const { t, language } = useLanguage();
+  const palette = usePalette();
+  const phone = usePhone();
   const [attempt, setAttempt] = useState(0);
   const loaded = useLoad(() => api.summary(ideaId), attempt);
 
@@ -298,57 +302,127 @@ export function IdeaSummaryScreen({
     [t.ideaSectorLabel, language === "sw" ? idea.sectorSw : idea.sectorEn],
     [t.ideaStageLabel, stageLabel(t, idea.stage)],
     [t.ideaSeekingLabel, seekingLabel(t, idea.seeking)],
-    [t.ideaInvestmentLabel, rangeLine(t, idea)],
+    [t.ideaInvestmentLabel, shortRange(t, idea)],
   ];
+
+  const owner = idea.isMine ? t.ideaYours : (idea.ownerName ?? t.ideaVerifiedMember);
+  const side = idea.isMine ? (
+    <View className="gap-4">
+      <DetailsLink ideaId={idea.id} />
+      <AccessManager api={access} ideaId={idea.id} />
+      <LinkButton
+        href="/ideas/mine"
+        label={t.ideaManageMine}
+        className="min-h-[44px] items-center justify-center rounded-full border border-line-2 bg-surface px-4"
+      >
+        <Text className="font-figtree-semibold text-sm text-navy">{t.ideaManageMine}</Text>
+      </LinkButton>
+    </View>
+  ) : (
+    <IdeaInterest api={access} ideaId={idea.id} />
+  );
 
   return (
     <View className="gap-4">
-      <ScreenTitle>{idea.title}</ScreenTitle>
-      <Text className="font-figtree text-[15px] leading-6 text-ink">{idea.problem}</Text>
-      <View className="gap-2 rounded-card border border-line bg-surface px-5 py-[18px]">
-        {facts.map(([label, value]) =>
-          value ? (
-            <View key={label} className="gap-0.5">
-              <Text className="font-figtree text-[13px] text-ink-2">{label}</Text>
-              <Text className="font-figtree-semibold text-[15px] text-ink">{value}</Text>
-            </View>
-          ) : null,
-        )}
-        <Text className="font-figtree text-[13px] text-ink-2">
-          {t.ideaInterested(idea.interestCount)}
+      <LinkButton
+        href="/ideas"
+        label={t.ideaBackToPool}
+        className="min-h-[36px] flex-row items-center gap-1.5 self-start"
+      >
+        <ChevronLeft size={16} color={palette.navy} aria-hidden />
+        <Text className="font-figtree-semibold text-[15px] text-navy underline">
+          {t.ideaBackToPool}
         </Text>
-      </View>
-      {idea.isMine ? (
-        <>
-          <DetailsLink ideaId={idea.id} />
-          <AccessManager api={access} ideaId={idea.id} />
-          <LinkButton
-            href="/ideas/mine"
-            label={t.ideaManageMine}
-            className="min-h-[44px] items-center justify-center rounded-full border border-line-2 bg-surface px-4"
-          >
-            <Text className="font-figtree-semibold text-sm text-ink-2">{t.ideaManageMine}</Text>
-          </LinkButton>
-        </>
-      ) : (
-        <>
-          {idea.ownerId ? (
-            <LinkButton
-              href={`/profile/${idea.ownerId}`}
-              label={idea.ownerName ?? ""}
-              className="min-h-[44px] justify-center"
+      </LinkButton>
+      <View className={phone ? "gap-4" : "flex-row items-start gap-4"}>
+        <View className="min-w-0 flex-1 gap-4">
+          <View className="gap-3 rounded-card border border-line bg-surface px-6 py-6">
+            <View className="flex-row flex-wrap gap-1.5">
+              <ToneChip
+                text={language === "sw" ? idea.sectorSw : idea.sectorEn}
+                tone="bg-blue-soft text-navy"
+              />
+              <ToneChip text={stageLabel(t, idea.stage)} tone={stageTone[idea.stage]} />
+            </View>
+            <Text
+              role="heading"
+              aria-level={1}
+              className={`font-figtree-extrabold text-navy ${phone ? "text-[24px] leading-[28px]" : "text-[32px] leading-[37px]"}`}
             >
-              <Text className="font-figtree-semibold text-[15px] text-blue">{idea.ownerName}</Text>
-            </LinkButton>
-          ) : (
-            <Text className="font-figtree-semibold text-[15px] text-ink">
-              {t.ideaVerifiedMember}
+              {idea.title}
             </Text>
+            <Text className="font-figtree-bold text-[14px] text-ink-2">{t.ideaTheProblem}</Text>
+            <Text className="font-figtree text-[16px] leading-[26px] text-ink">{idea.problem}</Text>
+            <View className="flex-row flex-wrap gap-3">
+              {facts.map(([label, value]) =>
+                value ? (
+                  <View
+                    key={label}
+                    className="min-w-[150px] flex-1 gap-0.5 rounded-[14px] bg-surface-2 px-3.5 py-3"
+                  >
+                    <Text className="font-figtree-bold text-[12px] text-ink">{label}</Text>
+                    <Text className="font-figtree text-[15px] text-ink">{value}</Text>
+                  </View>
+                ) : null,
+              )}
+            </View>
+            <View className="flex-row items-center justify-between gap-2 border-t border-line pt-3">
+              {idea.ownerId && !idea.isMine ? (
+                <LinkButton
+                  href={`/profile/${idea.ownerId}`}
+                  label={owner}
+                  className="min-h-[36px] flex-row items-center gap-2"
+                >
+                  <Avatar name={owner} url={null} size={32} />
+                  <Text className="font-figtree-semibold text-[14px] text-navy">{owner}</Text>
+                </LinkButton>
+              ) : (
+                <View className="flex-row items-center gap-2">
+                  <View className="h-8 w-8 items-center justify-center rounded-full bg-surface-2">
+                    <ShieldCheck size={15} color={palette.ink2} aria-hidden />
+                  </View>
+                  <Text className="font-figtree text-[13px] text-ink">{owner}</Text>
+                </View>
+              )}
+              <View className="flex-row items-center gap-1.5">
+                <Star size={15} color={palette.ink} aria-hidden />
+                <Text className="font-figtree-bold text-[14px] text-ink">
+                  {t.ideaMembersInterested(idea.interestCount)}
+                </Text>
+              </View>
+            </View>
+          </View>
+          {idea.isMine ? null : (
+            <View className="gap-2 rounded-card border border-dashed border-line-2 bg-surface-2 px-6 py-5">
+              <View className="flex-row items-center gap-2">
+                <Lock size={16} color={palette.ink} aria-hidden />
+                <Text
+                  role="heading"
+                  aria-level={2}
+                  className="font-figtree-bold text-[18px] text-ink"
+                >
+                  {t.ideaDetailsLocked}
+                </Text>
+              </View>
+              {[
+                t.ideaLockedDescription,
+                t.ideaLockedModel,
+                t.ideaLockedMarket,
+                t.ideaLockedFinancials,
+                t.ideaLockedTeam,
+                t.ideaLockedFiles,
+              ].map((line) => (
+                <View key={line} className="flex-row gap-2">
+                  <Text className="font-figtree text-[15px] text-ink">•</Text>
+                  <Text className="font-figtree text-[15px] text-ink">{line}</Text>
+                </View>
+              ))}
+              <Text className="font-figtree text-[14px] text-ink">{t.ideaLockedDetails}</Text>
+            </View>
           )}
-          <Text className="font-figtree text-sm text-ink-2">{t.ideaLockedDetails}</Text>
-          <IdeaInterest api={access} ideaId={idea.id} />
-        </>
-      )}
+        </View>
+        <View className={phone ? "" : "w-[448px] max-w-full"}>{side}</View>
+      </View>
     </View>
   );
 }

@@ -452,7 +452,6 @@ function FilterRow({
     apply({ ...filters, ...change });
   };
   const any = { value: "", label: t.anyOption };
-  const kinds = KINDS.map((k) => ({ value: k, label: t[typeLabel[k]] as string }));
   const on = [
     filters.kind,
     filters.region,
@@ -462,23 +461,6 @@ function FilterRow({
   ].some((v) => v !== undefined);
   return (
     <FilterBar>
-      <FilterMenu
-        label={t.fieldType}
-        value={labelOf(kinds, filters.kind)}
-        open={menu === "kind"}
-        onToggle={() => toggle("kind")}
-      >
-        <FilterOptions
-          options={[{ value: "", label: t.oppAll }, ...kinds]}
-          value={filters.kind ?? ""}
-          onChange={(k) =>
-            set({
-              kind: (k || undefined) as PostKind | undefined,
-              employment: !k || k === "job" ? filters.employment : undefined,
-            })
-          }
-        />
-      </FilterMenu>
       <FilterMenu
         label={t.region}
         value={labelOf(regions, filters.region)}
@@ -538,6 +520,34 @@ function FilterRow({
         />
       ) : null}
     </FilterBar>
+  );
+}
+
+/** The type of post as a row of pills, as on the canvas (U03): All, Jobs, Partnerships and the rest. */
+function TypePills({
+  filters,
+  apply,
+}: {
+  filters: OpportunityFilters;
+  apply: (next: OpportunityFilters) => void;
+}) {
+  const { t } = useLanguage();
+  return (
+    <Chips
+      label={t.fieldType}
+      options={[
+        { value: "all", label: t.oppAll },
+        ...KINDS.map((k) => ({ value: k as string, label: t[pluralLabel[k]] as string })),
+      ]}
+      value={filters.kind ?? "all"}
+      onChange={(k) =>
+        apply({
+          ...filters,
+          kind: k === "all" ? undefined : (k as PostKind),
+          employment: k === "all" || k === "job" ? filters.employment : undefined,
+        })
+      }
+    />
   );
 }
 
@@ -862,11 +872,38 @@ export function OpportunitiesList({
         </View>
         <View className="flex-row">{searchBox}</View>
         {tabs}
+        <TypePills filters={filters} apply={apply} />
         <FilterRow filters={filters} apply={apply} regions={regions} sectors={sectors} />
         {listLine}
         {list}
       </View>
       <View className="w-[300px] gap-4">
+        <SideCard title={t.scanTitle}>
+          <Text className="font-figtree text-sm leading-5 text-ink-2">{t.oppScanCardText}</Text>
+          <LinkButton
+            href="/opportunities/scan"
+            label={t.oppScanNow}
+            className="min-h-[44px] items-center justify-center rounded-full bg-navy px-4"
+          >
+            <Text className="font-figtree-bold text-sm text-navy-ink">{t.oppScanNow}</Text>
+          </LinkButton>
+        </SideCard>
+        {filters.kind === "tender" ? (
+          <SideCard title={t.oppTendersNeedBusiness}>
+            <Text className="font-figtree text-sm leading-5 text-ink-2">
+              {t.oppTendersNeedBusinessText}
+            </Text>
+            <LinkButton
+              href="/business"
+              label={t.verifyBusinessLink}
+              className="min-h-[44px] justify-center self-start"
+            >
+              <Text className="font-figtree-semibold text-sm text-blue">
+                {t.verifyBusinessLink}
+              </Text>
+            </LinkButton>
+          </SideCard>
+        ) : null}
         {noSkills ? (
           <SideCard title={t.oppBetterMatches}>
             <Text className="font-figtree text-sm leading-5 text-ink-2">

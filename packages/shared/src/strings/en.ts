@@ -1735,4 +1735,10 @@ export const en = {
   homeMatchesEmpty: "No matches yet. Add skills to your profile to see more.",
   peopleShowingMatch: "Showing members who match:",
   removeFilter: (filter: string) => `Remove the filter: ${filter}`,
+  oppScanCardText:
+    "We match your skills, profession, sector and region to open posts, and show the top two reasons for each.",
+  oppScanNow: "Scan now",
+  oppTendersNeedBusiness: "Tenders need a verified business",
+  oppTendersNeedBusinessText:
+    "You can read every tender. To respond, verify your business (Level 2).",
 };

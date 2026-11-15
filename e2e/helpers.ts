@@ -559,3 +559,32 @@ export async function pastRatings(rateeId: string, raterIds: string[], opportuni
       values (${e!.id}, ${rater}, ${rateeId}, 5, 5, 4, 5, true, 'Good work, on time.', now())`;
   }
 }
+
+/** O16: a post as a full draft, ready for the last posting step. */
+export async function draftOpportunity(posterId: string, title: string) {
+  const [row] = await db`insert into public.opportunities
+      (poster_member_id, type, title, role, employment_type, remote, sector_id, description, closing_at, status)
+    select ${posterId}, 'job', ${title}, 'Accountant', 'full_time', true, id,
+           ${"Keep the books for a growing trading business, prepare monthly reports and work with the tax office."},
+           current_date + 30, 'draft'
+    from public.sectors order by name_en limit 1
+    returning id`;
+  return row!.id as string;
+}
+
+export async function approveOpportunity(id: string) {
+  await db`update public.opportunities set status = 'published', published_at = now(), no_fee_declared = true
+    where id = ${id}`;
+}
+
+/** O16: staff ask a member for a picked post, as A18 will (D07). */
+export async function askPick(opportunityId: string, memberId: string, why: string) {
+  const [staff] = await db`select id from public.staff order by created_at limit 1`;
+  await db`insert into public.picks (request_id, member_id, picked_by, why, rank)
+    select r.id, ${memberId}, ${staff!.id}, ${why}, 1 from public.pick_requests r where r.opportunity_id = ${opportunityId}`;
+  await db`update public.pick_requests set status = 'asking' where opportunity_id = ${opportunityId}`;
+}
+
+export async function sendPickList(opportunityId: string) {
+  await db`update public.pick_requests set status = 'sent', sent_at = now() where opportunity_id = ${opportunityId}`;
+}

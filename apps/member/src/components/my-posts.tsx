@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Text, View } from "react-native";
 import { useLanguage } from "../lib/language";
 import type { MyPost, OpportunitiesApi, PostStatus } from "../lib/opportunities";
+import type { PickRequestStatus, PicksApi } from "../lib/picks";
 import { ConfirmButton, Message } from "./form";
 import { LinkButton } from "./link-button";
 import { typeLabel } from "./opportunity-form";
@@ -22,10 +23,13 @@ const statusLabel: Record<PostStatus, TextKey> = {
 function PostRow({
   post,
   api,
+  picked,
   onChanged,
 }: {
   post: MyPost;
   api: OpportunitiesApi;
+  /** O16: the post uses Let Kingdom Connect pick (any request status but stopped). */
+  picked?: boolean;
   onChanged: () => void;
 }) {
   const { t, language } = useLanguage();
@@ -62,7 +66,15 @@ function PostRow({
             <Text className="font-figtree-semibold text-sm text-ink-2">{t.editPost}</Text>
           </LinkButton>
         ) : null}
-        {post.status === "published" || post.status === "closed" || post.status === "expired" ? (
+        {picked ? (
+          <LinkButton
+            href={`/opportunities/${post.id}/pick`}
+            label={t.pickProgressLink}
+            className="min-h-[44px] items-center justify-center rounded-[9px] border border-line bg-surface px-4"
+          >
+            <Text className="font-figtree-semibold text-sm text-ink-2">{t.pickProgressLink}</Text>
+          </LinkButton>
+        ) : post.status === "published" || post.status === "closed" || post.status === "expired" ? (
           <LinkButton
             href={`/opportunities/${post.id}/responses`}
             label={t.respResponses}
@@ -89,17 +101,19 @@ function PostRow({
 }
 
 /** S21: the poster's own opportunities with their status (O01) and a way to their responses (O03). */
-export function MyPosts({ api }: { api: OpportunitiesApi }) {
+export function MyPosts({ api, picks }: { api: OpportunitiesApi; picks?: PicksApi }) {
   const { t } = useLanguage();
+  const [picked, setPicked] = useState<Map<string, PickRequestStatus>>(new Map());
   const [loaded, setLoaded] = useState<
     { state: "loading" } | { state: "failed" } | { state: "ready"; value: MyPost[] }
   >({ state: "loading" });
   const reload = useCallback(() => {
+    picks?.pickedPosts().then(setPicked, () => undefined);
     api.mine().then(
       (value) => setLoaded({ state: "ready", value }),
       () => setLoaded({ state: "failed" }),
     );
-  }, [api]);
+  }, [api, picks]);
   useEffect(reload, [reload]);
 
   return (
@@ -120,7 +134,13 @@ export function MyPosts({ api }: { api: OpportunitiesApi }) {
         <EmptyState title={t.myPostsEmpty} message={t.myPostsEmptyMessage} />
       ) : (
         loaded.value.map((post) => (
-          <PostRow key={post.id} post={post} api={api} onChanged={reload} />
+          <PostRow
+            key={post.id}
+            post={post}
+            api={api}
+            picked={Boolean(picked.get(post.id)) && picked.get(post.id) !== "stopped"}
+            onChanged={reload}
+          />
         ))
       )}
     </View>

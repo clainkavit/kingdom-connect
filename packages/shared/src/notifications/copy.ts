@@ -380,7 +380,7 @@ export const notificationCopy = {
     inApp: true,
     email: "yes",
     push: true,
-    opens: "/opportunities",
+    opens: "/picked",
     en: {
       title: "You were picked for {title}",
       message: "Our staff think you fit. Say whether the poster may see your profile.",
@@ -395,7 +395,7 @@ export const notificationCopy = {
     inApp: true,
     email: "yes",
     push: true,
-    opens: "/opportunities",
+    opens: "/opportunities/mine",
     en: {
       title: "Your list for {title} is ready",
       message: "{count} people agreed to share their profile with you. Take a look.",

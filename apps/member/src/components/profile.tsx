@@ -82,13 +82,21 @@ export function Avatar({
         style={{ width: size, height: size, borderRadius: size / 2 }}
       />
     );
+  const tones = [
+    "bg-blue-soft text-navy",
+    "bg-teal-soft text-teal",
+    "bg-violet-soft text-violet",
+    "bg-good-soft text-good-text",
+  ];
+  const [bg, fg] =
+    tones[[...name].reduce((h, c) => (h + c.charCodeAt(0)) % 997, 0) % tones.length]!.split(" ");
   return (
     <View
       style={{ width: size, height: size, borderRadius: size / 2 }}
-      className="items-center justify-center bg-blue-soft"
+      className={`items-center justify-center ${bg}`}
     >
       <Text
-        className="font-figtree-extrabold text-navy"
+        className={`font-figtree-extrabold ${fg}`}
         style={{ fontSize: Math.round(size * 0.34) }}
       >
         {initials}

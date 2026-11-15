@@ -151,11 +151,14 @@ export function ProfileView({
   profile,
   actions,
   ideas,
+  references,
 }: {
   profile: Profile;
   actions?: React.ReactNode;
   /** The member's published ideas (I02); without it the section says ideas are coming. */
   ideas?: React.ReactNode;
+  /** Work references (O18), which render their own section or nothing. */
+  references?: React.ReactNode;
 }) {
   const { t } = useLanguage();
   const study = [profile.study.institution, profile.study.course, profile.study.year?.toString()]
@@ -248,6 +251,7 @@ export function ProfileView({
         </Section>
       ) : null}
       <Section title={t.ideasTitle}>{ideas ?? <Muted text={t.ideasComingSoon} />}</Section>
+      {references}
     </View>
   );
 }

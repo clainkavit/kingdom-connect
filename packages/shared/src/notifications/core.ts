@@ -76,6 +76,8 @@ const opensByCode: [RegExp, string][] = [
   [/^C3$/, "/messages"],
   [/^E\d+$/, "/settings/privacy"],
   [/^X3$/, "/"],
+  [/^O1[123]$/, "/work"],
+  [/^O14$/, "/profile"],
   [/^[OX]\d+$/, "/opportunities"],
   [/^[IH]\d+$/, "/ideas"],
   [/^P\d+$/, "/ideas"],

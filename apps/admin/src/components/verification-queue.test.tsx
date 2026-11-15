@@ -106,18 +106,16 @@ describe("VerificationQueue (A02)", () => {
 
   it("filters the queue by kind, each with its count (U06)", async () => {
     await show(
-      vi
-        .fn()
-        .mockResolvedValue([
-          item({ id: "m1", username: "member_one" }),
-          item({
-            id: "b1",
-            kind: "business",
-            businessName: "Swai Tax Services",
-            username: "grace",
-          }),
-          item({ id: "p1", kind: "poster", businessName: "Mollel Uniforms", username: "rehema" }),
-        ]),
+      vi.fn().mockResolvedValue([
+        item({ id: "m1", username: "member_one" }),
+        item({
+          id: "b1",
+          kind: "business",
+          businessName: "Swai Tax Services",
+          username: "grace",
+        }),
+        item({ id: "p1", kind: "poster", businessName: "Mollel Uniforms", username: "rehema" }),
+      ]),
     );
     expect(screen.getByRole("radio", { name: "All · 3" }).getAttribute("aria-checked")).toBe(
       "true",

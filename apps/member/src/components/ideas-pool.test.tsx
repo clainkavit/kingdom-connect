@@ -61,8 +61,10 @@ describe("IdeasPool (S22)", () => {
         })}
       />,
     );
+    expect(screen.getAllByText("Agriculture")).toHaveLength(2);
+    expect(screen.getAllByText("Prototype")).toHaveLength(2);
     expect(
-      screen.getAllByText("Agriculture · Prototype · Investor · TZS 10,000,000 to 50,000,000"),
+      screen.getAllByText("Looking for: Investor · TZS 10,000,000 to 50,000,000"),
     ).toHaveLength(2);
     expect(screen.getByText("Asha Mwita · 3 interested")).toBeTruthy();
     expect(screen.getByText("A verified member · 1 interested")).toBeTruthy();
@@ -146,5 +148,28 @@ describe("ProfileIdeas (S11)", () => {
     cleanup();
     await show(<ProfileIdeas api={fakeApi()} memberId="m1" />);
     expect(screen.getByText("No published ideas.")).toBeTruthy();
+  });
+
+  it("filters the pool by what an idea looks for (canvas, U04)", async () => {
+    await show(
+      <IdeasPool
+        investor={fakeInvestor()}
+        api={fakeApi({
+          pool: vi
+            .fn()
+            .mockResolvedValue([
+              summary({ id: "i1", title: "Needs money", seeking: "investor" }),
+              summary({ id: "i2", title: "Needs a partner", seeking: "partner" }),
+              summary({ id: "i3", title: "Needs both", seeking: "both" }),
+            ]),
+        })}
+      />,
+    );
+    await act(async () =>
+      fireEvent.click(screen.getByRole("radio", { name: "Looking for partners" })),
+    );
+    expect(screen.queryByText("Needs money")).toBeNull();
+    expect(screen.getByText("Needs a partner")).toBeTruthy();
+    expect(screen.getByText("Needs both")).toBeTruthy();
   });
 });

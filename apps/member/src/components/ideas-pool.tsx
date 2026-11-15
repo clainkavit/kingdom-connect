@@ -6,12 +6,13 @@ import { POOL_PAGE, type IdeaSummary, type IdeasApi } from "../lib/ideas";
 import type { InvestorApi } from "../lib/investor";
 import { useLanguage } from "../lib/language";
 import { useLoad } from "./events";
-import { Button } from "./form";
+import { Button, Chips } from "./form";
 import { AccessManager, DetailsLink, IdeaInterest } from "./idea-access";
 import { InvestorPool } from "./investor";
 import { seekingLabel, stageLabel } from "./ideas";
 import { LinkButton } from "./link-button";
 import { ScreenTitle } from "./screens";
+import { usePhone } from "./sheet";
 import { EmptyState, ErrorState, LoadingRows } from "./states";
 
 const shillings = (n: number) => n.toLocaleString("en-US");
@@ -24,27 +25,35 @@ export function rangeLine(t: Strings, idea: IdeaSummary): string | null {
   return null;
 }
 
+function CardChip({ text }: { text: string }) {
+  return (
+    <View className="rounded-full bg-blue-soft px-2.5 py-0.5">
+      <Text className="font-figtree-bold text-xs text-navy">{text}</Text>
+    </View>
+  );
+}
+
+/** An idea card as on the canvas (U04): sector and stage chips, the problem, what it looks for, owner and interest. */
 export function IdeaCard({ idea, children }: { idea: IdeaSummary; children?: React.ReactNode }) {
   const { t, language } = useLanguage();
-  const facts = [
-    language === "sw" ? idea.sectorSw : idea.sectorEn,
-    stageLabel(t, idea.stage),
-    seekingLabel(t, idea.seeking),
-    rangeLine(t, idea),
-  ]
+  const looking = [t.ideaLookingFor(seekingLabel(t, idea.seeking)), rangeLine(t, idea)]
     .filter(Boolean)
     .join(" · ");
   const card = (
     <LinkButton
       href={`/ideas/${idea.id}`}
       label={idea.title}
-      className="gap-1 rounded-card border border-line bg-surface p-4"
+      className="flex-1 gap-1.5 rounded-card border border-line bg-surface p-4"
     >
+      <View className="flex-row flex-wrap gap-1.5">
+        <CardChip text={language === "sw" ? idea.sectorSw : idea.sectorEn} />
+        <CardChip text={stageLabel(t, idea.stage)} />
+      </View>
       <Text className="font-figtree-bold text-[16px] text-ink">{idea.title}</Text>
       <Text numberOfLines={2} className="font-figtree text-[14px] text-ink">
         {idea.problem}
       </Text>
-      <Text className="font-figtree text-[13px] text-ink-2">{facts}</Text>
+      <Text className="font-figtree-semibold text-[13px] text-navy">{looking}</Text>
       <Text className="font-figtree-semibold text-[13px] text-ink-2">
         {idea.isMine ? t.ideaYours : (idea.ownerName ?? t.ideaVerifiedMember)} ·{" "}
         {t.ideaInterested(idea.interestCount)}
@@ -70,8 +79,15 @@ export function IdeasPool({ api, investor }: { api: IdeasApi; investor: Investor
   return <MemberPool api={api} showApply={status.state === "ready" && status.value !== "none"} />;
 }
 
+type Looking = "all" | "partner" | "investor";
+
+const looksFor = (idea: IdeaSummary, looking: Looking) =>
+  looking === "all" || idea.seeking === looking || idea.seeking === "both";
+
 function MemberPool({ api, showApply }: { api: IdeasApi; showApply: boolean }) {
   const { t } = useLanguage();
+  const phone = usePhone();
+  const [looking, setLooking] = useState<Looking>("all");
   const [attempt, setAttempt] = useState(0);
   const first = useLoad(() => api.pool(0), attempt);
   const [more, setMore] = useState<IdeaSummary[]>([]);
@@ -97,6 +113,7 @@ function MemberPool({ api, showApply }: { api: IdeasApi; showApply: boolean }) {
   return (
     <View className="gap-3">
       <ScreenTitle>{t.navIdeas}</ScreenTitle>
+      <Text className="font-figtree text-[15px] leading-[22px] text-ink-2">{t.ideasPoolIntro}</Text>
       <View className="flex-row flex-wrap gap-2">
         <LinkButton
           href="/ideas/new"
@@ -132,9 +149,25 @@ function MemberPool({ api, showApply }: { api: IdeasApi; showApply: boolean }) {
         />
       ) : (
         <>
-          {[...first.value, ...more].map((idea) => (
-            <IdeaCard key={idea.id} idea={idea} />
-          ))}
+          <Chips
+            label={t.ideasShow}
+            options={[
+              { value: "all", label: t.ideasAll },
+              { value: "partner", label: t.ideasLookingPartners },
+              { value: "investor", label: t.ideasLookingInvestors },
+            ]}
+            value={looking}
+            onChange={(v) => setLooking(v as Looking)}
+          />
+          <View className={phone ? "gap-3" : "flex-row flex-wrap gap-3"}>
+            {[...first.value, ...more]
+              .filter((idea) => looksFor(idea, looking))
+              .map((idea) => (
+                <View key={idea.id} className={phone ? "" : "w-[48%] min-w-[280px] flex-grow"}>
+                  <IdeaCard idea={idea} />
+                </View>
+              ))}
+          </View>
           {moreFailed ? (
             <ErrorState message={t.ideasPoolLoadFailed} onRetry={loadMore} />
           ) : !done && first.value.length === POOL_PAGE ? (

@@ -37,6 +37,15 @@ export function formatDate(date: Date, language: Language): string {
   }).format(date);
 }
 
+/** Day and short month, as on the canvas cards: "20 Nov". */
+export function formatShortDate(date: Date, language: Language): string {
+  return new Intl.DateTimeFormat(locale(language), {
+    day: "numeric",
+    month: "short",
+    timeZone: "Africa/Dar_es_Salaam",
+  }).format(date);
+}
+
 export function formatDateTime(date: Date, language: Language): string {
   return new Intl.DateTimeFormat(locale(language), {
     day: "numeric",

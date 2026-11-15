@@ -78,16 +78,50 @@ export function FilterMenu({
   open,
   onToggle,
   children,
+  boxed,
 }: {
   label: string;
   value: string | null;
   open: boolean;
   onToggle: () => void;
   children: React.ReactNode;
+  /** The canvas filter card: the label above a full-width box showing the choice or Any. */
+  boxed?: boolean;
 }) {
   const { t } = useLanguage();
   const palette = usePalette();
   const on = value !== null;
+  if (boxed)
+    return (
+      <View className="relative min-w-[150px] flex-1 gap-1.5" style={{ zIndex: open ? 30 : 1 }}>
+        <Text className="pl-3.5 font-figtree-semibold text-[13px] text-ink-2">{label}</Text>
+        <Pressable
+          role="button"
+          aria-label={`${label}: ${value ?? t.anyOption}`}
+          aria-expanded={open}
+          onPress={onToggle}
+          className={`min-h-[44px] flex-row items-center justify-between gap-2 rounded-full border bg-surface px-4 ${on ? "border-navy" : "border-line-2"}`}
+        >
+          <Text numberOfLines={1} className="flex-1 font-figtree text-[15px] text-ink">
+            {value ?? t.anyOption}
+          </Text>
+          <ChevronDown
+            size={16}
+            color={palette.ink}
+            aria-hidden
+            style={{ transform: [{ rotate: open ? "180deg" : "0deg" }] }}
+          />
+        </Pressable>
+        <Reveal
+          show={open}
+          from="above"
+          style={{ position: "absolute", top: 76, left: 0 }}
+          className="min-w-[240px] max-w-[320px] gap-2 rounded-card border border-line bg-surface p-2 shadow-md"
+        >
+          {children}
+        </Reveal>
+      </View>
+    );
   return (
     <View className="relative" style={{ zIndex: open ? 30 : 1 }}>
       <Pressable

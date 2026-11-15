@@ -88,11 +88,38 @@ const emptyForm: BusinessForm = {
   licenceExpiresOn: "",
 };
 
-function LevelRow({ title, status }: { title: string; status: string }) {
+/** One level as a numbered step, as on the canvas (U05): what it unlocks and where it stands. */
+function LevelRow({
+  step,
+  title,
+  unlocks,
+  status,
+  done,
+}: {
+  step: number;
+  title: string;
+  unlocks: string;
+  status: string;
+  done: boolean;
+}) {
   return (
-    <View className="flex-row flex-wrap items-center justify-between gap-2 border-b border-line py-2.5">
-      <Text className="flex-1 font-figtree-semibold text-[15px] text-ink">{title}</Text>
-      <Text className="font-figtree text-sm text-ink-2">{status}</Text>
+    <View className="flex-row items-start gap-3 border-b border-line py-3">
+      <View
+        className={`h-8 w-8 items-center justify-center rounded-full ${done ? "bg-navy" : "border border-line bg-surface"}`}
+      >
+        <Text className={`font-figtree-bold text-sm ${done ? "text-navy-ink" : "text-ink-2"}`}>
+          {step}
+        </Text>
+      </View>
+      <View className="min-w-0 flex-1 gap-0.5">
+        <Text className="font-figtree-semibold text-[15px] text-ink">{title}</Text>
+        <Text className="font-figtree text-[13px] leading-5 text-ink-2">{unlocks}</Text>
+      </View>
+      <View className={`rounded-full px-3 py-1 ${done ? "bg-good-soft" : "bg-blue-soft"}`}>
+        <Text className={`font-figtree-bold text-xs ${done ? "text-good-text" : "text-navy"}`}>
+          {status}
+        </Text>
+      </View>
     </View>
   );
 }
@@ -452,9 +479,27 @@ export function BusinessScreen({ api }: { api: BusinessApi }) {
     <View className="gap-4">
       <ScreenTitle>{t.businessTitle}</ScreenTitle>
       <Section title={t.levelsTitle}>
-        <LevelRow title={t.levelMember} status={t.statusApproved} />
-        <LevelRow title={t.levelBusiness} status={statusText} />
-        <LevelRow title={t.levelPoster} status={posterText} />
+        <LevelRow
+          step={1}
+          title={t.levelMember}
+          unlocks={t.levelMemberUnlocks}
+          status={t.statusApproved}
+          done
+        />
+        <LevelRow
+          step={2}
+          title={t.levelBusiness}
+          unlocks={t.levelBusinessUnlocks}
+          status={statusText}
+          done={level2Approved}
+        />
+        <LevelRow
+          step={3}
+          title={t.levelPoster}
+          unlocks={t.levelPosterUnlocks}
+          status={posterText}
+          done={Boolean(level2Approved && posterApproved)}
+        />
         {!level2Approved ? (
           <Text className="font-figtree text-sm text-ink-2">{t.posterLocked}</Text>
         ) : null}
@@ -538,6 +583,11 @@ export function BusinessScreen({ api }: { api: BusinessApi }) {
           onSent={() => setRenewalSent(true)}
         />
       ) : null}
+      <Section title={t.levelsExplainTitle}>
+        <Text className="font-figtree text-sm leading-5 text-ink-2">{t.levelsExplainStatus}</Text>
+        <Text className="font-figtree text-sm leading-5 text-ink-2">{t.levelsExplainPending}</Text>
+        <Text className="font-figtree text-sm leading-5 text-ink-2">{t.levelsExplainPrivate}</Text>
+      </Section>
     </View>
   );
 }

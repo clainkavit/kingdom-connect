@@ -136,7 +136,7 @@ Matching scores are worked out when a page opens and are not stored (PRD section
 
 Reporting an opportunity sets it to `hidden` at once, through `report()` (section 9).
 
-**Let Kingdom Connect pick and work references (decided 14 Nov 2026, PRD section 10; design, not built).** `opportunities` gains `find_mode` (open, pick; default open). `responses.status` gains `hired`.
+**Let Kingdom Connect pick and work references (decided 14 Nov 2026, PRD section 10; picks not built, work references built in O17).** `opportunities` gains `find_mode` (open, pick; default open). `responses.status` gains `hired`. Built in O17 (migration `20261115140000_work_references.sql`): `mark_hired(response)` (the poster, a shortlisted response only; sends O11), `confirm_work(engagement, yes)` (the worker; yes opens the 14-day window and sends O12 to both, no opens nothing), `rate_work(engagement, on_time, quality, communication, honesty, again, comment, note)` (once, inside the window, contact details refused; both rated reveals both and sends O14), `reply_to_rating(rating, reply)` (the ratee, once, after reveal), `work_references(member)` (rows only from 3 revealed ratings, with the totals) and `my_engagements()`. The ratee can read their own revealed ratings. A milestone plan that becomes completed makes a confirmed engagement (its starter as poster) and sends O12. `private.reveal_due_ratings()` runs daily at 06:15 UTC: it reveals ratings whose window closed (O14) and sends O13 once to a side that has not rated 3 days before the close.
 
 | Table | Key columns | Who can read | Who can write |
 |---|---|---|---|

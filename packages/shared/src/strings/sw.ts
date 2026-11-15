@@ -2063,4 +2063,13 @@ export const sw: Strings = {
   contactMaskedNote: (name: string) =>
     `${name} anaamua kama waliounganika wanaweza kuona haya. Unganika ili kuzungumza kupitia Kingdom Connect.`,
   contactDetailsTitle: "Mawasiliano",
+  ideaShortBoth: (lo: string, hi: string) => `TZS ${lo}–${hi}M`,
+  ideaShortFrom: (lo: string) => `Zaidi ya TZS ${lo}M`,
+  ideaShortUpTo: (hi: string) => `Chini ya TZS ${hi}M`,
+  ideaLookingForShort: (seeking: string) =>
+    ({
+      investor: "Wanatafuta: mwekezaji",
+      partner: "Wanatafuta: mshirika",
+      both: "Wanatafuta: mwekezaji na mshirika",
+    })[seeking] ?? "",
 };

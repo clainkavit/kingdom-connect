@@ -2026,4 +2026,13 @@ export const en = {
   contactMaskedNote: (name: string) =>
     `${name} chooses whether connections can see these. Connect to talk through Kingdom Connect.`,
   contactDetailsTitle: "Contact details",
+  ideaShortBoth: (lo: string, hi: string) => `TZS ${lo}–${hi}M`,
+  ideaShortFrom: (lo: string) => `Over TZS ${lo}M`,
+  ideaShortUpTo: (hi: string) => `Under TZS ${hi}M`,
+  ideaLookingForShort: (seeking: string) =>
+    ({
+      investor: "Looking for: investor",
+      partner: "Looking for: partner",
+      both: "Looking for: investor and partner",
+    })[seeking] ?? "",
 };

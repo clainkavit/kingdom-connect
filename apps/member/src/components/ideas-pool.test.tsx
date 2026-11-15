@@ -63,11 +63,12 @@ describe("IdeasPool (S22)", () => {
     );
     expect(screen.getAllByText("Agriculture")).toHaveLength(2);
     expect(screen.getAllByText("Prototype")).toHaveLength(2);
-    expect(
-      screen.getAllByText("Looking for: Investor · TZS 10,000,000 to 50,000,000"),
-    ).toHaveLength(2);
-    expect(screen.getByText("Asha Mwita · 3 interested")).toBeTruthy();
-    expect(screen.getByText("A verified member · 1 interested")).toBeTruthy();
+    expect(screen.getAllByText("Looking for: investor")).toHaveLength(2);
+    expect(screen.getAllByText("TZS 10–50M")).toHaveLength(2);
+    expect(screen.getByText("Asha Mwita")).toBeTruthy();
+    expect(screen.getByText("3 interested")).toBeTruthy();
+    expect(screen.getByText("A verified member")).toBeTruthy();
+    expect(screen.getByText("1 interested")).toBeTruthy();
     expect(screen.getByRole("link", { name: "Clinic booking" }).getAttribute("href")).toBe(
       "/ideas/i2",
     );

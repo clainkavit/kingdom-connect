@@ -63,11 +63,13 @@ function Tile({
   value,
   pressed,
   onPress,
+  detail,
 }: {
   label: string;
   value: string;
   pressed: boolean;
   onPress: () => void;
+  detail?: string;
 }) {
   return (
     <button
@@ -78,6 +80,7 @@ function Tile({
     >
       <span className="text-sm font-semibold text-ink-2">{label}</span>
       <span className="text-[28px] font-extrabold tracking-tight text-foreground">{value}</span>
+      {detail ? <span className="text-[13px] text-ink-2">{detail}</span> : null}
     </button>
   );
 }
@@ -279,6 +282,12 @@ function Waiting({ api }: { api: IdeasOverviewApi }) {
               </span>
               <span className="font-semibold text-foreground">{i.title}</span>
               <Poster name={`@${i.postedBy}`} withoutName={i.sharedWithoutName} />
+              <Link
+                href="/moderation"
+                className="self-start text-sm font-semibold text-primary underline-offset-2 hover:underline"
+              >
+                {t.adminIdeasReview}
+              </Link>
             </li>
           ))}
         </ul>
@@ -564,12 +573,14 @@ export function IdeasOverviewScreen({ api }: { api: IdeasOverviewApi }) {
                 value={n(overview.hidden)}
                 pressed={draft.status === "hidden"}
                 onPress={() => filterBy("hidden")}
+                detail={t.adminIdeasUnderReview}
               />
               <Tile
                 label={t.adminIdeasArchived}
                 value={n(overview.archived)}
                 pressed={draft.status === "archived"}
                 onPress={() => filterBy("archived")}
+                detail={t.adminIdeasNotInPool}
               />
             </div>
             <Charts overview={overview} />

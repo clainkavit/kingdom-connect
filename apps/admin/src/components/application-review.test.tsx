@@ -85,7 +85,10 @@ describe("ApplicationReview (A03)", () => {
       "https://photos.test/id",
     );
     expect(screen.getAllByText("Test Applicant").length).toBeGreaterThan(0);
-    expect(screen.getByText("NIDA")).toBeTruthy();
+    expect(screen.getByText("NIDA · Hidden")).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "What you check" })).toBeTruthy();
+    expect(screen.getByText("Compare the two photos above.")).toBeTruthy();
+    expect(screen.getByText(/Only staff can open these photos/)).toBeTruthy();
     expect(screen.getByText("Nurse")).toBeTruthy();
   });
 

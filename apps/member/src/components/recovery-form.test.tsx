@@ -18,7 +18,7 @@ describe("RecoveryForm (S04, R08c)", () => {
     type("Username", " lost_member ");
     type("New email", "new@test.invalid");
     type("Last 4 digits of your ID number", "12a34");
-    await click("Take or choose a new photo of your face");
+    await click("Take a new face photo");
     await click("Send request");
     expect(send).toHaveBeenCalledWith({
       username: "lost_member",
@@ -48,7 +48,7 @@ describe("RecoveryForm (S04, R08c)", () => {
           .mockResolvedValue({ base64: "x", mime: "image/png", size: 6 * 1024 * 1024 })}
       />,
     );
-    await click("Take or choose a new photo of your face");
+    await click("Take a new face photo");
     expect(screen.getByRole("alert").textContent).toBe("The photo can be up to 5 MB.");
   });
 });

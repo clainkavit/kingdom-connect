@@ -32,7 +32,7 @@ test("a Member who lost their email asks for a new one, an Administrator approve
   await page.getByLabel("New email").fill(newEmail);
   await page.getByLabel("Last 4 digits of your ID number").fill("1234");
   const chooser = page.waitForEvent("filechooser");
-  await page.getByRole("button", { name: "Take or choose a new photo of your face" }).click();
+  await page.getByRole("button", { name: "Take a new face photo" }).click();
   await (await chooser).setFiles({ name: "face.png", mimeType: "image/png", buffer: PNG });
   await expect(page.getByText("Photo added.")).toBeVisible();
   await page.getByRole("button", { name: "Send request" }).click();

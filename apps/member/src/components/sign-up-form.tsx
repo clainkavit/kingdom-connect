@@ -60,7 +60,9 @@ export function SignUpForm({
 
   return (
     <View className="gap-3">
-      <Text className="font-figtree text-sm leading-5 text-ink-2">{t.signUpIntro}</Text>
+      <Text className="text-center font-figtree text-[15px] leading-[22px] text-ink-2">
+        {t.signUpIntro}
+      </Text>
       <Field
         label={t.username}
         value={input.username}

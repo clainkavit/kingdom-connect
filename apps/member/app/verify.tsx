@@ -1,4 +1,4 @@
-import { AuthCard, TextButton } from "../src/components/auth-card";
+import { AuthCard } from "../src/components/auth-card";
 import { CodeForm } from "../src/components/login-forms";
 import { Guard, useAuth } from "../src/lib/auth";
 import { loginClient } from "../src/lib/supabase";
@@ -9,14 +9,13 @@ export default function VerifyScreen() {
   const { t } = useLanguage();
   return (
     <Guard route="verify">
-      <AuthCard title={t.codeTitle}>
+      <AuthCard title={t.codeTitle} back={{ label: t.backToLogIn, onPress: signOut }}>
         <CodeForm
           client={loginClient}
           accessToken={accessToken ?? ""}
           resendAfterSeconds={resendAfterSeconds}
           onVerified={finishSignIn}
         />
-        <TextButton label={t.logOut} onPress={signOut} />
       </AuthCard>
     </Guard>
   );

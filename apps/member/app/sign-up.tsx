@@ -1,4 +1,5 @@
 import { useRouter } from "expo-router";
+import { Text, View } from "react-native";
 import { AuthCard, TextButton } from "../src/components/auth-card";
 import { GoogleButton } from "../src/components/first-sign-in";
 import { returnedFromGoogleWithError, startGoogleSignIn } from "../src/lib/first-sign-in";
@@ -13,7 +14,15 @@ export default function SignUpScreen() {
   const router = useRouter();
   return (
     <Guard route="login">
-      <AuthCard title={platformName ? t.signUpTitle(platformName) : t.createAccount}>
+      <AuthCard
+        title={platformName ? t.signUpTitle(platformName) : t.createAccount}
+        footer={
+          <View className="flex-row flex-wrap items-center gap-1">
+            <Text className="font-figtree text-sm text-ink-2">{t.haveAccount}</Text>
+            <TextButton label={t.logIn} onPress={() => router.replace("/login")} />
+          </View>
+        }
+      >
         <GoogleButton
           enabled={googleSignIn}
           onPress={startGoogleSignIn}
@@ -24,7 +33,6 @@ export default function SignUpScreen() {
           login={loginClient}
           onCodeSent={startSession}
         />
-        <TextButton label={t.haveAccount} onPress={() => router.replace("/login")} />
       </AuthCard>
     </Guard>
   );

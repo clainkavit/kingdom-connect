@@ -1,6 +1,6 @@
 import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
-import { AuthCard, TextButton } from "../src/components/auth-card";
+import { AuthCard } from "../src/components/auth-card";
 import { RecoveryForm } from "../src/components/recovery-form";
 import { useLanguage } from "../src/lib/language";
 import { loginClient } from "../src/lib/supabase";
@@ -24,9 +24,11 @@ export default function RecoverScreen() {
   const { t } = useLanguage();
   const router = useRouter();
   return (
-    <AuthCard title={t.recoveryTitle}>
+    <AuthCard
+      title={t.recoveryTitle}
+      back={{ label: t.backToLogIn, onPress: () => router.replace("/login") }}
+    >
       <RecoveryForm send={(r) => loginClient.requestEmailRecovery(r)} pickPhoto={pickPhoto} />
-      <TextButton label={t.logIn} onPress={() => router.replace("/login")} />
     </AuthCard>
   );
 }

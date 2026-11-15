@@ -552,9 +552,10 @@ export const en = {
   resendIn: (seconds: number) => `Send a new code in ${seconds}s`,
 
   forgotPassword: "Forgot password?",
-  forgotTitle: "Reset your password",
-  forgotIntro: "Type your username. We will send a 6-digit code to the email on your account.",
-  sendCode: "Send code",
+  forgotTitle: "Forgot your password?",
+  forgotIntro:
+    "Enter your username. We send a 6-digit code to the email on your account, then you choose a new password.",
+  sendCode: "Send me a code",
   resetCodeSent:
     "If the username is right, we sent a 6-digit code to its email. It works for 10 minutes.",
   repeatPassword: "Type the new password again",
@@ -615,7 +616,7 @@ export const en = {
   createAccount: "Create an account",
   signUpTitle: (platformName: string) => `Join ${platformName}`,
   signUpIntro: "Open to anyone in Tanzania with a verified identity.",
-  haveAccount: "Already have an account? Log in",
+  haveAccount: "Already have an account?",
   phone: "Phone",
   phoneHint: "A Tanzanian number, starting with +255 or 0.",
   passwordHint: "At least 8 characters, with a number.",
@@ -1189,7 +1190,7 @@ export const en = {
   recoveryUsername: "Username",
   recoveryNewEmail: "New email",
   recoveryDigits: "Last 4 digits of your ID number",
-  recoveryPhoto: "Take or choose a new photo of your face",
+  recoveryPhoto: "Take a new face photo",
   recoveryPhotoAdded: "Photo added.",
   recoverySend: "Send request",
   recoverySent:
@@ -2106,4 +2107,11 @@ export const en = {
   ideaLockedFinancials: "Financials",
   ideaLockedTeam: "Team",
   ideaLockedFiles: "Attachments",
+  loginSubtitle: "After your password, we send a 6-digit code to your email.",
+  newHere: "New here?",
+  authTagline: "People · Opportunities · Growth",
+  authEveryVerified: "Every member verified",
+  authPhotoAlt: "Hands of people of different skin tones joined together in a circle",
+  backToLogIn: "Back to log in",
+  noLongerHaveEmail: "No longer have that email?",
 };

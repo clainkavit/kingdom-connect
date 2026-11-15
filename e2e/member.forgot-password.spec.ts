@@ -17,11 +17,11 @@ test("a Member who forgot the password sets a new one with the email code (REG-6
 
   await page.goto("/login");
   await page.getByRole("button", { name: "Forgot password?" }).click();
-  await expect(page.getByRole("heading", { name: "Reset your password" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Forgot your password?" })).toBeVisible();
 
   const sentAfter = new Date();
   await page.getByLabel("Username", { exact: true }).fill(username);
-  await page.getByRole("button", { name: "Send code" }).click();
+  await page.getByRole("button", { name: "Send me a code" }).click();
   await expect(page.getByText(/If the username is right, we sent a 6-digit code/)).toBeVisible();
   const resetEmail = await nextEmail(email, sentAfter, /^Reset your .* password$/);
   await enterCode(page, resetEmail.Snippet.match(/\b(\d{6})\b/)![1]!);
@@ -50,7 +50,7 @@ test("a Member who forgot the password sets a new one with the email code (REG-6
 test("an unknown username gets the same answer as a real one (S04a)", async ({ page }) => {
   await page.goto("/forgot-password");
   await page.getByLabel("Username", { exact: true }).fill("no_such_member");
-  await page.getByRole("button", { name: "Send code" }).click();
+  await page.getByRole("button", { name: "Send me a code" }).click();
   await expect(page.getByText(/If the username is right, we sent a 6-digit code/)).toBeVisible();
   await expect(page.getByLabel("Email code")).toBeVisible();
 });

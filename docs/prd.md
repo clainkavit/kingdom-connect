@@ -371,9 +371,9 @@ Excluded: members already connected, with a pending request, blocked, hidden fro
 
 **Let Kingdom Connect pick (OPP-7, decided 14 Nov).**
 1. In the last posting step the poster chooses Open to applicants (as before) or Let Kingdom Connect pick, then how many people (5, 10, 15 or 20) and an optional note to staff. A picked post is not open for applications.
-2. After the post is approved it appears in a staff queue, Picks for posters. The platform suggests members, ranked by rules with no AI and nothing sent outside Kingdom Connect: fit (the Scan signals above: skills, profession or business sector, location) and record (certificates and business levels checked by staff, finished milestone plans, work references below, and upheld reports, which count against). The investor flag, ID numbers and contact details are never used. Staff can add a member the suggestions missed.
+2. After the post is approved it appears in a staff queue, Picks for posters. The platform suggests members, ranked by rules with no AI and nothing sent outside Kingdom Connect: fit (the Scan signals above: skills, profession or business sector, location) and record (certificates and business levels checked by staff, finished milestone plans, work references below, and upheld reports, which count against). The investor flag, ID numbers and contact details are never used. Staff can add a member the suggestions missed. Suggestions are ranked by a points table (decided 15 Nov, #289): each matching skill 3, same business sector 2, same region 1, verified business 2, each finished milestone plan 1, the share of ratings saying they would work with them again times 3, and each upheld report in the last 12 months minus 5.
 3. Staff choose the people and write one or two sentences each, "Why we picked them", which the poster sees. Every pick, note and sent list is written to the audit log.
-4. Each picked member is asked first: "Staff think you fit this job. Share your profile with the poster?" Only those who say yes reach the poster. Saying no is private, and the poster never learns who was asked. A no is replaced from the suggestions.
+4. Each picked member is asked first: "Staff think you fit this job. Share your profile with the poster?" Only those who say yes reach the poster. Saying no is private, and the poster never learns who was asked. A no is replaced from the suggestions. A picked member has **3 days** to answer (decided 15 Nov, #289); after that the ask lapses privately.
 5. The poster sees the list in the order staff recommend, with badges and the why-note, and can Connect or mark Not a fit, which the member is not told. Contact details still open only inside an accepted connection (section 9).
 6. The poster sees progress: Post approved, Finding people, Asking each person, Your list arrives.
 7. **Beta.** The feature is labelled Beta and is free. Its screens say it may become a paid service later and that members will be told well before; a list already being picked stays free. No payment of any kind is built in Phase 1.
@@ -1067,6 +1067,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | 9 Nov 2026 | Reporting an opportunity hides it at once; the decision restores or removes it; an upheld report puts a poster back on review | 13, 18 |
 | 10 Nov 2026 | Forgot password (REG-6), admin Ideas page, store accounts under the company, tender document optional; the 9 Nov opportunity rules confirmed | 5, 6, 10, 18 |
 | 14 Nov 2026 | Easier entry: Google, Facebook, Apple, phone or email sign-in, look but not act until verified, verification moved into the profile (REG-7, REG-8); Let Kingdom Connect pick, Beta and free (OPP-7); two-way work references after confirmed work (OPP-8) | 3, 6, 10, 18 |
+| 15 Nov 2026 | Let Kingdom Connect pick: 3 days to answer an ask; suggestions ranked by a points table (#289) | 10 |
 
 ## Appendix B: Source documents
 

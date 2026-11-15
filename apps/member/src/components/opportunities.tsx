@@ -101,7 +101,7 @@ export function SaveButton({
       aria-label={saved ? t.oppUnsaveThis(title) : t.oppSaveThis(title)}
       aria-pressed={saved}
       onPress={onPress}
-      className={`min-h-[44px] min-w-[44px] flex-row items-center justify-center gap-1.5 rounded-[10px] ${withWords ? "border border-line bg-surface px-3" : ""}`}
+      className={`min-h-[44px] min-w-[44px] flex-row items-center justify-center gap-1.5 rounded-full ${withWords ? "border border-line bg-surface px-3" : ""}`}
     >
       <Bookmark
         size={20}
@@ -133,7 +133,7 @@ export function OpportunityCardView({
     <LinkButton
       href={`/opportunities/${post.id}`}
       label={post.title}
-      className="gap-1.5 rounded-card border border-line bg-surface p-4"
+      className="gap-1.5 rounded-card border border-line bg-surface px-5 py-[18px]"
     >
       <View className="flex-row flex-wrap gap-2">
         <Badge text={t[typeLabel[post.type]] as string} />
@@ -220,7 +220,7 @@ function PosterMark({ name, size }: { name: string; size: number }) {
     <View
       aria-hidden
       style={{ width: size, height: size }}
-      className="items-center justify-center rounded-[10px] bg-blue-soft"
+      className="items-center justify-center rounded-full bg-blue-soft"
     >
       <Text className="font-figtree-extrabold text-[15px] text-info-text">{initialsOf(name)}</Text>
     </View>
@@ -579,7 +579,7 @@ function YourLinks({ row }: { row?: boolean }) {
           label={t[item.key] as string}
           className={
             row
-              ? "min-h-[44px] items-center justify-center rounded-[10px] border border-line bg-surface px-4"
+              ? "min-h-[44px] items-center justify-center rounded-full border border-line-2 bg-surface px-4"
               : `min-h-[44px] flex-row items-center justify-between ${i > 0 ? "border-t border-line" : ""}`
           }
         >
@@ -715,7 +715,7 @@ export function OpportunitiesList({
         <LinkButton
           href="/opportunities/new"
           label={t.actionPostOpportunity}
-          className="min-h-[44px] items-center justify-center rounded-[10px] bg-blue px-[18px]"
+          className="min-h-[44px] items-center justify-center rounded-full bg-blue px-[18px]"
         >
           <Text className="font-figtree-bold text-[15px] text-blue-ink">
             {t.actionPostOpportunity}
@@ -968,7 +968,7 @@ function TenderSection({
     ? t.oppTenderClosesAt(closingDay(closingAt, language), tender.closingTime.slice(0, 5))
     : closingDay(closingAt, language);
   return (
-    <View className="gap-3 rounded-card border border-line bg-surface p-4">
+    <View className="gap-3 rounded-card border border-line bg-surface px-5 py-[18px]">
       <Text role="heading" aria-level={2} className="font-figtree-bold text-[16px] text-ink">
         {t.oppTenderTitle}
       </Text>
@@ -1077,7 +1077,7 @@ export function OpportunityDetailScreen({
             <Text className="font-figtree-semibold text-[14px] text-ink-2">{post.posterName}</Text>
             {post.readOnly ? <Message tone="info" text={t.oppReadOnly} /> : null}
             <Text className="font-figtree text-[15px] leading-6 text-ink">{post.description}</Text>
-            <View className="gap-3 rounded-card border border-line bg-surface p-4">
+            <View className="gap-3 rounded-card border border-line bg-surface px-5 py-[18px]">
               <Fact label={t.oppRoleLabel} value={role} />
               <Fact label={t.oppPlaceLabel} value={placeLine(t, post, language)} />
               <Fact label={t.filterSector} value={named(post.sector, language)} />
@@ -1086,7 +1086,7 @@ export function OpportunityDetailScreen({
             {tender ? <TenderSection api={api} tender={tender} closingAt={post.closingAt} /> : null}
           </View>
           <View className="w-[320px] gap-4">
-            <View className="gap-3 rounded-card border border-line bg-surface p-4">
+            <View className="gap-3 rounded-card border border-line bg-surface px-5 py-[18px]">
               <Fact label={t.fieldClosing} value={closingDay(post.closingAt, language)} />
               {post.isMine ? (
                 <LinkButton
@@ -1134,7 +1134,7 @@ export function OpportunityDetailScreen({
       <Text className="font-figtree-semibold text-[14px] text-ink-2">{post.posterName}</Text>
       {post.readOnly ? <Message tone="info" text={t.oppReadOnly} /> : null}
       <Text className="font-figtree text-[15px] leading-6 text-ink">{post.description}</Text>
-      <View className="gap-3 rounded-card border border-line bg-surface p-4">
+      <View className="gap-3 rounded-card border border-line bg-surface px-5 py-[18px]">
         <Fact label={t.oppRoleLabel} value={role} />
         <Fact label={t.oppPlaceLabel} value={placeLine(t, post, language)} />
         <Fact label={t.filterSector} value={named(post.sector, language)} />
@@ -1211,7 +1211,7 @@ export function SavedOpportunities({ api }: { api: OpportunityBrowseApi }) {
             ) : (
               <View
                 key={s.id}
-                className="flex-row flex-wrap items-center justify-between gap-3 rounded-card border border-line bg-surface p-4"
+                className="flex-row flex-wrap items-center justify-between gap-3 rounded-card border border-line bg-surface px-5 py-[18px]"
               >
                 <Text className="font-figtree text-[14px] text-ink-2">{t.savedGone}</Text>
                 <Button secondary label={t.savedRemove} onPress={() => remove(s.id)} />

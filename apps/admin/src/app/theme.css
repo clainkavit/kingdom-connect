@@ -1,6 +1,6 @@
 :root {
   color-scheme: light;
-  --kc-radius: 12px;
+  --kc-radius: 22px;
   --kc-navy: #4a0e1a;
   --kc-navy-2: #5e1626;
   --kc-navy-ink: #f3e6d0;
@@ -12,6 +12,7 @@
   --kc-surface: #ffffff;
   --kc-surface-2: #fbf7f2;
   --kc-line: #e4d9cc;
+  --kc-line-2: #d9cbbb;
   --kc-field: #9a877d;
   --kc-ink: #2a1a1e;
   --kc-ink-2: #5a4a4e;
@@ -47,6 +48,7 @@
   --kc-surface: #211417;
   --kc-surface-2: #2a1a1e;
   --kc-line: #3d2a2f;
+  --kc-line-2: #54393f;
   --kc-field: #86707a;
   --kc-ink: #f5ede6;
   --kc-ink-2: #cdbdb8;

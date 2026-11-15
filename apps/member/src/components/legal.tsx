@@ -122,7 +122,7 @@ export function AcceptTexts({
       })}
       <Text className="font-figtree text-xs text-ink-2">{t.englishGoverns}</Text>
       {failed || (askedEarly && !allTicked) ? (
-        <View role="alert" className="rounded-[10px] bg-bad-soft px-3 py-2.5">
+        <View role="alert" className="rounded-full bg-bad-soft px-3 py-2.5">
           <Text className="font-figtree text-[13px] text-bad-text">
             {failed ? t.network : t.needTicks}
           </Text>
@@ -134,7 +134,7 @@ export function AcceptTexts({
         aria-disabled={busy}
         disabled={busy}
         onPress={submit}
-        className={`min-h-[48px] items-center justify-center rounded-[10px] bg-blue px-4 ${busy ? "opacity-50" : ""}`}
+        className={`min-h-[48px] items-center justify-center rounded-full bg-blue px-4 ${busy ? "opacity-50" : ""}`}
       >
         <Text className="font-figtree-bold text-[15px] text-blue-ink">
           {acceptLabel ?? t.continueLabel}

@@ -79,7 +79,7 @@ function WorkRow({
   const { t } = useLanguage();
   const stage = workStage(work);
   return (
-    <View className="gap-2 rounded-card border border-line bg-surface p-4">
+    <View className="gap-2 rounded-card border border-line bg-surface px-5 py-[18px]">
       <Text className="font-figtree-bold text-[16px] text-ink">{work.title}</Text>
       <Muted
         text={
@@ -97,7 +97,7 @@ function WorkRow({
           <LinkButton
             href={`/work/${work.id}`}
             label={t.workRate}
-            className="min-h-[44px] justify-center rounded-[10px] bg-blue px-4"
+            className="min-h-[44px] justify-center rounded-full bg-blue px-4"
           >
             <Text className="font-figtree-bold text-[15px] text-blue-ink">{t.workRate}</Text>
           </LinkButton>

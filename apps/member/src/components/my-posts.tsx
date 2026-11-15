@@ -35,7 +35,7 @@ function PostRow({
   const { t, language } = useLanguage();
   const [problem, setProblem] = useState<string | null>(null);
   return (
-    <View className="gap-2 rounded-card border border-line bg-surface p-4">
+    <View className="gap-2 rounded-card border border-line bg-surface px-5 py-[18px]">
       <Text className="font-figtree-bold text-[16px] text-ink">{post.title}</Text>
       <Text className="font-figtree-semibold text-[13px] text-ink-2">
         {[
@@ -61,7 +61,7 @@ function PostRow({
           <LinkButton
             href={`/opportunities/${post.id}/edit`}
             label={t.editPost}
-            className="min-h-[44px] items-center justify-center rounded-[9px] border border-line bg-surface px-4"
+            className="min-h-[44px] items-center justify-center rounded-full border border-line-2 bg-surface px-4"
           >
             <Text className="font-figtree-semibold text-sm text-ink-2">{t.editPost}</Text>
           </LinkButton>
@@ -70,7 +70,7 @@ function PostRow({
           <LinkButton
             href={`/opportunities/${post.id}/pick`}
             label={t.pickProgressLink}
-            className="min-h-[44px] items-center justify-center rounded-[9px] border border-line bg-surface px-4"
+            className="min-h-[44px] items-center justify-center rounded-full border border-line-2 bg-surface px-4"
           >
             <Text className="font-figtree-semibold text-sm text-ink-2">{t.pickProgressLink}</Text>
           </LinkButton>
@@ -78,7 +78,7 @@ function PostRow({
           <LinkButton
             href={`/opportunities/${post.id}/responses`}
             label={t.respResponses}
-            className="min-h-[44px] items-center justify-center rounded-[9px] border border-line bg-surface px-4"
+            className="min-h-[44px] items-center justify-center rounded-full border border-line-2 bg-surface px-4"
           >
             <Text className="font-figtree-semibold text-sm text-ink-2">{t.respResponses}</Text>
           </LinkButton>
@@ -122,7 +122,7 @@ export function MyPosts({ api, picks }: { api: OpportunitiesApi; picks?: PicksAp
       <LinkButton
         href="/opportunities/new"
         label={t.postTitle}
-        className="min-h-[48px] items-center justify-center rounded-[10px] bg-blue px-4"
+        className="min-h-[48px] items-center justify-center rounded-full bg-blue px-4"
       >
         <Text className="font-figtree-bold text-[15px] text-blue-ink">{t.postTitle}</Text>
       </LinkButton>

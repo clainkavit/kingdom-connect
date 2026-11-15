@@ -32,7 +32,7 @@ function Mark() {
     .map((w) => w[0]!.toUpperCase())
     .join("");
   return (
-    <View aria-hidden className="h-9 w-9 items-center justify-center rounded-[10px] bg-navy">
+    <View aria-hidden className="h-9 w-9 items-center justify-center rounded-full bg-navy">
       <Text className="font-figtree-extrabold text-[15px] text-navy-ink">{initials}</Text>
     </View>
   );

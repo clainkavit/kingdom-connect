@@ -37,7 +37,7 @@ function RelationAction({ card, wide }: { card: DirectoryCard; wide: boolean }) 
   const { t } = useLanguage();
   const relation: Relation = card.relation;
   const shape = wide
-    ? "min-h-[42px] w-full items-center justify-center rounded-[10px]"
+    ? "min-h-[42px] w-full items-center justify-center rounded-full"
     : "min-h-[38px] items-center justify-center rounded-full px-3.5";
   const text = wide ? "text-sm" : "text-[13px]";
   if (relation === "none" || relation === "received") {
@@ -157,7 +157,7 @@ function BusinessCardView({ card, fill }: { card: BusinessCard; fill?: boolean }
   const { t } = useLanguage();
   return (
     <View
-      className={`${fill ? "flex-1 " : ""}gap-3 rounded-card border border-line bg-surface p-4`}
+      className={`${fill ? "flex-1 " : ""}gap-3 rounded-card border border-line bg-surface px-5 py-[18px]`}
     >
       <LinkButton
         href={`/profile/${card.memberId}`}
@@ -786,7 +786,7 @@ function Tabs({ value, onChange }: { value: Tab; onChange: (tab: Tab) => void })
       {tabs.map((tab) => {
         const selected = tab.key === value;
         const look = phone
-          ? `min-h-[38px] flex-1 items-center justify-center rounded-[9px] ${selected ? "bg-surface shadow-sm" : ""}`
+          ? `min-h-[38px] flex-1 items-center justify-center rounded-full ${selected ? "bg-surface shadow-sm" : ""}`
           : `min-h-[40px] justify-center rounded-full px-4 ${selected ? "bg-navy" : "border border-line bg-surface"}`;
         const text = phone
           ? selected

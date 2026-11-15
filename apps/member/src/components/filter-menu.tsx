@@ -37,7 +37,7 @@ export function SearchBox({
   }, [value, typed]);
   return (
     <View
-      className={`min-h-[46px] flex-1 flex-row items-center gap-2.5 px-3.5 ${round ? "rounded-full border border-line bg-surface-2" : "rounded-[10px] border border-field bg-surface"}`}
+      className={`min-h-[46px] flex-1 flex-row items-center gap-2.5 px-3.5 ${round ? "rounded-full border border-line bg-surface-2" : "rounded-full border border-field bg-surface"}`}
     >
       <Search size={18} color={palette.ink2} aria-hidden />
       <TextInput
@@ -95,7 +95,7 @@ export function FilterMenu({
         aria-label={`${label}: ${value ?? t.anyOption}`}
         aria-expanded={open}
         onPress={onToggle}
-        className={`min-h-[46px] flex-row items-center gap-1.5 rounded-[10px] px-3.5 ${on ? "border-[1.5px] border-navy bg-blue-soft" : "border border-line bg-surface"}`}
+        className={`min-h-[46px] flex-row items-center gap-1.5 rounded-full px-3.5 ${on ? "border-[1.5px] border-navy bg-blue-soft" : "border border-line bg-surface"}`}
       >
         <Text
           className={`text-sm ${on ? "font-figtree-bold text-info-text" : "font-figtree-semibold text-ink"}`}
@@ -176,7 +176,7 @@ export function TextFilter({
         value={draft}
         onChangeText={setDraft}
         onSubmitEditing={() => onApply(draft.trim())}
-        className="min-h-[44px] rounded-[9px] border border-field px-3 font-figtree text-[15px] text-ink"
+        className="min-h-[44px] rounded-full border border-field px-3 font-figtree text-[15px] text-ink"
       />
       <Button label={t.filterApply} onPress={() => onApply(draft.trim())} />
     </View>

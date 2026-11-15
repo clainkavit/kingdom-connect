@@ -153,7 +153,7 @@ function AddMaterial({
   };
 
   return (
-    <View className="gap-3 rounded-card border border-line bg-surface p-4">
+    <View className="gap-3 rounded-card border border-line bg-surface px-5 py-[18px]">
       <Field label={t.materialsTitleLabel} value={title} onChange={setTitle} />
       <Field label={t.materialsUrlLabel} hint={t.materialsUrlHint} value={url} onChange={setUrl} />
       <Message text={problem} />

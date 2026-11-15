@@ -34,7 +34,11 @@ function BetaChip() {
 }
 
 function Card({ children }: { children: React.ReactNode }) {
-  return <View className="gap-2 rounded-card border border-line bg-surface p-4">{children}</View>;
+  return (
+    <View className="gap-2 rounded-card border border-line bg-surface px-5 py-[18px]">
+      {children}
+    </View>
+  );
 }
 
 /** S20, the last posting step: how to find people. */

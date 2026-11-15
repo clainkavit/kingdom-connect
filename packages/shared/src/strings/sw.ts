@@ -2112,4 +2112,21 @@ export const sw: Strings = {
   respWhereTheyStand: "Yalipofikia",
   respResponsesUnit: "majibu",
   savedSubtitle: "Wewe pekee unaona ulichohifadhi. Gusa alama tena kuondoa tangazo.",
+  replaceFile: "Badilisha",
+  businessCheckNote:
+    "Msimamizi anakagua kwamba nyaraka zinalingana na jina la biashara na leseni haijaisha muda. Tunakukumbusha siku 30 kabla leseni kuisha.",
+  backToDashboard: "Rudi kwenye dashibodi",
+  businessSubtitle: "Kila ngazi inafungua zaidi ya Kingdom Connect.",
+  businessSubtitleNamed: (name: string) =>
+    `${name} · kila ngazi inafungua zaidi ya Kingdom Connect.`,
+  levelMemberCard: "Ngazi ya 1 · Mwanachama aliyethibitishwa",
+  levelBusinessCard: "Ngazi ya 2 · Biashara iliyothibitishwa",
+  levelPosterCard: "Ngazi ya 3 · Mtangazaji wa fursa",
+  posterNeedDirector:
+    "Uthibitisho kwamba wewe ni mkurugenzi (rekodi ya wakurugenzi kutoka BRELA) au barua ya idhini iliyosainiwa na mkurugenzi",
+  posterNeedAddress: "Anwani ya biashara, pamoja na mkoa na wilaya",
+  posterNeedProof: "Uthibitisho wa anwani wa miezi 3 iliyopita",
+  investApplyTitle: "Omba kuwekeza kwenye mawazo",
+  investApplyHint:
+    "Inapatikana kuanzia Ngazi ya 2. Wafanyakazi wanakagua kwa siri; hakuna mwingine anayeambiwa.",
 };

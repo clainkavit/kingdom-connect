@@ -217,8 +217,8 @@ describe("BusinessScreen (S41), licence renewal", () => {
 describe("BusinessScreen (S40)", () => {
   it("shows each level's status, with Level 3 locked until the business is verified", async () => {
     await show(fakeApi());
-    expect(screen.getByText("Level 1: Verified member")).toBeTruthy();
-    expect(screen.getByText("Level 2: Verified Business")).toBeTruthy();
+    expect(screen.getByText("Level 1 · Verified member")).toBeTruthy();
+    expect(screen.getByText("Level 2 · Verified business")).toBeTruthy();
     expect(screen.getAllByText("Not started").length).toBeGreaterThan(0);
     expect(screen.getByText("Available once your business is verified.")).toBeTruthy();
   });

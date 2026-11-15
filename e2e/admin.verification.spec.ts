@@ -22,6 +22,8 @@ test("an Administrator reveals the ID number and rejects with a reason (REG-3, A
   await page.getByRole("button", { name: "Reveal ID number" }).click();
   await expect(page.getByText(passport)).toBeVisible();
   expect(await auditActions(applicant.id)).toContain("id.revealed");
+  if (process.env.SCREENSHOT_DIR)
+    await page.screenshot({ path: `${process.env.SCREENSHOT_DIR}/u06-review.png`, fullPage: true });
 
   await page.getByRole("button", { name: "Reject" }).click();
   await page.getByRole("radio", { name: "Another reason, explained in the note" }).check();

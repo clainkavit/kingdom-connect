@@ -12,6 +12,7 @@ import {
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { buttonVariants } from "@/components/ui/button";
+import { ageText } from "@/lib/age";
 import { useLanguage } from "@/lib/language";
 import type { ReopenResult } from "@kingdom-connect/shared";
 import type { Application, RejectionReason, VerificationApi } from "@/lib/verification";
@@ -66,20 +67,22 @@ function IdentityCard({
     setIdNumber(number);
   };
 
+  const idType = app.idType ? t[idTypeLabel[app.idType]] : t.notGiven;
   return (
-    <Card title={t.reviewIdentity}>
+    <Card title={t.reviewWhatYouCheck}>
       <p className="text-sm text-ink-2">{t.reviewCheckHint}</p>
-      <dl className="flex flex-col gap-2">
-        <Row label={t.reviewNameOnForm} value={app.fullName} />
-        <Row label={t.idType} value={app.idType ? t[idTypeLabel[app.idType]] : t.notGiven} />
+      <dl className="flex flex-col gap-3">
+        <Row label={t.reviewCheckName} value={t.reviewOnTheForm(app.fullName)} />
         <Row
-          label={t.idNumber}
+          label={t.reviewCheckIdNumber}
           value={
             idNumber ? (
               <span className="font-mono">{idNumber}</span>
             ) : (
               <span className="flex flex-col items-start gap-1.5">
-                <span className="text-ink-2">{t.reviewIdHidden}</span>
+                <span className="text-ink-2">
+                  {idType} · {t.reviewIdHidden}
+                </span>
                 <button
                   type="button"
                   onClick={reveal}
@@ -92,7 +95,11 @@ function IdentityCard({
             )
           }
         />
-        <Row label={t.reviewIdExpires} value={app.idExpiresOn ?? t.notGiven} />
+        <Row label={t.reviewCheckFace} value={t.reviewCompareAbove} />
+        <Row
+          label={t.reviewCheckExpiry}
+          value={app.idExpiresOn ? t.reviewExpiresOn(app.idExpiresOn) : t.notGiven}
+        />
       </dl>
       <Notice tone="bad" text={revealFailed ? t.revealFailed : null} />
       <Notice tone="warn" text={expired ? t.reviewIdExpired : null} />
@@ -447,7 +454,13 @@ export function ApplicationReview({
       <div>
         <ScreenTitle>{app.fullName || t.reviewTitle}</ScreenTitle>
         <p className="-mt-3 text-sm text-ink-2">
-          {t.reviewSubmittedOn(formatDate(app.submittedAt, language))}
+          {[
+            t.reviewMemberApplication,
+            t.reviewSubmittedOn(formatDate(app.submittedAt, language)),
+            app.pending ? t.reviewWaited(ageText(t, app.submittedAt, today)) : null,
+          ]
+            .filter(Boolean)
+            .join(" · ")}
         </p>
       </div>
       <Notice tone={outcome || app.decision?.status === "approved" ? "good" : "warn"} text={done} />
@@ -455,12 +468,14 @@ export function ApplicationReview({
         <Photo label={t.reviewFacePhoto} url={app.facePhotoUrl} />
         <Photo label={t.reviewIdPhoto} url={app.idPhotoUrl} />
       </div>
+      <p className="-mt-2 text-[13px] text-ink-2">{t.reviewPhotosPrivate}</p>
       <div className="grid items-start gap-4 lg:grid-cols-2">
         <IdentityCard app={app} api={api} today={today} />
         <ProfileCard app={app} />
       </div>
       <DuplicateCard app={{ ...app, pending: open }} api={api} onChanged={reload} />
       {open ? <DecisionCard app={app} api={api} onDecided={setOutcome} /> : null}
+      {open ? <p className="text-[13px] text-ink-2">{t.reviewAuditNote}</p> : null}
       {app.decision?.status === "rejected" && app.decision.final ? (
         <ReopenCard app={app} api={api} />
       ) : null}

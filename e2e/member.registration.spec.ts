@@ -35,6 +35,8 @@ async function signUp(page: Page, username: string) {
   await page.getByRole("checkbox", { name: "I accept the privacy notice" }).click();
   await page.getByRole("button", { name: "Continue" }).click();
   await expect(page.getByRole("heading", { name: "Verify your identity" })).toBeVisible();
+  await expect(page.getByText("0 of 5 steps done")).toBeVisible();
+  await page.getByRole("button", { name: "Continue: About you" }).click();
   await expect(page.getByText("Step 1 of 5")).toBeVisible();
   return email;
 }
@@ -72,21 +74,23 @@ test("a person signs up, does the five steps in the profile and is approved (REG
   await choose(page, "Region", "Mwanza");
   await choose(page, "District", "Nyamagana");
   await page.getByLabel("Address (street, area or plot)").fill("Plot 1, Test Street");
-  await page.getByRole("button", { name: "Next" }).click();
+  await page.getByRole("button", { name: "Save and continue" }).click();
 
   await expect(page.getByText("Step 2 of 5")).toBeVisible();
   await page.reload();
+  await expect(page.getByText("1 of 5 steps done")).toBeVisible();
+  await page.getByRole("button", { name: "Continue: What you do" }).click();
   await expect(page.getByText("Step 2 of 5")).toBeVisible();
   await expect(page.getByRole("checkbox", { name: "Entrepreneur" })).toHaveCount(0);
   await page.getByRole("checkbox", { name: "Businessperson" }).click();
   await page.getByRole("checkbox", { name: "Professional" }).click();
-  await page.getByRole("button", { name: "Next" }).click();
+  await page.getByRole("button", { name: "Save and continue" }).click();
 
   await expect(page.getByText("Step 3 of 5")).toBeVisible();
   await page.getByLabel("Profession", { exact: true }).fill("Accountant");
   await page.getByLabel("Business name", { exact: true }).fill("Test Traders");
   await choose(page, "Sector", "Trade");
-  await page.getByRole("button", { name: "Next" }).click();
+  await page.getByRole("button", { name: "Save and continue" }).click();
 
   await expect(page.getByText("Step 4 of 5")).toBeVisible();
   await saveNida(page, nidaFor(Date.now()));
@@ -95,13 +99,13 @@ test("a person signs up, does the five steps in the profile and is approved (REG
   await expect(page.getByText("Added")).toHaveCount(1);
   await upload(page, 1);
   await expect(page.getByText("Added")).toHaveCount(2);
-  await page.getByRole("button", { name: "Next" }).click();
+  await page.getByRole("button", { name: "Save and continue" }).click();
 
   await expect(page.getByText("Step 5 of 5")).toBeVisible();
-  await expect(page.getByText("Test Applicant")).toBeVisible();
+  await expect(page.getByText("Test Applicant").last()).toBeVisible();
   await expect(page.getByText("Professional, Businessperson")).toBeVisible();
-  await page.getByRole("button", { name: "Submit application" }).click();
-  await expect(page.getByText("Under review")).toBeVisible();
+  await page.getByRole("button", { name: "Send to staff" }).click();
+  await expect(page.getByText("Under review").first()).toBeVisible();
   await page.getByRole("link", { name: "Look around while you wait" }).click();
   await expect(page.getByText("Your identity is being checked")).toBeVisible();
 
@@ -136,11 +140,11 @@ test("an ID that is already registered is refused (PRD section 6, criterion 3)",
   await choose(first, "Region", "Arusha");
   await choose(first, "District", "Arusha");
   await first.getByLabel("Address (street, area or plot)").fill("Plot 2");
-  await first.getByRole("button", { name: "Next" }).click();
+  await first.getByRole("button", { name: "Save and continue" }).click();
   await first.getByRole("checkbox", { name: "Other" }).click();
-  await first.getByRole("button", { name: "Next" }).click();
+  await first.getByRole("button", { name: "Save and continue" }).click();
   await first.getByLabel("Describe what you do").fill("Farmer");
-  await first.getByRole("button", { name: "Next" }).click();
+  await first.getByRole("button", { name: "Save and continue" }).click();
   await saveNida(first, nida);
   await expect(
     first.getByText("Your ID is saved. Enter it again only to change it."),
@@ -153,11 +157,11 @@ test("an ID that is already registered is refused (PRD section 6, criterion 3)",
   await choose(second, "Region", "Arusha");
   await choose(second, "District", "Arusha");
   await second.getByLabel("Address (street, area or plot)").fill("Plot 3");
-  await second.getByRole("button", { name: "Next" }).click();
+  await second.getByRole("button", { name: "Save and continue" }).click();
   await second.getByRole("checkbox", { name: "Other" }).click();
-  await second.getByRole("button", { name: "Next" }).click();
+  await second.getByRole("button", { name: "Save and continue" }).click();
   await second.getByLabel("Describe what you do").fill("Teacher");
-  await second.getByRole("button", { name: "Next" }).click();
+  await second.getByRole("button", { name: "Save and continue" }).click();
   await saveNida(second, nida);
   await expect(second.getByRole("alert")).toHaveText("This ID is already registered.");
   await second.close();

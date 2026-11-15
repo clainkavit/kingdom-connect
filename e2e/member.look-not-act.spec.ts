@@ -26,7 +26,7 @@ test("an applicant waiting for review looks around but cannot act (R27, PRD sect
   const sentAfter = new Date();
   await logIn(page, "Username", username);
   await enterCode(page, await nextCode(applicant.email, sentAfter));
-  await expect(page.getByText("Under review")).toBeVisible();
+  await expect(page.getByText("Under review").first()).toBeVisible();
 
   await page.getByRole("link", { name: "Look around while you wait" }).click();
   await expect(page.getByText("Not verified yet")).toBeVisible();

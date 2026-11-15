@@ -229,7 +229,9 @@ export async function signInToAdmin(
   const sentAfter = new Date();
   await logIn(page, "Email", email, password);
   await enterCode(page, await nextCode(email, sentAfter));
-  await expect(page.getByRole("heading", { name: "Admin dashboard" })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: /^(Admin dashboard|Good (morning|afternoon|evening), .+)$/ }),
+  ).toBeVisible();
 }
 
 /** Opens one Applicant's application from the verification queue, as a signed-in Administrator. */

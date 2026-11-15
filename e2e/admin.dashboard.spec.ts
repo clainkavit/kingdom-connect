@@ -11,6 +11,11 @@ test("the admin dashboard shows the counts and the weekly chart, and each count 
     page.getByRole("img", { name: /^New verified members per week, from \d+ to \d+$/ }),
   ).toBeVisible();
   await expect(page.getByText(/^\d+ this week$/)).toBeVisible();
+  if (process.env.SCREENSHOT_DIR)
+    await page.screenshot({
+      path: `${process.env.SCREENSHOT_DIR}/u06-dashboard.png`,
+      fullPage: true,
+    });
   await page.getByRole("link", { name: /Open reports/ }).click();
   await expect(page.getByRole("heading", { name: "Reports" })).toBeVisible();
 });

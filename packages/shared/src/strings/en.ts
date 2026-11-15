@@ -2072,4 +2072,19 @@ export const en = {
   respWhereTheyStand: "Where they stand",
   respResponsesUnit: "responses",
   savedSubtitle: "Only you see what you saved. Tap the bookmark again to remove a post.",
+  replaceFile: "Replace",
+  businessCheckNote:
+    "An administrator checks that the documents match the business name and that the licence has not expired. We remind you 30 days before the licence ends.",
+  backToDashboard: "Back to my dashboard",
+  businessSubtitle: "Each level unlocks more of Kingdom Connect.",
+  businessSubtitleNamed: (name: string) => `${name} · each level unlocks more of Kingdom Connect.`,
+  levelMemberCard: "Level 1 · Verified member",
+  levelBusinessCard: "Level 2 · Verified business",
+  levelPosterCard: "Level 3 · Opportunity Poster",
+  posterNeedDirector:
+    "Proof you are a director (Directors' record from BRELA) or an authorisation letter signed by a director",
+  posterNeedAddress: "The business address, with region and district",
+  posterNeedProof: "Proof of address from the last 3 months",
+  investApplyTitle: "Apply to invest in ideas",
+  investApplyHint: "Available from Level 2. Staff review it privately; nobody else is told.",
 };

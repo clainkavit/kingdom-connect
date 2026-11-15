@@ -1,7 +1,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 create or replace function access.accepted_terms_and_privacy() returns boolean language sql stable as 'select true';
-select plan(21);
+select plan(25);
 
 insert into auth.users (id, email)
 select ('00000000-0000-0000-0000-0000000051' || k)::uuid, 'wr' || k || '@test.invalid'
@@ -98,6 +98,32 @@ select is((select again_count || ' of ' || total from public.work_references('00
            limit 1), '3 of 3', 'from 3 revealed ratings the references show: 3 of 3 would work with them again');
 select is((select count(*)::int from public.work_references('00000000-0000-0000-0000-000000005102')), 3,
   'with one row per rating');
+
+reset role;
+insert into public.responses (id, opportunity_id, member_id, kind, status) values
+  ('00000000-0000-0000-0051-0000000000b3', '00000000-0000-0000-0051-00000000000a',
+   '00000000-0000-0000-0000-000000005104', 'application', 'shortlisted');
+set local role authenticated;
+select pg_temp.login('01');
+select is(public.mark_hired('00000000-0000-0000-0051-0000000000b3'), 'ok', 'a second worker is hired');
+select pg_temp.login('04');
+select is(public.confirm_work((select id from public.engagements
+                               where response_id = '00000000-0000-0000-0051-0000000000b3'), false), 'ok',
+  'the worker can say the work did not happen');
+select is(public.rate_work((select id from public.engagements
+                            where response_id = '00000000-0000-0000-0051-0000000000b3'), 5, 5, 5, 5, true, '', ''),
+  'not_confirmed', 'a denied engagement opens nothing');
+
+reset role;
+insert into public.milestone_plans (id, member_a, member_b, opportunity_id, started_by, status)
+values ('00000000-0000-0000-0051-0000000000c1', '00000000-0000-0000-0000-000000005101',
+        '00000000-0000-0000-0000-000000005103', '00000000-0000-0000-0051-00000000000a',
+        '00000000-0000-0000-0000-000000005101', 'active');
+update public.milestone_plans set status = 'completed', completed_at = now()
+where id = '00000000-0000-0000-0051-0000000000c1';
+select ok((select confirmed_at is not null and rating_closes_at > now() from public.engagements
+           where plan_id = '00000000-0000-0000-0051-0000000000c1'),
+  'a finished milestone plan makes a confirmed engagement');
 
 select * from finish();
 rollback;

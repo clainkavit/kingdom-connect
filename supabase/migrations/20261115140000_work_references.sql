@@ -10,7 +10,7 @@ alter table public.responses add constraint responses_status_check
 create table public.engagements (
   id uuid primary key default gen_random_uuid(),
   opportunity_id uuid references public.opportunities (id),
-  plan_id uuid,
+  plan_id uuid unique references public.milestone_plans (id),
   response_id uuid unique references public.responses (id),
   poster_member_id uuid not null references public.members (id),
   worker_member_id uuid not null references public.members (id),
@@ -188,7 +188,7 @@ language sql stable security definer set search_path = '' as $$
            round(avg(communication), 1) as communication, round(avg(honesty), 1) as honesty
     from shown
   )
-  select s.id, coalesce(p.full_name, m.username::text), o.title, s.created_at, s.comment, s.reply,
+  select s.id, coalesce(p.full_name, m.username::text), coalesce(o.title, i.title), s.created_at, s.comment, s.reply,
          summary.total, summary.again_count, summary.on_time, summary.quality, summary.communication, summary.honesty
   from shown s
   cross join summary
@@ -196,6 +196,8 @@ language sql stable security definer set search_path = '' as $$
   left join public.profiles p on p.member_id = s.rater_id
   join public.engagements e on e.id = s.engagement_id
   left join public.opportunities o on o.id = e.opportunity_id
+  left join public.milestone_plans mp on mp.id = e.plan_id
+  left join public.ideas i on i.id = mp.idea_id
   where (select access.is_member()) and summary.total >= 3
   order by s.created_at desc;
 $$;
@@ -205,7 +207,8 @@ returns table (engagement_id uuid, role text, other_name text, work_title text, 
                confirmed_at timestamptz, denied_at timestamptz, rating_closes_at timestamptz, i_rated boolean)
 language sql stable security definer set search_path = '' as $$
   select e.id, case when e.poster_member_id = auth.uid() then 'poster' else 'worker' end,
-         coalesce(p.full_name, m.username::text), o.title, e.marked_at, e.confirmed_at, e.denied_at,
+         coalesce(p.full_name, m.username::text), coalesce(o.title, i.title), e.marked_at, e.confirmed_at,
+         e.denied_at,
          e.rating_closes_at,
          exists (select 1 from public.ratings r where r.engagement_id = e.id and r.rater_id = auth.uid())
   from public.engagements e
@@ -213,9 +216,33 @@ language sql stable security definer set search_path = '' as $$
     on m.id = case when e.poster_member_id = auth.uid() then e.worker_member_id else e.poster_member_id end
   left join public.profiles p on p.member_id = m.id
   left join public.opportunities o on o.id = e.opportunity_id
+  left join public.milestone_plans mp on mp.id = e.plan_id
+  left join public.ideas i on i.id = mp.idea_id
   where (select access.is_member()) and auth.uid() in (e.poster_member_id, e.worker_member_id)
   order by e.marked_at desc;
 $$;
+
+create function private.plan_finished_engagement() returns trigger
+language plpgsql security definer set search_path = '' as $$
+declare
+  title text;
+begin
+  insert into public.engagements (plan_id, poster_member_id, worker_member_id, confirmed_at, rating_closes_at)
+  values (new.id, new.started_by, case when new.started_by = new.member_a then new.member_b else new.member_a end,
+          now(), now() + interval '14 days')
+  on conflict (plan_id) do nothing;
+  select coalesce(i.title, o.title, '') into title
+  from (select 1) x
+  left join public.ideas i on i.id = new.idea_id
+  left join public.opportunities o on o.id = new.opportunity_id;
+  perform private.notify(side.who, 'O12', jsonb_build_object('title', title, 'days', 14,
+    'name', coalesce((select p.full_name from public.profiles p where p.member_id = side.other), '')))
+  from (values (new.member_a, new.member_b), (new.member_b, new.member_a)) side(who, other);
+  return new;
+end $$;
+create trigger finished_plan_engagement after update of status on public.milestone_plans
+  for each row when (new.status = 'completed' and old.status is distinct from 'completed')
+  execute function private.plan_finished_engagement();
 
 create function private.reveal_due_ratings(run_at timestamptz default now()) returns int
 language plpgsql security definer set search_path = '' as $$

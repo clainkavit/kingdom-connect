@@ -106,7 +106,11 @@ test("a Super Administrator invites an Administrator, who sets a password and lo
   const codeAfter = new Date();
   await logIn(invited, "Email", email, "staff-pass-1");
   await enterCode(invited, await nextCode(email, codeAfter));
-  await expect(invited.getByRole("heading", { name: "Admin dashboard" })).toBeVisible();
+  await expect(
+    invited.getByRole("heading", {
+      name: /^(Admin dashboard|Good (morning|afternoon|evening), .+)$/,
+    }),
+  ).toBeVisible();
 
   await page.reload();
   await page.getByRole("button", { name: `Deactivate ${name}` }).click();

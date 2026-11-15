@@ -21,8 +21,20 @@ const stats = (over: Partial<AdminStats> = {}): AdminStats => ({
   ...over,
 });
 
+const overview = {
+  staffName: "Susan Mwakyusa",
+  registeredBusinesses: 186,
+  open: { jobs: 32, partnerships: 14, tenders: 12, other: 16 },
+  publishedIdeas: 52,
+  pendingBusinessL2: 5,
+  pendingBusinessL3: 2,
+  pendingInvestor: 1,
+  moderation: { opportunities: 6, tenders: 3, ideas: 4 },
+};
+
 const fakeApi = (s: AdminStats = stats(), over: Partial<AdminStatsApi> = {}): AdminStatsApi => ({
   stats: vi.fn().mockResolvedValue(s),
+  overview: vi.fn().mockResolvedValue(overview),
   alerts: vi.fn().mockResolvedValue([]),
   acknowledge: vi.fn().mockResolvedValue(true),
   weeklyNewMembers: vi.fn().mockResolvedValue([]),
@@ -43,7 +55,7 @@ describe("AdminDashboard (A01)", () => {
   it("links each count to its filtered queue", async () => {
     await show(fakeApi());
     expect(link(/Verified members.*42/)).toBe("/members?status=approved");
-    expect(link(/Waiting for verification.*2/)).toBe("/verification");
+    expect(link(/Waiting for verification.*10/)).toBe("/verification");
     expect(link(/Rejected members.*3/)).toBe("/members?status=rejected");
     expect(link(/Open reports.*1/)).toBe("/reports");
   });
@@ -143,5 +155,27 @@ describe("AdminDashboard (A01)", () => {
     expect(gridStep(36)).toBe(10);
     expect(gridStep(7)).toBe(2);
     expect(gridStep(180)).toBe(50);
+  });
+
+  it("greets staff by name and shows the canvas counts and queues (U06)", async () => {
+    await show(fakeApi());
+    expect(
+      screen.getByRole("heading", { name: /^Good (morning|afternoon|evening), Susan$/ }),
+    ).toBeTruthy();
+    expect(screen.getByRole("link", { name: /Registered businesses/ }).textContent).toContain(
+      "186",
+    );
+    expect(screen.getByRole("link", { name: /Open opportunities\b.*74/ })).toBeTruthy();
+    expect(screen.getByRole("link", { name: /Ideas in the pool/ }).textContent).toContain("52");
+    expect(screen.getByText("Business, Level 2")).toBeTruthy();
+    expect(screen.getByRole("link", { name: /Waiting for moderation/ }).textContent).toContain(
+      "13",
+    );
+  });
+
+  it("keeps the first counts when the extra counts cannot load", async () => {
+    await show(fakeApi(stats(), { overview: vi.fn().mockRejectedValue(new Error("offline")) }));
+    expect(screen.getByRole("heading", { name: "Admin dashboard" })).toBeTruthy();
+    expect(screen.getByRole("link", { name: /Waiting for verification/ })).toBeTruthy();
   });
 });

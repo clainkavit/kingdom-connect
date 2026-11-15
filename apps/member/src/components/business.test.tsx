@@ -385,4 +385,13 @@ describe("BusinessScreen (S40)", () => {
     expect(screen.getByText(/Your licence is valid until/)).toBeTruthy();
     expect(screen.queryByRole("button", { name: "Send for review" })).toBeNull();
   });
+
+  it("shows each level as a step with what it unlocks, and what each level shows (canvas, U05)", async () => {
+    await show(fakeApi());
+    expect(
+      screen.getByText("Your identity is checked. You can connect, message and apply."),
+    ).toBeTruthy();
+    expect(screen.getByText("Post opportunities and tenders.")).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "What each level shows" })).toBeTruthy();
+  });
 });

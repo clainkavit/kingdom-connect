@@ -1778,4 +1778,15 @@ export const sw: Strings = {
   ideasLookingPartners: "Wanaotafuta washirika",
   ideasLookingInvestors: "Wanaotafuta wawekezaji",
   ideaLookingFor: (what: string) => `Wanatafuta: ${what}`,
+  levelMemberUnlocks:
+    "Utambulisho wako umekaguliwa. Unaweza kuunganisha, kutuma ujumbe na kutuma maombi.",
+  levelBusinessUnlocks: "Orodhesha biashara yako, jibu zabuni, omba kuwekeza.",
+  levelPosterUnlocks: "Chapisha fursa na zabuni.",
+  levelsExplainTitle: "Kila ngazi inaonyesha nini",
+  levelsExplainStatus:
+    "Kila ngazi inaonyesha hali yake: Bado haijaanza, Inasubiri, Imeidhinishwa, Imekataliwa (pamoja na sababu) au Imeisha muda.",
+  levelsExplainPending:
+    "Ngazi ikiwa Inasubiri, fomu yake imefungwa. Ikikataliwa, unaona sababu na fomu tena pamoja na taarifa zako za awali.",
+  levelsExplainPrivate:
+    "Nyaraka zako zinahifadhiwa mahali ambapo wafanyakazi pekee wanaweza kufungua. Wanachama hawazioni kamwe.",
 };

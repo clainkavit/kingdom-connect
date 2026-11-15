@@ -1748,4 +1748,14 @@ export const en = {
   ideasLookingPartners: "Looking for partners",
   ideasLookingInvestors: "Looking for investors",
   ideaLookingFor: (what: string) => `Looking for: ${what}`,
+  levelMemberUnlocks: "Your identity is checked. You can connect, message and apply.",
+  levelBusinessUnlocks: "List your business in the directory, respond to tenders, apply to invest.",
+  levelPosterUnlocks: "Post opportunities and tenders.",
+  levelsExplainTitle: "What each level shows",
+  levelsExplainStatus:
+    "Each level shows its status: Not started, Pending, Approved, Rejected (with the reason) or Expired.",
+  levelsExplainPending:
+    "While a level is Pending, its form is closed. If it is rejected, you see the reason and the form again with your earlier details.",
+  levelsExplainPrivate:
+    "Your documents are kept in a store only staff can open. Members never see them.",
 };

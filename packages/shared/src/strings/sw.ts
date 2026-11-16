@@ -2211,4 +2211,14 @@ export const sw: Strings = {
     "Watapata barua pepe yenye kiungo cha kuweka nenosiri lao wenyewe. Hakuna mwingine anayelijua.",
   staffListNote: "Huwezi kujizima mwenyewe wala kumzima Msimamizi Mkuu wa mwisho.",
   staffActive: "Hai",
+  reviewFromApplication: "Kutoka kwenye ombi",
+  reviewDecision: "Uamuzi",
+  reviewPhotosTitle: "Picha ya uso na picha ya kitambulisho",
+  reviewCheckLocation: "Mahali",
+  reviewLocationLine: (phone: string, place: string) =>
+    `Namba ya simu ${phone} na ${place}. Hakuna sharti la uraia.`,
+  rejectChooseReason: "Chagua sababu",
+  rejectLanguageNote:
+    "Mwombaji anapata sababu kwa lugha yake. Kukataliwa mara ya pili ni kwa mwisho isipokuwa msimamizi akilifungua tena.",
+  reviewDuplicateTitle: "Ukaguzi wa marudio",
 };

@@ -4,8 +4,8 @@ import { useLanguage } from "@/lib/language";
 
 export function Card({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="flex flex-col gap-3 rounded-lg border bg-card p-4 shadow-card">
-      <h2 className="text-base font-semibold text-foreground">{title}</h2>
+    <section className="flex flex-col gap-4 rounded-[22px] border bg-card px-6 py-6 shadow-card">
+      <h2 className="text-[17px] font-bold text-foreground">{title}</h2>
       {children}
     </section>
   );
@@ -30,10 +30,10 @@ export function Photo({ label, url }: { label: string; url: string | null }) {
         <img
           src={url}
           alt={label}
-          className="aspect-[4/3] w-full rounded-lg border bg-surface-2 object-contain"
+          className="aspect-[4/3] w-full rounded-[18px] border bg-surface-2 object-contain"
         />
       ) : (
-        <div className="flex aspect-[4/3] items-center justify-center rounded-lg border bg-surface-2 text-sm text-ink-2">
+        <div className="flex aspect-[4/3] items-center justify-center rounded-[18px] border bg-surface-2 text-sm text-ink-2">
           {t.photoMissing}
         </div>
       )}
@@ -51,7 +51,7 @@ export function Notice({ tone, text }: { tone: "good" | "warn" | "bad"; text: st
   return (
     <div
       role={tone === "good" ? "status" : "alert"}
-      className={`rounded-lg px-4 py-3 text-sm font-medium ${colours}`}
+      className={`rounded-[14px] px-4 py-3 text-sm font-semibold ${colours}`}
     >
       {text}
     </div>

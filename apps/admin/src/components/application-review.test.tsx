@@ -149,13 +149,12 @@ describe("ApplicationReview (A03)", () => {
   it("will not reject without a reason, and needs a note for another reason", async () => {
     const api = fakeApi();
     await show(api);
-    await click("Reject");
     await click("Reject and send the reason");
     expect(api.decide).not.toHaveBeenCalled();
     expect(screen.getByText("Choose a reason. For another reason, write a note.")).toBeTruthy();
 
     await act(async () =>
-      fireEvent.click(screen.getByRole("radio", { name: "Another reason, explained in the note" })),
+      fireEvent.change(screen.getByLabelText("Reason"), { target: { value: "other" } }),
     );
     await click("Reject and send the reason");
     expect(api.decide).not.toHaveBeenCalled();

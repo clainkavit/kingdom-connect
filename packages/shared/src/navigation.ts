@@ -96,9 +96,9 @@ export const adminNav: readonly NavItem[] = [
 ];
 
 export const adminPhoneTabs: readonly NavItem[] = [
-  { key: "tabHome", href: "/", icon: "home" },
-  { key: "adminTabVerify", href: "/verification", icon: "check-check" },
-  { key: "adminTabModerate", href: "/moderation", icon: "list-checks" },
+  { key: "tabHome", href: "/", icon: "layout-grid" },
+  { key: "adminTabVerify", href: "/verification", icon: "shield-check" },
+  { key: "adminTabModerate", href: "/moderation", icon: "square-check" },
   { key: "adminNavReports", href: "/reports", icon: "flag" },
   { key: "tabMore", href: "/more", icon: "ellipsis" },
 ];

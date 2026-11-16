@@ -2221,4 +2221,14 @@ export const sw: Strings = {
   rejectLanguageNote:
     "Mwombaji anapata sababu kwa lugha yake. Kukataliwa mara ya pili ni kwa mwisho isipokuwa msimamizi akilifungua tena.",
   reviewDuplicateTitle: "Ukaguzi wa marudio",
+  securityAlertsUnseen: (n: number) =>
+    n === 1 ? "Tahadhari 1 ya usalama haijaonekana" : `Tahadhari ${n} za usalama hazijaonekana`,
+  adminPlacesLeftLimit: (count: string) => `Nafasi ${count} zimebaki kabla ya kikomo cha siku`,
+  adminWaitingForYou: "Kinachokusubiri",
+  adminWaitVerification: "Uthibitisho",
+  adminWaitModeration: "Ukaguzi",
+  adminWaitReports: "Ripoti",
+  adminUpdatedAt: (time: string) => `Imesasishwa ${time}`,
+  staffConsoleShort: "Dashibodi ya usimamizi",
+  staffOnly: "Wafanyakazi tu",
 };

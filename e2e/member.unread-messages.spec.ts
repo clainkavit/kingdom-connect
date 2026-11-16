@@ -17,7 +17,7 @@ test("a new message shows a count on Messages, and opening it clears the count (
   await expect(menu.getByRole("link", { name: "Messages, 1 unread" })).toBeVisible();
 
   await menu.getByRole("link", { name: "Messages, 1 unread" }).click();
-  await page.getByText(`Unread Friend ${stamp}`).click();
+  await page.getByText(`Unread Friend ${stamp}`).first().click();
   await expect(page.getByText("Habari, are you free on Saturday?").last()).toBeVisible();
   await expect.poll(() => threadReadsOf(reader.id)).toBe(1);
   await page.goto("/");

@@ -1,6 +1,7 @@
 "use client";
 
 import { formatNumber, type Language } from "@kingdom-connect/shared";
+import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { STATS_REFRESH_MS, type AdminStatsApi, type WeekCount } from "@/lib/admin-dashboard";
@@ -65,14 +66,15 @@ export function WeeklyMembersChart({ api }: { api: AdminStatsApi }) {
   const counts = (weeks ?? []).map((w) => w.newMembers);
 
   return (
-    <section className="flex min-w-0 flex-col gap-3 rounded-lg border bg-card p-4 shadow-card">
-      <div className="flex min-h-[44px] items-center justify-between gap-3">
-        <h2 className="text-base font-semibold text-foreground">{t.weeklyMembersTitle}</h2>
+    <section className="flex min-w-0 flex-col gap-3 rounded-[22px] border bg-card px-5 py-5 shadow-card">
+      <div className="flex items-start justify-between gap-3">
+        <h2 className="text-[17px] font-bold text-foreground">{t.weeklyMembersTitle}</h2>
         <Link
           href="/members?status=approved"
-          className="flex min-h-[44px] items-center text-sm font-semibold text-primary underline-offset-2 hover:underline"
+          className="flex shrink-0 items-center gap-1 text-sm font-semibold text-primary hover:underline"
         >
           {t.weeklyMembersOpen}
+          <ChevronRight size={15} aria-hidden />
         </Link>
       </div>
       {failed && !weeks ? (
@@ -110,13 +112,13 @@ export function WeeklyMembersChart({ api }: { api: AdminStatsApi }) {
             ))}
             <polygon
               points={`${x(0).toFixed(1)},${BOTTOM} ${points.join(" ")} ${x(weeks.length - 1).toFixed(1)},${BOTTOM}`}
-              className="fill-primary"
+              className="fill-crimson"
               fillOpacity={0.1}
             />
             <polyline
               points={points.join(" ")}
               fill="none"
-              className="stroke-primary"
+              className="stroke-crimson"
               strokeWidth={2}
               strokeLinejoin="round"
               strokeLinecap="round"
@@ -127,7 +129,7 @@ export function WeeklyMembersChart({ api }: { api: AdminStatsApi }) {
                   cx={x(weeks.length - 1)}
                   cy={y(last.newMembers)}
                   r={5}
-                  className="fill-primary stroke-card"
+                  className="fill-crimson stroke-card"
                   strokeWidth={2}
                 />
                 <text

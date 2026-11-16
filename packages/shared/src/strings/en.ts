@@ -2136,4 +2136,13 @@ export const en = {
   staffPointReports: "Act on reports quickly and fairly",
   staffAuditNote: "Every staff action is written to the audit log.",
   adminSidebarNote: "Staff accounts cannot connect with or message members.",
+  adminCountsRefresh: (time: string) => `Counts refresh every 15 minutes · Updated ${time}`,
+  adminOpenWord: "open",
+  adminWaitingWord: "waiting",
+  adminOpenQueue: "Open queue",
+  adminCapOfToday: (cap: string) => `of ${cap} today`,
+  adminPlacesLeft: (count: string) => `${count} places left today`,
+  adminCapHint: "The daily limit stops new sign-ups when the queue is too long.",
+  adminCapSuperOnly: "Only Super Admins see this link.",
+  adminReportsCard: "Reports and hidden items",
 };

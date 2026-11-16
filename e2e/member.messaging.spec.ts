@@ -22,16 +22,16 @@ test("connected Members message each other live, with a file, and a block stops 
   await expect(a).toHaveURL(/\/messages\/[0-9a-f-]{36}$/);
   await a.getByLabel("Write a message").fill("Hello from the writer");
   await a.getByRole("button", { name: "Send", exact: true }).click();
-  await expect(a.getByText("Hello from the writer")).toBeVisible();
+  await expect(a.getByText("Hello from the writer").last()).toBeVisible();
   await expect.poll(() => notificationKinds(reader.id)).toContain("C3");
 
   await b.goto("/messages");
   await b.getByRole("link", { name: `Writing Member ${stamp}, Unread` }).click();
-  await expect(b.getByText("Hello from the writer")).toBeVisible();
+  await expect(b.getByText("Hello from the writer").last()).toBeVisible();
   await b.getByLabel("Write a message").fill("Hello back");
   await b.getByRole("button", { name: "Send", exact: true }).click();
 
-  await expect(a.getByText("Hello back")).toBeVisible();
+  await expect(a.getByText("Hello back").last()).toBeVisible();
 
   const chooser = a.waitForEvent("filechooser");
   await a.getByRole("button", { name: "Attach a file" }).click();
@@ -47,7 +47,7 @@ test("connected Members message each other live, with a file, and a block stops 
 
   await a.getByRole("button", { name: "Delete" }).first().click();
   await a.getByRole("button", { name: "Yes, delete" }).click();
-  await expect(b.getByText("This message was deleted")).toBeVisible();
+  await expect(b.getByText("This message was deleted").last()).toBeVisible();
 
   await block(reader.id, writer.id);
   await a.reload();

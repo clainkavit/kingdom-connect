@@ -720,7 +720,7 @@ export const sw: Strings = {
     count === 1
       ? "Ombi 1 limesubiri siku 2 za kazi au zaidi. Lipitie kwanza."
       : `Maombi ${count} yamesubiri siku 2 za kazi au zaidi. Yapitie kwanza.`,
-  queueOverdue: "Linasubiri siku 2+ za kazi",
+  queueOverdue: "Zaidi ya siku 2 za kazi",
   queueLoadFailed: "Hatukuweza kupakia foleni. Angalia mtandao wako, kisha ujaribu tena.",
   queueTypeMember: "Mwanachama",
   suspectedDuplicate: "Huenda ni nakala",
@@ -2187,4 +2187,9 @@ export const sw: Strings = {
   adminCapHint: "Kikomo cha kila siku husimamisha usajili mpya foleni ikiwa ndefu sana.",
   adminCapSuperOnly: "Ni Wasimamizi Wakuu tu wanaoona kiungo hiki.",
   adminReportsCard: "Ripoti na vilivyofichwa",
+  queueSubtitle: (count: number, age: string) =>
+    `Za zamani kwanza. ${count} zinasubiri; ya zamani zaidi imesubiri ${age}.`,
+  queueRecoveriesLink: "Maombi ya kurejesha barua pepe",
+  queueSubmitted: (date: string, age: string) => `Imetumwa ${date} · ${age}`,
+  queueOpen: "Fungua",
 };

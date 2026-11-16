@@ -42,8 +42,7 @@ describe("VerificationQueue (A02)", () => {
           item({ id: "new", username: "second_in" }),
         ]),
     );
-    expect(screen.getByText("2 waiting")).toBeTruthy();
-    expect(screen.getByText("Oldest: 3 days")).toBeTruthy();
+    expect(screen.getByText("Oldest first. 2 waiting; the oldest has waited 3 days.")).toBeTruthy();
     const links = screen
       .getAllByRole("link")
       .map((l) => l.getAttribute("href"))
@@ -62,9 +61,15 @@ describe("VerificationQueue (A02)", () => {
         ]),
     );
     expect(screen.getByText("Pendo Supplies")).toBeTruthy();
-    expect(within(screen.getByRole("list")).getByText(/Business, Level 3/)).toBeTruthy();
-    expect(within(screen.getByRole("list")).getByText(/Business, Level 2/)).toBeTruthy();
-    expect(within(screen.getByRole("list")).getByText(/Business, licence renewal/)).toBeTruthy();
+    expect(
+      within(screen.getByRole("list")).getAllByText(/Business, Level 3/).length,
+    ).toBeGreaterThan(0);
+    expect(
+      within(screen.getByRole("list")).getAllByText(/Business, Level 2/).length,
+    ).toBeGreaterThan(0);
+    expect(
+      within(screen.getByRole("list")).getAllByText(/Business, licence renewal/).length,
+    ).toBeGreaterThan(0);
     const links = screen
       .getAllByRole("link")
       .map((l) => l.getAttribute("href"))
@@ -88,7 +93,7 @@ describe("VerificationQueue (A02)", () => {
     expect(screen.getByRole("alert").textContent).toBe(
       "1 application has waited 2 working days or more. Review it first.",
     );
-    expect(screen.getAllByText("Waiting 2+ working days")).toHaveLength(1);
+    expect(screen.getAllByText("Over 2 working days")).toHaveLength(1);
   });
 
   it("marks a suspected duplicate", async () => {

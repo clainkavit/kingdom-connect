@@ -1,6 +1,7 @@
 "use client";
 
-import { formatDate, isOverdue } from "@kingdom-connect/shared";
+import { formatShortDate, isOverdue } from "@kingdom-connect/shared";
+import { Clock, MessageSquare, TriangleAlert } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ageText } from "@/lib/age";
@@ -9,15 +10,28 @@ import type { QueueItem, VerificationApi } from "@/lib/verification";
 import { ScreenTitle } from "./screens";
 import { EmptyState, ErrorState, LoadingRows } from "./states";
 
-function Tag({ tone, children }: { tone: "warn" | "bad"; children: React.ReactNode }) {
+function Tag({ tone, children }: { tone: "type" | "warn" | "bad"; children: React.ReactNode }) {
+  const colours = {
+    type: "bg-warn-soft text-warn-text",
+    warn: "bg-warn-soft text-warn-text",
+    bad: "bg-bad-soft text-bad-text",
+  }[tone];
   return (
     <span
-      className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${tone === "warn" ? "bg-warn-soft text-warn-text" : "bg-bad-soft text-bad-text"}`}
+      className={`flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-bold ${colours}`}
     >
       {children}
     </span>
   );
 }
+
+const initialsOf = (name: string) =>
+  name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((w) => w[0]!.toUpperCase())
+    .join("");
 
 export function VerificationQueue({
   api,
@@ -62,12 +76,23 @@ export function VerificationQueue({
 
   return (
     <>
-      <ScreenTitle>{t.adminNavVerification}</ScreenTitle>
-      <p className="mb-4 text-sm">
-        <Link href="/recoveries" className="font-semibold text-primary underline">
-          {t.adminNavRecoveries}
+      <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
+        <div className="flex flex-col gap-1">
+          <ScreenTitle>{t.adminNavVerification}</ScreenTitle>
+          {items && items.length > 0 ? (
+            <p className="-mt-3 text-[15px] text-ink-2">
+              {t.queueSubtitle(items.length, ageText(t, items[0]!.submittedAt, at))}
+            </p>
+          ) : null}
+        </div>
+        <Link
+          href="/recoveries"
+          className="flex items-center gap-1.5 pt-2 text-sm font-semibold text-primary underline"
+        >
+          <MessageSquare size={15} aria-hidden />
+          {t.queueRecoveriesLink}
         </Link>
-      </p>
+      </div>
       {failed ? (
         <ErrorState message={t.queueLoadFailed} onRetry={retry} />
       ) : !items ? (
@@ -76,15 +101,12 @@ export function VerificationQueue({
         <EmptyState title={t.queueEmptyTitle} message={t.queueEmptyMessage} />
       ) : (
         <div className="flex flex-col gap-4">
-          <p className="flex flex-wrap gap-x-4 text-sm font-semibold text-ink-2">
-            <span>{t.queueWaiting(items.length)}</span>
-            <span>{t.queueOldest(ageText(t, items[0]!.submittedAt, at))}</span>
-          </p>
           {overdue > 0 ? (
             <div
               role="alert"
-              className="rounded-lg bg-warn-soft px-4 py-3 text-sm font-medium text-warn-text"
+              className="flex items-center gap-2.5 rounded-[18px] bg-warn-soft px-5 py-3.5 text-[15px] font-medium text-warn-text"
             >
+              <Clock size={17} aria-hidden />
               {t.queueOverdueBanner(overdue)}
             </div>
           ) : null}
@@ -100,52 +122,83 @@ export function VerificationQueue({
                   role="radio"
                   aria-checked={on}
                   onClick={() => setKind(value)}
-                  className={`min-h-[40px] rounded-full px-4 text-sm font-semibold ${on ? "bg-primary text-primary-foreground" : "border bg-card text-foreground hover:bg-surface-2"}`}
+                  className={`min-h-[40px] rounded-full px-4 text-sm font-semibold ${on ? "bg-primary text-primary-foreground" : "border border-line-2 bg-card text-foreground hover:bg-surface-2"}`}
                 >
                   {label} · {count}
                 </button>
               );
             })}
           </div>
-          <ul className="flex flex-col divide-y rounded-lg border bg-card shadow-card">
-            {shown.map((item) => (
-              <li key={item.id}>
-                <Link
-                  href={
-                    item.kind === "member"
-                      ? `/verification/${item.id}`
-                      : `/verification/business/${item.id}`
-                  }
-                  className="flex min-h-[64px] flex-wrap items-center gap-x-4 gap-y-1 px-4 py-3"
-                >
-                  <span className="flex min-w-0 flex-1 flex-col">
-                    <span className="truncate text-[15px] font-semibold text-foreground">
-                      {item.kind === "member" ? item.fullName || item.username : item.businessName}
-                    </span>
-                    <span className="text-[13px] text-ink-2">
-                      @{item.username} ·{" "}
-                      {item.kind === "renewal"
-                        ? t.queueTypeRenewal
-                        : item.kind === "poster"
-                          ? t.queueTypePoster
-                          : item.kind === "business"
-                            ? t.queueTypeBusiness
-                            : t.queueTypeMember}
-                    </span>
-                  </span>
-                  <span className="flex flex-wrap items-center gap-2">
-                    {item.suspectedDuplicate ? <Tag tone="bad">{t.suspectedDuplicate}</Tag> : null}
-                    {isOverdue(item.submittedAt, at) ? (
-                      <Tag tone="warn">{t.queueOverdue}</Tag>
-                    ) : null}
-                    <span className="text-[13px] text-ink-2">
-                      {formatDate(item.submittedAt, language)}
-                    </span>
-                  </span>
-                </Link>
-              </li>
-            ))}
-          </ul>
+          <div className="rounded-[22px] border bg-card px-5 py-2 shadow-card">
+            <ul className="flex flex-col divide-y">
+              {shown.map((item) => {
+                const name =
+                  (item.kind === "member" ? item.fullName : item.businessName) || item.username;
+                const type =
+                  item.kind === "renewal"
+                    ? t.queueTypeRenewal
+                    : item.kind === "poster"
+                      ? t.queueTypePoster
+                      : item.kind === "business"
+                        ? t.queueTypeBusiness
+                        : t.queueTypeMember;
+                return (
+                  <li key={item.id}>
+                    <Link
+                      href={
+                        item.kind === "member"
+                          ? `/verification/${item.id}`
+                          : `/verification/business/${item.id}`
+                      }
+                      className="flex min-h-[80px] flex-wrap items-center gap-x-4 gap-y-2 py-3 hover:bg-surface-2"
+                    >
+                      <span
+                        aria-hidden
+                        className="grid size-11 shrink-0 place-items-center rounded-full bg-surface-2 text-[15px] font-bold text-ink-2"
+                      >
+                        {initialsOf(name)}
+                      </span>
+                      <span className="flex min-w-0 flex-1 flex-col gap-1">
+                        <span className="truncate text-[16px] font-bold text-foreground">
+                          {name}
+                        </span>
+                        <span className="sr-only">
+                          @{item.username} · {type}
+                        </span>
+                        <span className="flex flex-wrap items-center gap-1.5" aria-hidden>
+                          <Tag tone="type">{type}</Tag>
+                          {isOverdue(item.submittedAt, at) ? (
+                            <Tag tone="warn">
+                              <Clock size={12} />
+                              {t.queueOverdue}
+                            </Tag>
+                          ) : null}
+                          {item.suspectedDuplicate ? (
+                            <Tag tone="bad">
+                              <TriangleAlert size={12} />
+                              {t.suspectedDuplicate}
+                            </Tag>
+                          ) : null}
+                        </span>
+                      </span>
+                      <span className="text-[13px] text-ink-2">
+                        {t.queueSubmitted(
+                          formatShortDate(item.submittedAt, language),
+                          ageText(t, item.submittedAt, at),
+                        )}
+                      </span>
+                      <span
+                        aria-hidden
+                        className="grid min-h-[40px] place-items-center rounded-full bg-primary px-4 text-sm font-bold text-primary-foreground"
+                      >
+                        {t.queueOpen}
+                      </span>
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
         </div>
       )}
     </>

@@ -1,13 +1,23 @@
 "use client";
 
 import {
-  formatDate,
+  formatShortDate,
   formatNumber,
   IDEA_STAGES,
   type IdeaStage,
   type Language,
   type Strings,
 } from "@kingdom-connect/shared";
+import {
+  ChevronRight,
+  FileText,
+  Flag,
+  Lightbulb,
+  RefreshCw,
+  Search,
+  SquareCheck,
+  type LucideIcon,
+} from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { buttonVariants } from "@/components/ui/button";
@@ -24,7 +34,7 @@ import {
 } from "@/lib/ideas-overview";
 import { STATS_REFRESH_MS } from "@/lib/admin-dashboard";
 import { useLanguage } from "@/lib/language";
-import { Field, Select } from "./field";
+import { Select } from "./field";
 import { ScreenTitle } from "./screens";
 import { EmptyState, ErrorState, LoadingRows } from "./states";
 
@@ -53,7 +63,13 @@ const statusTone: Record<IdeaListStatus, string> = {
   removed: "bg-bad-soft text-bad-text",
 };
 
-const STAGE_SHADES = ["opacity-100", "opacity-75", "opacity-50", "opacity-30"];
+const STAGE_COLOURS = [
+  "var(--kc-crimson)",
+  "var(--kc-gold-deep)",
+  "var(--kc-teal)",
+  "var(--kc-violet)",
+];
+const card = "rounded-[22px] border bg-card px-5 py-5 shadow-card";
 
 const sectorName = (s: { sectorEn: string; sectorSw: string }, language: Language) =>
   language === "sw" ? s.sectorSw : s.sectorEn;
@@ -63,12 +79,14 @@ function Tile({
   value,
   pressed,
   onPress,
+  icon: Icon,
   detail,
 }: {
   label: string;
   value: string;
   pressed: boolean;
   onPress: () => void;
+  icon: LucideIcon;
   detail?: string;
 }) {
   return (
@@ -76,10 +94,17 @@ function Tile({
       type="button"
       aria-pressed={pressed}
       onClick={onPress}
-      className={`flex min-h-[96px] flex-col gap-1 rounded-lg border bg-card p-4 text-left shadow-card hover:bg-surface-2 ${pressed ? "ring-2 ring-primary" : ""}`}
+      className={`flex min-h-[128px] flex-col gap-1 text-left ${card} hover:bg-surface-2 ${pressed ? "ring-2 ring-primary" : ""}`}
     >
-      <span className="text-sm font-semibold text-ink-2">{label}</span>
-      <span className="text-[28px] font-extrabold tracking-tight text-foreground">{value}</span>
+      <span className="flex w-full items-start justify-between gap-2">
+        <span className="text-sm font-medium text-ink-2">{label}</span>
+        <span className="grid size-9 place-items-center rounded-[10px] bg-blue-soft text-primary">
+          <Icon size={17} aria-hidden />
+        </span>
+      </span>
+      <span className="text-[32px] leading-9 font-extrabold tracking-tight text-foreground">
+        {value}
+      </span>
       {detail ? <span className="text-[13px] text-ink-2">{detail}</span> : null}
     </button>
   );
@@ -87,31 +112,42 @@ function Tile({
 
 function Panel({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="flex min-w-0 flex-col gap-3 rounded-lg border bg-card p-4 shadow-card">
-      <h2 className="text-base font-semibold text-foreground">{title}</h2>
+    <section className={`flex min-w-0 flex-col gap-4 ${card}`}>
+      <h2 className="text-[17px] font-bold text-foreground">{title}</h2>
       {children}
     </section>
   );
 }
 
 /** A horizontal bar per value, scaled to the largest. */
-function Bars({ label, rows }: { label: string; rows: { name: string; value: number }[] }) {
+function Bars({
+  label,
+  rows,
+  fade = false,
+}: {
+  label: string;
+  rows: { name: string; value: number }[];
+  fade?: boolean;
+}) {
   const { language } = useLanguage();
   const max = Math.max(1, ...rows.map((r) => r.value));
   return (
-    <ul aria-label={label} className="flex flex-col gap-2">
-      {rows.map((r) => (
-        <li key={r.name} className="grid grid-cols-[minmax(0,9rem)_1fr_auto] items-center gap-3">
-          <span className="truncate text-sm text-foreground" title={r.name}>
+    <ul aria-label={label} className="flex flex-col gap-4">
+      {rows.map((r, i) => (
+        <li key={r.name} className="grid grid-cols-[minmax(0,7.5rem)_1fr_2rem] items-center gap-3">
+          <span className="text-[15px] leading-5 text-foreground" title={r.name}>
             {r.name}
           </span>
-          <span className="h-2.5 overflow-hidden rounded-full bg-surface-2" aria-hidden="true">
+          <span className="h-4" aria-hidden="true">
             <span
-              className="block h-full rounded-full bg-primary"
-              style={{ width: `${(r.value / max) * 100}%` }}
+              className="block h-full rounded-[4px] bg-crimson"
+              style={{
+                width: `${(r.value / max) * 100}%`,
+                opacity: fade ? ([1, 0.72, 0.5][i] ?? 0.4) : 1,
+              }}
             />
           </span>
-          <span className="text-sm font-semibold text-foreground tabular-nums">
+          <span className="text-right text-[15px] font-extrabold text-foreground tabular-nums">
             {formatNumber(r.value, language)}
           </span>
         </li>
@@ -131,12 +167,12 @@ function StageDonut({ byStage, total }: { byStage: IdeasOverview["byStage"]; tot
   const parts = IDEA_STAGES.map((stage, i) => ({
     stage,
     count: byStage[stage] ?? 0,
-    shade: STAGE_SHADES[i]!,
+    colour: STAGE_COLOURS[i]!,
     length: lengths[i]!,
     offset: lengths.slice(0, i).reduce((sum, l) => sum + l, 0),
   }));
   return (
-    <div className="flex flex-wrap items-center gap-5">
+    <div className="flex flex-col gap-4">
       <svg
         width="150"
         height="150"
@@ -155,7 +191,7 @@ function StageDonut({ byStage, total }: { byStage: IdeasOverview["byStage"]; tot
               cy="75"
               r={r}
               fill="none"
-              className={`stroke-primary ${p.shade}`}
+              stroke={p.colour}
               strokeWidth={20}
               strokeDasharray={`${p.length.toFixed(2)} ${circumference.toFixed(2)}`}
               strokeDashoffset={(-p.offset).toFixed(2)}
@@ -177,12 +213,16 @@ function StageDonut({ byStage, total }: { byStage: IdeasOverview["byStage"]; tot
           {t.adminIdeasPublishedShort}
         </text>
       </svg>
-      <ul className="flex flex-col gap-2">
+      <ul className="flex flex-col divide-y border-t text-[15px]">
         {parts.map((p) => (
-          <li key={p.stage} className="flex items-center gap-2 text-sm">
-            <span aria-hidden="true" className={`size-3 rounded-sm bg-primary ${p.shade}`} />
-            <span className="text-foreground">{stageLabel(t, p.stage)}</span>
-            <span className="font-semibold text-foreground tabular-nums">{n(p.count)}</span>
+          <li key={p.stage} className="flex items-center gap-2.5 py-2.5">
+            <span
+              aria-hidden="true"
+              className="size-3 rounded-[3px]"
+              style={{ background: p.colour }}
+            />
+            <span className="flex-1 text-foreground">{stageLabel(t, p.stage)}</span>
+            <span className="font-extrabold text-foreground tabular-nums">{n(p.count)}</span>
           </li>
         ))}
       </ul>
@@ -199,7 +239,7 @@ function Charts({ overview }: { overview: IdeasOverview }) {
         }).format(overview.ndaAccepted / overview.interestSent)
       : null;
   return (
-    <div className="grid gap-3 min-[1100px]:grid-cols-3">
+    <div className="grid items-start gap-4 min-[1100px]:grid-cols-3">
       <Panel title={t.adminIdeasByStage}>
         {overview.published === 0 ? (
           <p className="text-sm text-ink-2">{t.adminIdeasNonePublished}</p>
@@ -222,6 +262,7 @@ function Charts({ overview }: { overview: IdeasOverview }) {
       </Panel>
       <Panel title={t.adminIdeasFunnel}>
         <Bars
+          fade
           label={t.adminIdeasFunnel}
           rows={[
             { name: t.adminIdeasInterestSent, value: overview.interestSent },
@@ -240,10 +281,12 @@ function Charts({ overview }: { overview: IdeasOverview }) {
 function Poster({ name, withoutName }: { name: string; withoutName: boolean }) {
   const { t } = useLanguage();
   return (
-    <span className="flex flex-col">
-      <span className="text-foreground">{name}</span>
+    <span className="flex flex-col items-start gap-1">
+      <span className="font-medium text-foreground">{name}</span>
       {withoutName ? (
-        <span className="text-[12px] text-ink-2">{t.adminIdeasSharedWithoutName}</span>
+        <span className="rounded-full bg-warn-soft px-2 py-0.5 text-[12px] font-bold whitespace-nowrap text-warn-text">
+          {t.adminIdeasSharedWithoutName}
+        </span>
       ) : null}
     </span>
   );
@@ -257,14 +300,15 @@ function Waiting({ api }: { api: IdeasOverviewApi }) {
     api.waiting().then(setIdeas, () => setFailed(true));
   }, [api]);
   return (
-    <section className="flex flex-col gap-3 rounded-lg border bg-card p-4 shadow-card">
-      <div className="flex min-h-[44px] flex-wrap items-center justify-between gap-3">
-        <h2 className="text-base font-semibold text-foreground">{t.adminIdeasWaitingTitle}</h2>
+    <section className={`flex flex-col gap-3 ${card}`}>
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <h2 className="text-[17px] font-bold text-foreground">{t.adminIdeasWaitingTitle}</h2>
         <Link
           href="/moderation"
-          className="text-sm font-semibold text-primary underline-offset-2 hover:underline"
+          className="flex items-center gap-1 text-sm font-semibold text-primary underline-offset-2 hover:underline"
         >
           {t.adminIdeasOpenQueue}
+          <ChevronRight size={15} aria-hidden />
         </Link>
       </div>
       {failed ? (
@@ -274,17 +318,25 @@ function Waiting({ api }: { api: IdeasOverviewApi }) {
       ) : ideas.length === 0 ? (
         <p className="text-sm text-ink-2">{t.adminIdeasNoneWaiting}</p>
       ) : (
-        <ul className="flex flex-col divide-y">
+        <ul className="flex flex-col gap-3">
           {ideas.slice(0, 5).map((i) => (
-            <li key={i.id} className="flex flex-col gap-1 py-2.5 text-sm">
-              <span className="text-[12px] text-ink-2">
-                {sectorName(i, language)} · {stageLabel(t, i.stage)}
+            <li
+              key={i.id}
+              className="flex flex-col gap-2 rounded-[18px] border bg-surface-2 px-4 py-4 text-sm"
+            >
+              <span className="flex flex-wrap gap-1.5">
+                <span className="rounded-full bg-blue-soft px-2.5 py-0.5 text-[12px] font-bold text-primary">
+                  {sectorName(i, language)}
+                </span>
+                <span className="rounded-full bg-card px-2.5 py-0.5 text-[12px] font-bold text-ink-2">
+                  {stageLabel(t, i.stage)}
+                </span>
               </span>
-              <span className="font-semibold text-foreground">{i.title}</span>
+              <span className="text-[16px] font-bold text-foreground">{i.title}</span>
               <Poster name={`@${i.postedBy}`} withoutName={i.sharedWithoutName} />
               <Link
                 href="/moderation"
-                className="self-start text-sm font-semibold text-primary underline-offset-2 hover:underline"
+                className="mt-1 self-start rounded-full bg-primary px-4 py-2.5 text-sm font-bold text-primary-foreground"
               >
                 {t.adminIdeasReview}
               </Link>
@@ -354,11 +406,8 @@ function AllIdeas({
   const any = { value: "", label: t.adminIdeasAny };
 
   return (
-    <section
-      aria-label={t.adminIdeasAll}
-      className="flex min-w-0 flex-col gap-3 rounded-lg border bg-card p-4 shadow-card"
-    >
-      <h2 className="text-base font-semibold text-foreground">{t.adminIdeasAll}</h2>
+    <section aria-label={t.adminIdeasAll} className={`flex min-w-0 flex-col gap-4 ${card}`}>
+      <h2 className="text-[17px] font-bold text-foreground">{t.adminIdeasAll}</h2>
       <form
         className="flex flex-col gap-3"
         onSubmit={(e) => {
@@ -366,13 +415,28 @@ function AllIdeas({
           apply(draft);
         }}
       >
-        <div className="grid gap-3 min-[700px]:grid-cols-2 min-[1400px]:grid-cols-4">
-          <Field
-            id="ideas-query"
-            label={t.adminIdeasSearch}
-            value={draft.query}
-            onChange={(query) => setDraft({ ...draft, query })}
-          />
+        <div className="grid items-end gap-3 min-[700px]:grid-cols-[minmax(0,2fr)_repeat(3,minmax(0,1fr))]">
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="ideas-query" className="text-sm font-semibold text-foreground">
+              {t.adminIdeasSearchLabel}
+            </label>
+            <span className="relative flex">
+              <input
+                id="ideas-query"
+                value={draft.query}
+                placeholder={t.adminIdeasSearch}
+                onChange={(e) => setDraft({ ...draft, query: e.target.value })}
+                className="min-h-[52px] w-full rounded-full border border-field bg-card pr-14 pl-5 text-[15px] text-foreground outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+              />
+              <button
+                type="submit"
+                aria-label={t.adminIdeasShow}
+                className="absolute top-1.5 right-1.5 grid size-10 place-items-center rounded-full bg-primary text-primary-foreground"
+              >
+                <Search size={17} aria-hidden />
+              </button>
+            </span>
+          </div>
           <Select
             id="ideas-status"
             label={t.adminIdeasStatus}
@@ -404,11 +468,6 @@ function AllIdeas({
             options={[any, ...IDEA_STAGES.map((s) => ({ value: s, label: stageLabel(t, s) }))]}
           />
         </div>
-        <div>
-          <button type="submit" className={buttonVariants({ variant: "default" })}>
-            {t.adminIdeasShow}
-          </button>
-        </div>
       </form>
       {failed ? (
         <ErrorState message={t.adminIdeasLoadFailed} onRetry={() => setAttempt((a) => a + 1)} />
@@ -422,10 +481,10 @@ function AllIdeas({
         )
       ) : (
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[760px] text-left text-sm">
+          <table className="w-full min-w-[640px] text-left text-[15px]">
             <thead className="border-b text-[13px] text-ink-2">
               <tr>
-                <th scope="col" className="py-2 pr-3 font-semibold">
+                <th scope="col" className="py-2 pr-3 pl-3 font-semibold">
                   {t.adminIdeasColIdea}
                 </th>
                 <th scope="col" className="py-2 pr-3 font-semibold">
@@ -440,41 +499,39 @@ function AllIdeas({
                 <th scope="col" className="py-2 pr-3 text-right font-semibold">
                   {t.adminIdeasColInterested}
                 </th>
-                <th scope="col" className="py-2 pr-3 text-right font-semibold">
-                  {t.adminIdeasColAccess}
-                </th>
-                <th scope="col" className="py-2 font-semibold">
-                  {t.adminIdeasColActivity}
-                </th>
               </tr>
             </thead>
             <tbody className="divide-y">
               {rows.map((r) => (
-                <tr key={r.id} className="align-top">
-                  <td className="py-2.5 pr-3">
+                <tr key={r.id} className="align-middle">
+                  <td className="py-3.5 pr-3 pl-3">
                     <span className="flex flex-col">
-                      <span className="font-semibold text-foreground">{r.title}</span>
-                      <span className="text-[12px] text-ink-2">{sectorName(r, language)}</span>
+                      <span className="text-[15px] font-bold text-foreground">{r.title}</span>
+                      <span className="text-[12px] text-ink-2">
+                        {sectorName(r, language)} · {t.adminIdeasColActivity}{" "}
+                        {formatShortDate(r.lastActivity, language)}
+                      </span>
                     </span>
                   </td>
-                  <td className="py-2.5 pr-3">
+                  <td className="py-3.5 pr-3">
                     <Poster name={r.postedBy} withoutName={r.sharedWithoutName} />
                   </td>
-                  <td className="py-2.5 pr-3 text-foreground">{stageLabel(t, r.stage)}</td>
-                  <td className="py-2.5 pr-3">
+                  <td className="py-3.5 pr-3 text-foreground">{stageLabel(t, r.stage)}</td>
+                  <td className="py-3.5 pr-3">
                     <span
                       className={`rounded-full px-2.5 py-1 text-[12px] font-semibold ${statusTone[r.status]}`}
                     >
                       {statusLabel(t, r.status)}
                     </span>
                   </td>
-                  <td className="py-2.5 pr-3 text-right tabular-nums text-foreground">
-                    {n(r.interested)}
+                  <td className="py-3.5 pr-3 text-right tabular-nums">
+                    <span className="flex flex-col items-end">
+                      <span className="font-extrabold text-foreground">{n(r.interested)}</span>
+                      <span className="text-[12px] whitespace-nowrap text-ink-2">
+                        {n(r.withAccess)} {t.adminIdeasColAccess.toLowerCase()}
+                      </span>
+                    </span>
                   </td>
-                  <td className="py-2.5 pr-3 text-right tabular-nums text-foreground">
-                    {n(r.withAccess)}
-                  </td>
-                  <td className="py-2.5 text-ink-2">{formatDate(r.lastActivity, language)}</td>
                 </tr>
               ))}
             </tbody>
@@ -511,6 +568,7 @@ function AllIdeas({
 export function IdeasOverviewScreen({ api }: { api: IdeasOverviewApi }) {
   const { t, language } = useLanguage();
   const [overview, setOverview] = useState<IdeasOverview | null>(null);
+  const [loadedAt, setLoadedAt] = useState<Date | null>(null);
   const [failed, setFailed] = useState(false);
   const [attempt, setAttempt] = useState(0);
   const [draft, setDraft] = useState<Draft>(emptyDraft);
@@ -529,6 +587,7 @@ export function IdeasOverviewScreen({ api }: { api: IdeasOverviewApi }) {
         (loaded) => {
           if (!live) return;
           setOverview(loaded);
+          setLoadedAt(new Date());
           setFailed(false);
         },
         () => live && setFailed(true),
@@ -547,7 +606,20 @@ export function IdeasOverviewScreen({ api }: { api: IdeasOverviewApi }) {
 
   return (
     <>
-      <ScreenTitle>{t.adminIdeasTitle}</ScreenTitle>
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div className="flex flex-col">
+          <p className="text-sm text-ink-2">{t.adminIdeasStaffOnly}</p>
+          <ScreenTitle>{t.adminIdeasTitle}</ScreenTitle>
+        </div>
+        {loadedAt ? (
+          <p className="mb-5 flex items-center gap-1.5 text-[13px] text-ink-2">
+            <RefreshCw size={13} aria-hidden />
+            {t.adminCountsRefresh(
+              `${String((loadedAt.getUTCHours() + 3) % 24).padStart(2, "0")}:${String(loadedAt.getUTCMinutes()).padStart(2, "0")}`,
+            )}
+          </p>
+        ) : null}
+      </div>
       <div className="flex flex-col gap-4">
         {failed && !overview ? (
           <ErrorState message={t.adminIdeasLoadFailed} onRetry={() => setAttempt((a) => a + 1)} />
@@ -555,24 +627,27 @@ export function IdeasOverviewScreen({ api }: { api: IdeasOverviewApi }) {
           <LoadingRows />
         ) : (
           <>
-            <div className="grid gap-3 min-[600px]:grid-cols-2 min-[1100px]:grid-cols-4">
+            <div className="grid gap-4 min-[600px]:grid-cols-2 min-[1100px]:grid-cols-4">
               <Tile
                 label={t.adminIdeasPublished}
                 value={n(overview.published)}
                 pressed={draft.status === "published"}
                 onPress={() => filterBy("published")}
+                icon={Lightbulb}
               />
               <Tile
                 label={t.adminIdeasWaiting}
                 value={n(overview.waiting)}
                 pressed={draft.status === "pending_moderation"}
                 onPress={() => filterBy("pending_moderation")}
+                icon={SquareCheck}
               />
               <Tile
                 label={t.adminIdeasHidden}
                 value={n(overview.hidden)}
                 pressed={draft.status === "hidden"}
                 onPress={() => filterBy("hidden")}
+                icon={Flag}
                 detail={t.adminIdeasUnderReview}
               />
               <Tile
@@ -580,13 +655,14 @@ export function IdeasOverviewScreen({ api }: { api: IdeasOverviewApi }) {
                 value={n(overview.archived)}
                 pressed={draft.status === "archived"}
                 onPress={() => filterBy("archived")}
+                icon={FileText}
                 detail={t.adminIdeasNotInPool}
               />
             </div>
             <Charts overview={overview} />
           </>
         )}
-        <div className="flex flex-col gap-4">
+        <div className="grid items-start gap-4 min-[1200px]:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
           <Waiting api={api} />
           <AllIdeas
             api={api}

@@ -10,7 +10,7 @@ export default function LoginPage() {
   const { startSession } = useAuth();
   const { t } = useLanguage();
   return (
-    <AuthCard title={t.staffLoginTitle}>
+    <AuthCard title={t.staffLoginTitle} subtitle={t.staffLoginSubtitle}>
       <LoginForm client={loginClient} onCodeSent={startSession} />
     </AuthCard>
   );

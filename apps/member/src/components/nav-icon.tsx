@@ -19,9 +19,23 @@ import Shield from "lucide-react-native/icons/shield";
 import SlidersHorizontal from "lucide-react-native/icons/sliders-horizontal";
 import Sprout from "lucide-react-native/icons/sprout";
 import Users from "lucide-react-native/icons/users";
+import FileText from "lucide-react-native/icons/file-text";
+import LayoutGrid from "lucide-react-native/icons/layout-grid";
+import Route from "lucide-react-native/icons/route";
+import Settings from "lucide-react-native/icons/settings";
+import ShieldCheck from "lucide-react-native/icons/shield-check";
+import SquareCheck from "lucide-react-native/icons/square-check";
+import SquarePlus from "lucide-react-native/icons/square-plus";
 import type { LucideIcon } from "lucide-react-native";
 
 const icons: Record<NavIconName, LucideIcon> = {
+  "file-text": FileText,
+  "layout-grid": LayoutGrid,
+  route: Route,
+  settings: Settings,
+  "shield-check": ShieldCheck,
+  "square-check": SquareCheck,
+  "square-plus": SquarePlus,
   "book-open": BookOpen,
   briefcase: Briefcase,
   calendar: Calendar,

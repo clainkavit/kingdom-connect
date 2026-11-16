@@ -33,6 +33,8 @@
   --kc-teal-soft: #e0f3f4;
   --kc-rose: #b23a73;
   --kc-rose-soft: #fae6f0;
+  --kc-gold: #e3b04b;
+  --kc-gold-ink: #3a1606;
   --kc-shadow: 0 1px 2px rgba(74,14,26,.06), 0 4px 14px rgba(74,14,26,.05);
 }
 :root[data-theme="dark"] {
@@ -69,5 +71,7 @@
   --kc-teal-soft: #0f2f33;
   --kc-rose: #ee8ab9;
   --kc-rose-soft: #3a1a2b;
+  --kc-gold: #e3b04b;
+  --kc-gold-ink: #2a0810;
   --kc-shadow: 0 1px 2px rgba(0,0,0,.3);
 }

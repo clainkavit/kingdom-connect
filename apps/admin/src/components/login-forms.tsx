@@ -67,9 +67,9 @@ function CodeBoxes({ value, onChange }: { value: string; onChange: (v: string) =
 }
 
 const primaryButton =
-  "min-h-[48px] rounded-[10px] bg-primary px-4 text-[15px] font-bold text-primary-foreground disabled:opacity-50";
+  "min-h-[54px] rounded-full bg-primary px-5 text-[16px] font-bold text-primary-foreground disabled:opacity-50";
 const secondaryButton =
-  "min-h-[44px] rounded-[9px] border bg-card px-4 text-sm font-semibold text-ink-2 disabled:opacity-50";
+  "min-h-[44px] rounded-full border border-line-2 bg-card px-5 text-sm font-semibold text-primary disabled:opacity-50";
 
 function Message({ text, tone = "bad" }: { text: string | null; tone?: "bad" | "info" }) {
   if (!text) return null;

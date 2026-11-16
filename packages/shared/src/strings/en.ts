@@ -2128,4 +2128,12 @@ export const en = {
   verifyHintReview: "Look over your answers and send them to staff",
   verifyNotYet: "Not verified yet",
   verifyUnderReview: "Under review",
+  staffLoginSubtitle: "For staff accounts only. Members log in through the member app.",
+  staffConsoleTag: "Admin console · staff only",
+  staffPanelTitle: (name: string) => `Keep ${name} safe and trusted`,
+  staffPointIdentity: "Check every member's identity",
+  staffPointPosts: "Review posts before members see them",
+  staffPointReports: "Act on reports quickly and fairly",
+  staffAuditNote: "Every staff action is written to the audit log.",
+  adminSidebarNote: "Staff accounts cannot connect with or message members.",
 };

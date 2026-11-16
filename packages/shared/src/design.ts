@@ -39,6 +39,8 @@ export const colors = {
     tealSoft: "#e0f3f4",
     rose: "#b23a73",
     roseSoft: "#fae6f0",
+    gold: "#e3b04b",
+    goldInk: "#3a1606",
   },
   dark: {
     navy: "#2a0810",
@@ -73,6 +75,8 @@ export const colors = {
     tealSoft: "#0f2f33",
     rose: "#ee8ab9",
     roseSoft: "#3a1a2b",
+    gold: "#e3b04b",
+    goldInk: "#2a0810",
   },
 } as const;
 

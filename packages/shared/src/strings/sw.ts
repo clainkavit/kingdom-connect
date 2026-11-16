@@ -2169,4 +2169,13 @@ export const sw: Strings = {
   verifyHintReview: "Pitia majibu yako na uyatume kwa wafanyakazi",
   verifyNotYet: "Bado hajathibitishwa",
   verifyUnderReview: "Inakaguliwa",
+  staffLoginSubtitle:
+    "Kwa akaunti za wafanyakazi tu. Wanachama huingia kupitia programu ya wanachama.",
+  staffConsoleTag: "Dashibodi ya usimamizi · wafanyakazi tu",
+  staffPanelTitle: (name: string) => `Linda ${name} iwe salama na ya kuaminika`,
+  staffPointIdentity: "Kagua utambulisho wa kila mwanachama",
+  staffPointPosts: "Pitia machapisho kabla wanachama hawajayaona",
+  staffPointReports: "Shughulikia ripoti haraka na kwa haki",
+  staffAuditNote: "Kila hatua ya mfanyakazi inaandikwa kwenye kumbukumbu ya ukaguzi.",
+  adminSidebarNote: "Akaunti za wafanyakazi haziwezi kuungana wala kutuma ujumbe kwa wanachama.",
 };

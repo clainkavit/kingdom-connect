@@ -2179,4 +2179,14 @@ export const en = {
   rejectLanguageNote:
     "The applicant gets the reason in their own language. A second rejection is final unless an administrator reopens it.",
   reviewDuplicateTitle: "Duplicate check",
+  securityAlertsUnseen: (n: number) =>
+    n === 1 ? "1 security alert not seen yet" : `${n} security alerts not seen yet`,
+  adminPlacesLeftLimit: (count: string) => `${count} places left before the daily limit`,
+  adminWaitingForYou: "Waiting for you",
+  adminWaitVerification: "Verification",
+  adminWaitModeration: "Moderation",
+  adminWaitReports: "Reports",
+  adminUpdatedAt: (time: string) => `Updated ${time}`,
+  staffConsoleShort: "Admin console",
+  staffOnly: "Staff only",
 };

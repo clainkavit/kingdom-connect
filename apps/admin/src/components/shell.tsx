@@ -87,18 +87,30 @@ function Wordmark() {
   );
 }
 
-function TabLink({ item, current }: { item: NavItem; current: boolean }) {
+function TabLink({ item, current, count }: { item: NavItem; current: boolean; count?: number }) {
   const { t } = useLanguage();
   return (
     <Link
       href={item.href}
       aria-current={current ? "page" : undefined}
       className={cn(
-        "flex flex-1 flex-col items-center gap-1 py-1.5 text-[10.5px] font-semibold text-muted-foreground",
-        current && "text-primary",
+        "flex flex-1 flex-col items-center gap-1 py-1 text-[11px] font-semibold text-ink-2",
+        current && "font-bold text-primary",
       )}
     >
-      <NavIcon name={item.icon} size={20} />
+      <span
+        className={cn(
+          "relative grid h-8 w-12 place-items-center rounded-full",
+          current && "bg-blue-soft",
+        )}
+      >
+        <NavIcon name={item.icon} size={20} />
+        {count ? (
+          <span className="absolute -top-1 right-0.5 grid h-[18px] min-w-[18px] place-items-center rounded-full bg-primary px-1 text-[10px] font-extrabold text-primary-foreground">
+            {count}
+          </span>
+        ) : null}
+      </span>
       <span>{t[item.key]}</span>
     </Link>
   );
@@ -118,9 +130,12 @@ export function AdminShell({
   const counts = useNavCounts();
   return (
     <div className="flex min-h-dvh flex-col bg-background min-[881px]:flex-row">
-      <header className="flex items-center justify-between bg-sidebar px-5 py-4 min-[881px]:hidden">
-        <Wordmark />
-        <span className="text-xs tracking-[0.08em] text-navy-mute uppercase">{t.adminLabel}</span>
+      <header className="flex items-center gap-3 bg-sidebar px-5 pt-4 pb-3 min-[881px]:hidden">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/brand/logo.jpg" alt="" width={40} height={36} className="rounded-[9px]" />
+        <span className="text-xs font-extrabold tracking-[0.08em] text-gold uppercase">
+          {t.adminLabel}
+        </span>
       </header>
       <aside className="sticky top-0 hidden h-dvh w-[284px] shrink-0 p-6 pr-0 min-[881px]:block">
         <div className="flex h-full flex-col overflow-y-auto rounded-[24px] bg-sidebar px-4 py-6">
@@ -162,7 +177,12 @@ export function AdminShell({
         className="fixed inset-x-0 bottom-0 flex border-t bg-card px-1 pb-[max(env(safe-area-inset-bottom),6px)] pt-1.5 min-[881px]:hidden"
       >
         {adminPhoneTabs.map((item) => (
-          <TabLink key={item.href} item={item} current={isCurrent(pathname, item)} />
+          <TabLink
+            key={item.href}
+            item={item}
+            current={isCurrent(pathname, item)}
+            count={counts[item.href]}
+          />
         ))}
       </nav>
     </div>

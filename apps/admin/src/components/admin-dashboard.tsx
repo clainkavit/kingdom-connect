@@ -18,6 +18,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ageText } from "@/lib/age";
 import { useLanguage } from "@/lib/language";
+import { usePhoneWidth } from "@/lib/phone";
 import {
   STATS_REFRESH_MS,
   type AdminOverview,
@@ -53,17 +54,20 @@ function StatTile({
   detail?: string;
 }) {
   return (
-    <Link href={href} className={`flex min-h-[128px] flex-col gap-1 ${card} hover:bg-surface-2`}>
+    <Link
+      href={href}
+      className={`flex min-h-[128px] flex-col gap-1 ${card} hover:bg-surface-2 max-[880px]:min-h-0 max-[880px]:rounded-[18px] max-[880px]:px-4 max-[880px]:py-3.5`}
+    >
       <span className="flex items-start justify-between gap-2">
-        <span className="text-sm font-medium text-ink-2">{label}</span>
-        <span className="grid size-9 place-items-center rounded-[10px] bg-blue-soft text-primary">
+        <span className="text-sm font-medium text-ink-2 max-[880px]:text-[13px]">{label}</span>
+        <span className="grid size-9 place-items-center rounded-[10px] bg-blue-soft text-primary max-[880px]:hidden">
           <Icon size={17} aria-hidden />
         </span>
       </span>
-      <span className="text-[32px] leading-9 font-extrabold tracking-tight text-foreground">
+      <span className="text-[32px] leading-9 font-extrabold tracking-tight text-foreground max-[880px]:text-[24px] max-[880px]:leading-7">
         {value}
       </span>
-      {detail ? <span className="text-[13px] text-ink-2">{detail}</span> : null}
+      {detail ? <span className="text-[13px] text-ink-2 max-[880px]:hidden">{detail}</span> : null}
     </Link>
   );
 }
@@ -246,6 +250,8 @@ function useOverview(api: AdminStatsApi, attempt: number) {
 function SecurityAlerts({ api }: { api: AdminStatsApi }) {
   const { t, language } = useLanguage();
   const [alerts, setAlerts] = useState<SecurityAlert[]>([]);
+  const [open, setOpen] = useState(false);
+  const phone = usePhoneWidth();
 
   useEffect(() => {
     let live = true;
@@ -264,32 +270,48 @@ function SecurityAlerts({ api }: { api: AdminStatsApi }) {
 
   if (alerts.length === 0) return null;
   return (
-    <section aria-label={t.securityAlertsTitle} className={`flex flex-col ${card}`}>
-      <h2 className="flex items-center gap-2 border-b pb-3 text-[17px] font-bold text-bad-text">
-        <TriangleAlert size={18} aria-hidden />
-        {t.securityAlertsTitle}
-      </h2>
-      <ul className="flex flex-col divide-y">
-        {alerts.map((a) => (
-          <li key={a.id} className="flex items-center justify-between gap-3 py-3 text-[15px]">
-            <span className="min-w-0 flex-1 text-foreground">
-              {a.summary} ·{" "}
-              <span className="text-ink-2">{formatDateTime(a.raisedAt, language)}</span>
-            </span>
-            <button
-              type="button"
-              onClick={async () => {
-                if (await api.acknowledge(a.id).catch(() => false))
-                  setAlerts((list) => list.filter((x) => x.id !== a.id));
-              }}
-              className="min-h-[38px] shrink-0 rounded-full border border-line-2 bg-card px-4 text-[13px] font-semibold text-foreground hover:bg-surface-2"
-            >
-              {t.securityAlertSeen}
-            </button>
-          </li>
-        ))}
-      </ul>
-    </section>
+    <>
+      {phone ? (
+        <button
+          type="button"
+          aria-expanded={open}
+          onClick={() => setOpen((o) => !o)}
+          className="flex items-center gap-2.5 rounded-[18px] bg-bad-soft px-4 py-3.5 text-left text-[15px] font-semibold text-bad-text"
+        >
+          <TriangleAlert size={17} aria-hidden />
+          {t.securityAlertsUnseen(alerts.length)}
+        </button>
+      ) : null}
+      <section
+        aria-label={t.securityAlertsTitle}
+        className={`flex flex-col ${card} ${phone && !open ? "hidden" : ""}`}
+      >
+        <h2 className="flex items-center gap-2 border-b pb-3 text-[17px] font-bold text-bad-text">
+          <TriangleAlert size={18} aria-hidden />
+          {t.securityAlertsTitle}
+        </h2>
+        <ul className="flex flex-col divide-y">
+          {alerts.map((a) => (
+            <li key={a.id} className="flex items-center justify-between gap-3 py-3 text-[15px]">
+              <span className="min-w-0 flex-1 text-foreground">
+                {a.summary} ·{" "}
+                <span className="text-ink-2">{formatDateTime(a.raisedAt, language)}</span>
+              </span>
+              <button
+                type="button"
+                onClick={async () => {
+                  if (await api.acknowledge(a.id).catch(() => false))
+                    setAlerts((list) => list.filter((x) => x.id !== a.id));
+                }}
+                className="min-h-[38px] shrink-0 rounded-full border border-line-2 bg-card px-4 text-[13px] font-semibold text-foreground hover:bg-surface-2"
+              >
+                {t.securityAlertSeen}
+              </button>
+            </li>
+          ))}
+        </ul>
+      </section>
+    </>
   );
 }
 
@@ -309,6 +331,7 @@ export function AdminDashboard({
   const [failed, setFailed] = useState(false);
   const [attempt, setAttempt] = useState(0);
   const overview = useOverview(api, attempt);
+  const phone = usePhoneWidth();
 
   useEffect(() => {
     let live = true;
@@ -390,6 +413,22 @@ export function AdminDashboard({
       : []),
   ];
   const pendingTotal = pendingParts.reduce((s, p) => s + p.value, 0);
+  const waitingParts: Part[] = [
+    { label: t.adminWaitVerification, value: pendingTotal, colour: colours.crimson },
+    ...(overview
+      ? [
+          {
+            label: t.adminWaitModeration,
+            value:
+              overview.moderation.opportunities +
+              overview.moderation.tenders +
+              overview.moderation.ideas,
+            colour: colours.gold,
+          },
+        ]
+      : []),
+    { label: t.adminWaitReports, value: stats.openReportCases, colour: colours.teal },
+  ];
   const quick: [string, string, LucideIcon][] = [
     [t.adminQuickPost, "/post", SquarePlus],
     [t.adminQuickNews, "/news", Newspaper],
@@ -398,23 +437,26 @@ export function AdminDashboard({
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex flex-wrap items-end justify-between gap-3">
+      <div className="flex flex-wrap items-end justify-between gap-3 max-[880px]:-mx-5 max-[880px]:-mt-4 max-[880px]:flex-col-reverse max-[880px]:items-start max-[880px]:gap-1 max-[880px]:bg-sidebar max-[880px]:px-5 max-[880px]:pb-5">
         <div className="flex flex-col gap-1">
-          <p className="text-sm text-ink-2">{formatDate(at, language)}</p>
-          <h1 className="text-[30px] leading-9 font-extrabold text-primary">
+          <p className="text-sm text-ink-2 max-[880px]:text-navy-ink">{formatDate(at, language)}</p>
+          <h1 className="text-[30px] leading-9 font-extrabold text-primary max-[880px]:text-[22px] max-[880px]:leading-7 max-[880px]:text-white">
             {overview?.staffName
               ? greeting(overview.staffName.split(" ")[0]!)
               : t.adminDashboardTitle}
           </h1>
         </div>
         {loadedAt ? (
-          <p className="flex items-center gap-1.5 text-[13px] text-ink-2">
+          <p className="flex items-center gap-1.5 text-[13px] text-ink-2 max-[880px]:text-navy-ink">
             <RefreshCw size={13} aria-hidden />
-            {t.adminCountsRefresh(tanzaniaClock(loadedAt))}
+            <span className="max-[880px]:hidden">
+              {t.adminCountsRefresh(tanzaniaClock(loadedAt))}
+            </span>
+            <span className="min-[881px]:hidden">{t.adminUpdatedAt(tanzaniaClock(loadedAt))}</span>
           </p>
         ) : null}
       </div>
-      <div className="flex flex-wrap gap-2.5">
+      <div className="flex flex-wrap gap-2.5 max-[880px]:hidden">
         {quick.map(([label, href, Icon]) => (
           <Link
             key={label}
@@ -439,7 +481,7 @@ export function AdminDashboard({
         </Link>
       ) : null}
       <SecurityAlerts api={api} />
-      <div className="grid gap-4 min-[600px]:grid-cols-2 min-[1100px]:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 min-[881px]:gap-4 min-[1100px]:grid-cols-4">
         <StatTile
           label={t.adminStatVerified}
           value={n(stats.verifiedMembers)}
@@ -471,6 +513,60 @@ export function AdminDashboard({
           </>
         ) : null}
       </div>
+      {phone ? (
+        <section aria-label={t.adminCapTitle} className={`flex items-center gap-4 ${card}`}>
+          {stats.dailyCap === null ? (
+            <div className="flex flex-col gap-1">
+              <h2 className="text-[17px] font-bold text-foreground">{t.adminCapTitle}</h2>
+              <p className="text-[15px] text-foreground">{t.adminCapNone}</p>
+            </div>
+          ) : (
+            <>
+              <div className="relative size-[120px] shrink-0">
+                <Gauge count={stats.signUpsToday} cap={stats.dailyCap} />
+                <div className="absolute inset-0 grid place-content-center text-center">
+                  <span className="text-[26px] leading-7 font-extrabold text-foreground">
+                    {n(stats.signUpsToday)}
+                  </span>
+                  <span className="text-[11px] text-ink-2">
+                    {t.adminCapOfToday(n(stats.dailyCap))}
+                  </span>
+                </div>
+              </div>
+              <div className="flex flex-col gap-1">
+                <h2 className="text-[17px] font-bold text-foreground">{t.adminCapTitle}</h2>
+                <p className="text-sm text-ink-2">
+                  {t.adminPlacesLeftLimit(n(Math.max(0, stats.dailyCap - stats.signUpsToday)))}
+                </p>
+              </div>
+            </>
+          )}
+        </section>
+      ) : null}
+      {phone && overview ? (
+        <section aria-label={t.adminWaitingForYou} className={`flex flex-col gap-3 ${card}`}>
+          <h2 className="text-[17px] font-bold text-foreground">{t.adminWaitingForYou}</h2>
+          <div className="flex items-center gap-4">
+            <Donut
+              parts={waitingParts}
+              total={n(waitingParts.reduce((s, p) => s + p.value, 0))}
+              unit={t.adminWaitingWord}
+            />
+            <ul className="flex flex-col gap-1.5 text-[15px]">
+              {waitingParts.map((p) => (
+                <li key={p.label} className="flex items-center gap-2">
+                  <span
+                    className="size-3 rounded-[3px]"
+                    style={{ background: p.colour }}
+                    aria-hidden
+                  />
+                  <span className="text-foreground">{p.label}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      ) : null}
       <div className="grid items-start gap-4 min-[900px]:grid-cols-2">
         <WeeklyMembersChart api={api} />
         {overview ? (
@@ -508,37 +604,41 @@ export function AdminDashboard({
             />
           </section>
         ) : null}
-        <section aria-label={t.adminCapTitle} className={`flex flex-col gap-3 ${card}`}>
-          <h2 className="text-[17px] font-bold text-foreground">{t.adminCapTitle}</h2>
-          {stats.dailyCap === null ? (
-            <p className="text-[15px] font-semibold text-foreground">{t.adminCapNone}</p>
-          ) : (
-            <>
-              <div className="relative size-[140px]">
-                <Gauge count={stats.signUpsToday} cap={stats.dailyCap} />
-                <div className="absolute inset-0 grid place-content-center text-center">
-                  <span className="text-[28px] leading-8 font-extrabold text-foreground">
-                    {n(stats.signUpsToday)}
-                  </span>
-                  <span className="text-xs text-ink-2">{t.adminCapOfToday(n(stats.dailyCap))}</span>
+        {phone ? null : (
+          <section aria-label={t.adminCapTitle} className={`flex flex-col gap-3 ${card}`}>
+            <h2 className="text-[17px] font-bold text-foreground">{t.adminCapTitle}</h2>
+            {stats.dailyCap === null ? (
+              <p className="text-[15px] font-semibold text-foreground">{t.adminCapNone}</p>
+            ) : (
+              <>
+                <div className="relative size-[140px]">
+                  <Gauge count={stats.signUpsToday} cap={stats.dailyCap} />
+                  <div className="absolute inset-0 grid place-content-center text-center">
+                    <span className="text-[28px] leading-8 font-extrabold text-foreground">
+                      {n(stats.signUpsToday)}
+                    </span>
+                    <span className="text-xs text-ink-2">
+                      {t.adminCapOfToday(n(stats.dailyCap))}
+                    </span>
+                  </div>
                 </div>
-              </div>
-              <p className="sr-only">{t.adminCapOf(n(stats.signUpsToday), n(stats.dailyCap))}</p>
-              <p className="text-[15px] font-bold text-foreground">
-                {t.adminPlacesLeft(n(Math.max(0, stats.dailyCap - stats.signUpsToday)))}
-              </p>
-              <p className="text-[13px] text-ink-2">{t.adminCapHint}</p>
-            </>
-          )}
-          {superAdmin ? (
-            <>
-              <Link href="/settings" className="text-sm font-semibold text-primary underline">
-                {t.adminCapChange}
-              </Link>
-              <p className="text-xs text-ink-2">{t.adminCapSuperOnly}</p>
-            </>
-          ) : null}
-        </section>
+                <p className="sr-only">{t.adminCapOf(n(stats.signUpsToday), n(stats.dailyCap))}</p>
+                <p className="text-[15px] font-bold text-foreground">
+                  {t.adminPlacesLeft(n(Math.max(0, stats.dailyCap - stats.signUpsToday)))}
+                </p>
+                <p className="text-[13px] text-ink-2">{t.adminCapHint}</p>
+              </>
+            )}
+            {superAdmin ? (
+              <>
+                <Link href="/settings" className="text-sm font-semibold text-primary underline">
+                  {t.adminCapChange}
+                </Link>
+                <p className="text-xs text-ink-2">{t.adminCapSuperOnly}</p>
+              </>
+            ) : null}
+          </section>
+        )}
         <section aria-label={t.adminReportsCard} className={`flex flex-col gap-2 ${card}`}>
           <CardHead title={t.adminReportsCard} link={t.adminStatReports} href="/reports" />
           <ul className="flex flex-col divide-y">

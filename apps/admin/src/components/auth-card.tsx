@@ -2,6 +2,7 @@
 
 import { CircleCheck, Flag, Lock, ShieldCheck } from "lucide-react";
 import { useLanguage } from "@/lib/language";
+import { usePhoneWidth } from "@/lib/phone";
 import { LanguageSwitch } from "./language-switch";
 
 /**
@@ -19,13 +20,51 @@ export function AuthCard({
   children: React.ReactNode;
 }) {
   const { t, platformName } = useLanguage();
+  const phone = usePhoneWidth();
   const points = [
     { icon: ShieldCheck, text: t.staffPointIdentity },
     { icon: CircleCheck, text: t.staffPointPosts },
     { icon: Flag, text: t.staffPointReports },
   ];
+  if (phone)
+    return (
+      <div className="flex min-h-dvh flex-col bg-sidebar">
+        <header className="flex flex-col gap-3 px-5 pt-5 pb-14">
+          <div className="flex items-center justify-between gap-3">
+            <span className="flex items-center gap-3">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/brand/logo.jpg"
+                alt={platformName}
+                width={44}
+                height={40}
+                className="rounded-[10px]"
+              />
+              <span className="text-xs font-extrabold tracking-[0.08em] text-gold uppercase">
+                {t.staffConsoleShort}
+              </span>
+            </span>
+            <LanguageSwitch pill onNavy />
+          </div>
+          <p className="flex items-center gap-1.5 text-sm text-navy-ink">
+            <Lock size={14} aria-hidden />
+            {t.staffOnly}
+          </p>
+        </header>
+        <main className="-mt-8 flex flex-1 flex-col gap-4 rounded-t-[28px] bg-background px-5 pt-8 pb-6">
+          <div className="flex flex-col gap-2">
+            <h1 className="font-serif text-[34px] leading-[38px] font-semibold text-primary">
+              {title}
+            </h1>
+            {subtitle ? <p className="text-[15px] leading-[22px] text-ink-2">{subtitle}</p> : null}
+          </div>
+          {children}
+          <p className="mt-auto pt-6 text-[13px] leading-[18px] text-ink-2">{t.staffNote}</p>
+        </main>
+      </div>
+    );
   return (
-    <div className="flex min-h-dvh gap-12 bg-background p-6 max-[880px]:p-0">
+    <div className="flex min-h-dvh gap-12 bg-background p-6">
       <div className="flex w-full flex-col px-4 py-4 min-[881px]:w-[412px] min-[881px]:shrink-0">
         <header className="flex items-center justify-between gap-3">
           <span className="flex items-center gap-3">

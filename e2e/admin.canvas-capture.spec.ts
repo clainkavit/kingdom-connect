@@ -28,6 +28,12 @@ const pairs: Pair[] = [
   { board: "Admin-Phone-Dashboard", route: "/", w: 430, h: 900 },
   { board: "Admin-Verify", route: "/verification", w: 1440, h: 1100 },
   { board: "Admin-Ideas", route: "/ideas", w: 1440, h: 1300 },
+  {
+    board: "Admin-VerifyDetail",
+    route: "/verification/5eed0000-0000-4000-8000-00000000f101",
+    w: 1440,
+    h: 1600,
+  },
   { board: "Admin-Shortlist", route: "/picks", w: 1440, h: 1200 },
   { board: "Admin-Staff", route: "/settings", w: 1440, h: 1300, tab: "Staff accounts" },
 ];

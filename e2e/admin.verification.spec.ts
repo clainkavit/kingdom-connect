@@ -25,8 +25,7 @@ test("an Administrator reveals the ID number and rejects with a reason (REG-3, A
   if (process.env.SCREENSHOT_DIR)
     await page.screenshot({ path: `${process.env.SCREENSHOT_DIR}/u06-review.png`, fullPage: true });
 
-  await page.getByRole("button", { name: "Reject" }).click();
-  await page.getByRole("radio", { name: "Another reason, explained in the note" }).check();
+  await page.getByLabel("Reason").selectOption({ label: "Another reason, explained in the note" });
   await page.getByRole("button", { name: "Reject and send the reason" }).click();
   await expect(page.getByText("Choose a reason. For another reason, write a note.")).toBeVisible();
   await page.getByLabel("Note for the applicant").fill("The ID photo shows a different document");

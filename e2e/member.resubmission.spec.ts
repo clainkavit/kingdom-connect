@@ -19,8 +19,7 @@ async function signInAsApplicant(page: Page, username: string, email: string) {
 
 async function reject(admin: Page, username: string, reason: string) {
   await openApplication(admin, username);
-  await admin.getByRole("button", { name: "Reject" }).click();
-  await admin.getByRole("radio", { name: reason }).check();
+  await admin.getByLabel("Reason").selectOption({ label: reason });
   await admin.getByRole("button", { name: "Reject and send the reason" }).click();
   await expect(admin.getByText("Rejected. The applicant has been told the reason.")).toBeVisible();
 }

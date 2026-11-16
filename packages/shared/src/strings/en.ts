@@ -2169,4 +2169,14 @@ export const en = {
     "They get an email with a link to set their own password. Nobody else ever knows it.",
   staffListNote: "You cannot deactivate yourself or the last Super Administrator.",
   staffActive: "Active",
+  reviewFromApplication: "From the application",
+  reviewDecision: "Decision",
+  reviewPhotosTitle: "Face photo and ID photo",
+  reviewCheckLocation: "Location",
+  reviewLocationLine: (phone: string, place: string) =>
+    `${phone} phone number and ${place}. There is no nationality rule.`,
+  rejectChooseReason: "Choose a reason",
+  rejectLanguageNote:
+    "The applicant gets the reason in their own language. A second rejection is final unless an administrator reopens it.",
+  reviewDuplicateTitle: "Duplicate check",
 };

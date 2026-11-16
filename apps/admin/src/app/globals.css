@@ -8,6 +8,7 @@
 @theme inline {
   --font-heading: var(--font-figtree);
   --font-sans: var(--font-figtree);
+  --font-serif: var(--font-cormorant);
   --color-navy-mute: var(--kc-navy-mute);
   --color-good: var(--kc-good);
   --color-good-soft: var(--kc-good-soft);
@@ -20,6 +21,8 @@
   --color-info-text: var(--kc-info-text);
   --color-field: var(--kc-field);
   --color-navy-ink: var(--kc-navy-ink);
+  --color-gold: var(--kc-gold);
+  --color-gold-ink: var(--kc-gold-ink);
   --color-blue-soft: var(--kc-blue-soft);
   --color-ink-2: var(--kc-ink-2);
   --shadow-card: var(--kc-shadow);

@@ -1,7 +1,7 @@
 "use client";
 
 const inputClass =
-  "rounded-[9px] border border-field bg-card px-3 text-[15px] text-foreground outline-none focus-visible:ring-3 focus-visible:ring-ring/50";
+  "border border-field bg-card px-5 text-[15px] text-foreground outline-none focus-visible:ring-3 focus-visible:ring-ring/50";
 
 export function Field(props: {
   id: string;
@@ -22,7 +22,7 @@ export function Field(props: {
           rows={3}
           value={props.value}
           onChange={(e) => props.onChange(e.target.value)}
-          className={`${inputClass} py-2.5`}
+          className={`rounded-[18px] ${inputClass} py-3`}
         />
       ) : (
         <input
@@ -30,7 +30,7 @@ export function Field(props: {
           type={props.type ?? "text"}
           value={props.value}
           onChange={(e) => props.onChange(e.target.value)}
-          className={`min-h-[44px] ${inputClass}`}
+          className={`min-h-[52px] rounded-full ${inputClass}`}
         />
       )}
     </div>

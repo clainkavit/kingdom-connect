@@ -8,6 +8,8 @@ export const navIcons = [
   "calendar",
   "check-check",
   "ellipsis",
+  "file-text",
+  "layout-grid",
   "flag",
   "history",
   "home",
@@ -19,9 +21,14 @@ export const navIcons = [
   "milestone",
   "newspaper",
   "refresh-cw",
+  "route",
+  "settings",
   "shield",
+  "shield-check",
   "sliders-horizontal",
   "sprout",
+  "square-check",
+  "square-plus",
   "users",
 ] as const;
 
@@ -72,19 +79,19 @@ export const accountItems: readonly NavItem[] = [
 ];
 
 export const adminNav: readonly NavItem[] = [
-  { key: "adminNavDashboard", href: "/", icon: "home" },
-  { key: "adminNavVerification", href: "/verification", icon: "check-check" },
-  { key: "adminNavModeration", href: "/moderation", icon: "list-checks" },
+  { key: "adminNavDashboard", href: "/", icon: "layout-grid" },
+  { key: "adminNavVerification", href: "/verification", icon: "shield-check" },
+  { key: "adminNavModeration", href: "/moderation", icon: "square-check" },
   { key: "adminNavPicks", href: "/picks", icon: "users" },
   { key: "adminNavIdeas", href: "/ideas", icon: "lightbulb" },
   { key: "adminNavReports", href: "/reports", icon: "flag" },
   { key: "adminNavReverification", href: "/re-verification", icon: "refresh-cw" },
   { key: "adminNavMembers", href: "/members", icon: "users" },
   { key: "adminNavNews", href: "/news", icon: "newspaper" },
-  { key: "adminNavPlans", href: "/milestone-plans", icon: "milestone" },
-  { key: "adminNavPost", href: "/post", icon: "megaphone" },
-  { key: "adminNavAudit", href: "/audit-log", icon: "history" },
-  { key: "adminNavSettings", href: "/settings", icon: "sliders-horizontal" },
+  { key: "adminNavPlans", href: "/milestone-plans", icon: "route" },
+  { key: "adminNavPost", href: "/post", icon: "square-plus" },
+  { key: "adminNavAudit", href: "/audit-log", icon: "file-text" },
+  { key: "adminNavSettings", href: "/settings", icon: "settings" },
 ];
 
 export const adminPhoneTabs: readonly NavItem[] = [

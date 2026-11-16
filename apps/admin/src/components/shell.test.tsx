@@ -62,7 +62,7 @@ describe("AdminShell", () => {
     expect(tabs.getAllByRole("link").map((l) => l.textContent)).toEqual(
       adminPhoneTabs.map((t) => sw[t.key]),
     );
-    expect(screen.getByText(sw.staffNote)).toBeTruthy();
+    expect(screen.getByText(sw.adminSidebarNote)).toBeTruthy();
     expect(screen.getByRole("button", { name: sw.logOut })).toBeTruthy();
     expect(screen.getAllByText("Test Platform").length).toBeGreaterThan(0);
   });

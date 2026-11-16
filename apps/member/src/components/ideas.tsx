@@ -12,12 +12,15 @@ import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { Text, View } from "react-native";
 import type { IdeasApi, MyIdea } from "../lib/ideas";
+import Lock from "lucide-react-native/icons/lock";
 import { useLanguage } from "../lib/language";
 import { useLoad } from "./events";
 import { Button, Checkbox, Chips, ChoiceList, ConfirmButton, Field, Message } from "./form";
 import { LinkButton } from "./link-button";
+import { usePalette } from "./palette";
+import { usePhone } from "./sheet";
 import { Section } from "./profile";
-import { ScreenTitle } from "./screens";
+import { PageHeader, ScreenTitle } from "./screens";
 import { EmptyState, ErrorState, LoadingRows } from "./states";
 
 export const stageLabel = (t: Strings, stage: IdeaStage): string =>
@@ -195,6 +198,8 @@ type TextKeyOf =
 export function IdeaForm({ api, ideaId }: { api: IdeasApi; ideaId: string | null }) {
   const { t, language } = useLanguage();
   const router = useRouter();
+  const palette = usePalette();
+  const phone = usePhone();
   const [attempt, setAttempt] = useState(0);
   const loaded = useLoad(async () => {
     const sectors = await api.sectors(language);
@@ -251,82 +256,122 @@ export function IdeaForm({ api, ideaId }: { api: IdeasApi; ideaId: string | null
     setBusy(false);
   };
 
+  const card = "min-w-0 gap-3.5 rounded-card border border-line bg-surface px-6 py-6";
+  const half = phone ? "" : "min-w-0 flex-1 basis-[240px]";
   return (
-    <View className="gap-4">
-      <ScreenTitle>{ideaId ? t.ideasEditTitle : t.ideasShare}</ScreenTitle>
-      <Section title={t.ideaSummaryHeading}>
-        <Text className="font-figtree text-[13px] text-ink-2">{t.ideaSummaryHint}</Text>
-        <Field label={t.ideaTitleLabel} value={form.title} onChange={set("title")} />
-        <Field
-          label={t.ideaProblemLabel}
-          value={form.problem}
-          multiline
-          onChange={set("problem")}
-        />
-        <ChoiceList
-          label={t.ideaSectorLabel}
-          options={loaded.value.sectors}
-          value={form.sectorId || undefined}
-          onChange={(sectorId) => setDraft({ ...form, sectorId })}
-        />
-        <Chips<IdeaStage>
-          label={t.ideaStageLabel}
-          options={IDEA_STAGES.map((s) => ({ value: s, label: stageLabel(t, s) }))}
-          value={form.stage || undefined}
-          onChange={(stage) => setDraft({ ...form, stage })}
-        />
-        <Chips<IdeaSeeking>
-          label={t.ideaSeekingLabel}
-          options={IDEA_SEEKING.map((s) => ({ value: s, label: seekingLabel(t, s) }))}
-          value={form.seeking || undefined}
-          onChange={(seeking) => setDraft({ ...form, seeking })}
-        />
-        <Field
-          label={t.ideaMinLabel}
-          value={form.investmentMin}
-          keyboardType="number-pad"
-          onChange={set("investmentMin")}
-        />
-        <Field
-          label={t.ideaMaxLabel}
-          value={form.investmentMax}
-          keyboardType="number-pad"
-          onChange={set("investmentMax")}
-        />
-        <Checkbox
-          label={t.ideaShowOwnerLabel}
-          checked={form.showOwner}
-          onChange={(showOwner) => setDraft({ ...form, showOwner })}
-        />
-        <Text className="font-figtree text-[13px] text-ink-2">{t.ideaShowOwnerHint}</Text>
-      </Section>
-      <Section title={t.ideaDetailsHeading}>
-        <Field
-          label={t.ideaDescriptionLabel}
-          value={form.description}
-          multiline
-          onChange={set("description")}
-        />
-        <Field
-          label={t.ideaModelLabel}
-          value={form.businessModel}
-          multiline
-          onChange={set("businessModel")}
-        />
-        <Field label={t.ideaMarketLabel} value={form.market} multiline onChange={set("market")} />
-        <Field
-          label={t.ideaFinancialsLabel}
-          value={form.financials}
-          multiline
-          onChange={set("financials")}
-        />
-        <Field label={t.ideaTeamLabel} value={form.team} multiline onChange={set("team")} />
-      </Section>
+    <View className="gap-5">
+      <PageHeader
+        back={{ label: t.ideaBackToPool, href: "/ideas" }}
+        title={ideaId ? t.ideasEditTitle : t.ideasShare}
+        subtitle={t.ideaShareSubtitle}
+      />
+      <View className={phone ? "gap-4" : "flex-row items-start gap-4"}>
+        <View className={`${card} ${phone ? "" : "flex-1"}`}>
+          <Text role="heading" aria-level={2} className="font-figtree-bold text-[18px] text-ink">
+            {t.ideaSummaryHeading}
+          </Text>
+          <Text className="font-figtree text-[13px] text-ink-2">{t.ideaSummaryHint}</Text>
+          <Field label={t.ideaTitleLabel} value={form.title} onChange={set("title")} />
+          <Field
+            label={t.ideaProblemLabel}
+            value={form.problem}
+            multiline
+            onChange={set("problem")}
+          />
+          <View className="flex-row flex-wrap gap-3">
+            <View className={half}>
+              <ChoiceList
+                label={t.ideaSectorLabel}
+                options={loaded.value.sectors}
+                value={form.sectorId || undefined}
+                onChange={(sectorId) => setDraft({ ...form, sectorId })}
+              />
+            </View>
+            <View className={half}>
+              <Chips<IdeaSeeking>
+                label={t.ideaSeekingLabel}
+                options={IDEA_SEEKING.map((s) => ({ value: s, label: seekingLabel(t, s) }))}
+                value={form.seeking || undefined}
+                onChange={(seeking) => setDraft({ ...form, seeking })}
+              />
+            </View>
+          </View>
+          <Chips<IdeaStage>
+            label={t.ideaStageLabel}
+            options={IDEA_STAGES.map((s) => ({ value: s, label: stageLabel(t, s) }))}
+            value={form.stage || undefined}
+            onChange={(stage) => setDraft({ ...form, stage })}
+          />
+          <View className="flex-row flex-wrap gap-3">
+            <View className={half}>
+              <Field
+                label={t.ideaMinLabel}
+                value={form.investmentMin}
+                keyboardType="number-pad"
+                onChange={set("investmentMin")}
+              />
+            </View>
+            <View className={half}>
+              <Field
+                label={t.ideaMaxLabel}
+                value={form.investmentMax}
+                keyboardType="number-pad"
+                onChange={set("investmentMax")}
+              />
+            </View>
+          </View>
+          <View className="gap-1 rounded-[16px] border border-line bg-surface-2 px-4 py-3">
+            <Checkbox
+              label={t.ideaShowOwnerLabel}
+              checked={form.showOwner}
+              onChange={(showOwner) => setDraft({ ...form, showOwner })}
+            />
+            <Text className="pl-9 font-figtree text-[13px] text-ink-2">{t.ideaShowOwnerHint}</Text>
+          </View>
+        </View>
+        <View className={`${card} ${phone ? "" : "flex-1"}`}>
+          <View className="flex-row items-center gap-2">
+            <Lock size={17} color={palette.ink} aria-hidden />
+            <Text
+              role="heading"
+              aria-level={2}
+              className="flex-1 font-figtree-bold text-[18px] text-ink"
+            >
+              {t.ideaDetailsHeading}
+            </Text>
+          </View>
+          <Field
+            label={t.ideaDescriptionLabel}
+            value={form.description}
+            multiline
+            onChange={set("description")}
+          />
+          <Field
+            label={t.ideaModelLabel}
+            value={form.businessModel}
+            multiline
+            onChange={set("businessModel")}
+          />
+          <Field label={t.ideaMarketLabel} value={form.market} multiline onChange={set("market")} />
+          <Field
+            label={t.ideaFinancialsLabel}
+            value={form.financials}
+            multiline
+            onChange={set("financials")}
+          />
+          <Field label={t.ideaTeamLabel} value={form.team} multiline onChange={set("team")} />
+        </View>
+      </View>
       <Message text={problem} />
       <Message text={notice} tone="info" />
-      <Text className="font-figtree text-[13px] text-ink-2">{t.ideaSubmitHint}</Text>
-      <Button label={t.eventSubmit} disabled={busy} onPress={() => save(true)} />
-      <Button secondary label={t.eventSaveDraft} disabled={busy} onPress={() => save(false)} />
+      <View className={`flex-row flex-wrap gap-2.5 ${phone ? "" : "justify-end"}`}>
+        <View className={phone ? "flex-1" : ""}>
+          <Button secondary label={t.eventSaveDraft} disabled={busy} onPress={() => save(false)} />
+        </View>
+        <View className={phone ? "flex-1" : ""}>
+          <Button label={t.eventSubmit} disabled={busy} onPress={() => save(true)} />
+        </View>
+      </View>
     </View>
   );
 }

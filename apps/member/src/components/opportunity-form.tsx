@@ -26,7 +26,10 @@ import type { Option } from "../lib/registration";
 import { Button, Checkbox, ChoiceList, Chips, Field, Message, Switch } from "./form";
 import { LinkButton } from "./link-button";
 import { Section } from "./profile";
-import { ScreenTitle } from "./screens";
+import { PageHeader, ScreenTitle } from "./screens";
+import { usePhone } from "./sheet";
+import { usePalette } from "./palette";
+import ShieldCheck from "lucide-react-native/icons/shield-check";
 import { ErrorState, LoadingRows } from "./states";
 
 export const typeLabel: Record<PostType, TextKey> = {
@@ -210,6 +213,8 @@ export function OpportunityFormScreen({
   const [busy, setBusy] = useState(false);
   const [step, setStep] = useState(0);
   const [find, setFind] = useState<FindMode>({ mode: "open", size: undefined, note: "" });
+  const phone = usePhone();
+  const palette = usePalette();
 
   useEffect(() => {
     api.sectors(language).then(setSectors, () => undefined);
@@ -297,6 +302,275 @@ export function OpportunityFormScreen({
     );
 
   const last = step === postSteps.length - 1;
+  const fields = (
+    <>
+      {step === 0 ? (
+        <>
+          <Chips
+            label={t.fieldType}
+            options={postTypes.map((k) => ({ value: k, label: t[typeLabel[k]] as string }))}
+            value={form.type || undefined}
+            onChange={(v) =>
+              setForm((f) =>
+                f
+                  ? {
+                      ...f,
+                      type: v,
+                      role: v === "job" ? f.role : "",
+                      employmentType: v === "job" ? f.employmentType : "",
+                    }
+                  : f,
+              )
+            }
+          />
+          <Field label={t.fieldPostTitle} value={form.title} onChange={(v) => set("title", v)} />
+          {form.type === "job" ? (
+            <>
+              <Field label={t.fieldRole} value={form.role} onChange={(v) => set("role", v)} />
+              <Chips
+                label={t.fieldEmployment}
+                options={employmentTypes.map((k) => ({
+                  value: k,
+                  label: t[employmentLabel[k]] as string,
+                }))}
+                value={form.employmentType || undefined}
+                onChange={(v) => set("employmentType", v)}
+              />
+            </>
+          ) : null}
+        </>
+      ) : null}
+      {step === 1 ? (
+        <>
+          <Switch label={t.fieldRemote} checked={form.remote} onChange={(v) => set("remote", v)} />
+          {!form.remote ? (
+            <>
+              <ChoiceList
+                label={t.region}
+                options={regions}
+                value={form.regionId || undefined}
+                onChange={(v) => setForm((f) => (f ? { ...f, regionId: v, districtId: "" } : f))}
+              />
+              <ChoiceList
+                label={t.district}
+                options={districts}
+                value={form.districtId || undefined}
+                onChange={(v) => set("districtId", v)}
+                disabled={!form.regionId}
+              />
+            </>
+          ) : null}
+          <ChoiceList
+            label={t.businessSector}
+            options={sectors}
+            value={form.sectorId || undefined}
+            onChange={(v) => set("sectorId", v)}
+          />
+        </>
+      ) : null}
+      {step === 2 ? (
+        <>
+          <Field
+            label={t.fieldDescription}
+            value={form.description}
+            onChange={(v) => set("description", v)}
+            hint={t.descriptionHint}
+            multiline
+          />
+          <Field
+            label={t.fieldClosing}
+            value={form.closingOn}
+            onChange={(v) => set("closingOn", v.trim())}
+            hint={t.closingHint}
+          />
+          {form.type === "tender" ? (
+            <TenderFields api={api} tender={form.tender} onChange={(v) => set("tender", v)} />
+          ) : null}
+          <Field
+            label={t.fieldSkills}
+            value={skillsText}
+            onChange={setSkillsText}
+            hint={t.postSkillsHint}
+          />
+        </>
+      ) : null}
+      {last && picks ? <FindModeFields value={find} onChange={setFind} /> : null}
+      {last ? (
+        <Checkbox label={t.noFeeTick} checked={form.noFee} onChange={(v) => set("noFee", v)} />
+      ) : null}
+    </>
+  );
+  const back = () => {
+    setProblem(null);
+    setStep(step - 1);
+  };
+
+  if (!phone)
+    return (
+      <View className="gap-5">
+        <PageHeader
+          back={{ label: t.backToDashboard, href: "/" }}
+          title={id ? t.editPostTitle : t.postTitle}
+        />
+        <View className="flex-row items-start gap-4">
+          <View className="min-w-0 flex-[2] gap-3.5 rounded-card border border-line bg-surface px-6 py-6">
+            <Text className="self-start rounded-full bg-surface-2 px-2.5 py-1 font-figtree-bold text-[12px] text-ink">
+              {t.stepOf(step + 1, postSteps.length)}
+            </Text>
+            <Text role="heading" aria-level={2} className="font-figtree-bold text-[18px] text-ink">
+              {t[postSteps[step]!] as string}
+            </Text>
+            {step === 0 ? (
+              <>
+                <Chips
+                  label={t.fieldType}
+                  options={postTypes.map((k) => ({ value: k, label: t[typeLabel[k]] as string }))}
+                  value={form.type || undefined}
+                  onChange={(v) =>
+                    setForm((f) =>
+                      f
+                        ? {
+                            ...f,
+                            type: v,
+                            role: v === "job" ? f.role : "",
+                            employmentType: v === "job" ? f.employmentType : "",
+                          }
+                        : f,
+                    )
+                  }
+                />
+                <Field
+                  label={t.fieldPostTitle}
+                  value={form.title}
+                  onChange={(v) => set("title", v)}
+                />
+                {form.type === "job" ? (
+                  <>
+                    <Field label={t.fieldRole} value={form.role} onChange={(v) => set("role", v)} />
+                    <Chips
+                      label={t.fieldEmployment}
+                      options={employmentTypes.map((k) => ({
+                        value: k,
+                        label: t[employmentLabel[k]] as string,
+                      }))}
+                      value={form.employmentType || undefined}
+                      onChange={(v) => set("employmentType", v)}
+                    />
+                  </>
+                ) : null}
+              </>
+            ) : null}
+            {step === 1 ? (
+              <>
+                <Switch
+                  label={t.fieldRemote}
+                  checked={form.remote}
+                  onChange={(v) => set("remote", v)}
+                />
+                {!form.remote ? (
+                  <>
+                    <ChoiceList
+                      label={t.region}
+                      options={regions}
+                      value={form.regionId || undefined}
+                      onChange={(v) =>
+                        setForm((f) => (f ? { ...f, regionId: v, districtId: "" } : f))
+                      }
+                    />
+                    <ChoiceList
+                      label={t.district}
+                      options={districts}
+                      value={form.districtId || undefined}
+                      onChange={(v) => set("districtId", v)}
+                      disabled={!form.regionId}
+                    />
+                  </>
+                ) : null}
+                <ChoiceList
+                  label={t.businessSector}
+                  options={sectors}
+                  value={form.sectorId || undefined}
+                  onChange={(v) => set("sectorId", v)}
+                />
+              </>
+            ) : null}
+            {step === 2 ? (
+              <>
+                <Field
+                  label={t.fieldDescription}
+                  value={form.description}
+                  onChange={(v) => set("description", v)}
+                  hint={t.descriptionHint}
+                  multiline
+                />
+                <Field
+                  label={t.fieldClosing}
+                  value={form.closingOn}
+                  onChange={(v) => set("closingOn", v.trim())}
+                  hint={t.closingHint}
+                />
+                {form.type === "tender" ? (
+                  <TenderFields api={api} tender={form.tender} onChange={(v) => set("tender", v)} />
+                ) : null}
+                <Field
+                  label={t.fieldSkills}
+                  value={skillsText}
+                  onChange={setSkillsText}
+                  hint={t.postSkillsHint}
+                />
+              </>
+            ) : null}
+            {last && picks ? <FindModeFields value={find} onChange={setFind} /> : null}
+            {last ? (
+              <Checkbox
+                label={t.noFeeTick}
+                checked={form.noFee}
+                onChange={(v) => set("noFee", v)}
+              />
+            ) : null}
+          </View>
+          <View className="w-[440px] max-w-full gap-4">
+            <View className="gap-1.5 rounded-card bg-warn-soft px-5 py-4">
+              <View className="flex-row items-center gap-2">
+                <ShieldCheck size={16} color={palette.warnText} aria-hidden />
+                <Text className="font-figtree-bold text-[16px] text-warn-text">
+                  {t.postCheckedTitle}
+                </Text>
+              </View>
+              <Text className="font-figtree text-[14px] leading-[21px] text-warn-text">
+                {t.postCheckedBody}
+              </Text>
+            </View>
+            <View className="gap-1.5 rounded-card border border-line bg-surface px-5 py-4">
+              <Text className="font-figtree-bold text-[17px] text-ink">{t.postWhereTitle}</Text>
+              <Text className="font-figtree text-[14px] leading-[21px] text-ink-2">
+                {t.postWhereBody}
+              </Text>
+            </View>
+            <Message text={problem} />
+            <View className="flex-row flex-wrap gap-2.5">
+              {step > 0 ? <Button secondary label={t.back} onPress={back} disabled={busy} /> : null}
+              <Button secondary label={t.saveDraft} onPress={() => save(false)} disabled={busy} />
+              {last ? (
+                <Button label={t.sendPost} onPress={() => save(true)} disabled={busy} />
+              ) : (
+                <Button label={t.next} onPress={next} disabled={busy} />
+              )}
+            </View>
+            <LinkButton
+              href="/opportunities/mine"
+              label={t.myPostsTitle}
+              className="self-start py-1"
+            >
+              <Text className="font-figtree-semibold text-sm text-navy underline">
+                {t.myPostsTitle}
+              </Text>
+            </LinkButton>
+          </View>
+        </View>
+      </View>
+    );
+
   return (
     <View className="gap-4">
       <ScreenTitle>{id ? t.editPostTitle : t.postTitle}</ScreenTitle>
@@ -307,104 +581,7 @@ export function OpportunityFormScreen({
         <Text className="font-figtree text-[13px] text-ink-2">
           {t.stepOf(step + 1, postSteps.length)}
         </Text>
-        {step === 0 ? (
-          <>
-            <Chips
-              label={t.fieldType}
-              options={postTypes.map((k) => ({ value: k, label: t[typeLabel[k]] as string }))}
-              value={form.type || undefined}
-              onChange={(v) =>
-                setForm((f) =>
-                  f
-                    ? {
-                        ...f,
-                        type: v,
-                        role: v === "job" ? f.role : "",
-                        employmentType: v === "job" ? f.employmentType : "",
-                      }
-                    : f,
-                )
-              }
-            />
-            <Field label={t.fieldPostTitle} value={form.title} onChange={(v) => set("title", v)} />
-            {form.type === "job" ? (
-              <>
-                <Field label={t.fieldRole} value={form.role} onChange={(v) => set("role", v)} />
-                <Chips
-                  label={t.fieldEmployment}
-                  options={employmentTypes.map((k) => ({
-                    value: k,
-                    label: t[employmentLabel[k]] as string,
-                  }))}
-                  value={form.employmentType || undefined}
-                  onChange={(v) => set("employmentType", v)}
-                />
-              </>
-            ) : null}
-          </>
-        ) : null}
-        {step === 1 ? (
-          <>
-            <Switch
-              label={t.fieldRemote}
-              checked={form.remote}
-              onChange={(v) => set("remote", v)}
-            />
-            {!form.remote ? (
-              <>
-                <ChoiceList
-                  label={t.region}
-                  options={regions}
-                  value={form.regionId || undefined}
-                  onChange={(v) => setForm((f) => (f ? { ...f, regionId: v, districtId: "" } : f))}
-                />
-                <ChoiceList
-                  label={t.district}
-                  options={districts}
-                  value={form.districtId || undefined}
-                  onChange={(v) => set("districtId", v)}
-                  disabled={!form.regionId}
-                />
-              </>
-            ) : null}
-            <ChoiceList
-              label={t.businessSector}
-              options={sectors}
-              value={form.sectorId || undefined}
-              onChange={(v) => set("sectorId", v)}
-            />
-          </>
-        ) : null}
-        {step === 2 ? (
-          <>
-            <Field
-              label={t.fieldDescription}
-              value={form.description}
-              onChange={(v) => set("description", v)}
-              hint={t.descriptionHint}
-              multiline
-            />
-            <Field
-              label={t.fieldClosing}
-              value={form.closingOn}
-              onChange={(v) => set("closingOn", v.trim())}
-              hint={t.closingHint}
-            />
-            {form.type === "tender" ? (
-              <TenderFields api={api} tender={form.tender} onChange={(v) => set("tender", v)} />
-            ) : null}
-            <Field
-              label={t.fieldSkills}
-              value={skillsText}
-              onChange={setSkillsText}
-              hint={t.postSkillsHint}
-            />
-          </>
-        ) : null}
-        {last && picks ? <FindModeFields value={find} onChange={setFind} /> : null}
-        {last ? (
-          <Checkbox label={t.noFeeTick} checked={form.noFee} onChange={(v) => set("noFee", v)} />
-        ) : null}
+        {fields}
         <Message text={problem} />
         <View className="flex-row flex-wrap gap-2">
           {step > 0 ? (

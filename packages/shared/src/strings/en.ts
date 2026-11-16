@@ -2189,4 +2189,12 @@ export const en = {
   adminUpdatedAt: (time: string) => `Updated ${time}`,
   staffConsoleShort: "Admin console",
   staffOnly: "Staff only",
+  ideaShareSubtitle:
+    "Staff check every idea before it appears in the pool. Phone numbers and emails are not allowed in either part.",
+  postCheckedTitle: "Checked before it goes live",
+  postCheckedBody:
+    "Staff check a new poster's first 3 posts. After that, your posts go live at once.",
+  postWhereTitle: "Where it goes",
+  postWhereBody:
+    "Draft, then Pending review, then Published. Responses arrive in My posts on your dashboard.",
 };

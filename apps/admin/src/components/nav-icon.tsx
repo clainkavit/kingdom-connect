@@ -26,6 +26,7 @@ import {
   Sprout,
   SquareCheck,
   SquarePlus,
+  Star,
   Users,
   type LucideIcon,
 } from "lucide-react";
@@ -57,6 +58,7 @@ const icons: Record<NavIconName, LucideIcon> = {
   sprout: Sprout,
   "square-check": SquareCheck,
   "square-plus": SquarePlus,
+  star: Star,
   users: Users,
 };
 

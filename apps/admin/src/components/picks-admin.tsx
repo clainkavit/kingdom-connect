@@ -3,13 +3,36 @@
 import { useEffect, useState } from "react";
 import { useLanguage } from "@/lib/language";
 import type { PickAdminApi, PickedPerson, PickQueueItem, Suggestion } from "@/lib/picks";
-import { buttonVariants } from "@/components/ui/button";
 import { Notice } from "./cards";
 import { ScreenTitle } from "./screens";
 import { EmptyState, ErrorState, LoadingRows } from "./states";
 
 const PAGE = 10;
 const WHY_MAX = 300;
+const card = "flex flex-col gap-3 rounded-[22px] border bg-card px-6 py-5 shadow-card";
+const pill =
+  "min-h-[44px] rounded-full border border-line-2 bg-card px-5 text-[15px] font-semibold text-foreground hover:bg-surface-2 disabled:opacity-50";
+const primaryPill =
+  "min-h-[48px] rounded-full bg-primary px-5 text-[15px] font-bold text-primary-foreground disabled:opacity-50";
+
+const initialsOf = (name: string) =>
+  name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((w) => w[0]!.toUpperCase())
+    .join("");
+
+function Chip({ tone, children }: { tone: "warn" | "good" | "plain"; children: React.ReactNode }) {
+  const colours = {
+    warn: "bg-warn-soft text-warn-text",
+    good: "bg-good-soft text-good-text",
+    plain: "bg-surface-2 text-ink-2",
+  }[tone];
+  return (
+    <span className={`rounded-full px-2.5 py-0.5 text-xs font-bold ${colours}`}>{children}</span>
+  );
+}
 
 type Loaded<T> = { state: "loading" } | { state: "failed" } | { state: "ready"; value: T };
 
@@ -61,39 +84,47 @@ function SuggestionRow({
     .join(" · ");
   const id = `why-${person.memberId}`;
   return (
-    <li className="flex flex-col gap-2 py-3">
-      <label className="flex items-start gap-3">
+    <li className="flex flex-col gap-2 py-4">
+      <label className="flex items-start gap-3.5">
         <input
           type="checkbox"
           checked={ticked}
           onChange={(e) => onTick(e.target.checked)}
-          className="mt-1 h-5 w-5"
+          className="mt-2.5 size-[22px] shrink-0 accent-primary"
           aria-label={t.pickTick(person.fullName)}
         />
-        <span className="flex flex-col gap-0.5">
-          <span className="text-[15px] font-semibold text-foreground">{person.fullName}</span>
+        <span
+          aria-hidden
+          className="grid size-10 shrink-0 place-items-center rounded-full bg-blue-soft text-sm font-bold text-primary"
+        >
+          {initialsOf(person.fullName)}
+        </span>
+        <span className="flex min-w-0 flex-col gap-0.5">
+          <span className="text-[15px] font-bold text-foreground">{person.fullName}</span>
           {person.headline ? (
             <span className="text-[13px] text-ink-2">{person.headline}</span>
           ) : null}
-          <span className="text-[13px] text-ink-2">
-            <strong className="font-semibold text-foreground">{t.pickFit}</strong> {fit}
-          </span>
-          <span className="text-[13px] text-ink-2">
-            <strong className="font-semibold text-foreground">{t.pickRecord}</strong> {record}
+          <span className="mt-1.5 flex flex-wrap gap-x-5 gap-y-0.5 text-[13px] text-ink-2">
+            <span>
+              <strong className="font-bold text-foreground">{t.pickFit}</strong> {fit}
+            </span>
+            <span>
+              <strong className="font-bold text-foreground">{t.pickRecord}</strong> {record}
+            </span>
           </span>
         </span>
       </label>
       {ticked ? (
-        <div className="ml-8 flex flex-col gap-1.5">
-          <label htmlFor={id} className="text-sm font-semibold text-foreground">
+        <div className="ml-[90px] flex flex-col gap-1.5">
+          <label htmlFor={id} className="text-xs font-bold text-foreground">
             {t.pickWhyLabel}
           </label>
-          <textarea
+          <input
             id={id}
-            rows={2}
             value={why}
+            placeholder={t.pickWhyPlaceholder}
             onChange={(e) => onWhy(e.target.value)}
-            className="rounded-[9px] border border-field bg-card px-3 py-2 text-[15px] text-foreground"
+            className="min-h-[44px] rounded-full border border-field bg-card px-4 text-[15px] text-foreground"
           />
         </div>
       ) : null}
@@ -184,112 +215,115 @@ function RequestPanel({
     setUsername("");
   };
 
+  const picked = item.asked + item.agreed + item.declined + item.expired;
   return (
-    <section
-      aria-label={item.title}
-      className="flex flex-col gap-3 rounded-lg border bg-card p-4 shadow-card"
-    >
-      <h2 className="text-lg font-semibold text-foreground">{item.title}</h2>
-      <p className="text-sm text-ink-2">
-        {item.posterName} · {t.pickWants(item.wanted)}
-      </p>
-      {item.note ? (
-        <p className="text-sm text-foreground">
-          <strong className="font-semibold">{t.pickPosterNote}</strong> {item.note}
-        </p>
-      ) : null}
-      <p className="text-[13px] text-ink-2">{t.pickRulesNote}</p>
-      <Notice tone="good" text={done} />
-      {people.state === "ready" && people.value.length ? (
-        <div className="flex flex-col gap-1">
-          <h3 className="text-sm font-semibold text-foreground">{t.pickAlreadyAsked}</h3>
-          <ul className="flex flex-col divide-y text-sm">
-            {people.value.map((p: PickedPerson) => (
-              <li key={p.id} className="flex flex-wrap justify-between gap-2 py-1.5">
-                <span className="text-foreground">{p.fullName}</span>
-                <span className="font-semibold text-ink-2">{t[statusKey[p.status]]}</span>
-              </li>
+    <section aria-label={item.title} className="flex flex-col gap-4">
+      <div className={card}>
+        <div className="flex flex-wrap gap-1.5">
+          <Chip tone="warn">{t.pickWants(item.wanted)}</Chip>
+        </div>
+        <h2 className="text-[19px] font-bold text-foreground">{item.title}</h2>
+        <p className="text-[15px] text-ink-2">{item.posterName}</p>
+        {item.note ? (
+          <p className="rounded-[14px] bg-surface-2 px-4 py-2.5 text-sm text-foreground">
+            <strong className="font-bold">{t.pickPosterNote}</strong> {item.note}
+          </p>
+        ) : null}
+      </div>
+
+      <div className={card}>
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <h3 className="text-[19px] font-bold text-foreground">{t.pickSuggested}</h3>
+          <Chip tone="warn">{t.pickStaffDecide}</Chip>
+        </div>
+        <p className="text-[13px] leading-5 text-ink-2">{t.pickRulesNote}</p>
+        <Notice tone="good" text={done} />
+        {suggestions.state === "failed" ? (
+          <ErrorState message={t.pickAdminLoadFailed} onRetry={reloadSuggestions} />
+        ) : suggestions.state === "loading" && list.length === 0 ? (
+          <LoadingRows />
+        ) : (
+          <ul className="flex flex-col divide-y border-t">
+            {list.map((s) => (
+              <SuggestionRow
+                key={s.memberId}
+                person={s}
+                ticked={s.memberId in ticks}
+                why={ticks[s.memberId] ?? ""}
+                onTick={(v) =>
+                  setTicks((tk) => {
+                    const next = { ...tk };
+                    if (v) next[s.memberId] = next[s.memberId] ?? "";
+                    else delete next[s.memberId];
+                    return next;
+                  })
+                }
+                onWhy={(v) => setTicks((tk) => ({ ...tk, [s.memberId]: v }))}
+              />
             ))}
           </ul>
-        </div>
-      ) : null}
-      <h3 className="text-sm font-semibold text-foreground">{t.pickSuggested}</h3>
-      {suggestions.state === "failed" ? (
-        <ErrorState message={t.pickAdminLoadFailed} onRetry={reloadSuggestions} />
-      ) : suggestions.state === "loading" && list.length === 0 ? (
-        <LoadingRows />
-      ) : (
-        <ul className="flex flex-col divide-y">
-          {list.map((s) => (
-            <SuggestionRow
-              key={s.memberId}
-              person={s}
-              ticked={s.memberId in ticks}
-              why={ticks[s.memberId] ?? ""}
-              onTick={(v) =>
-                setTicks((tk) => {
-                  const next = { ...tk };
-                  if (v) next[s.memberId] = next[s.memberId] ?? "";
-                  else delete next[s.memberId];
-                  return next;
-                })
-              }
-              onWhy={(v) => setTicks((tk) => ({ ...tk, [s.memberId]: v }))}
-            />
-          ))}
-        </ul>
-      )}
-      <div className="flex flex-wrap items-end gap-2">
-        <div className="flex flex-col gap-1.5">
-          <label
-            htmlFor={`add-${item.requestId}`}
-            className="text-sm font-semibold text-foreground"
-          >
-            {t.pickAddMember}
-          </label>
-          <input
-            id={`add-${item.requestId}`}
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            placeholder={t.pickUsername}
-            className="min-h-[40px] rounded-[9px] border border-field bg-card px-3 text-[15px]"
-          />
-        </div>
-        <button type="button" onClick={add} className={buttonVariants({ variant: "outline" })}>
-          {t.pickAdd}
-        </button>
-        <button
-          type="button"
-          onClick={() => setMax((m) => m + PAGE)}
-          className={buttonVariants({ variant: "outline" })}
-        >
-          {t.pickShowMore}
-        </button>
-      </div>
-      <p className="text-sm text-foreground">
-        {t.pickProgressLine(
-          item.asked + item.agreed + item.declined + item.expired,
-          item.agreed,
-          item.asked,
-          item.declined,
         )}
-      </p>
-      <p className="text-[13px] text-ink-2">{t.pickReplaceNote}</p>
-      <Notice tone="bad" text={problem} />
-      <div className="flex flex-wrap gap-2">
-        <button type="button" disabled={busy} onClick={ask} className={buttonVariants()}>
-          {t.pickAsk}
-        </button>
-        <button
-          type="button"
-          disabled={busy}
-          onClick={send}
-          className={buttonVariants({ variant: "outline" })}
-        >
-          {t.pickSendList}
-        </button>
+        <div className="flex flex-wrap items-end gap-2.5 border-t pt-4">
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor={`add-${item.requestId}`} className="text-xs font-bold text-foreground">
+              {t.pickAddMember}
+            </label>
+            <input
+              id={`add-${item.requestId}`}
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder={t.pickUsername}
+              className="min-h-[44px] rounded-full border border-field bg-card px-4 text-[15px]"
+            />
+          </div>
+          <button type="button" onClick={add} className={pill}>
+            {t.pickAdd}
+          </button>
+          <button type="button" onClick={() => setMax((m) => m + PAGE)} className={pill}>
+            {t.pickShowMore}
+          </button>
+        </div>
       </div>
-      <p className="text-[13px] text-ink-2">{t.pickAuditNote}</p>
+
+      <div className={card}>
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <h3 className="text-[19px] font-bold text-foreground">{t.pickProgress}</h3>
+          <span className="flex flex-wrap gap-1.5">
+            <Chip tone="warn">{t.pickChipPicked(picked)}</Chip>
+            <Chip tone="good">{t.pickChipYes(item.agreed)}</Chip>
+            <Chip tone="warn">{t.pickChipWaiting(item.asked)}</Chip>
+            <Chip tone="plain">{t.pickChipNo(item.declined)}</Chip>
+          </span>
+        </div>
+        {people.state === "ready" && people.value.length ? (
+          <div className="flex flex-col gap-1">
+            <h4 className="text-sm font-bold text-foreground">{t.pickAlreadyAsked}</h4>
+            <ul className="flex flex-col divide-y text-[15px]">
+              {people.value.map((p: PickedPerson) => (
+                <li key={p.id} className="flex flex-wrap items-center justify-between gap-2 py-2">
+                  <span className="text-foreground">{p.fullName}</span>
+                  <Chip
+                    tone={p.status === "agreed" ? "good" : p.status === "asked" ? "warn" : "plain"}
+                  >
+                    {t[statusKey[p.status]]}
+                  </Chip>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
+        <p className="text-[13px] text-ink-2">{t.pickReplaceNote}</p>
+        <Notice tone="bad" text={problem} />
+        <div className="flex flex-wrap gap-2.5">
+          <button type="button" disabled={busy} onClick={ask} className={pill}>
+            {t.pickAsk}
+          </button>
+          <button type="button" disabled={busy} onClick={send} className={primaryPill}>
+            {t.pickSendList}
+          </button>
+        </div>
+        <p className="text-xs text-ink-2">{t.pickAuditNote}</p>
+      </div>
     </section>
   );
 }
@@ -301,10 +335,15 @@ export function PicksAdmin({ api }: { api: PickAdminApi }) {
   const [queue, reload] = useLoaded(() => api.queue(), [api]);
   return (
     <>
-      <ScreenTitle>{t.adminNavPicks}</ScreenTitle>
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <ScreenTitle>{t.adminNavPicks}</ScreenTitle>
+        {queue.state === "ready" && queue.value.length ? (
+          <Chip tone="warn">{t.pickWaiting(queue.value.length)}</Chip>
+        ) : null}
+      </div>
       <div className="flex flex-col gap-4">
         <Notice tone="good" text={sent} />
-        <p className="text-sm text-ink-2">{t.pickAdminBeta}</p>
+        <p className="-mt-3 text-sm text-ink-2">{t.pickAdminBeta}</p>
         {queue.state === "failed" ? (
           <ErrorState message={t.pickAdminLoadFailed} onRetry={reload} />
         ) : queue.state === "loading" ? (
@@ -313,7 +352,6 @@ export function PicksAdmin({ api }: { api: PickAdminApi }) {
           <EmptyState title={t.pickQueueEmpty} message={t.pickQueueEmptyHint} />
         ) : (
           <>
-            <p className="text-sm font-semibold text-ink-2">{t.pickWaiting(queue.value.length)}</p>
             {queue.value.map((item) => (
               <RequestPanel
                 key={item.requestId}

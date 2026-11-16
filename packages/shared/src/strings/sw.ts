@@ -2192,4 +2192,6 @@ export const sw: Strings = {
   queueRecoveriesLink: "Maombi ya kurejesha barua pepe",
   queueSubmitted: (date: string, age: string) => `Imetumwa ${date} · ${age}`,
   queueOpen: "Fungua",
+  adminIdeasStaffOnly: "Wafanyakazi tu",
+  adminIdeasSearchLabel: "Tafuta",
 };

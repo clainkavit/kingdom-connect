@@ -2150,4 +2150,6 @@ export const en = {
   queueRecoveriesLink: "Email recovery requests",
   queueSubmitted: (date: string, age: string) => `Submitted ${date} · ${age}`,
   queueOpen: "Open",
+  adminIdeasStaffOnly: "Staff only",
+  adminIdeasSearchLabel: "Search",
 };

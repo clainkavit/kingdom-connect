@@ -59,7 +59,7 @@ export function Select({
         id={id}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className={`min-h-[44px] ${inputClass}`}
+        className={`min-h-[52px] rounded-full ${inputClass}`}
       >
         {options.map((o) => (
           <option key={o.value} value={o.value}>

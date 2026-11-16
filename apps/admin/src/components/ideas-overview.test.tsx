@@ -85,7 +85,7 @@ describe("IdeasOverviewScreen (A17, D05)", () => {
     expect(within(table).getByText("Shared without a name")).toBeTruthy();
     expect(within(table).getByText("Prototype")).toBeTruthy();
     expect(within(table).getByText("7")).toBeTruthy();
-    expect(within(table).getByText("2")).toBeTruthy();
+    expect(within(table).getByText("2 with access")).toBeTruthy();
   });
 
   it("offers no export and names no investor (#186)", async () => {
@@ -98,7 +98,9 @@ describe("IdeasOverviewScreen (A17, D05)", () => {
   it("searches and filters, and a count tile filters by its status", async () => {
     const list = vi.fn().mockResolvedValue([row()]);
     await show(fakeApi({ list }));
-    fireEvent.change(screen.getByLabelText("Title or poster"), { target: { value: " solar " } });
+    fireEvent.change(screen.getByPlaceholderText("Title or poster"), {
+      target: { value: " solar " },
+    });
     await act(async () => fireEvent.click(screen.getByRole("button", { name: "Search" })));
     expect(list).toHaveBeenLastCalledWith({ query: "solar" }, 0);
 

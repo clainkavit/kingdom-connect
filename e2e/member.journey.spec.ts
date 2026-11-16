@@ -35,7 +35,7 @@ test("Release 1 journey: connect, accept on the dashboard, message, report, an A
   await expect(a.getByText("Request sent")).toBeVisible();
 
   await b.goto("/");
-  await expect(b.getByText("Can I ask about the job?")).toBeVisible();
+  await expect(b.getByText("Can I ask about the job?").last()).toBeVisible();
   await b.getByRole("button", { name: "Accept" }).click();
   await expect(b.getByText("No requests waiting")).toBeVisible();
 
@@ -44,11 +44,11 @@ test("Release 1 journey: connect, accept on the dashboard, message, report, an A
   await expect(b).toHaveURL(/\/messages\/[0-9a-f-]{36}$/);
   await b.getByLabel("Write a message").fill(FEE_MESSAGE);
   await b.getByRole("button", { name: "Send", exact: true }).click();
-  await expect(b.getByText(FEE_MESSAGE)).toBeVisible();
+  await expect(b.getByText(FEE_MESSAGE).last()).toBeVisible();
 
   await a.goto("/messages");
   await a.getByRole("link", { name: new RegExp(`Journey Receiver ${stamp}`) }).click();
-  await expect(a.getByText(FEE_MESSAGE)).toBeVisible();
+  await expect(a.getByText(FEE_MESSAGE).last()).toBeVisible();
   await a.getByRole("link", { name: "Report", exact: true }).click();
   await a.getByRole("button", { name: /Why are you reporting\?/ }).click();
   await a.getByRole("option", { name: "Asked for money" }).click();

@@ -8,10 +8,13 @@ test("a Super Administrator changes a matching weight and sees the legal version
 }) => {
   await signInToAdmin(page, SUPER);
   await page.goto(`${ADMIN_URL}/settings`);
-  await expect(page.getByRole("heading", { name: "Platform" })).toBeVisible();
+  await page.getByRole("tab", { name: "Platform" }).click();
+  await expect(page.getByRole("heading", { name: "Platform", level: 2 })).toBeVisible();
   await expect(page.getByLabel("Platform name")).not.toHaveValue("");
+  await page.getByRole("tab", { name: "Legal texts" }).click();
   await expect(page.getByRole("table")).toContainText("Terms of use");
   await expect(page.getByRole("table")).toContainText("In force");
+  await page.getByRole("tab", { name: "Matching" }).click();
 
   const scan = page.getByRole("group", { name: "Scan for Opportunities" });
   const minimum = scan.getByLabel("Minimum score to show");
@@ -24,6 +27,7 @@ test("a Super Administrator changes a matching weight and sees the legal version
   await page.getByRole("button", { name: "Save weights" }).click();
   await expect(page.getByText("Saved.")).toBeVisible();
   await page.reload();
+  await page.getByRole("tab", { name: "Matching" }).click();
   await expect(
     page.getByRole("group", { name: "Scan for Opportunities" }).getByLabel("Minimum score to show"),
   ).toHaveValue(before === "25" ? "24" : "25");

@@ -2159,4 +2159,14 @@ export const en = {
   pickChipYes: (n: number) => `Said yes ${n}`,
   pickChipWaiting: (n: number) => `Waiting ${n}`,
   pickChipNo: (n: number) => `Said no ${n}`,
+  settingsTabCap: "Daily sign-up limit",
+  settingsTabMatching: "Matching",
+  settingsTabLegal: "Legal texts",
+  settingsSuperOnlyTag: "Super Administrators only",
+  staffRoleAdminHint: "Verifies members, moderates posts and handles reports",
+  staffRoleSuperHint: "Also manages staff, settings and the audit log",
+  staffInviteHint:
+    "They get an email with a link to set their own password. Nobody else ever knows it.",
+  staffListNote: "You cannot deactivate yourself or the last Super Administrator.",
+  staffActive: "Active",
 };

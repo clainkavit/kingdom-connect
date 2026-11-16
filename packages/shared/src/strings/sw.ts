@@ -2201,4 +2201,14 @@ export const sw: Strings = {
   pickChipYes: (n: number) => `Walikubali ${n}`,
   pickChipWaiting: (n: number) => `Wanasubiri ${n}`,
   pickChipNo: (n: number) => `Walikataa ${n}`,
+  settingsTabCap: "Kikomo cha usajili kwa siku",
+  settingsTabMatching: "Ulinganishaji",
+  settingsTabLegal: "Maandiko ya kisheria",
+  settingsSuperOnlyTag: "Wasimamizi Wakuu tu",
+  staffRoleAdminHint: "Huthibitisha wanachama, hukagua machapisho na hushughulikia ripoti",
+  staffRoleSuperHint: "Pia husimamia wafanyakazi, mipangilio na kumbukumbu ya ukaguzi",
+  staffInviteHint:
+    "Watapata barua pepe yenye kiungo cha kuweka nenosiri lao wenyewe. Hakuna mwingine anayelijua.",
+  staffListNote: "Huwezi kujizima mwenyewe wala kumzima Msimamizi Mkuu wa mwisho.",
+  staffActive: "Hai",
 };

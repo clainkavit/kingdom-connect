@@ -8,7 +8,6 @@ import {
   type Strings,
 } from "@kingdom-connect/shared";
 import { useEffect, useState } from "react";
-import { buttonVariants } from "@/components/ui/button";
 import { useLanguage } from "@/lib/language";
 import type {
   LegalKind,
@@ -26,14 +25,27 @@ import { Field } from "./field";
 import { ScreenTitle } from "./screens";
 import { EmptyState, ErrorState, LoadingRows } from "./states";
 
+const pill =
+  "min-h-[40px] rounded-full border border-line-2 bg-card px-4 text-sm font-semibold text-foreground hover:bg-surface-2";
+const primaryPill =
+  "min-h-[50px] rounded-full bg-primary px-6 text-[16px] font-bold text-primary-foreground disabled:opacity-50";
+
 function Card({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="flex flex-col gap-3 rounded-lg border bg-card p-4 shadow-card">
-      <h2 className="text-base font-semibold text-foreground">{title}</h2>
+    <section className="flex flex-col gap-4 rounded-[22px] border bg-card px-6 py-6 shadow-card">
+      <h2 className="text-[17px] font-bold text-foreground">{title}</h2>
       {children}
     </section>
   );
 }
+
+const initialsOf = (name: string) =>
+  name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((w) => w[0]!.toUpperCase())
+    .join("");
 
 type Outcome = { tone: "good" | "bad"; text: string } | null;
 
@@ -42,7 +54,7 @@ function Notice({ outcome }: { outcome: Outcome }) {
   return (
     <div
       role={outcome.tone === "good" ? "status" : "alert"}
-      className={`rounded-lg px-4 py-3 text-sm font-medium ${outcome.tone === "good" ? "bg-good-soft text-good-text" : "bg-bad-soft text-bad-text"}`}
+      className={`rounded-[14px] px-4 py-3 text-sm font-semibold ${outcome.tone === "good" ? "bg-good-soft text-good-text" : "bg-bad-soft text-bad-text"}`}
     >
       {outcome.text}
     </div>
@@ -80,7 +92,7 @@ function CapCard({ api, initial }: { api: SettingsApi; initial: number | null })
       ) : null}
       <Notice outcome={result} />
       <div>
-        <button type="button" onClick={save} className={buttonVariants({ variant: "default" })}>
+        <button type="button" onClick={save} className={primaryPill}>
           {t.save}
         </button>
       </div>
@@ -102,6 +114,7 @@ function StaffCard({
   const [email, setEmail] = useState("");
   const [role, setRole] = useState<StaffRole>("admin");
   const [result, setResult] = useState<Outcome>(null);
+  const [listResult, setListResult] = useState<Outcome>(null);
   const roleLabel = (r: StaffRole) => (r === "admin" ? t.roleAdmin : t.roleSuperAdmin);
 
   const invite = async () => {
@@ -127,59 +140,92 @@ function StaffCard({
   const setActive = async (member: StaffMember) => {
     const outcome = await api.setActive(member.id, !member.active);
     if (outcome === "done") {
-      setResult(null);
+      setListResult(null);
       onChanged();
-    } else setResult({ tone: "bad", text: outcome === "refused" ? t.staffRefused : t.saveFailed });
+    } else
+      setListResult({ tone: "bad", text: outcome === "refused" ? t.staffRefused : t.saveFailed });
   };
 
   return (
-    <Card title={t.staffTitle}>
-      <ul className="flex flex-col divide-y rounded-lg border">
-        {staff.map((member) => (
-          <li key={member.id} className="flex flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3">
-            <span className="flex min-w-0 flex-1 flex-col">
-              <span className="text-[15px] font-semibold text-foreground">{member.fullName}</span>
-              <span className="text-[13px] text-ink-2">
-                {roleLabel(member.role)}
-                {member.active ? "" : ` · ${t.staffInactive}`}
-              </span>
-            </span>
-            <button
-              type="button"
-              aria-label={`${member.active ? t.deactivate : t.reactivate} ${member.fullName}`}
-              onClick={() => setActive(member)}
-              className={buttonVariants({ variant: member.active ? "outline" : "secondary" })}
+    <>
+      <Card title={t.staffInvite}>
+        <div className="grid gap-4 min-[900px]:grid-cols-2">
+          <Field id="staff-name" label={t.staffName} value={fullName} onChange={setFullName} />
+          <Field
+            id="staff-email"
+            label={t.staffEmail}
+            value={email}
+            onChange={setEmail}
+            type="email"
+          />
+        </div>
+        <fieldset className="grid gap-3 min-[900px]:grid-cols-2">
+          <legend className="mb-1.5 text-sm font-semibold text-foreground">{t.staffRole}</legend>
+          {staffRoles.map((r) => (
+            <label
+              key={r}
+              className={`flex min-h-[64px] cursor-pointer items-start gap-3 rounded-[18px] border px-4 py-3 ${role === r ? "border-2 border-primary" : "border-line-2"}`}
             >
-              {member.active ? t.deactivate : t.reactivate}
-            </button>
-          </li>
-        ))}
-      </ul>
-      <Notice outcome={result} />
-      <h3 className="pt-2 text-sm font-semibold text-foreground">{t.staffInvite}</h3>
-      <Field id="staff-name" label={t.staffName} value={fullName} onChange={setFullName} />
-      <Field id="staff-email" label={t.staffEmail} value={email} onChange={setEmail} type="email" />
-      <fieldset className="flex flex-wrap gap-4">
-        <legend className="mb-1 text-sm font-semibold text-foreground">{t.staffRole}</legend>
-        {staffRoles.map((r) => (
-          <label key={r} className="flex min-h-[40px] items-center gap-2 text-sm">
-            <input
-              type="radio"
-              name="staff-role"
-              checked={role === r}
-              onChange={() => setRole(r)}
-              className="size-4 accent-[var(--kc-blue)]"
-            />
-            {roleLabel(r)}
-          </label>
-        ))}
-      </fieldset>
-      <div>
-        <button type="button" onClick={invite} className={buttonVariants({ variant: "default" })}>
-          {t.sendInvite}
-        </button>
-      </div>
-    </Card>
+              <input
+                type="radio"
+                name="staff-role"
+                checked={role === r}
+                onChange={() => setRole(r)}
+                className="mt-1 size-5 accent-[var(--kc-blue)]"
+              />
+              <span className="flex flex-col">
+                <span className="text-[15px] font-bold text-foreground">{roleLabel(r)}</span>
+                <span className="text-[13px] text-ink-2">
+                  {r === "admin" ? t.staffRoleAdminHint : t.staffRoleSuperHint}
+                </span>
+              </span>
+            </label>
+          ))}
+        </fieldset>
+        <div className="flex flex-wrap items-center gap-4">
+          <button type="button" onClick={invite} className={primaryPill}>
+            {t.sendInvite}
+          </button>
+          <span className="text-[13px] text-ink-2">{t.staffInviteHint}</span>
+        </div>
+        <Notice outcome={result} />
+      </Card>
+      <Card title={t.staffTitle}>
+        <p className="-mt-1 text-[13px] text-ink-2">{t.staffListNote}</p>
+        <ul className="flex flex-col divide-y border-t">
+          {staff.map((member) => (
+            <li key={member.id} className="flex flex-wrap items-center gap-x-4 gap-y-2 py-4">
+              <span
+                aria-hidden
+                className="grid size-10 shrink-0 place-items-center rounded-full bg-blue-soft text-sm font-bold text-primary"
+              >
+                {initialsOf(member.fullName)}
+              </span>
+              <span className="min-w-0 flex-1 text-[15px] font-bold text-foreground">
+                {member.fullName}
+              </span>
+              <span className="w-[170px] text-[15px] text-foreground">
+                {roleLabel(member.role)}
+              </span>
+              <span
+                className={`w-[96px] rounded-full py-0.5 text-center text-xs font-bold ${member.active ? "bg-good-soft text-good-text" : "bg-surface-2 text-ink-2"}`}
+              >
+                {member.active ? t.staffActive : t.staffInactive}
+              </span>
+              <button
+                type="button"
+                aria-label={`${member.active ? t.deactivate : t.reactivate} ${member.fullName}`}
+                onClick={() => setActive(member)}
+                className={pill}
+              >
+                {member.active ? t.deactivate : t.reactivate}
+              </button>
+            </li>
+          ))}
+        </ul>
+        <Notice outcome={listResult} />
+      </Card>
+    </>
   );
 }
 
@@ -240,7 +286,7 @@ function SynonymsCard({ api }: { api: SettingsApi }) {
                 type="button"
                 aria-label={t.removeSynonym(synonym.fromName)}
                 onClick={() => remove(synonym)}
-                className={buttonVariants({ variant: "ghost", size: "sm" })}
+                className={pill}
               >
                 ×
               </button>
@@ -261,7 +307,7 @@ function SynonymsCard({ api }: { api: SettingsApi }) {
       </div>
       <Notice outcome={result} />
       <div>
-        <button type="button" onClick={add} className={buttonVariants({ variant: "default" })}>
+        <button type="button" onClick={add} className={primaryPill}>
           {t.addSynonym}
         </button>
       </div>
@@ -344,7 +390,7 @@ function PlatformCard({ api, initial }: { api: SettingsApi; initial: PlatformSet
       <p className="text-[13px] text-ink-2">{t.platformHint}</p>
       <Notice outcome={result} />
       <div>
-        <button type="button" onClick={save} className={buttonVariants({ variant: "default" })}>
+        <button type="button" onClick={save} className={primaryPill}>
           {t.savePlatform}
         </button>
       </div>
@@ -450,7 +496,7 @@ function WeightsCard({ api, initial }: { api: SettingsApi; initial: Weight[] }) 
       ))}
       <Notice outcome={result} />
       <div>
-        <button type="button" onClick={save} className={buttonVariants({ variant: "default" })}>
+        <button type="button" onClick={save} className={primaryPill}>
           {t.saveWeights}
         </button>
       </div>
@@ -535,12 +581,14 @@ function LoadedCard<T>({
 }
 
 type Loaded = { cap: number | null; staff: StaffMember[] };
+type Tab = "cap" | "staff" | "synonyms" | "weights" | "platform" | "legal";
 
 export function SettingsScreen({ api, superAdmin }: { api: SettingsApi; superAdmin: boolean }) {
   const { t } = useLanguage();
   const [loaded, setLoaded] = useState<Loaded | null>(null);
   const [failed, setFailed] = useState(false);
   const [attempt, setAttempt] = useState(0);
+  const [tab, setTab] = useState<Tab>("cap");
 
   useEffect(() => {
     if (!superAdmin) return;
@@ -559,40 +607,75 @@ export function SettingsScreen({ api, superAdmin }: { api: SettingsApi; superAdm
     setAttempt((a) => a + 1);
   };
 
+  const tabs: [Tab, string][] = superAdmin
+    ? [
+        ["cap", t.settingsTabCap],
+        ["staff", t.staffTitle],
+        ["synonyms", t.synonymsTitle],
+        ["weights", t.settingsTabMatching],
+        ["platform", t.platformTitle],
+        ["legal", t.settingsTabLegal],
+      ]
+    : [];
+  const shown = superAdmin ? tab : "synonyms";
+  const title = superAdmin ? tabs.find(([key]) => key === shown)![1] : t.adminNavSettings;
+
   return (
     <>
-      <ScreenTitle>{t.adminNavSettings}</ScreenTitle>
-      <div className="grid items-start gap-4 lg:grid-cols-2">
+      <p className="text-sm text-ink-2">
+        {t.adminNavSettings} · {t.settingsSuperOnlyTag}
+      </p>
+      <ScreenTitle>{title}</ScreenTitle>
+      {tabs.length ? (
+        <div role="tablist" aria-label={t.adminNavSettings} className="mb-5 flex flex-wrap gap-2">
+          {tabs.map(([key, label]) => (
+            <button
+              key={key}
+              type="button"
+              role="tab"
+              aria-selected={shown === key}
+              onClick={() => setTab(key)}
+              className={`min-h-[42px] rounded-full px-4 text-sm font-semibold ${shown === key ? "bg-primary text-primary-foreground" : "border border-line-2 bg-card text-foreground hover:bg-surface-2"}`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+      ) : null}
+      <div
+        role={tabs.length ? "tabpanel" : undefined}
+        className="flex max-w-[1100px] flex-col gap-4"
+      >
         {!superAdmin ? (
           <EmptyState title={t.adminNavSettings} message={t.settingsSuperAdminOnly} />
-        ) : failed ? (
-          <ErrorState message={t.saveFailed} onRetry={reload} />
-        ) : !loaded ? (
-          <LoadingRows />
-        ) : (
-          <>
-            <CapCard key={String(loaded.cap)} api={api} initial={loaded.cap} />
-            <StaffCard api={api} staff={loaded.staff} onChanged={reload} />
-          </>
-        )}
-        {superAdmin ? (
-          <>
-            <LoadedCard load={api.platform}>
-              {(platform) => <PlatformCard api={api} initial={platform} />}
-            </LoadedCard>
-            <LoadedCard load={api.weights}>
-              {(weights) => <WeightsCard api={api} initial={weights} />}
-            </LoadedCard>
-            <LoadedCard load={api.legalVersions}>
-              {(versions) => (
-                <div className="lg:col-span-2">
-                  <LegalVersionsCard versions={versions} />
-                </div>
-              )}
-            </LoadedCard>
-          </>
         ) : null}
-        <SynonymsCard api={api} />
+        {superAdmin && (shown === "cap" || shown === "staff") ? (
+          failed ? (
+            <ErrorState message={t.saveFailed} onRetry={reload} />
+          ) : !loaded ? (
+            <LoadingRows />
+          ) : shown === "cap" ? (
+            <CapCard key={String(loaded.cap)} api={api} initial={loaded.cap} />
+          ) : (
+            <StaffCard api={api} staff={loaded.staff} onChanged={reload} />
+          )
+        ) : null}
+        {superAdmin && shown === "platform" ? (
+          <LoadedCard load={api.platform}>
+            {(platform) => <PlatformCard api={api} initial={platform} />}
+          </LoadedCard>
+        ) : null}
+        {superAdmin && shown === "weights" ? (
+          <LoadedCard load={api.weights}>
+            {(weights) => <WeightsCard api={api} initial={weights} />}
+          </LoadedCard>
+        ) : null}
+        {superAdmin && shown === "legal" ? (
+          <LoadedCard load={api.legalVersions}>
+            {(versions) => <LegalVersionsCard versions={versions} />}
+          </LoadedCard>
+        ) : null}
+        {shown === "synonyms" ? <SynonymsCard api={api} /> : null}
       </div>
     </>
   );

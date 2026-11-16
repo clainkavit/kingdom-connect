@@ -89,6 +89,7 @@ test("a Super Administrator invites an Administrator, who sets a password and lo
   const name = `Invited Administrator ${stamp}`;
   await signInToAdmin(page, SUPER);
   await page.goto(`${ADMIN_URL}/settings`);
+  await page.getByRole("tab", { name: "Staff accounts" }).click();
   await page.getByLabel("Full name").fill(name);
   await page.getByLabel("Email").fill(email);
   const sentAfter = new Date();
@@ -113,6 +114,7 @@ test("a Super Administrator invites an Administrator, who sets a password and lo
   ).toBeVisible();
 
   await page.reload();
+  await page.getByRole("tab", { name: "Staff accounts" }).click();
   await page.getByRole("button", { name: `Deactivate ${name}` }).click();
   await expect(page.getByText(name).locator("..")).toContainText("Deactivated");
 

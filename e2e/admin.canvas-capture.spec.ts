@@ -12,7 +12,14 @@ const canvasDir = process.env.CANVAS_DIR;
 const out = process.env.CAPTURE_OUT;
 const only = process.env.CAPTURE_ONLY?.split(",");
 
-type Pair = { board: string; route: string; w: number; h: number; signedOut?: boolean };
+type Pair = {
+  board: string;
+  route: string;
+  w: number;
+  h: number;
+  signedOut?: boolean;
+  tab?: string;
+};
 
 const pairs: Pair[] = [
   { board: "Admin-Login", route: "/login", w: 1440, h: 900, signedOut: true },
@@ -22,7 +29,7 @@ const pairs: Pair[] = [
   { board: "Admin-Verify", route: "/verification", w: 1440, h: 1100 },
   { board: "Admin-Ideas", route: "/ideas", w: 1440, h: 1300 },
   { board: "Admin-Shortlist", route: "/picks", w: 1440, h: 1200 },
-  { board: "Admin-Staff", route: "/settings", w: 1440, h: 1300 },
+  { board: "Admin-Staff", route: "/settings", w: 1440, h: 1300, tab: "Staff accounts" },
 ];
 
 test.skip(!canvasDir || !out, "set CANVAS_DIR and CAPTURE_OUT to capture");
@@ -47,6 +54,10 @@ for (const pair of pairs.filter((p) => !only || only.includes(p.board))) {
     await live.setViewportSize({ width: pair.w, height: Math.min(pair.h, 1200) });
     await live.goto(pair.route);
     await live.waitForTimeout(2500);
+    if (pair.tab) {
+      await live.getByRole("tab", { name: pair.tab }).click();
+      await live.waitForTimeout(800);
+    }
     await live.screenshot({ path: join(out!, `${pair.board}.live.png`), fullPage: true });
     await context.close();
   });

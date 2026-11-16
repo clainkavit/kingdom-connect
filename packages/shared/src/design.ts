@@ -41,6 +41,8 @@ export const colors = {
     roseSoft: "#fae6f0",
     gold: "#e3b04b",
     goldInk: "#3a1606",
+    goldDeep: "#c8891a",
+    crimson: "#a3263f",
   },
   dark: {
     navy: "#2a0810",
@@ -77,6 +79,8 @@ export const colors = {
     roseSoft: "#3a1a2b",
     gold: "#e3b04b",
     goldInk: "#2a0810",
+    goldDeep: "#e0a23a",
+    crimson: "#e0687f",
   },
 } as const;
 

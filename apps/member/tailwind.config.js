@@ -33,6 +33,8 @@ const tokens = [
   "rose-soft",
   "gold",
   "gold-ink",
+  "gold-deep",
+  "crimson",
 ];
 
 /** @type {import('tailwindcss').Config} */

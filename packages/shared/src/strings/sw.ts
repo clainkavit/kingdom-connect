@@ -2178,4 +2178,13 @@ export const sw: Strings = {
   staffPointReports: "Shughulikia ripoti haraka na kwa haki",
   staffAuditNote: "Kila hatua ya mfanyakazi inaandikwa kwenye kumbukumbu ya ukaguzi.",
   adminSidebarNote: "Akaunti za wafanyakazi haziwezi kuungana wala kutuma ujumbe kwa wanachama.",
+  adminCountsRefresh: (time: string) => `Takwimu husasishwa kila dakika 15 · Imesasishwa ${time}`,
+  adminOpenWord: "wazi",
+  adminWaitingWord: "zinasubiri",
+  adminOpenQueue: "Fungua foleni",
+  adminCapOfToday: (cap: string) => `kati ya ${cap} leo`,
+  adminPlacesLeft: (count: string) => `Nafasi ${count} zimebaki leo`,
+  adminCapHint: "Kikomo cha kila siku husimamisha usajili mpya foleni ikiwa ndefu sana.",
+  adminCapSuperOnly: "Ni Wasimamizi Wakuu tu wanaoona kiungo hiki.",
+  adminReportsCard: "Ripoti na vilivyofichwa",
 };

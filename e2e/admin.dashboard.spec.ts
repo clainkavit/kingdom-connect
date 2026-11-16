@@ -16,6 +16,6 @@ test("the admin dashboard shows the counts and the weekly chart, and each count 
       path: `${process.env.SCREENSHOT_DIR}/u06-dashboard.png`,
       fullPage: true,
     });
-  await page.getByRole("link", { name: /Open reports/ }).click();
+  await page.getByRole("link", { name: /^Open reports/ }).click();
   await expect(page.getByRole("heading", { name: "Reports" })).toBeVisible();
 });

@@ -55,7 +55,10 @@ describe("AdminDashboard (A01)", () => {
   it("links each count to its filtered queue", async () => {
     await show(fakeApi());
     expect(link(/Verified members.*42/)).toBe("/members?status=approved");
-    expect(link(/Waiting for verification.*10/)).toBe("/verification");
+    expect(link(/^Waiting for verification: Open queue$/)).toBe("/verification");
+    expect(screen.getByRole("region", { name: "Waiting for verification" }).textContent).toContain(
+      "10",
+    );
     expect(link(/Rejected members.*3/)).toBe("/members?status=rejected");
     expect(link(/Open reports.*1/)).toBe("/reports");
   });
@@ -165,12 +168,15 @@ describe("AdminDashboard (A01)", () => {
     expect(screen.getByRole("link", { name: /Registered businesses/ }).textContent).toContain(
       "186",
     );
-    expect(screen.getByRole("link", { name: /Open opportunities\b.*74/ })).toBeTruthy();
+    expect(screen.getByRole("link", { name: /^Open opportunities\s*74/ })).toBeTruthy();
     expect(screen.getByRole("link", { name: /Ideas in the pool/ }).textContent).toContain("52");
     expect(screen.getByText("Business, Level 2")).toBeTruthy();
-    expect(screen.getByRole("link", { name: /Waiting for moderation/ }).textContent).toContain(
-      "13",
+    expect(screen.getByRole("region", { name: "Waiting for moderation" }).textContent).toContain(
+      "6",
     );
+    expect(
+      screen.getByRole("region", { name: "Open opportunities by type" }).textContent,
+    ).toContain("74");
   });
 
   it("keeps the first counts when the extra counts cannot load", async () => {

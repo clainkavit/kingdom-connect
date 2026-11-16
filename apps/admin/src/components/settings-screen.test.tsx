@@ -55,6 +55,9 @@ async function show(api: SettingsApi, superAdmin = true) {
   });
 }
 
+const openTab = (name: string) =>
+  act(async () => fireEvent.click(screen.getByRole("tab", { name })));
+
 const click = (name: string) =>
   act(async () => fireEvent.click(screen.getByRole("button", { name })));
 
@@ -123,6 +126,7 @@ describe("SettingsScreen (A16)", () => {
   it("invites a staff member", async () => {
     const api = fakeApi();
     await show(api);
+    await openTab("Staff accounts");
     fireEvent.change(screen.getByLabelText("Full name"), { target: { value: "New Admin" } });
     fireEvent.change(screen.getByLabelText("Email"), { target: { value: "new@example.test" } });
     await click("Send invite");
@@ -138,6 +142,7 @@ describe("SettingsScreen (A16)", () => {
 
   it("says when the email already has an account", async () => {
     await show(fakeApi({ invite: vi.fn().mockResolvedValue("email_taken") }));
+    await openTab("Staff accounts");
     fireEvent.change(screen.getByLabelText("Full name"), { target: { value: "X" } });
     fireEvent.change(screen.getByLabelText("Email"), { target: { value: "x@example.test" } });
     await click("Send invite");
@@ -149,6 +154,7 @@ describe("SettingsScreen (A16)", () => {
       setActive: vi.fn().mockResolvedValueOnce("done").mockResolvedValueOnce("refused"),
     });
     await show(api);
+    await openTab("Staff accounts");
     await act(async () =>
       fireEvent.click(screen.getByRole("button", { name: "Deactivate Test Administrator" })),
     );
@@ -156,7 +162,7 @@ describe("SettingsScreen (A16)", () => {
     await act(async () =>
       fireEvent.click(screen.getByRole("button", { name: "Deactivate Test Super Administrator" })),
     );
-    expect(screen.getByText(/You cannot deactivate yourself/)).toBeTruthy();
+    expect(screen.getByRole("alert").textContent).toMatch(/You cannot deactivate yourself/);
   });
 
   it("keeps the platform, weights and legal versions from an Administrator (D02)", async () => {
@@ -171,6 +177,7 @@ describe("SettingsScreen (A16)", () => {
   it("saves only the platform settings that changed (D02)", async () => {
     const api = fakeApi();
     await show(api);
+    await openTab("Platform");
     expect((screen.getByLabelText("Platform name") as HTMLInputElement).value).toBe(
       "Kingdom Connect",
     );
@@ -183,6 +190,7 @@ describe("SettingsScreen (A16)", () => {
 
   it("says when the server refuses a platform value", async () => {
     await show(fakeApi({ savePlatform: vi.fn().mockResolvedValue("invalid_value") }));
+    await openTab("Platform");
     fireEvent.change(screen.getByLabelText("Platform name"), { target: { value: "K" } });
     await click("Save platform settings");
     expect(screen.getByText(/Check the values/)).toBeTruthy();
@@ -191,6 +199,7 @@ describe("SettingsScreen (A16)", () => {
   it("changes a matching weight and checks the ranges first (D02)", async () => {
     const api = fakeApi();
     await show(api);
+    await openTab("Matching");
     const scan = screen.getByRole("group", { name: "Scan for Opportunities" });
     expect(scan.textContent).toContain("Points for each matching skill");
     fireEvent.change(screen.getByLabelText("Most mutual connections counted"), {
@@ -214,6 +223,7 @@ describe("SettingsScreen (A16)", () => {
 
   it("lists the legal text versions and marks the one in force (D02)", async () => {
     await show(fakeApi());
+    await openTab("Legal texts");
     const table = screen.getByRole("table");
     expect(table.textContent).toContain("Terms of use");
     expect(table.textContent).toContain("0.2In force");

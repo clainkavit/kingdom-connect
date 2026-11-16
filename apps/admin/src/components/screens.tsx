@@ -7,7 +7,9 @@ import { EmptyState } from "./states";
 
 export function ScreenTitle({ children }: { children: React.ReactNode }) {
   return (
-    <h1 className="mb-5 text-[26px] font-extrabold tracking-tight text-foreground">{children}</h1>
+    <h1 className="mb-5 text-[30px] leading-9 font-extrabold tracking-tight text-primary">
+      {children}
+    </h1>
   );
 }
 

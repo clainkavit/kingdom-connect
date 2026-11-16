@@ -706,7 +706,7 @@ export const en = {
     count === 1
       ? "1 application has waited 2 working days or more. Review it first."
       : `${count} applications have waited 2 working days or more. Review them first.`,
-  queueOverdue: "Waiting 2+ working days",
+  queueOverdue: "Over 2 working days",
   queueLoadFailed: "We couldn't load the queue. Check your connection and try again.",
   queueTypeMember: "Member",
   suspectedDuplicate: "Suspected duplicate",
@@ -2145,4 +2145,9 @@ export const en = {
   adminCapHint: "The daily limit stops new sign-ups when the queue is too long.",
   adminCapSuperOnly: "Only Super Admins see this link.",
   adminReportsCard: "Reports and hidden items",
+  queueSubtitle: (count: number, age: string) =>
+    `Oldest first. ${count} waiting; the oldest has waited ${age}.`,
+  queueRecoveriesLink: "Email recovery requests",
+  queueSubmitted: (date: string, age: string) => `Submitted ${date} · ${age}`,
+  queueOpen: "Open",
 };

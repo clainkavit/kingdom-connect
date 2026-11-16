@@ -2231,4 +2231,12 @@ export const sw: Strings = {
   adminUpdatedAt: (time: string) => `Imesasishwa ${time}`,
   staffConsoleShort: "Dashibodi ya usimamizi",
   staffOnly: "Wafanyakazi tu",
+  ideaShareSubtitle:
+    "Wafanyakazi hukagua kila wazo kabla halijaonekana kwenye hazina. Namba za simu na barua pepe haziruhusiwi katika sehemu yoyote.",
+  postCheckedTitle: "Hukaguliwa kabla ya kuonekana",
+  postCheckedBody:
+    "Wafanyakazi hukagua machapisho 3 ya kwanza ya mchapishaji mpya. Baada ya hapo, machapisho yako yanaonekana mara moja.",
+  postWhereTitle: "Inakokwenda",
+  postWhereBody:
+    "Rasimu, kisha Inasubiri ukaguzi, kisha Imechapishwa. Majibu yanafika kwenye Machapisho yangu kwenye dashibodi yako.",
 };

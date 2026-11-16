@@ -79,6 +79,8 @@ const pairs: Pair[] = [
     press: "Continue: About you",
   },
   { board: "Phone-Verify-Start", route: "/profile/verify", w: 430, h: 900 },
+  { board: "Opp-Post", route: "/opportunities/new", w: 1440, h: 1400 },
+  { board: "Ideas-Share", route: "/ideas/new", w: 1440, h: 1400 },
   { board: "Member-Phone-Dashboard", route: "/", w: 430, h: 900 },
   { board: "Opp-Phone-List", route: "/opportunities", w: 430, h: 900 },
 ];

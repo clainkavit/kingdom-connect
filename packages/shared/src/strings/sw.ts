@@ -2194,4 +2194,11 @@ export const sw: Strings = {
   queueOpen: "Fungua",
   adminIdeasStaffOnly: "Wafanyakazi tu",
   adminIdeasSearchLabel: "Tafuta",
+  pickStaffDecide: "Wafanyakazi huamua",
+  pickWhyPlaceholder: "Sentensi moja au mbili",
+  pickProgress: "Maendeleo",
+  pickChipPicked: (n: number) => `Waliochaguliwa ${n}`,
+  pickChipYes: (n: number) => `Walikubali ${n}`,
+  pickChipWaiting: (n: number) => `Wanasubiri ${n}`,
+  pickChipNo: (n: number) => `Walikataa ${n}`,
 };

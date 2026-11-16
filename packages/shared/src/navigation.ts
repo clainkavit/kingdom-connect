@@ -29,6 +29,7 @@ export const navIcons = [
   "sprout",
   "square-check",
   "square-plus",
+  "star",
   "users",
 ] as const;
 
@@ -82,7 +83,7 @@ export const adminNav: readonly NavItem[] = [
   { key: "adminNavDashboard", href: "/", icon: "layout-grid" },
   { key: "adminNavVerification", href: "/verification", icon: "shield-check" },
   { key: "adminNavModeration", href: "/moderation", icon: "square-check" },
-  { key: "adminNavPicks", href: "/picks", icon: "users" },
+  { key: "adminNavPicks", href: "/picks", icon: "star" },
   { key: "adminNavIdeas", href: "/ideas", icon: "lightbulb" },
   { key: "adminNavReports", href: "/reports", icon: "flag" },
   { key: "adminNavReverification", href: "/re-verification", icon: "refresh-cw" },

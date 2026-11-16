@@ -26,6 +26,7 @@ import Settings from "lucide-react-native/icons/settings";
 import ShieldCheck from "lucide-react-native/icons/shield-check";
 import SquareCheck from "lucide-react-native/icons/square-check";
 import SquarePlus from "lucide-react-native/icons/square-plus";
+import Star from "lucide-react-native/icons/star";
 import type { LucideIcon } from "lucide-react-native";
 
 const icons: Record<NavIconName, LucideIcon> = {
@@ -36,6 +37,7 @@ const icons: Record<NavIconName, LucideIcon> = {
   "shield-check": ShieldCheck,
   "square-check": SquareCheck,
   "square-plus": SquarePlus,
+  star: Star,
   "book-open": BookOpen,
   briefcase: Briefcase,
   calendar: Calendar,

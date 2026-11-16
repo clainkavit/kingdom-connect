@@ -2152,4 +2152,11 @@ export const en = {
   queueOpen: "Open",
   adminIdeasStaffOnly: "Staff only",
   adminIdeasSearchLabel: "Search",
+  pickStaffDecide: "Staff decide",
+  pickWhyPlaceholder: "One or two sentences",
+  pickProgress: "Progress",
+  pickChipPicked: (n: number) => `Picked ${n}`,
+  pickChipYes: (n: number) => `Said yes ${n}`,
+  pickChipWaiting: (n: number) => `Waiting ${n}`,
+  pickChipNo: (n: number) => `Said no ${n}`,
 };

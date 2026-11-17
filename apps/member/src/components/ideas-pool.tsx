@@ -8,6 +8,7 @@ import { useLanguage } from "../lib/language";
 import { useLoad } from "./events";
 import { Button, Chips } from "./form";
 import { AccessManager, DetailsLink, IdeaInterest } from "./idea-access";
+import { InPhoneBand } from "./phone-header";
 import { InvestorPool } from "./investor";
 import { seekingLabel, stageLabel } from "./ideas";
 import ChevronLeft from "lucide-react-native/icons/chevron-left";
@@ -325,16 +326,20 @@ export function IdeaSummaryScreen({
   if (idea.isMine)
     return (
       <View className="gap-5">
-        <LinkButton
-          href="/ideas"
-          label={t.ideaBackToPool}
-          className="min-h-[36px] flex-row items-center gap-1.5 self-start"
-        >
-          <ChevronLeft size={16} color={palette.navy} aria-hidden />
-          <Text className="font-figtree-semibold text-[15px] text-navy underline">
-            {t.ideaBackToPool}
-          </Text>
-        </LinkButton>
+        {phone ? (
+          <InPhoneBand back={{ label: t.ideaBackToPool, href: "/ideas" }} title={idea.title} />
+        ) : (
+          <LinkButton
+            href="/ideas"
+            label={t.ideaBackToPool}
+            className="min-h-[36px] flex-row items-center gap-1.5 self-start"
+          >
+            <ChevronLeft size={16} color={palette.navy} aria-hidden />
+            <Text className="font-figtree-semibold text-[15px] text-navy underline">
+              {t.ideaBackToPool}
+            </Text>
+          </LinkButton>
+        )}
         <View className="flex-row flex-wrap items-end justify-between gap-4">
           <View className="min-w-0 flex-1 basis-[360px] gap-2">
             <View className="flex-row flex-wrap gap-1.5">
@@ -342,13 +347,15 @@ export function IdeaSummaryScreen({
               <ToneChip text={t.adminIdeaStatusPublished} tone="bg-good-soft text-good-text" />
               <ToneChip text={stageLabel(t, idea.stage)} tone={stageTone[idea.stage]} />
             </View>
-            <Text
-              role="heading"
-              aria-level={1}
-              className={`font-figtree-extrabold text-navy ${phone ? "text-[24px] leading-[28px]" : "text-[32px] leading-[37px]"}`}
-            >
-              {idea.title}
-            </Text>
+            {phone ? null : (
+              <Text
+                role="heading"
+                aria-level={1}
+                className="font-figtree-extrabold text-[32px] leading-[37px] text-navy"
+              >
+                {idea.title}
+              </Text>
+            )}
             <Text className="font-figtree text-[15px] text-ink-2">
               {idea.ownerName ? t.ideaSharedWithName : t.ideaSharedWithoutName}
             </Text>
@@ -378,16 +385,20 @@ export function IdeaSummaryScreen({
 
   return (
     <View className="gap-4">
-      <LinkButton
-        href="/ideas"
-        label={t.ideaBackToPool}
-        className="min-h-[36px] flex-row items-center gap-1.5 self-start"
-      >
-        <ChevronLeft size={16} color={palette.navy} aria-hidden />
-        <Text className="font-figtree-semibold text-[15px] text-navy underline">
-          {t.ideaBackToPool}
-        </Text>
-      </LinkButton>
+      {phone ? (
+        <InPhoneBand back={{ label: t.ideaBackToPool, href: "/ideas" }} title={idea.title} />
+      ) : (
+        <LinkButton
+          href="/ideas"
+          label={t.ideaBackToPool}
+          className="min-h-[36px] flex-row items-center gap-1.5 self-start"
+        >
+          <ChevronLeft size={16} color={palette.navy} aria-hidden />
+          <Text className="font-figtree-semibold text-[15px] text-navy underline">
+            {t.ideaBackToPool}
+          </Text>
+        </LinkButton>
+      )}
       <View className={phone ? "gap-4" : "flex-row items-start gap-4"}>
         <View className="min-w-0 flex-1 gap-4">
           <View className="gap-3 rounded-card border border-line bg-surface px-6 py-6">
@@ -398,14 +409,18 @@ export function IdeaSummaryScreen({
               />
               <ToneChip text={stageLabel(t, idea.stage)} tone={stageTone[idea.stage]} />
             </View>
-            <Text
-              role="heading"
-              aria-level={1}
-              className={`font-figtree-extrabold text-navy ${phone ? "text-[24px] leading-[28px]" : "text-[32px] leading-[37px]"}`}
-            >
-              {idea.title}
-            </Text>
-            <Text className="font-figtree-bold text-[14px] text-ink-2">{t.ideaTheProblem}</Text>
+            {phone ? null : (
+              <Text
+                role="heading"
+                aria-level={1}
+                className="font-figtree-extrabold text-[32px] leading-[37px] text-navy"
+              >
+                {idea.title}
+              </Text>
+            )}
+            {phone ? null : (
+              <Text className="font-figtree-bold text-[14px] text-ink-2">{t.ideaTheProblem}</Text>
+            )}
             <Text className="font-figtree text-[16px] leading-[26px] text-ink">{idea.problem}</Text>
             <View className="flex-row flex-wrap gap-3">
               {facts.map(([label, value]) =>

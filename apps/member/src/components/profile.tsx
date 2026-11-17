@@ -12,6 +12,7 @@ import type { Option } from "../lib/registration";
 import type { Profile, ProfileApi, ProfileChanges } from "../lib/profile";
 import { Button, ChoiceList, Field, Message } from "./form";
 import { LinkButton } from "./link-button";
+import { InPhoneBand } from "./phone-header";
 import { ScreenTitle } from "./screens";
 import ChevronLeft from "lucide-react-native/icons/chevron-left";
 import Lock from "lucide-react-native/icons/lock";
@@ -362,6 +363,37 @@ export function ProfileView({
             {contact}
           </View>
         </View>
+      </View>
+    );
+
+  if (!profile.own)
+    return (
+      <View className="gap-4">
+        <InPhoneBand
+          back={{ label: t.backToPeople, href: "/people", short: t.navPeople }}
+          title={profile.fullName}
+          {...(profile.headline ? { subtitle: profile.headline } : {})}
+          {...(profile.location ? { detail: profile.location } : {})}
+          leading={
+            <View className="rounded-full border-2 border-white">
+              <Avatar name={profile.fullName} url={profile.photoUrl} size={64} />
+            </View>
+          }
+        />
+        <View className="-mx-5 -mt-4 flex-row flex-wrap gap-2 bg-navy px-5 pb-4">
+          <View className="flex-row items-center gap-1 rounded-full bg-good-soft px-2.5 py-1">
+            <ShieldCheck size={12} color={palette.good} aria-hidden />
+            <Text className="font-figtree-bold text-[12px] text-good-text">
+              {t.homeVerifiedMember}
+            </Text>
+          </View>
+        </View>
+        {actions ?? null}
+        {about}
+        {skills}
+        {contact}
+        {ideasSection}
+        {references}
       </View>
     );
 

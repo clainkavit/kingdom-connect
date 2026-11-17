@@ -5,6 +5,7 @@ import ChevronLeft from "lucide-react-native/icons/chevron-left";
 import { LinkButton } from "./link-button";
 import { usePalette } from "./palette";
 import { usePhone } from "./sheet";
+import { usePhoneHeader } from "./phone-header";
 import { EmptyState } from "./states";
 
 /** The canvas page header: an optional back link, a 32px maroon title, a subtitle and actions on the right. */
@@ -21,6 +22,11 @@ export function PageHeader({
 }) {
   const palette = usePalette();
   const phone = usePhone();
+  const inBand = usePhoneHeader({ back, title, subtitle }, phone);
+  if (inBand)
+    return children ? (
+      <View className="flex-row flex-wrap items-center gap-3">{children}</View>
+    ) : null;
   return (
     <View className="gap-3">
       {back ? (

@@ -50,6 +50,7 @@ import {
 import { FilterSheet } from "./filter-sheet";
 import { stickToBottom, usePhone } from "./sheet";
 import { LinkButton } from "./link-button";
+import { InPhoneBand } from "./phone-header";
 import { usePalette } from "./palette";
 import { AlertSwitch } from "./job-alerts";
 import { typeLabel } from "./opportunity-form";
@@ -1231,16 +1232,16 @@ export function OpportunityDetailScreen({
 
   return (
     <View className="gap-4">
-      <LinkButton href="/opportunities" label={t.oppBack} className="min-h-[40px] justify-center">
-        <Text className="font-figtree-semibold text-sm text-blue">{t.oppBack}</Text>
-      </LinkButton>
+      <InPhoneBand
+        back={{ label: t.oppBack, href: "/opportunities" }}
+        title={post.title}
+        subtitle={post.posterName}
+      />
       <View className="flex-row flex-wrap items-center gap-2">
         <Badge text={t[typeLabel[post.type]] as string} />
         {post.featured ? <Badge tone="gold" text={t.oppFeatured} /> : null}
         {post.isMine ? null : <View className="ml-auto">{save}</View>}
       </View>
-      <ScreenTitle>{post.title}</ScreenTitle>
-      <Text className="font-figtree-semibold text-[14px] text-ink-2">{post.posterName}</Text>
       {post.readOnly ? <Message tone="info" text={t.oppReadOnly} /> : null}
       <Text className="font-figtree text-[15px] leading-6 text-ink">{post.description}</Text>
       <View className="gap-3 rounded-card border border-line bg-surface px-5 py-[18px]">

@@ -16,6 +16,7 @@ import Lock from "lucide-react-native/icons/lock";
 import ShieldCheck from "lucide-react-native/icons/shield-check";
 import { Button } from "./form";
 import { LinkButton } from "./link-button";
+import { usePhoneHeader } from "./phone-header";
 import { Sheet, usePhone } from "./sheet";
 import { LoadingRows, LockedState } from "./states";
 
@@ -244,26 +245,33 @@ export function LookHome({
       live = false;
     };
   }, [status, progress, widgets]);
+  const inBand = usePhoneHeader({ home: true, title: t.lookWelcome, subtitle: t.lookIntro }, phone);
   const opportunities = (latest ?? []).filter((i) => i.kind === "opportunity").slice(0, 3);
   const others = (latest ?? []).filter((i) => i.kind !== "opportunity").slice(0, 3);
 
   return (
     <View className="w-full max-w-[1200px] gap-5 self-center">
-      <View className="gap-2">
-        <View className="flex-row flex-wrap items-center gap-3">
-          <Text
-            role="heading"
-            aria-level={1}
-            className={`font-figtree-extrabold text-navy ${phone ? "text-[24px]" : "text-[32px]"}`}
-          >
-            {t.lookWelcome}
-          </Text>
-          <View className="rounded-full bg-warn-soft px-3 py-1">
-            <Text className="font-figtree-bold text-xs text-warn-text">{t.lookNotVerified}</Text>
-          </View>
+      {inBand ? (
+        <View className="self-start rounded-full bg-warn-soft px-3 py-1">
+          <Text className="font-figtree-bold text-xs text-warn-text">{t.lookNotVerified}</Text>
         </View>
-        <Text className="font-figtree text-[15px] leading-[22px] text-ink-2">{t.lookIntro}</Text>
-      </View>
+      ) : (
+        <View className="gap-2">
+          <View className="flex-row flex-wrap items-center gap-3">
+            <Text
+              role="heading"
+              aria-level={1}
+              className={`font-figtree-extrabold text-navy ${phone ? "text-[24px]" : "text-[32px]"}`}
+            >
+              {t.lookWelcome}
+            </Text>
+            <View className="rounded-full bg-warn-soft px-3 py-1">
+              <Text className="font-figtree-bold text-xs text-warn-text">{t.lookNotVerified}</Text>
+            </View>
+          </View>
+          <Text className="font-figtree text-[15px] leading-[22px] text-ink-2">{t.lookIntro}</Text>
+        </View>
+      )}
       <VerifyBanner status={kind} done={done} />
       <View className={phone ? "gap-5" : "flex-row items-start gap-5"}>
         <View className="min-w-0 flex-1">

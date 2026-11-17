@@ -4,7 +4,15 @@ import { usePathname, useRouter } from "expo-router";
 import ChevronLeft from "lucide-react-native/icons/chevron-left";
 import Search from "lucide-react-native/icons/search";
 import { useState } from "react";
-import { Image, ScrollView, Text, TextInput, View, useWindowDimensions } from "react-native";
+import {
+  Image,
+  Pressable,
+  ScrollView,
+  Text,
+  TextInput,
+  View,
+  useWindowDimensions,
+} from "react-native";
 import { useLanguage } from "../lib/language";
 import { LanguageMenu } from "./language-menu";
 import { EnterOnChange } from "./motion";
@@ -201,10 +209,50 @@ function TabBar({ pathname, unreadMessages }: { pathname: string; unreadMessages
 function PhoneBand({ unread }: { unread: number }) {
   const { t } = useLanguage();
   const header = usePhoneHeaderSlot();
+  if (header?.home)
+    return (
+      <View className="gap-1.5 bg-navy px-5 pb-5 pt-3">
+        <View className="flex-row items-center justify-between">
+          <Mark />
+          <View className="flex-row items-center">
+            <NotificationBell count={unread} color="#ffffff" />
+            <ProfileLink color="#ffffff" />
+          </View>
+        </View>
+        {header.detail ? (
+          <Text className="pt-1 font-figtree text-[13px] text-navy-ink">{header.detail}</Text>
+        ) : null}
+        <Text
+          role="heading"
+          aria-level={1}
+          className="font-figtree-extrabold text-[24px] leading-[30px] text-white"
+        >
+          {header.title}
+        </Text>
+        {header.subtitle ? (
+          <Text className="font-figtree text-[14px] leading-5 text-navy-ink">
+            {header.subtitle}
+          </Text>
+        ) : null}
+        {header.below ?? null}
+      </View>
+    );
   if (header)
     return (
       <View className="gap-1 bg-navy px-5 pb-5 pt-3">
-        {header.back ? (
+        {header.back?.onPress ? (
+          <Pressable
+            role="button"
+            aria-label={header.back.label}
+            onPress={header.back.onPress}
+            className="min-h-[36px] flex-row items-center gap-1 self-start"
+          >
+            <ChevronLeft size={16} color="#ffffff" aria-hidden />
+            <Text className="font-figtree-semibold text-[15px] text-white">
+              {header.back.short ?? t.back}
+            </Text>
+          </Pressable>
+        ) : header.back ? (
           <LinkButton
             href={header.back.href}
             label={header.back.label}

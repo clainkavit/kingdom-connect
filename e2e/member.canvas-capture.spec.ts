@@ -141,6 +141,26 @@ const pairs: Pair[] = [
     w: 1440,
     h: 1600,
   },
+  {
+    board: "Opp-Picking",
+    route: "/opportunities/0663cf0d-8e3b-43d9-a9dc-fe085500047f/pick",
+    w: 1440,
+    h: 1100,
+  },
+  {
+    board: "Opp-Shortlist",
+    route: "/opportunities/a3948acf-a6fb-436e-9e72-446c6e01b010/pick",
+    w: 1440,
+    h: 1300,
+  },
+  { board: "Opp-Post-Mode", route: "/opportunities/new", w: 1440, h: 1200 },
+  { board: "Opp-Picked-Invite", route: "/picked", w: 1440, h: 1100 },
+  {
+    board: "Opp-MarkHired",
+    route: "/opportunities/a3948acf-a6fb-436e-9e72-446c6e01b010/responses",
+    w: 1440,
+    h: 1100,
+  },
   { board: "Member-Phone-Dashboard", route: "/", w: 430, h: 900 },
   { board: "Opp-Phone-List", route: "/opportunities", w: 430, h: 900 },
 ];
@@ -169,7 +189,7 @@ for (const pair of pairs.filter((p) => !only || only.includes(p.board))) {
     }
     const state = join(out!, `session-${account}.json`);
     if (!existsSync(state)) {
-      await signInAs(page, account, `${account.replace("_", ".")}@example.test`);
+      await signInAs(page, account, `${account.replaceAll("_", ".")}@example.test`);
       await page.context().storageState({ path: state });
     }
     const context = await browser.newContext({ storageState: state, baseURL });

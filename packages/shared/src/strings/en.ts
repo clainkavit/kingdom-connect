@@ -2251,4 +2251,9 @@ export const en = {
   statusWeEmail: "We email you as soon as it is done",
   statusUntilThen:
     "Until then you can keep looking around. If staff need a clearer photo, we email you and this page shows what to change.",
+  pickStepApprovedNote: "Staff checked the post",
+  pickStepFindingNote:
+    "The platform suggests members whose record fits. Staff look at each one and choose",
+  pickStepAskingNote: "Everyone we pick is asked to share their profile with you",
+  pickStepListNote: "You get the people who said yes, with why we picked them",
 };

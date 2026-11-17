@@ -67,7 +67,7 @@ export function ScreenTitle({ children }: { children: string }) {
     <Text
       role="heading"
       aria-level={1}
-      className="mb-5 font-figtree-extrabold text-[26px] tracking-tight text-ink"
+      className="mb-5 font-figtree-extrabold text-[28px] leading-[34px] tracking-tight text-navy"
     >
       {children}
     </Text>

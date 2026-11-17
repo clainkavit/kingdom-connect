@@ -2294,4 +2294,9 @@ export const sw: Strings = {
   statusWeEmail: "Tutakutumia barua pepe mara tu ikikamilika",
   statusUntilThen:
     "Hadi wakati huo unaweza kuendelea kuangalia. Wafanyakazi wakihitaji picha iliyo wazi zaidi, tutakutumia barua pepe na ukurasa huu utaonyesha cha kubadilisha.",
+  pickStepApprovedNote: "Wafanyakazi wamekagua chapisho",
+  pickStepFindingNote:
+    "Jukwaa linapendekeza wanachama ambao rekodi zao zinafaa. Wafanyakazi wanaangalia kila mmoja na kuchagua",
+  pickStepAskingNote: "Kila tunayemchagua anaombwa kukushirikisha wasifu wake",
+  pickStepListNote: "Unapata waliokubali, pamoja na sababu tuliyowachagua",
 };

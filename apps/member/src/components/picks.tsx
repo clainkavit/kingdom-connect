@@ -1,5 +1,8 @@
 import { formatDate } from "@kingdom-connect/shared";
 import { useRouter } from "expo-router";
+import Check from "lucide-react-native/icons/check";
+import ChevronLeft from "lucide-react-native/icons/chevron-left";
+import ShieldCheck from "lucide-react-native/icons/shield-check";
 import { useState } from "react";
 import { Text, View } from "react-native";
 import { useLanguage } from "../lib/language";
@@ -14,6 +17,8 @@ import {
 import { useLoad } from "./events";
 import { Button, Chips, ConfirmButton, Field, Message } from "./form";
 import { LinkButton } from "./link-button";
+import { usePalette } from "./palette";
+import { usePhone } from "./sheet";
 import { ScreenTitle } from "./screens";
 import { EmptyState, ErrorState, LoadingRows } from "./states";
 
@@ -115,18 +120,34 @@ function PersonCard({
     else setProblem(t.pickFailed);
   };
   return (
-    <Card>
-      <Muted text={`#${rank}`} />
-      <LinkButton
-        href={`/profile/${person.memberId}`}
-        label={person.fullName}
-        className="self-start"
-      >
-        <Text className="font-figtree-bold text-[16px] text-blue">{person.fullName}</Text>
-      </LinkButton>
-      {[person.headline, region].filter(Boolean).length ? (
-        <Muted text={[person.headline, region].filter(Boolean).join(" · ")} />
-      ) : null}
+    <View className="min-w-[260px] flex-1 basis-[280px] gap-2.5 rounded-card border border-line bg-surface px-5 py-5">
+      <View className="flex-row items-center gap-3">
+        <Text className="font-figtree-bold text-[13px] text-ink-2">{`#${rank}`}</Text>
+        <View className="h-11 w-11 items-center justify-center rounded-full bg-warn-soft">
+          <Text className="font-figtree-bold text-[15px] text-navy">
+            {person.fullName
+              .split(/\s+/)
+              .filter(Boolean)
+              .slice(0, 2)
+              .map((w) => w[0]!.toUpperCase())
+              .join("")}
+          </Text>
+        </View>
+        <View className="min-w-0 flex-1">
+          <LinkButton
+            href={`/profile/${person.memberId}`}
+            label={person.fullName}
+            className="self-start"
+          >
+            <Text className="font-figtree-bold text-[16px] text-ink">{person.fullName}</Text>
+          </LinkButton>
+          {[person.headline, region].filter(Boolean).length ? (
+            <Text className="font-figtree text-[13px] text-ink-2">
+              {[person.headline, region].filter(Boolean).join(" · ")}
+            </Text>
+          ) : null}
+        </View>
+      </View>
       <View className="flex-row flex-wrap gap-1.5">
         <Text className="rounded-full bg-good-soft px-2.5 py-0.5 font-figtree-bold text-xs text-good-text">
           {t.pickVerifiedIdentity}
@@ -137,8 +158,12 @@ function PersonCard({
           </Text>
         ) : null}
       </View>
-      <Text className="font-figtree-semibold text-sm text-ink">{t.pickWhy}</Text>
-      <Text className="font-figtree text-[15px] leading-[22px] text-ink">{person.why}</Text>
+      <View className="gap-1 rounded-[14px] bg-surface-2 px-3.5 py-3">
+        <Text className="font-figtree-bold text-[11px] tracking-[0.06em] text-ink-2">
+          {t.pickWhy.toUpperCase()}
+        </Text>
+        <Text className="font-figtree text-[14px] leading-[21px] text-ink">{person.why}</Text>
+      </View>
       <Message text={problem} />
       {person.posterView === "not_fit" ? (
         <Muted text={t.pickMarkedNotFit} />
@@ -154,13 +179,15 @@ function PersonCard({
           <Button secondary label={t.pickNotFit} onPress={() => mark("not_fit")} />
         </View>
       )}
-    </Card>
+    </View>
   );
 }
 
 /** S50: what Kingdom Connect is doing for the post, then the list of people who said yes. */
 export function PickProgress({ api, opportunityId }: { api: PicksApi; opportunityId: string }) {
   const { t } = useLanguage();
+  const palette = usePalette();
+  const phone = usePhone();
   const [attempt, setAttempt] = useState(0);
   const [problem, setProblem] = useState<string | null>(null);
   const loaded = useLoad(async () => {
@@ -172,10 +199,18 @@ export function PickProgress({ api, opportunityId }: { api: PicksApi; opportunit
     <LinkButton
       href="/opportunities/mine"
       label={t.myPostsTitle}
-      className="min-h-[40px] justify-center"
+      className="min-h-[36px] flex-row items-center gap-1.5 self-start"
     >
-      <Text className="font-figtree-semibold text-sm text-blue">{t.myPostsTitle}</Text>
+      <ChevronLeft size={16} color={palette.navy} aria-hidden />
+      <Text className="font-figtree-semibold text-[15px] text-navy underline">
+        {t.myPostsTitle}
+      </Text>
     </LinkButton>
+  );
+  const frame = (children: React.ReactNode) => (
+    <View className="w-full max-w-[1200px] self-center">
+      <View className="w-full max-w-[920px] gap-4">{children}</View>
+    </View>
   );
   if (loaded.state === "failed")
     return <ErrorState message={t.pickLoadFailed} onRetry={() => setAttempt((a) => a + 1)} />;
@@ -184,37 +219,54 @@ export function PickProgress({ api, opportunityId }: { api: PicksApi; opportunit
   if (!progress) return <EmptyState title={t.pickNotFound} message={t.pickNotFoundHint} />;
   const current = stepOf[progress.status];
   const beta = (
-    <Card>
-      <BetaChip />
-      <Muted text={t.pickBetaNote} />
-    </Card>
+    <View className="flex-row items-start gap-3 rounded-card bg-warn-soft px-5 py-4">
+      <Text className="rounded-full bg-warn-text px-2.5 py-1 font-figtree-extrabold text-[11px] text-warn-soft">
+        {t.pickBeta}
+      </Text>
+      <Text className="flex-1 font-figtree text-[14px] leading-[21px] text-warn-text">
+        {t.pickBetaNote}
+      </Text>
+    </View>
   );
 
   if (progress.status === "sent")
-    return (
-      <View className="gap-3">
+    return frame(
+      <>
         {back}
         <ScreenTitle>{t.pickListTitle}</ScreenTitle>
         {beta}
-        <Text className="font-figtree text-[15px] leading-[22px] text-ink">
+        <Text className="font-figtree text-[15px] leading-[22px] text-ink-2">
           {t.pickListSummary(progress.wanted, progress.agreed ?? people.length)}
         </Text>
         {(progress.agreed ?? people.length) < progress.wanted ? <Muted text={t.pickFewer} /> : null}
-        <Muted text={t.pickListPrivacy} />
-        {people.map((p, i) => (
-          <PersonCard
-            key={p.id}
-            api={api}
-            person={p}
-            rank={i + 1}
-            onChanged={() => setAttempt((a) => a + 1)}
-          />
-        ))}
-      </View>
+        <View className="flex-row items-center gap-2.5 rounded-full border border-line bg-surface px-4 py-2.5">
+          <ShieldCheck size={16} color={palette.ink} aria-hidden />
+          <Text className="flex-1 font-figtree text-[13px] leading-5 text-ink">
+            {t.pickListPrivacy}
+          </Text>
+        </View>
+        <View className={phone ? "gap-3" : "flex-row flex-wrap gap-3"}>
+          {people.map((p, i) => (
+            <PersonCard
+              key={p.id}
+              api={api}
+              person={p}
+              rank={i + 1}
+              onChanged={() => setAttempt((a) => a + 1)}
+            />
+          ))}
+        </View>
+      </>,
     );
 
-  return (
-    <View className="gap-3">
+  const stepNotes = [
+    t.pickStepApprovedNote,
+    t.pickStepFindingNote,
+    t.pickStepAskingNote,
+    t.pickStepListNote,
+  ];
+  return frame(
+    <>
       {back}
       <ScreenTitle>
         {progress.status === "stopped" ? t.pickStoppedTitle : t.pickPickingTitle}
@@ -224,52 +276,74 @@ export function PickProgress({ api, opportunityId }: { api: PicksApi; opportunit
       ) : (
         <>
           {beta}
-          <Text className="font-figtree text-[15px] leading-[22px] text-ink">
+          <Text className="font-figtree text-[15px] leading-[22px] text-ink-2">
             {t.pickAskedFor(progress.wanted)}
           </Text>
-          <Card>
-            {progress.status === "waiting" ? <Muted text={t.pickWaitingApproval} /> : null}
-            {steps.map((key, i) => (
-              <View key={key} className="flex-row items-center gap-3 py-1">
+          <View className={phone ? "gap-4" : "flex-row items-start gap-4"}>
+            <View className="min-w-0 flex-1 rounded-card border border-line bg-surface px-5 py-2">
+              {progress.status === "waiting" ? (
+                <View className="py-3">
+                  <Muted text={t.pickWaitingApproval} />
+                </View>
+              ) : null}
+              {steps.map((key, i) => (
                 <View
-                  className={`h-7 w-7 items-center justify-center rounded-full ${i < current ? "bg-navy" : i === current ? "border-2 border-navy bg-surface" : "border border-line bg-surface"}`}
+                  key={key}
+                  className={`flex-row items-start gap-3 py-3.5 ${i > 0 ? "border-t border-line" : ""}`}
                 >
-                  <Text
-                    className={`font-figtree-bold text-xs ${i < current ? "text-navy-ink" : "text-ink-2"}`}
+                  <View
+                    className={`h-8 w-8 items-center justify-center rounded-full ${i < current ? "bg-good" : i === current ? "bg-navy" : "border border-line-2 bg-surface"}`}
                   >
-                    {i + 1}
+                    {i < current ? (
+                      <Check size={15} color="#ffffff" aria-hidden />
+                    ) : (
+                      <Text
+                        className={`font-figtree-bold text-[13px] ${i === current ? "text-white" : "text-ink-2"}`}
+                      >
+                        {i + 1}
+                      </Text>
+                    )}
+                  </View>
+                  <View className="min-w-0 flex-1 gap-0.5">
+                    <View className="flex-row flex-wrap items-center gap-2">
+                      <Text className="font-figtree-bold text-[15px] text-ink">{t[key]}</Text>
+                      {i === current ? (
+                        <Text className="rounded-full bg-warn-soft px-2 py-0.5 font-figtree-bold text-[11px] text-warn-text">
+                          {t.pickNow}
+                        </Text>
+                      ) : null}
+                    </View>
+                    <Text className="font-figtree text-[13px] leading-5 text-ink-2">
+                      {stepNotes[i]}
+                    </Text>
+                  </View>
+                </View>
+              ))}
+            </View>
+            <View className={phone ? "gap-3" : "w-[280px] gap-3"}>
+              {progress.note ? (
+                <View className="gap-1.5 rounded-card border border-line bg-surface px-5 py-4">
+                  <Text className="font-figtree-bold text-[15px] text-ink">{t.pickYourNote}</Text>
+                  <Text className="font-figtree text-[14px] leading-[21px] text-ink-2">
+                    {progress.note}
                   </Text>
                 </View>
-                <Text
-                  className={`flex-1 text-[15px] text-ink ${i === current ? "font-figtree-bold" : "font-figtree"}`}
-                >
-                  {t[key]}
-                </Text>
-                {i === current ? <Muted text={t.pickNow} /> : null}
-              </View>
-            ))}
-          </Card>
-          {progress.note ? (
-            <Card>
-              <Text className="font-figtree-semibold text-sm text-ink">{t.pickYourNote}</Text>
-              <Muted text={progress.note} />
-            </Card>
-          ) : null}
-          <Message text={problem} />
-          <View className="items-start">
-            <ConfirmButton
-              label={t.pickOpenInstead}
-              question={t.pickOpenInsteadConfirm}
-              confirmLabel={t.pickOpenInstead}
-              onConfirm={async () => {
-                if (await api.stop(opportunityId).catch(() => false)) setAttempt((a) => a + 1);
-                else setProblem(t.pickFailed);
-              }}
-            />
+              ) : null}
+              <Message text={problem} />
+              <ConfirmButton
+                label={t.pickOpenInstead}
+                question={t.pickOpenInsteadConfirm}
+                confirmLabel={t.pickOpenInstead}
+                onConfirm={async () => {
+                  if (await api.stop(opportunityId).catch(() => false)) setAttempt((a) => a + 1);
+                  else setProblem(t.pickFailed);
+                }}
+              />
+            </View>
           </View>
         </>
       )}
-    </View>
+    </>,
   );
 }
 

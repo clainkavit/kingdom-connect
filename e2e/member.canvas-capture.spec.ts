@@ -161,6 +161,19 @@ const pairs: Pair[] = [
     w: 1440,
     h: 1100,
   },
+  {
+    board: "Ideas-Details",
+    route: "/ideas/368eca10-991c-4df2-80a0-dcc59d3d8b8a/details",
+    w: 1440,
+    h: 1300,
+  },
+  { board: "Investor-Pool", route: "/ideas", w: 1440, h: 1300 },
+  {
+    board: "Investor-Interest",
+    route: "/ideas/5004d0fd-8e7b-4367-a306-7b763e78d77b",
+    w: 1440,
+    h: 1200,
+  },
   { board: "Member-Phone-Dashboard", route: "/", w: 430, h: 900 },
   { board: "Opp-Phone-List", route: "/opportunities", w: 430, h: 900 },
 ];

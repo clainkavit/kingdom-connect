@@ -46,6 +46,8 @@ const pairs: Pair[] = [
   { board: "Admin-Phone-Ideas", route: "/ideas", w: 430, h: 900 },
   { board: "Admin-Phone-Shortlist", route: "/picks", w: 430, h: 900 },
   { board: "Admin-Phone-Staff", route: "/settings", w: 430, h: 900, tab: "Staff accounts" },
+  { board: "Admin-SetPassword", route: "/set-password", w: 1440, h: 900, signedOut: true },
+  { board: "Admin-Phone-SetPassword", route: "/set-password", w: 430, h: 900, signedOut: true },
 ];
 
 test.skip(!canvasDir || !out, "set CANVAS_DIR and CAPTURE_OUT to capture");

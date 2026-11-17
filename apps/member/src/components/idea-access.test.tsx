@@ -60,6 +60,16 @@ describe("IdeaInterest (S24)", () => {
     expect(express).toHaveBeenCalledWith("i1", "investor", true);
   });
 
+  it("shows the investor's own focus as what the owner will see", async () => {
+    const isInvestor = vi.fn().mockResolvedValue(true);
+    const focus = vi
+      .fn()
+      .mockResolvedValue({ sectorEn: "Agriculture", sectorSw: "Kilimo", band: "10m_to_50m" });
+    await show(<IdeaInterest api={fakeAccess({ isInvestor, focus })} ideaId="i1" />);
+    await click("checkbox", "Ask anonymously as a verified investor");
+    expect(screen.getByText("Sector focus: Agriculture · Ticket: TZS 10M to 50M")).toBeTruthy();
+  });
+
   it("shows where an existing request stands", async () => {
     const myRequest = vi.fn().mockResolvedValue({
       status: "revoked",

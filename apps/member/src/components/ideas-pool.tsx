@@ -73,7 +73,15 @@ function ToneChip({ text, tone }: { text: string; tone: string }) {
 }
 
 /** An idea card as on the canvas (U04, V07): chips, title, problem, what it looks for, owner and interest. */
-export function IdeaCard({ idea, children }: { idea: IdeaSummary; children?: React.ReactNode }) {
+export function IdeaCard({
+  idea,
+  children,
+  matchesFocus = false,
+}: {
+  idea: IdeaSummary;
+  children?: React.ReactNode;
+  matchesFocus?: boolean;
+}) {
   const { t, language } = useLanguage();
   const palette = usePalette();
   const range = shortRange(t, idea);
@@ -90,6 +98,9 @@ export function IdeaCard({ idea, children }: { idea: IdeaSummary; children?: Rea
           tone="bg-blue-soft text-navy"
         />
         <ToneChip text={stageLabel(t, idea.stage)} tone={stageTone[idea.stage]} />
+        {matchesFocus ? (
+          <ToneChip text={`✓ ${t.investorMatchesFocus}`} tone="bg-good-soft text-good-text" />
+        ) : null}
       </View>
       <Text className="font-figtree-bold text-[17px] text-ink">{idea.title}</Text>
       <Text numberOfLines={2} className="font-figtree text-[14px] leading-[21px] text-ink-2">

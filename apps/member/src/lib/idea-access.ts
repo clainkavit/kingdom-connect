@@ -1,3 +1,4 @@
+import { type InvestorFocus, myInvestorFocus } from "./investor";
 import type { IdeaSeeking } from "@kingdom-connect/shared";
 import { legalEntityName, type PendingText } from "./legal";
 import { supabase } from "./supabase";
@@ -28,6 +29,8 @@ export type RequestCard = {
 
 export type IdeaAccessApi = {
   isInvestor: () => Promise<boolean>;
+  /** The caller's own sector focus and ticket band, shown on "The owner will see". */
+  focus: () => Promise<InvestorFocus | null>;
   myRequest: (ideaId: string) => Promise<MyRequest | null>;
   express: (ideaId: string, role: IdeaSeeking, anonymous: boolean) => Promise<string>;
   recordView: (ideaId: string) => Promise<void>;
@@ -44,6 +47,8 @@ export type IdeaAccessApi = {
 
 /** S24 and S28: interest in an idea and the owner's access manager (I03). */
 export const ideaAccessApi: IdeaAccessApi = {
+  focus: myInvestorFocus,
+
   async isInvestor() {
     const { data, error } = await supabase
       .from("investor_flags")

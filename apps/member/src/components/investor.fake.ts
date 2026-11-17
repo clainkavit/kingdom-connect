@@ -8,5 +8,7 @@ export const fakeInvestor = (over: Partial<InvestorApi> = {}): InvestorApi => ({
   pool: vi.fn().mockResolvedValue([]),
   setSaved: vi.fn().mockResolvedValue("ok"),
   regions: vi.fn().mockResolvedValue([{ value: "r1", label: "Arusha" }]),
+  focus: vi.fn().mockResolvedValue(null),
+  myRequests: vi.fn().mockResolvedValue([]),
   ...over,
 });

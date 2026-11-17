@@ -1,6 +1,7 @@
 import { isCurrent, memberNav, memberPhoneTabs, type NavItem } from "@kingdom-connect/shared";
 import logo from "../../assets/brand/logo.jpg";
 import { usePathname, useRouter } from "expo-router";
+import ChevronLeft from "lucide-react-native/icons/chevron-left";
 import Search from "lucide-react-native/icons/search";
 import { useState } from "react";
 import { Image, ScrollView, Text, TextInput, View, useWindowDimensions } from "react-native";
@@ -9,20 +10,12 @@ import { LanguageMenu } from "./language-menu";
 import { EnterOnChange } from "./motion";
 import { LinkButton } from "./link-button";
 import { NotificationBell } from "./notifications";
+import { PhoneHeaderProvider, usePhoneHeaderSlot } from "./phone-header";
 import { NavIcon } from "./nav-icon";
 import { ProfileLink } from "./profile-link";
 import { usePalette } from "./palette";
 
 const WIDE = 881;
-
-function Wordmark({ phone }: { phone?: boolean }) {
-  const { platformName } = useLanguage();
-  return (
-    <Text className={`font-figtree-extrabold text-white ${phone ? "text-[21px]" : "text-[19px]"}`}>
-      {platformName}
-    </Text>
-  );
-}
 
 /** The crown logo, cropped as on the canvas header: 40 by 36 with 10px corners. */
 function Mark() {
@@ -204,7 +197,73 @@ function TabBar({ pathname, unreadMessages }: { pathname: string; unreadMessages
   );
 }
 
-export function MemberShell({
+/** The maroon band on a phone: the logo, bell and avatar, or a detail page's Back and title (canvas). */
+function PhoneBand({ unread }: { unread: number }) {
+  const { t } = useLanguage();
+  const header = usePhoneHeaderSlot();
+  if (header)
+    return (
+      <View className="gap-1 bg-navy px-5 pb-5 pt-3">
+        {header.back ? (
+          <LinkButton
+            href={header.back.href}
+            label={header.back.label}
+            className="min-h-[36px] flex-row items-center gap-1 self-start"
+          >
+            <ChevronLeft size={16} color="#ffffff" aria-hidden />
+            <Text className="font-figtree-semibold text-[15px] text-white">
+              {header.back.short ?? t.back}
+            </Text>
+          </LinkButton>
+        ) : null}
+        <View className="flex-row items-center gap-3.5">
+          {header.leading ?? null}
+          <View className="min-w-0 flex-1 gap-0.5">
+            <Text
+              role="heading"
+              aria-level={1}
+              className="font-figtree-extrabold text-[22px] leading-[28px] text-white"
+            >
+              {header.title}
+            </Text>
+            {header.subtitle ? (
+              <Text className="font-figtree text-[14px] leading-5 text-navy-ink">
+                {header.subtitle}
+              </Text>
+            ) : null}
+            {header.detail ? (
+              <Text className="font-figtree text-[13px] leading-5 text-navy-ink">
+                {header.detail}
+              </Text>
+            ) : null}
+          </View>
+        </View>
+      </View>
+    );
+  return (
+    <View className="flex-row items-center justify-between bg-navy px-5 py-3">
+      <Mark />
+      <View className="flex-row items-center">
+        <NotificationBell count={unread} color="#ffffff" />
+        <ProfileLink color="#ffffff" />
+      </View>
+    </View>
+  );
+}
+
+export function MemberShell(props: {
+  children: React.ReactNode;
+  unread?: number;
+  unreadMessages?: number;
+}) {
+  return (
+    <PhoneHeaderProvider>
+      <ShellFrame {...props} />
+    </PhoneHeaderProvider>
+  );
+}
+
+function ShellFrame({
   children,
   unread = 0,
   unreadMessages = 0,
@@ -221,13 +280,7 @@ export function MemberShell({
       {wide ? (
         <TopBar pathname={pathname} unread={unread} unreadMessages={unreadMessages} />
       ) : (
-        <View className="flex-row items-center justify-between bg-navy px-5 py-2.5">
-          <Wordmark phone />
-          <View className="flex-row items-center">
-            <NotificationBell count={unread} color="#ffffff" />
-            <ProfileLink color="#ffffff" />
-          </View>
-        </View>
+        <PhoneBand unread={unread} />
       )}
       <ScrollView
         className="flex-1"

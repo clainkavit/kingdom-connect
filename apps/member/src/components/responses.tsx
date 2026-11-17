@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Linking, Pressable, Text, View } from "react-native";
 import Lock from "lucide-react-native/icons/lock";
 import SquarePlus from "lucide-react-native/icons/square-plus";
+import Star from "lucide-react-native/icons/star";
 import { useLanguage } from "../lib/language";
 import type { OpportunityDetail } from "../lib/opportunity-browse";
 import {
@@ -516,6 +517,7 @@ export function PostResponses({
   opportunityId: string;
 }) {
   const { t } = useLanguage();
+  const palette = usePalette();
   const [attempt, setAttempt] = useState(0);
   const loaded = useLoad(() => api.forPost(opportunityId), attempt);
   const hires = useLoad(
@@ -525,40 +527,43 @@ export function PostResponses({
   const hireFor = (responseId: string) =>
     hires.state === "ready" ? hires.value.find((h) => h.responseId === responseId) : undefined;
   return (
-    <View className="gap-3">
-      <LinkButton
-        href="/opportunities/mine"
-        label={t.myPostsTitle}
-        className="min-h-[40px] justify-center"
-      >
-        <Text className="font-figtree-semibold text-sm text-blue">{t.myPostsTitle}</Text>
-      </LinkButton>
-      <ScreenTitle>{t.respForPostTitle}</ScreenTitle>
-      {loaded.state === "failed" ? (
-        <ErrorState message={t.respLoadFailed} onRetry={() => setAttempt((a) => a + 1)} />
-      ) : loaded.state === "loading" ? (
-        <LoadingRows />
-      ) : loaded.value.length === 0 ? (
-        <EmptyState title={t.respForPostEmpty} message={t.respForPostEmptyHint} />
-      ) : (
-        loaded.value.map((r) => (
-          <ResponseCard
-            key={r.id}
-            api={api}
-            work={work}
-            hire={hireFor(r.id)}
-            opportunityId={opportunityId}
-            response={r}
-            onChanged={() => setAttempt((a) => a + 1)}
-          />
-        ))
-      )}
-      {work && loaded.state === "ready" && loaded.value.some((r) => r.status === "shortlisted") ? (
-        <View className="gap-1 rounded-card border border-line bg-surface-2 p-4">
-          <Text className="font-figtree-bold text-[15px] text-ink">{t.respWhyHiredTitle}</Text>
-          <Text className="font-figtree text-sm leading-5 text-ink-2">{t.respWhyHired}</Text>
-        </View>
-      ) : null}
+    <View className="w-full max-w-[1200px] self-center">
+      <View className="w-full max-w-[920px] gap-4">
+        <PageHeader
+          back={{ label: t.myPostsTitle, href: "/opportunities/mine" }}
+          title={t.respForPostTitle}
+        />
+        {loaded.state === "failed" ? (
+          <ErrorState message={t.respLoadFailed} onRetry={() => setAttempt((a) => a + 1)} />
+        ) : loaded.state === "loading" ? (
+          <LoadingRows />
+        ) : loaded.value.length === 0 ? (
+          <EmptyState title={t.respForPostEmpty} message={t.respForPostEmptyHint} />
+        ) : (
+          loaded.value.map((r) => (
+            <ResponseCard
+              key={r.id}
+              api={api}
+              work={work}
+              hire={hireFor(r.id)}
+              opportunityId={opportunityId}
+              response={r}
+              onChanged={() => setAttempt((a) => a + 1)}
+            />
+          ))
+        )}
+        {work &&
+        loaded.state === "ready" &&
+        loaded.value.some((r) => r.status === "shortlisted") ? (
+          <View className="gap-1.5 rounded-card border border-line bg-surface-2 px-5 py-4">
+            <View className="flex-row items-center gap-2">
+              <Star size={16} color={palette.ink} aria-hidden />
+              <Text className="font-figtree-bold text-[15px] text-ink">{t.respWhyHiredTitle}</Text>
+            </View>
+            <Text className="font-figtree text-sm leading-5 text-ink-2">{t.respWhyHired}</Text>
+          </View>
+        ) : null}
+      </View>
     </View>
   );
 }

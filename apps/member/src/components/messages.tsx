@@ -1,5 +1,6 @@
 import { useRouter } from "expo-router";
 import { formatDate } from "@kingdom-connect/shared";
+import ChevronLeft from "lucide-react-native/icons/chevron-left";
 import Lock from "lucide-react-native/icons/lock";
 import Paperclip from "lucide-react-native/icons/paperclip";
 import Search from "lucide-react-native/icons/search";
@@ -22,6 +23,7 @@ import { LinkButton } from "./link-button";
 import { ReportLink } from "./report-link";
 import { Avatar } from "./profile";
 import { ScreenTitle } from "./screens";
+import { usePhone } from "./sheet";
 import { EmptyState, ErrorState, LoadingRows } from "./states";
 
 /** Opens (or starts) the thread with a connection. */
@@ -323,6 +325,7 @@ export function ThreadScreen({
 }) {
   const { t, language } = useLanguage();
   const palette = usePalette();
+  const phone = usePhone();
   const [thread, setThread] = useState<Thread | null | undefined>(undefined);
   const [failed, setFailed] = useState(false);
   const [reloads, setReloads] = useState(0);
@@ -407,7 +410,18 @@ export function ThreadScreen({
       <View
         className={`flex-row flex-wrap items-center justify-between gap-3 ${embedded ? "border-b border-line px-5 py-3.5" : ""}`}
       >
-        <View className="min-w-0 flex-1 flex-row items-center gap-3">
+        <View
+          className={`min-w-0 flex-row items-center gap-3 ${phone && !embedded ? "w-full" : "flex-1"}`}
+        >
+          {phone && !embedded ? (
+            <LinkButton
+              href="/messages"
+              label={t.navMessages}
+              className="h-10 w-10 items-center justify-center rounded-full"
+            >
+              <ChevronLeft size={22} color={palette.navy} aria-hidden />
+            </LinkButton>
+          ) : null}
           <Avatar name={name} url={null} size={44} />
           <View className="min-w-0 flex-1">
             <Text

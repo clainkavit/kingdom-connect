@@ -219,6 +219,53 @@ const pairs: Pair[] = [
     w: 430,
     h: 900,
   },
+  {
+    board: "Phone-Verify-About",
+    route: "/profile/verify",
+    w: 430,
+    h: 900,
+    press: "Continue: About you",
+  },
+  { board: "Phone-Verify-What", route: "/profile/verify", w: 430, h: 900, press: "What you do" },
+  { board: "Phone-Verify-Work", route: "/profile/verify", w: 430, h: 900, press: "Your work" },
+  { board: "Phone-Verify-ID", route: "/profile/verify", w: 430, h: 900, press: "ID and photos" },
+  {
+    board: "Phone-Verify-Check",
+    route: "/profile/verify",
+    w: 430,
+    h: 900,
+    press: "Check and send",
+  },
+  { board: "Phone-Verify-Status", route: "/profile/verify", w: 430, h: 900 },
+  { board: "Phone-Home-Unverified", route: "/", w: 430, h: 900 },
+  {
+    board: "Phone-Conversation",
+    route: "/messages/c313cb40-3489-408b-b02d-a340b4550c18",
+    w: 430,
+    h: 900,
+  },
+  {
+    board: "Ideas-Phone-Details",
+    route: "/ideas/368eca10-991c-4df2-80a0-dcc59d3d8b8a/details",
+    w: 430,
+    h: 900,
+  },
+  {
+    board: "Ideas-Phone-Manage",
+    route: "/ideas/9860f9cd-c663-4040-b80c-db7722be2600",
+    w: 430,
+    h: 900,
+  },
+  { board: "Ideas-Phone-Share", route: "/ideas/new", w: 430, h: 900 },
+  { board: "Investor-Phone-Pool", route: "/ideas", w: 430, h: 900 },
+  {
+    board: "Investor-Phone-Interest",
+    route: "/ideas/5004d0fd-8e7b-4367-a306-7b763e78d77b",
+    w: 430,
+    h: 900,
+  },
+  { board: "Business-Phone-Dashboard", route: "/", w: 430, h: 900 },
+  { board: "Biz-Phone-Verify", route: "/business", w: 430, h: 900 },
 ];
 
 test.skip(!canvasDir || !out, "set CANVAS_DIR and CAPTURE_OUT to capture");

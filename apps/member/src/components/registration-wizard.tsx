@@ -16,6 +16,7 @@ import { Text, View } from "react-native";
 import { useLanguage } from "../lib/language";
 import type { Option, SavedDraft } from "../lib/registration";
 import { Button, Message } from "./form";
+import { usePhoneHeader } from "./phone-header";
 import { usePhone } from "./sheet";
 import { VerifyOverview, verifyStepTitles } from "./verify-overview";
 import { CategoryStep, DetailsStep, IdentityStep, PersonalStep, ReviewStep } from "./wizard-steps";
@@ -148,6 +149,16 @@ export function RegistrationWizard({
       ?.label;
 
   const props = { draft, update, problems };
+  const inBand = usePhoneHeader(
+    overview
+      ? null
+      : {
+          back: { label: t.back, href: "/profile/verify", onPress: back },
+          title: t[verifyStepTitles[step]!] as string,
+          subtitle: t.stepOf(shownStepNumber(step), VERIFY_STEPS.length),
+        },
+    phone,
+  );
   const titleClass = `font-figtree-extrabold text-navy ${phone ? "text-[24px] leading-[29px]" : "text-[32px] leading-[37px]"}`;
 
   if (overview)
@@ -168,25 +179,27 @@ export function RegistrationWizard({
       </View>
     );
 
-  const back = () => {
+  function back() {
     if (step === VERIFY_STEPS[0]) {
       setMessage(null);
       setOverview(true);
       return;
     }
     go(previousVerifyStep(step));
-  };
+  }
 
   return (
     <View className="gap-4">
-      <View className="items-start gap-2">
-        <Text className="rounded-full bg-surface-2 px-2.5 py-1 font-figtree-bold text-[12px] text-ink">
-          {t.stepOf(shownStepNumber(step), VERIFY_STEPS.length)}
-        </Text>
-        <Text role="heading" aria-level={1} className={titleClass}>
-          {t[verifyStepTitles[step]!] as string}
-        </Text>
-      </View>
+      {inBand ? null : (
+        <View className="items-start gap-2">
+          <Text className="rounded-full bg-surface-2 px-2.5 py-1 font-figtree-bold text-[12px] text-ink">
+            {t.stepOf(shownStepNumber(step), VERIFY_STEPS.length)}
+          </Text>
+          <Text role="heading" aria-level={1} className={titleClass}>
+            {t[verifyStepTitles[step]!] as string}
+          </Text>
+        </View>
+      )}
 
       <View className="gap-4 rounded-card border border-line bg-surface px-6 py-6">
         {step === 1 ? <PersonalStep {...props} regions={regions} districts={districts} /> : null}

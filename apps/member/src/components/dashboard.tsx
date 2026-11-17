@@ -36,6 +36,7 @@ import { closingDay } from "./opportunities";
 import { typeLabel } from "./opportunity-form";
 import { usePalette } from "./palette";
 import { PeopleYouMayKnow } from "./people-you-may-know";
+import { usePhoneHeader } from "./phone-header";
 import { usePhone } from "./sheet";
 
 type QuickAction = {
@@ -119,6 +120,7 @@ function RegistrationRow({ item }: { item: MyRegistration }) {
 function HomeHeader({ welcome, today }: { welcome: Welcome; today: Date }) {
   const { t, language } = useLanguage();
   const palette = usePalette();
+  const phone = usePhone();
   const place = [welcome.district, welcome.region]
     .filter((p) => p !== null)
     .map((p) => p[language])
@@ -127,39 +129,63 @@ function HomeHeader({ welcome, today }: { welcome: Welcome; today: Date }) {
     (a) => welcome.level >= a.minLevel && !(a.posts && welcome.postingPaused),
   );
   const first = welcome.fullName.split(/\s+/)[0] ?? welcome.fullName;
+  const badges = (
+    <View className="flex-row flex-wrap gap-2">
+      <Chip tone="good" text={t.homeVerifiedMember} />
+      {welcome.categories
+        .filter((c) => categoryLabel[c])
+        .map((c) => (
+          <Chip key={c} text={t[categoryLabel[c]!] as string} />
+        ))}
+      {welcome.level >= POSTER_LEVEL ? <Chip tone="gold" text={t.homePosterBadge} /> : null}
+    </View>
+  );
+  const inBand = usePhoneHeader(
+    {
+      home: true,
+      title: t.homeWelcome(first),
+      detail: [formatDate(today, language), place].filter(Boolean).join(" · "),
+      below: badges,
+    },
+    phone,
+  );
   return (
     <View className="flex-row flex-wrap items-start justify-between gap-4">
-      <View className="min-w-0 gap-1.5">
-        <View className="flex-row flex-wrap items-center gap-x-3">
-          <Text className="font-figtree text-[13px] text-ink-2">{formatDate(today, language)}</Text>
-          {place ? (
-            <View className="flex-row items-center gap-1">
-              <MapPin size={13} color={palette.ink2} aria-hidden />
-              <Text className="font-figtree text-[13px] text-ink-2">{place}</Text>
-            </View>
+      {inBand ? (
+        welcome.postingPaused ? (
+          <Text className="font-figtree text-sm text-ink-2">{t.postingPausedNote}</Text>
+        ) : null
+      ) : (
+        <View className="min-w-0 gap-1.5">
+          <View className="flex-row flex-wrap items-center gap-x-3">
+            <Text className="font-figtree text-[13px] text-ink-2">
+              {formatDate(today, language)}
+            </Text>
+            {place ? (
+              <View className="flex-row items-center gap-1">
+                <MapPin size={13} color={palette.ink2} aria-hidden />
+                <Text className="font-figtree text-[13px] text-ink-2">{place}</Text>
+              </View>
+            ) : null}
+          </View>
+          <Text
+            role="heading"
+            aria-level={1}
+            className="font-figtree-extrabold text-[32px] leading-[37px] text-navy"
+          >
+            {t.homeWelcome(first)}
+          </Text>
+          {badges}
+          {welcome.postingPaused ? (
+            <Text className="font-figtree text-sm text-ink-2">{t.postingPausedNote}</Text>
           ) : null}
         </View>
-        <Text
-          role="heading"
-          aria-level={1}
-          className="font-figtree-extrabold text-[32px] leading-[37px] text-navy"
-        >
-          {t.homeWelcome(first)}
-        </Text>
-        <View className="flex-row flex-wrap gap-2">
-          <Chip tone="good" text={t.homeVerifiedMember} />
-          {welcome.categories
-            .filter((c) => categoryLabel[c])
-            .map((c) => (
-              <Chip key={c} text={t[categoryLabel[c]!] as string} />
-            ))}
-          {welcome.level >= POSTER_LEVEL ? <Chip tone="gold" text={t.homePosterBadge} /> : null}
-        </View>
-        {welcome.postingPaused ? (
-          <Text className="font-figtree text-sm text-ink-2">{t.postingPausedNote}</Text>
-        ) : null}
-      </View>
-      <View className="flex-row flex-wrap items-center gap-3">
+      )}
+      <View
+        className={
+          phone ? "w-full flex-row flex-wrap gap-2.5" : "flex-row flex-wrap items-center gap-3"
+        }
+      >
         {actions.map((a, i) => {
           const primary = i === 0 && a.key === "actionPostOpportunity";
           const Icon = a.icon;
@@ -168,7 +194,7 @@ function HomeHeader({ welcome, today }: { welcome: Welcome; today: Date }) {
               key={a.href}
               href={a.href}
               label={t[a.key] as string}
-              className={`min-h-[48px] flex-row items-center gap-2 rounded-full px-5 ${primary ? "bg-navy" : "border border-line-2 bg-surface"}`}
+              className={`min-h-[48px] flex-row items-center gap-2 ${phone ? (primary ? "w-full justify-center rounded-[14px]" : "min-w-[140px] flex-1 basis-[45%] rounded-[14px]") : "rounded-full"} px-5 ${primary ? "bg-navy" : "border border-line-2 bg-surface"}`}
             >
               <Icon size={18} color={primary ? palette.navyInk : palette.navy} aria-hidden />
               <Text

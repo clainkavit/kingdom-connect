@@ -1,16 +1,25 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { Text, View } from "react-native";
 
 /** What a detail page shows in the maroon band on a phone, as on the canvas: Back, the title and a line. */
 export type PhoneHeader = {
-  /** `short` is the word shown in the band; the band says Back without it. */
-  back?: { label: string; href: string; short?: string };
+  /**
+   * `short` is the word shown in the band; the band says Back without it. `onPress` replaces following
+   * `href`, for a back step inside the page such as a wizard's previous step.
+   */
+  back?: { label: string; href: string; short?: string; onPress?: () => void };
   title: string;
   subtitle?: string;
   /** Shown left of the title, such as a member's photo. */
   leading?: React.ReactNode;
   /** A second subtitle line, such as the member's place. */
   detail?: string;
+  /**
+   * The home band: keeps the logo, bell and avatar, then shows `detail` (date and place), the title,
+   * the subtitle and `below` (badges) under them.
+   */
+  home?: boolean;
+  below?: React.ReactNode;
 };
 
 type Slot = {
@@ -35,12 +44,18 @@ export const usePhoneHeaderSlot = () => useContext(PhoneHeaderContext).header;
  */
 export function usePhoneHeader(header: PhoneHeader | null, active: boolean): boolean {
   const { set } = useContext(PhoneHeaderContext);
+  const onBack = useRef(header?.back?.onPress);
+  onBack.current = header?.back?.onPress;
   const key = header
-    ? `${header.back?.href ?? ""}|${header.back?.label ?? ""}|${header.title}|${header.subtitle ?? ""}|${header.detail ?? ""}|${header.leading ? 1 : 0}`
+    ? `${header.back?.href ?? ""}|${header.back?.label ?? ""}|${header.title}|${header.subtitle ?? ""}|${header.detail ?? ""}|${header.leading ? 1 : 0}|${header.back?.onPress ? 1 : 0}|${header.home ? 1 : 0}|${header.below ? 1 : 0}`
     : "";
   useEffect(() => {
     if (!active || !header || !set) return;
-    set(header);
+    set(
+      header.back?.onPress
+        ? { ...header, back: { ...header.back, onPress: () => onBack.current?.() } }
+        : header,
+    );
     return () => set(null);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [active, key, set]);

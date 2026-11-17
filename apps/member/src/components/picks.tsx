@@ -1,7 +1,6 @@
 import { formatDate } from "@kingdom-connect/shared";
 import { useRouter } from "expo-router";
 import Check from "lucide-react-native/icons/check";
-import ChevronLeft from "lucide-react-native/icons/chevron-left";
 import ShieldCheck from "lucide-react-native/icons/shield-check";
 import { useState } from "react";
 import { Text, View } from "react-native";
@@ -19,7 +18,7 @@ import { Button, Chips, ConfirmButton, Field, Message } from "./form";
 import { LinkButton } from "./link-button";
 import { usePalette } from "./palette";
 import { usePhone } from "./sheet";
-import { ScreenTitle } from "./screens";
+import { PageHeader } from "./screens";
 import { EmptyState, ErrorState, LoadingRows } from "./states";
 
 export type FindMode = { mode: "open" | "pick"; size: PickSize | undefined; note: string };
@@ -195,18 +194,7 @@ export function PickProgress({ api, opportunityId }: { api: PicksApi; opportunit
     const people = progress?.status === "sent" ? await api.list(opportunityId) : [];
     return { progress, people };
   }, attempt);
-  const back = (
-    <LinkButton
-      href="/opportunities/mine"
-      label={t.myPostsTitle}
-      className="min-h-[36px] flex-row items-center gap-1.5 self-start"
-    >
-      <ChevronLeft size={16} color={palette.navy} aria-hidden />
-      <Text className="font-figtree-semibold text-[15px] text-navy underline">
-        {t.myPostsTitle}
-      </Text>
-    </LinkButton>
-  );
+  const myPosts = { label: t.myPostsTitle, href: "/opportunities/mine" };
   const frame = (children: React.ReactNode) => (
     <View className="w-full max-w-[1200px] self-center">
       <View className="w-full max-w-[920px] gap-4">{children}</View>
@@ -232,8 +220,7 @@ export function PickProgress({ api, opportunityId }: { api: PicksApi; opportunit
   if (progress.status === "sent")
     return frame(
       <>
-        {back}
-        <ScreenTitle>{t.pickListTitle}</ScreenTitle>
+        <PageHeader back={myPosts} title={t.pickListTitle} />
         {beta}
         <Text className="font-figtree text-[15px] leading-[22px] text-ink-2">
           {t.pickListSummary(progress.wanted, progress.agreed ?? people.length)}
@@ -267,10 +254,10 @@ export function PickProgress({ api, opportunityId }: { api: PicksApi; opportunit
   ];
   return frame(
     <>
-      {back}
-      <ScreenTitle>
-        {progress.status === "stopped" ? t.pickStoppedTitle : t.pickPickingTitle}
-      </ScreenTitle>
+      <PageHeader
+        back={myPosts}
+        title={progress.status === "stopped" ? t.pickStoppedTitle : t.pickPickingTitle}
+      />
       {progress.status === "stopped" ? (
         <Message tone="info" text={t.pickStopped} />
       ) : (
@@ -416,8 +403,11 @@ export function PickedInvites({ api }: { api: PicksApi }) {
   const [attempt, setAttempt] = useState(0);
   const loaded = useLoad(() => api.invites(), attempt);
   return (
-    <View className="gap-3">
-      <ScreenTitle>{t.pickInvitesTitle}</ScreenTitle>
+    <View className="w-full max-w-[920px] gap-4">
+      <PageHeader
+        back={{ label: t.notificationsTitle, href: "/notifications" }}
+        title={t.pickInvitesTitle}
+      />
       {loaded.state === "failed" ? (
         <ErrorState message={t.pickLoadFailed} onRetry={() => setAttempt((a) => a + 1)} />
       ) : loaded.state === "loading" ? (

@@ -330,11 +330,13 @@ export function GrowthScreen({
         <Text
           role="heading"
           aria-level={1}
-          className="font-figtree-extrabold text-[30px] leading-[36px] text-ink"
+          className={`font-figtree-extrabold text-ink ${phone ? "text-[24px] leading-[29px]" : "text-[30px] leading-[36px]"}`}
         >
           {t.navGrowth}
         </Text>
-        <Text className="font-figtree text-[15px] text-ink-2">{t.growthIntro}</Text>
+        {phone ? null : (
+          <Text className="font-figtree text-[15px] text-ink-2">{t.growthIntro}</Text>
+        )}
       </View>
       <View role="navigation" aria-label={t.growthSections} className="flex-row flex-wrap gap-3">
         {sections.map((s) => {
@@ -344,7 +346,7 @@ export function GrowthScreen({
               key={s.href}
               href={s.href}
               label={t[s.key]}
-              className={`flex-row items-center gap-3.5 rounded-[14px] border border-line bg-surface px-[18px] py-4 ${phone ? "w-full" : "min-w-[220px] flex-1"}`}
+              className={`rounded-[14px] border border-line bg-surface ${phone ? "w-[48%] flex-grow gap-2.5 px-4 py-4" : "min-w-[220px] flex-1 flex-row items-center gap-3.5 px-[18px] py-4"}`}
             >
               <View
                 className={`h-[42px] w-[42px] items-center justify-center rounded-[12px] ${s.tone}`}

@@ -2256,4 +2256,5 @@ export const en = {
     "The platform suggests members whose record fits. Staff look at each one and choose",
   pickStepAskingNote: "Everyone we pick is asked to share their profile with you",
   pickStepListNote: "You get the people who said yes, with why we picked them",
+  interestOwnerSees: "The owner will see",
 };

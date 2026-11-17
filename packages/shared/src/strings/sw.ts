@@ -2299,4 +2299,5 @@ export const sw: Strings = {
     "Jukwaa linapendekeza wanachama ambao rekodi zao zinafaa. Wafanyakazi wanaangalia kila mmoja na kuchagua",
   pickStepAskingNote: "Kila tunayemchagua anaombwa kukushirikisha wasifu wake",
   pickStepListNote: "Unapata waliokubali, pamoja na sababu tuliyowachagua",
+  interestOwnerSees: "Mmiliki ataona",
 };

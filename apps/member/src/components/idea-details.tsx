@@ -13,7 +13,10 @@ import { useLanguage } from "../lib/language";
 import { useLoad } from "./events";
 import { Button, ConfirmButton, Message } from "./form";
 import { Section } from "./profile";
-import { ScreenTitle } from "./screens";
+import { PageHeader } from "./screens";
+import { usePalette } from "./palette";
+import { usePhone } from "./sheet";
+import Lock from "lucide-react-native/icons/lock";
 import { EmptyState, ErrorState, LoadingRows } from "./states";
 
 const megabytes = (bytes: number) => (bytes / (1024 * 1024)).toFixed(1);
@@ -180,7 +183,7 @@ function Body({ details }: { details: IdeaDetails }) {
       {parts.map(([label, text]) =>
         text ? (
           <View key={label} className="gap-1">
-            <Text className="font-figtree-bold text-[15px] text-ink">
+            <Text className="font-figtree-bold text-[15px] text-navy">
               {label.replace(/\s*\(.*\)$/, "")}
             </Text>
             <Text className="font-figtree text-[15px] leading-6 text-ink">{text}</Text>
@@ -202,6 +205,8 @@ export function IdeaDetailsScreen({
   ideaId: string;
 }) {
   const { t, language } = useLanguage();
+  const palette = usePalette();
+  const phone = usePhone();
   const [attempt, setAttempt] = useState(0);
   const loaded = useLoad(async () => {
     const details = await api.open(ideaId);
@@ -227,14 +232,26 @@ export function IdeaDetailsScreen({
   const line = `${details.viewerName} · ${formatDate(new Date(details.openedAt), language)} · ${t.ideaConfidential}`;
 
   return (
-    <View className="gap-4">
-      <ScreenTitle>{details.title}</ScreenTitle>
-      <Message tone="info" text={t.ideaOpenedBy(line)} />
-      <View className="relative overflow-hidden rounded-card border border-line bg-surface px-5 py-[18px]">
-        <Body details={details} />
-        <Watermark line={line} />
+    <View className="w-full max-w-[1200px] gap-4 self-center">
+      <PageHeader
+        back={{ label: t.ideaBackToPool, href: `/ideas/${ideaId}` }}
+        title={details.title}
+      />
+      <View className="flex-row items-start gap-2.5 rounded-[14px] bg-warn-soft px-4 py-3">
+        <Lock size={15} color={palette.warnText} aria-hidden />
+        <Text className="flex-1 font-figtree text-[14px] leading-5 text-warn-text">
+          {t.ideaOpenedBy(line)}
+        </Text>
       </View>
-      <Files api={api} ideaId={ideaId} isOwner={details.isOwner} />
+      <View className={phone ? "gap-4" : "flex-row items-start gap-4"}>
+        <View className="relative min-w-0 flex-1 overflow-hidden rounded-card border border-line bg-surface px-6 py-5">
+          <Body details={details} />
+          <Watermark line={line} />
+        </View>
+        <View className={phone ? "" : "w-[400px]"}>
+          <Files api={api} ideaId={ideaId} isOwner={details.isOwner} />
+        </View>
+      </View>
     </View>
   );
 }

@@ -156,6 +156,7 @@ function IdeaTerms({
 /** S23: "I'm interested", or where the member's request stands (I03), then the NDA (I04). */
 export function IdeaInterest({ api, ideaId }: { api: IdeaAccessApi; ideaId: string }) {
   const { t } = useLanguage();
+  const palette = usePalette();
   const [attempt, setAttempt] = useState(0);
   const loaded = useLoad(
     async () => ({ mine: await api.myRequest(ideaId), investor: await api.isInvestor() }),
@@ -220,9 +221,30 @@ export function IdeaInterest({ api, ideaId }: { api: IdeaAccessApi; ideaId: stri
       )}
       {investor ? (
         <>
-          <Checkbox label={t.interestAnonymous} checked={anonymous} onChange={setAnonymous} />
+          <View
+            className={`rounded-[16px] px-4 py-2 ${anonymous ? "bg-warn-soft" : "border border-line bg-surface"}`}
+          >
+            <Checkbox label={t.interestAnonymous} checked={anonymous} onChange={setAnonymous} />
+          </View>
           {anonymous ? (
-            <Text className="font-figtree text-[13px] text-ink-2">{t.interestAnonymousHint}</Text>
+            <View className="gap-2 rounded-[16px] border border-line bg-surface-2 px-4 py-3">
+              <Text className="font-figtree-bold text-[11px] tracking-[0.06em] text-ink-2">
+                {t.interestOwnerSees.toUpperCase()}
+              </Text>
+              <View className="flex-row items-center gap-3">
+                <View className="h-9 w-9 items-center justify-center rounded-full bg-warn-soft">
+                  <ShieldCheck size={16} color={palette.navy} aria-hidden />
+                </View>
+                <View className="min-w-0 flex-1">
+                  <Text className="font-figtree-bold text-[15px] text-ink">
+                    {t.accessVerifiedInvestor}
+                  </Text>
+                  <Text className="font-figtree text-[13px] leading-5 text-ink-2">
+                    {t.interestAnonymousHint}
+                  </Text>
+                </View>
+              </View>
+            </View>
           ) : null}
         </>
       ) : null}

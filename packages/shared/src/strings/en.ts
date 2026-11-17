@@ -2232,4 +2232,23 @@ export const en = {
     "Only your connections can message you. To start a conversation, open a connection and tap Message.",
   refAgainCount: (again: number, total: number) => `${again} of ${total}`,
   refAgainLine: (name: string) => `members who worked with ${name} would work with them again`,
+  categoryIntro:
+    "Tick all that apply. Each one unlocks its own badge once staff check its proof, later.",
+  categoryHintProfessional: "My career: show my skills and find jobs",
+  categoryHintBusiness: "My business: list it, find partners and tenders",
+  categoryHintEntrepreneur: "My idea: share it and find a partner or investor",
+  categoryHintOther: "Tell us what you hope to find",
+  detailsNoDocsNote:
+    "No documents are needed now. Business documents come later, when you verify your business.",
+  photoTakeOrUpload: "Take or upload a photo",
+  photoFaceHint: "Your face, in good light",
+  photoIdHint: "All four corners, no glare",
+  idSavedShort: "ID number saved",
+  photosAddedList: (list: string) => `${list} added`,
+  statusSentToStaff: "Sent to staff",
+  statusStaffCheck: "Staff check your ID and photos",
+  statusYouCanAct: "You can connect, apply and post",
+  statusWeEmail: "We email you as soon as it is done",
+  statusUntilThen:
+    "Until then you can keep looking around. If staff need a clearer photo, we email you and this page shows what to change.",
 };

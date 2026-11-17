@@ -104,7 +104,9 @@ export default function VerifyIdentityScreen() {
   const drafting = !failed && loaded?.status.kind === "drafting" && loaded.draft;
   const main = (
     <View className="min-w-0 flex-1 gap-4">
-      {drafting ? null : <ScreenTitle>{t.verifyTitle}</ScreenTitle>}
+      {drafting || loaded?.status.kind === "under_review" ? null : (
+        <ScreenTitle>{t.verifyTitle}</ScreenTitle>
+      )}
       {failed ? <ErrorState message={t.statusLoadFailed} onRetry={reload} /> : null}
       {!failed && loaded?.status.kind === "drafting" && loaded.draft ? (
         <RegistrationWizard initial={loaded.draft} api={api} onSubmitted={reload} />

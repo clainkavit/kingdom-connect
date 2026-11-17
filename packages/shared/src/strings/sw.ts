@@ -2275,4 +2275,23 @@ export const sw: Strings = {
     "Ni wale uliounganishwa nao tu wanaoweza kukutumia ujumbe. Kuanza mazungumzo, fungua muunganisho kisha gusa Ujumbe.",
   refAgainCount: (again: number, total: number) => `${again} kati ya ${total}`,
   refAgainLine: (name: string) => `ya waliofanya kazi na ${name} wangefanya naye kazi tena`,
+  categoryIntro:
+    "Chagua yote yanayohusika. Kila moja linafungua beji yake wafanyakazi wakikagua uthibitisho wake, baadaye.",
+  categoryHintProfessional: "Kazi yangu: onyesha ujuzi wangu na tafuta ajira",
+  categoryHintBusiness: "Biashara yangu: iorodheshe, tafuta washirika na zabuni",
+  categoryHintEntrepreneur: "Wazo langu: lishiriki na tafuta mshirika au mwekezaji",
+  categoryHintOther: "Tuambie unachotarajia kupata",
+  detailsNoDocsNote:
+    "Hakuna nyaraka zinazohitajika sasa. Nyaraka za biashara zinakuja baadaye, unapothibitisha biashara yako.",
+  photoTakeOrUpload: "Piga au pakia picha",
+  photoFaceHint: "Uso wako, kwenye mwanga mzuri",
+  photoIdHint: "Pembe zote nne, bila mng'ao",
+  idSavedShort: "Namba ya kitambulisho imehifadhiwa",
+  photosAddedList: (list: string) => `${list} zimeongezwa`,
+  statusSentToStaff: "Imetumwa kwa wafanyakazi",
+  statusStaffCheck: "Wafanyakazi wanakagua kitambulisho na picha zako",
+  statusYouCanAct: "Unaweza kuungana, kuomba na kuchapisha",
+  statusWeEmail: "Tutakutumia barua pepe mara tu ikikamilika",
+  statusUntilThen:
+    "Hadi wakati huo unaweza kuendelea kuangalia. Wafanyakazi wakihitaji picha iliyo wazi zaidi, tutakutumia barua pepe na ukurasa huu utaonyesha cha kubadilisha.",
 };

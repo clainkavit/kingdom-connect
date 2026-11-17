@@ -14,7 +14,9 @@ async function signInAsApplicant(page: Page, username: string, email: string) {
   const sentAfter = new Date();
   await logIn(page, "Username", username);
   await enterCode(page, await nextCode(email, sentAfter));
-  await expect(page.getByRole("heading", { name: "Verify your identity" })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: /^(Verify your identity|Your identity is being checked)$/ }),
+  ).toBeVisible();
 }
 
 async function reject(admin: Page, username: string, reason: string) {

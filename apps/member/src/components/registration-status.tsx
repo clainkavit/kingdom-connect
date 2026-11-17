@@ -38,6 +38,53 @@ export function RegistrationStatus({
     setFailed(!ok);
   };
 
+  if (status.kind === "under_review")
+    return (
+      <View className="gap-4">
+        <View className="flex-row flex-wrap items-center gap-3">
+          <Text
+            role="heading"
+            aria-level={1}
+            className="font-figtree-extrabold text-[30px] leading-[36px] text-navy"
+          >
+            {t.lookCheckingTitle}
+          </Text>
+          <Text className="rounded-full bg-warn-soft px-2.5 py-1 font-figtree-bold text-[12px] text-warn-text">
+            {t.pendingStatusTitle}
+          </Text>
+        </View>
+        <View className="gap-4 rounded-card border border-line bg-surface px-6 py-5">
+          {(
+            [
+              ["bg-good", t.statusSentToStaff, null],
+              ["bg-gold-deep", t.statusStaffCheck, t.pendingStatus],
+              ["bg-line-2", t.statusYouCanAct, t.statusWeEmail],
+            ] as const
+          ).map(([dot, title, note]) => (
+            <View key={title} className="flex-row gap-3">
+              <View className={`mt-1.5 h-3 w-3 rounded-full ${dot}`} />
+              <View className="flex-1 gap-0.5">
+                <Text className="font-figtree-bold text-[15px] text-ink">{title}</Text>
+                {note ? (
+                  <Text className="font-figtree text-[13px] leading-5 text-ink-2">{note}</Text>
+                ) : null}
+              </View>
+            </View>
+          ))}
+        </View>
+        <Text className="font-figtree text-[14px] leading-[21px] text-ink-2">
+          {t.statusUntilThen}
+        </Text>
+        <LinkButton
+          href="/"
+          label={t.lookAround}
+          className="min-h-[44px] items-center justify-center self-start rounded-full border border-line-2 bg-surface px-5"
+        >
+          <Text className="font-figtree-semibold text-[15px] text-ink">{t.lookAround}</Text>
+        </LinkButton>
+      </View>
+    );
+
   return (
     <View className="gap-4">
       <View className={`gap-1.5 rounded-card p-4 ${rejected ? "bg-bad-soft" : "bg-warn-soft"}`}>
@@ -46,15 +93,9 @@ export function RegistrationStatus({
         >
           {rejected ? t.rejectedStatusTitle : t.pendingStatusTitle}
         </Text>
-        {status.kind === "under_review" ? (
-          <Line tone={tone} text={t.pendingStatus} />
-        ) : (
-          <>
-            <Line tone={tone} text={t.rejectedStatus} />
-            {status.reason ? <Line tone={tone} text={t.statusReason(status.reason)} /> : null}
-            <Line tone={tone} text={status.final ? t.rejectedFinal : t.resubmitOnce} />
-          </>
-        )}
+        <Line tone={tone} text={t.rejectedStatus} />
+        {status.reason ? <Line tone={tone} text={t.statusReason(status.reason)} /> : null}
+        <Line tone={tone} text={status.final ? t.rejectedFinal : t.resubmitOnce} />
       </View>
       {rejected && !status.final ? (
         <>

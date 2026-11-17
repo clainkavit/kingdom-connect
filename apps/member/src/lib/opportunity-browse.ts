@@ -1,5 +1,6 @@
 import type { EmploymentType, Language, OpportunityType } from "@kingdom-connect/shared";
 import { regionOptions, sectorOptions, type Option } from "./registration";
+import { parseReason, type ScanReason } from "./scan";
 import { supabase } from "./supabase";
 
 export const OPPORTUNITY_PAGE = 20;
@@ -42,6 +43,10 @@ export type OpportunityCard = {
   publishedAt?: string;
   summary?: string;
   skillsMine?: string[];
+  /** List rows only: the poster is a Verified Business (Level 2 or 3), shown only when their profile is. */
+  posterVerified?: boolean;
+  /** List rows only: Scan's top two reasons, when Scan would list the post for this member. */
+  reasons?: ScanReason[];
 };
 
 export type OpportunityDetail = OpportunityCard & {
@@ -107,6 +112,8 @@ export type CardRow = {
   published_at?: string | null;
   summary?: string | null;
   skills_mine?: string[] | null;
+  poster_verified?: boolean | null;
+  reasons?: { code: string; detail: { skills?: string[]; kind?: string } }[] | null;
 };
 
 const named = (en: string | null, sw: string | null): Named | null =>
@@ -133,6 +140,10 @@ export const card = (r: CardRow): OpportunityCard => ({
   publishedAt: r.published_at ?? undefined,
   summary: r.summary ?? undefined,
   skillsMine: r.skills_mine ?? undefined,
+  posterVerified: r.poster_verified ?? undefined,
+  reasons: r.reasons
+    ? r.reasons.map(parseReason).filter((x): x is ScanReason => x !== null)
+    : undefined,
 });
 
 /** S16 and S17 (O02): published open posts, featured first; one post with its tender fields (O04). */

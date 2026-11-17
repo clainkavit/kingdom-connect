@@ -1,4 +1,4 @@
-import type { EmploymentType } from "@kingdom-connect/shared";
+import type { EmploymentType, Strings } from "@kingdom-connect/shared";
 import type { OpportunityCard, PostKind } from "./opportunity-browse";
 import { supabase } from "./supabase";
 
@@ -41,7 +41,7 @@ type Row = {
 
 const named = (en: string | null, sw: string | null) => (en ? { en, sw: sw ?? en } : null);
 
-function reason(r: {
+export function parseReason(r: {
   code: string;
   detail: { skills?: string[]; kind?: string };
 }): ScanReason | null {
@@ -54,6 +54,16 @@ function reason(r: {
   )
     return { code: "location", kind: r.detail.kind };
   return null;
+}
+
+/** The words for one reason, the same in Scan and on the Opportunities list. */
+export function reasonText(t: Strings, r: ScanReason): string {
+  if (r.code === "skills") return t.scanReasonSkills(r.skills.join(", "));
+  if (r.code === "sector") return t.scanReasonSector;
+  if (r.code === "study") return t.scanReasonStudy;
+  return { district: t.scanReasonDistrict, region: t.scanReasonRegion, remote: t.scanReasonRemote }[
+    r.kind
+  ];
 }
 
 /** S16's Scan for Opportunities (O07): up to 20 matches, best first, each with its top two reasons. */
@@ -78,7 +88,7 @@ export const scanApi: ScanApi = {
       isMine: false,
       skills: r.skills ?? [],
       score: r.score,
-      reasons: (r.reasons ?? []).map(reason).filter((x): x is ScanReason => x !== null),
+      reasons: (r.reasons ?? []).map(parseReason).filter((x): x is ScanReason => x !== null),
     }));
   },
 

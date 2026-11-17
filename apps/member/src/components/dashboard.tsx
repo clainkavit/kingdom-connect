@@ -26,7 +26,7 @@ import { useLoad } from "./events";
 import { Message } from "./form";
 import { LinkButton } from "./link-button";
 import { Section } from "./profile";
-import { reasonText } from "./scan";
+import { reasonText } from "../lib/scan";
 import { EmptyState, ErrorState, LoadingRows } from "./states";
 import type { DashboardWidgetsApi } from "../lib/dashboard-widgets";
 import type { MemberNewsApi } from "../lib/news";

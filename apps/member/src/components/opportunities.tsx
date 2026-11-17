@@ -27,6 +27,7 @@ import { Linking, Pressable, Text, View } from "react-native";
 import type { JobAlertsApi } from "../lib/job-alerts";
 import { useLanguage } from "../lib/language";
 import { useSavedPosts } from "../lib/saved-posts";
+import { reasonText } from "../lib/scan";
 import { useAct } from "./look";
 import {
   OPPORTUNITY_PAGE,
@@ -47,6 +48,7 @@ import {
   FilterOptions,
   SearchBox,
 } from "./filter-menu";
+import { BusinessBadge } from "./directory";
 import { FilterSheet } from "./filter-sheet";
 import { stickToBottom, usePhone } from "./sheet";
 import { LinkButton } from "./link-button";
@@ -319,7 +321,10 @@ function OpportunityTile({
             ) : null}
             <Text className="font-figtree-bold text-[16px] text-ink">{post.title}</Text>
           </View>
-          <Text className="font-figtree text-[13px] text-ink">{post.posterName}</Text>
+          <View className="flex-row flex-wrap items-center gap-2">
+            <Text className="font-figtree text-[13px] text-ink">{post.posterName}</Text>
+            {post.posterVerified ? <BusinessBadge /> : null}
+          </View>
           <View className="flex-row flex-wrap items-center gap-x-3 gap-y-1">
             {place ? (
               <View className="flex-row items-center gap-1">
@@ -336,7 +341,14 @@ function OpportunityTile({
               </Text>
             </View>
           </View>
-          {mine.length || (post.skillsTotal && post.skillsMatched) ? (
+          {post.reasons?.length ? (
+            post.reasons.map((r) => (
+              <View key={r.code} className="flex-row items-center gap-1.5">
+                <Check size={14} color={palette.good} aria-hidden />
+                <Text className="font-figtree text-[13px] text-good-text">{reasonText(t, r)}</Text>
+              </View>
+            ))
+          ) : mine.length || (post.skillsTotal && post.skillsMatched) ? (
             <View className="flex-row items-center gap-1.5">
               <Check size={14} color={palette.good} aria-hidden />
               <Text className="font-figtree text-[13px] text-good-text">

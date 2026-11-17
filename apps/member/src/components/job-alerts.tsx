@@ -8,7 +8,7 @@ import { useLoad } from "./events";
 import { Message, Switch } from "./form";
 import { useAct } from "./look";
 import { typeLabel } from "./opportunity-form";
-import { ScreenTitle } from "./screens";
+import { PageHeader } from "./screens";
 import { EmptyState, ErrorState, LoadingRows } from "./states";
 
 const employmentKey: Record<NonNullable<JobAlert["employment"]>, TextKey> = {
@@ -84,43 +84,51 @@ export function JobAlertsScreen({ api }: { api: JobAlertsApi }) {
   };
 
   return (
-    <View className="gap-3">
-      <ScreenTitle>{t.alertsTitle}</ScreenTitle>
-      <Text className="font-figtree text-[14px] leading-5 text-ink-2">{t.alertsIntro}</Text>
-      <Message text={problem} />
-      {alerts.state === "failed" ? (
-        <ErrorState message={t.alertsLoadFailed} onRetry={() => setAttempt((a) => a + 1)} />
-      ) : alerts.state === "loading" ? (
-        <LoadingRows />
-      ) : alerts.value.length === 0 ? (
-        <EmptyState
-          title={t.alertsEmpty}
-          message={t.alertsEmptyHint}
-          action={{ label: t.navOpportunities, href: "/opportunities" }}
+    <View className="w-full max-w-[1200px] gap-4 self-center">
+      <View className="w-full max-w-[720px] gap-4">
+        <PageHeader
+          back={{ label: t.navOpportunities, href: "/opportunities" }}
+          title={t.alertsTitle}
+          subtitle={t.alertsIntro}
         />
-      ) : (
-        <View className="rounded-card border border-line bg-surface">
-          {alerts.value.map((alert, i) => {
-            const words = describeAlert(t, alert, language);
-            return (
-              <View
-                key={alert.id}
-                className={`min-h-[56px] flex-row flex-wrap items-center justify-between gap-3 px-4 py-2 ${i > 0 ? "border-t border-line" : ""}`}
-              >
-                <Text className="flex-1 font-figtree text-[15px] text-ink">{words}</Text>
-                <Pressable
-                  role="button"
-                  aria-label={t.alertsRemoveThis(words)}
-                  onPress={() => remove(alert.id)}
-                  className="min-h-[44px] items-center justify-center rounded-full border border-line-2 bg-surface px-4"
+        <Message text={problem} />
+        {alerts.state === "failed" ? (
+          <ErrorState message={t.alertsLoadFailed} onRetry={() => setAttempt((a) => a + 1)} />
+        ) : alerts.state === "loading" ? (
+          <LoadingRows />
+        ) : alerts.value.length === 0 ? (
+          <EmptyState
+            title={t.alertsEmpty}
+            message={t.alertsEmptyHint}
+            action={{ label: t.navOpportunities, href: "/opportunities" }}
+          />
+        ) : (
+          <View className="rounded-card border border-line bg-surface px-5 py-1">
+            {alerts.value.map((alert, i) => {
+              const words = describeAlert(t, alert, language);
+              return (
+                <View
+                  key={alert.id}
+                  className={`min-h-[68px] flex-row flex-wrap items-center justify-between gap-3 py-3 ${i > 0 ? "border-t border-line" : ""}`}
                 >
-                  <Text className="font-figtree-semibold text-sm text-ink">{t.savedRemove}</Text>
-                </Pressable>
-              </View>
-            );
-          })}
-        </View>
-      )}
+                  <Text className="flex-1 font-figtree-bold text-[15px] text-ink">{words}</Text>
+                  <Pressable
+                    role="button"
+                    aria-label={t.alertsRemoveThis(words)}
+                    onPress={() => remove(alert.id)}
+                    className="min-h-[44px] items-center justify-center rounded-full border border-line-2 bg-surface px-4"
+                  >
+                    <Text className="font-figtree-semibold text-sm text-ink">{t.savedRemove}</Text>
+                  </Pressable>
+                </View>
+              );
+            })}
+          </View>
+        )}
+        {alerts.state === "ready" && alerts.value.length > 0 ? (
+          <Text className="font-figtree text-[13px] leading-5 text-ink-2">{t.alertsKeepNote}</Text>
+        ) : null}
+      </View>
     </View>
   );
 }

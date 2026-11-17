@@ -12,6 +12,11 @@ import { useLook } from "./look";
 import { AcceptTexts } from "./legal";
 import { Section } from "./profile";
 import { ErrorState, LoadingRows } from "./states";
+import { usePalette } from "./palette";
+import { usePhone } from "./sheet";
+import Eye from "lucide-react-native/icons/eye";
+import ShieldCheck from "lucide-react-native/icons/shield-check";
+import Star from "lucide-react-native/icons/star";
 
 const myStatusText = (t: Strings, status: RequestStatus): string =>
   ({
@@ -228,6 +233,14 @@ export function IdeaInterest({ api, ideaId }: { api: IdeaAccessApi; ideaId: stri
   );
 }
 
+const initialsOf = (name: string) =>
+  name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((w) => w[0]!.toUpperCase())
+    .join("");
+
 function RequestRow({
   card,
   api,
@@ -240,6 +253,7 @@ function RequestRow({
   onChanged: () => void;
 }) {
   const { t, language } = useLanguage();
+  const palette = usePalette();
   const [problem, setProblem] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const act = async (run: () => Promise<string>) => {
@@ -251,67 +265,107 @@ function RequestRow({
     else setProblem(t.interestFailed);
   };
   const sector = language === "sw" ? card.sectorSw : card.sectorEn;
+  const pending = card.status === "pending";
+  const access = card.status === "approved" || card.status === "nda_accepted";
+  const name = card.requesterName ?? t.accessVerifiedInvestor;
 
   return (
-    <View className="gap-2 rounded-card border border-line bg-surface px-5 py-[18px]">
-      {card.requesterId && card.requesterName ? (
-        <LinkButton
-          href={`/profile/${card.requesterId}`}
-          label={card.requesterName}
-          className="min-h-[44px] justify-center"
-        >
-          <Text className="font-figtree-bold text-[16px] text-blue">{card.requesterName}</Text>
-        </LinkButton>
-      ) : (
-        <Text className="font-figtree-bold text-[16px] text-ink">{t.accessVerifiedInvestor}</Text>
-      )}
-      {card.requesterHeadline ? (
-        <Text className="font-figtree text-[14px] text-ink">{card.requesterHeadline}</Text>
-      ) : null}
-      {card.anonymous ? (
-        <Text className="font-figtree text-[13px] text-ink-2">
-          {[sector, bandLabel(t, card.ticketBand)].filter(Boolean).join(" · ")}
-        </Text>
-      ) : null}
-      <Text className="font-figtree text-[13px] text-ink-2">
-        {t.accessAsRole(seekingLabel(t, card.role))} · {ownerStatusText(t, card.status)}
-      </Text>
-      <Message text={problem} />
-      {card.status === "pending" ? (
-        <View className="flex-row flex-wrap gap-2">
-          <Button
-            label={t.accessApprove}
-            disabled={busy}
-            onPress={() => act(() => api.decide(card.id, true))}
-          />
-          <Button
-            secondary
-            label={t.accessDecline}
-            disabled={busy}
-            onPress={() => act(() => api.decide(card.id, false))}
-          />
+    <View
+      className={`gap-2 rounded-[18px] px-4 py-3.5 ${pending ? "border border-line bg-surface-2" : ""}`}
+    >
+      <View className="flex-row flex-wrap items-center gap-3">
+        <View className="h-11 w-11 items-center justify-center rounded-full bg-warn-soft">
+          {card.requesterName ? (
+            <Text className="font-figtree-bold text-[15px] text-navy">{initialsOf(name)}</Text>
+          ) : (
+            <ShieldCheck size={18} color={palette.navy} aria-hidden />
+          )}
         </View>
-      ) : card.status === "approved" || card.status === "nda_accepted" ? (
-        <View className="gap-2">
-          {card.status === "nda_accepted" && card.requesterId ? (
-            <>
+        <View className="min-w-[160px] flex-1 gap-0.5">
+          {card.requesterId && card.requesterName ? (
+            <LinkButton
+              href={`/profile/${card.requesterId}`}
+              label={card.requesterName}
+              className="self-start"
+            >
+              <Text className="font-figtree-bold text-[16px] text-ink underline">
+                {card.requesterName}
+              </Text>
+            </LinkButton>
+          ) : (
+            <Text className="font-figtree-bold text-[16px] text-ink">{name}</Text>
+          )}
+          {card.requesterHeadline ? (
+            <Text className="font-figtree text-[13px] text-ink-2">{card.requesterHeadline}</Text>
+          ) : null}
+          {card.anonymous ? (
+            <Text className="font-figtree text-[13px] text-ink-2">
+              {[sector, bandLabel(t, card.ticketBand)].filter(Boolean).join(" · ")}
+            </Text>
+          ) : null}
+          {pending ? null : (
+            <Text className="font-figtree text-[13px] text-ink-2">
+              {seekingLabel(t, card.role)} · {ownerStatusText(t, card.status)}
+            </Text>
+          )}
+        </View>
+        {pending ? (
+          <>
+            <Text className="rounded-full bg-warn-soft px-2.5 py-1 font-figtree-bold text-[12px] text-warn-text">
+              {seekingLabel(t, card.role)}
+            </Text>
+            <Text className="sr-only">{t.accessAsRole(seekingLabel(t, card.role))}</Text>
+            <Button
+              label={t.accessApprove}
+              disabled={busy}
+              onPress={() => act(() => api.decide(card.id, true))}
+            />
+            <Button
+              secondary
+              label={t.accessDecline}
+              disabled={busy}
+              onPress={() => act(() => api.decide(card.id, false))}
+            />
+          </>
+        ) : access ? (
+          <View className="flex-row flex-wrap items-center gap-2">
+            {card.status === "nda_accepted" && card.requesterId ? (
               <MessageButton
                 api={api}
                 ideaId={ideaId}
                 otherId={card.requesterId}
                 label={t.ideaMessage}
               />
-              <PlanLink ideaId={ideaId} otherId={card.requesterId} />
-            </>
-          ) : null}
-          <ConfirmButton
-            label={t.accessRevoke}
-            question={t.accessRevokeConfirm}
-            confirmLabel={t.accessRevoke}
-            onConfirm={() => act(() => api.revoke(card.id))}
-          />
+            ) : null}
+            <ConfirmButton
+              label={t.accessRevoke}
+              question={t.accessRevokeConfirm}
+              confirmLabel={t.accessRevoke}
+              onConfirm={() => act(() => api.revoke(card.id))}
+            />
+          </View>
+        ) : null}
+      </View>
+      {access && card.status === "nda_accepted" && card.requesterId ? (
+        <View className="pl-14">
+          <PlanLink ideaId={ideaId} otherId={card.requesterId} />
         </View>
       ) : null}
+      <Message text={problem} />
+    </View>
+  );
+}
+
+function CountCard({ icon, title, note }: { icon: React.ReactNode; title: string; note: string }) {
+  return (
+    <View className="min-w-[280px] flex-1 flex-row items-center gap-4 rounded-card border border-line bg-surface px-5 py-4">
+      <View className="h-[52px] w-[52px] items-center justify-center rounded-[14px] bg-warn-soft">
+        {icon}
+      </View>
+      <View className="min-w-0 flex-1 gap-0.5">
+        <Text className="font-figtree-extrabold text-[24px] leading-[30px] text-ink">{title}</Text>
+        <Text className="font-figtree text-[13px] text-ink-2">{note}</Text>
+      </View>
     </View>
   );
 }
@@ -319,6 +373,8 @@ function RequestRow({
 /** S28: the owner's access manager: who asked, approve or decline, remove access, and the investor view count. */
 export function AccessManager({ api, ideaId }: { api: IdeaAccessApi; ideaId: string }) {
   const { t } = useLanguage();
+  const palette = usePalette();
+  const phone = usePhone();
   const [attempt, setAttempt] = useState(0);
   const loaded = useLoad(
     async () => ({ cards: await api.requests(ideaId), views: await api.viewCount(ideaId) }),
@@ -326,26 +382,64 @@ export function AccessManager({ api, ideaId }: { api: IdeaAccessApi; ideaId: str
   );
   const reload = () => setAttempt((a) => a + 1);
 
+  if (loaded.state === "failed") return <ErrorState message={t.interestFailed} onRetry={reload} />;
+  if (loaded.state === "loading") return <LoadingRows rows={2} />;
+
+  const { cards, views } = loaded.value;
+  const pending = cards.filter((c) => c.status === "pending");
+  const withAccess = cards.filter((c) => c.status === "approved" || c.status === "nda_accepted");
+  const earlier = cards.filter((c) => !pending.includes(c) && !withAccess.includes(c));
+  const card = "min-w-0 gap-3 rounded-card border border-line bg-surface px-6 py-6";
+  const row = (c: RequestCard) => (
+    <RequestRow key={c.id} card={c} api={api} ideaId={ideaId} onChanged={reload} />
+  );
+
   return (
-    <Section title={t.accessTitle}>
-      {loaded.state === "failed" ? (
-        <ErrorState message={t.interestFailed} onRetry={reload} />
-      ) : loaded.state === "loading" ? (
-        <LoadingRows rows={1} />
-      ) : (
-        <>
-          <Text className="font-figtree-semibold text-[13px] text-ink-2">
-            {t.accessViewedBy(loaded.value.views)}
+    <View className="gap-4">
+      <Text role="heading" aria-level={2} className="sr-only">
+        {t.accessTitle}
+      </Text>
+      <View className="flex-row flex-wrap gap-4">
+        <CountCard
+          icon={<Eye size={22} color={palette.navy} aria-hidden />}
+          title={t.accessViewedBy(views)}
+          note={t.accessViewsNote}
+        />
+        <CountCard
+          icon={<Star size={22} color={palette.navy} aria-hidden />}
+          title={t.accessInterested(cards.length)}
+          note={t.accessWaitingWith(pending.length, withAccess.length)}
+        />
+      </View>
+      <View className={phone ? "gap-4" : "flex-row items-start gap-4"}>
+        <View className={`${card} ${phone ? "" : "flex-[3]"}`}>
+          <Text role="heading" aria-level={3} className="font-figtree-bold text-[18px] text-ink">
+            {t.accessWaitingTitle}
           </Text>
-          {loaded.value.cards.length === 0 ? (
+          {pending.length === 0 ? (
             <Text className="font-figtree text-sm text-ink-2">{t.accessEmpty}</Text>
           ) : (
-            loaded.value.cards.map((card) => (
-              <RequestRow key={card.id} card={card} api={api} ideaId={ideaId} onChanged={reload} />
-            ))
+            pending.map(row)
           )}
-        </>
-      )}
-    </Section>
+          <Text className="font-figtree text-[13px] leading-5 text-ink-2">
+            {t.accessDeclineNote}
+          </Text>
+        </View>
+        <View className={`${card} ${phone ? "" : "flex-[2]"}`}>
+          <Text role="heading" aria-level={3} className="font-figtree-bold text-[18px] text-ink">
+            {t.accessWithTitle}
+          </Text>
+          {withAccess.length === 0 ? (
+            <Text className="font-figtree text-sm text-ink-2">{t.accessNobodyYet}</Text>
+          ) : (
+            <View className="border-t border-line">{withAccess.map(row)}</View>
+          )}
+          {earlier.length ? <View className="border-t border-line">{earlier.map(row)}</View> : null}
+          <Text className="font-figtree text-[13px] leading-5 text-ink-2">
+            {t.accessRemoveNote}
+          </Text>
+        </View>
+      </View>
+    </View>
   );
 }

@@ -2,7 +2,7 @@
 
 | Item | Detail |
 |---|---|
-| Version | 0.1 (draft), 22 October 2026; A8, A9 and O9 to O14 added 14 November 2026 |
+| Version | 0.1 (draft), 22 October 2026; A8, A9 and O9 to O14 added 14 November 2026; Y2 to Y4 added 18 November 2026 |
 | Ticket | [Notification copy in English and Kiswahili](https://github.com/clainkavit/kingdom-connect/issues/14) |
 | Built on | [docs/prd.md](prd.md) section 14 |
 | Status | English is a first draft. **Every Kiswahili line needs native review** before release; Champion reviews it line by line |
@@ -33,6 +33,7 @@ The text of every notification in PRD section 14, in English and Kiswahili. **Th
 | `{item}` | The idea or opportunity a milestone plan belongs to |
 | `{milestone}` | A milestone title |
 | `{code}` | The 6-digit login code |
+| `{link}` | The one-time link in a staff reset email (Y3). It is sent straight to the staff member and never stored |
 | `{level}`, `{days}` | Business level (2 or 3) and days until expiry |
 | `{time}`, `{count}`, `{ref}` | Start time, a number, and a report reference number |
 
@@ -387,7 +388,7 @@ To: member. Channels: in-app, email.
 - **SW** Title: Namba yako ya simu imebadilishwa. Message: Namba ya simu kwenye {platform_name} imebadilishwa. Kama si wewe, wasiliana na timu ya jukwaa mara moja.
 
 ### E7 Password changed
-To: member. Channels: in-app, email. Always sent, with no switch (REG-6).
+To: member, or staff member after a staff reset (R30, by email only). Channels: in-app, email. Always sent, with no switch (REG-6).
 - **EN** Title: Your password was changed. Message: The password of your {platform_name} account was changed, and you were signed out on your other devices. If you did not do this, contact the platform team at once.
 - **SW** Title: Nenosiri lako limebadilishwa. Message: Nenosiri la akaunti yako ya {platform_name} limebadilishwa, na umetolewa kwenye vifaa vyako vingine. Kama si wewe, wasiliana na timu ya jukwaa mara moja.
 
@@ -397,6 +398,21 @@ To: member. Channels: in-app, email. Always sent, with no switch (REG-6).
 To: every Super Admin. Channels: email only. Raised by the scheduled security check (R17).
 - **EN** Title: Security alert on {platform_name}. Message: {alert}. Open the admin dashboard to see it and mark it as seen.
 - **SW** Title: Tahadhari ya usalama kwenye {platform_name}. Message: {alert}. Fungua dashibodi ya msimamizi kuiona na kuiweka kuwa imeonekana.
+
+### Y2 Staff reset requested
+To: every active Super Admin except the person who asked. Channels: email only. Sent when a staff member asks for a reset on Forgot password (R30).
+- **EN** Title: {name} asked to reset their password. Message: Check it is really them, for example by calling the number you have for them. Then open Settings, Staff accounts, to send a reset link or refuse.
+- **SW** Title: {name} ameomba kubadilisha nenosiri lake. Message: Hakikisha ni yeye kweli, kwa mfano kwa kumpigia namba uliyonayo. Kisha fungua Mipangilio, Akaunti za wafanyakazi, ili utume kiungo cha kubadilisha au ukatae.
+
+### Y3 Staff reset link
+To: the staff member who asked. Channels: email only. Sent when a Super Admin approves the request (R30).
+- **EN** Title: Choose a new password for {platform_name}. Message: A Super Administrator approved your reset. The link works for 24 hours and only once. If you did not ask for this, tell a Super Administrator at once. Choose a new password here: {link}
+- **SW** Title: Chagua nenosiri jipya la {platform_name}. Message: Msimamizi Mkuu ameidhinisha ombi lako. Kiungo kinatumika kwa saa 24 na mara moja tu. Kama hukuomba hili, mjulishe Msimamizi Mkuu mara moja. Chagua nenosiri jipya hapa: {link}
+
+### Y4 Staff reset refused
+To: the staff member who asked. Channels: email only (R30).
+- **EN** Title: Your password reset was refused. Message: A Super Administrator could not confirm the request. Speak to them before you ask again.
+- **SW** Title: Ombi lako la kubadilisha nenosiri limekataliwa. Message: Msimamizi Mkuu hakuweza kuthibitisha ombi hilo. Zungumza naye kabla ya kuomba tena.
 
 ## Not covered
 

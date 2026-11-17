@@ -10,6 +10,8 @@ export function Field(props: {
   onChange: (v: string) => void;
   type?: string;
   multiline?: boolean;
+  placeholder?: string;
+  autoComplete?: string;
 }) {
   return (
     <div className="flex flex-col gap-1.5">
@@ -28,6 +30,8 @@ export function Field(props: {
         <input
           id={props.id}
           type={props.type ?? "text"}
+          placeholder={props.placeholder}
+          autoComplete={props.autoComplete}
           value={props.value}
           onChange={(e) => props.onChange(e.target.value)}
           className={`min-h-[52px] rounded-full ${inputClass}`}

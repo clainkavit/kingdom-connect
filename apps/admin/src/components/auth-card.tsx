@@ -13,10 +13,14 @@ import { LanguageSwitch } from "./language-switch";
 export function AuthCard({
   title,
   subtitle,
+  badge: Badge,
+  center = false,
   children,
 }: {
   title: string;
   subtitle?: string;
+  badge?: React.ComponentType<{ size?: number; "aria-hidden"?: boolean }>;
+  center?: boolean;
   children: React.ReactNode;
 }) {
   const { t, platformName } = useLanguage();
@@ -52,7 +56,8 @@ export function AuthCard({
           </p>
         </header>
         <main className="-mt-8 flex flex-1 flex-col gap-4 rounded-t-[28px] bg-background px-5 pt-8 pb-6">
-          <div className="flex flex-col gap-2">
+          <div className={`flex flex-col gap-2 ${center ? "items-center text-center" : ""}`}>
+            {Badge ? <BadgeTile icon={Badge} /> : null}
             <h1 className="font-serif text-[34px] leading-[38px] font-semibold text-primary">
               {title}
             </h1>
@@ -83,7 +88,8 @@ export function AuthCard({
           <LanguageSwitch pill />
         </header>
         <main className="flex flex-1 flex-col justify-center gap-4 py-10">
-          <div className="flex flex-col gap-2">
+          <div className={`flex flex-col gap-2 ${center ? "items-center text-center" : ""}`}>
+            {Badge ? <BadgeTile icon={Badge} /> : null}
             <h1 className="font-serif text-[40px] leading-[44px] font-semibold text-primary">
               {title}
             </h1>
@@ -128,5 +134,17 @@ export function AuthCard({
         </p>
       </aside>
     </div>
+  );
+}
+
+function BadgeTile({
+  icon: Icon,
+}: {
+  icon: React.ComponentType<{ size?: number; "aria-hidden"?: boolean }>;
+}) {
+  return (
+    <span className="mb-3 grid size-[60px] place-items-center rounded-[16px] bg-primary text-primary-foreground">
+      <Icon size={24} aria-hidden />
+    </span>
   );
 }

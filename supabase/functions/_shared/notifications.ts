@@ -1189,6 +1189,57 @@ export const notificationCopy = {
       message: "{alert}. Fungua dashibodi ya msimamizi kuiona na kuiweka kuwa imeonekana.",
     },
   },
+  Y2: {
+    category: "security",
+    inApp: false,
+    email: "yes",
+    push: false,
+    opens: "/",
+    en: {
+      title: "{name} asked to reset their password",
+      message:
+        "Check it is really them, for example by calling the number you have for them. Then open Settings, Staff accounts, to send a reset link or refuse.",
+    },
+    sw: {
+      title: "{name} ameomba kubadilisha nenosiri lake",
+      message:
+        "Hakikisha ni yeye kweli, kwa mfano kwa kumpigia namba uliyonayo. Kisha fungua Mipangilio, Akaunti za wafanyakazi, ili utume kiungo cha kubadilisha au ukatae.",
+    },
+  },
+  Y3: {
+    category: "security",
+    inApp: false,
+    email: "yes",
+    push: false,
+    opens: "/",
+    en: {
+      title: "Choose a new password for {platform_name}",
+      message:
+        "A Super Administrator approved your reset. The link works for 24 hours and only once. If you did not ask for this, tell a Super Administrator at once. Choose a new password here: {link}",
+    },
+    sw: {
+      title: "Chagua nenosiri jipya la {platform_name}",
+      message:
+        "Msimamizi Mkuu ameidhinisha ombi lako. Kiungo kinatumika kwa saa 24 na mara moja tu. Kama hukuomba hili, mjulishe Msimamizi Mkuu mara moja. Chagua nenosiri jipya hapa: {link}",
+    },
+  },
+  Y4: {
+    category: "security",
+    inApp: false,
+    email: "yes",
+    push: false,
+    opens: "/",
+    en: {
+      title: "Your password reset was refused",
+      message:
+        "A Super Administrator could not confirm the request. Speak to them before you ask again.",
+    },
+    sw: {
+      title: "Ombi lako la kubadilisha nenosiri limekataliwa",
+      message:
+        "Msimamizi Mkuu hakuweza kuthibitisha ombi hilo. Zungumza naye kabla ya kuomba tena.",
+    },
+  },
 } satisfies Record<string, NotificationCopy>;
 
 export type NotificationKind = keyof typeof notificationCopy;

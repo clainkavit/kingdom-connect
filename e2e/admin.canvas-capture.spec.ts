@@ -2,7 +2,7 @@ import { existsSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 import { test } from "@playwright/test";
-import { signInToAdmin } from "./helpers";
+import { approvedResetLink, createStaff, signInToAdmin, staffNeedingHelp } from "./helpers";
 
 /**
  * Canvas match for the admin console: screenshots each combined-canvas board next to the live screen.
@@ -19,7 +19,11 @@ type Pair = {
   h: number;
   signedOut?: boolean;
   tab?: string;
+  press?: { label: string; fill?: [string, string] };
+  prepare?: () => Promise<string | void>;
 };
+
+const resetLink = async () => approvedResetLink(await createStaff(`Asha Kombo ${Date.now()}`));
 
 const pairs: Pair[] = [
   { board: "Admin-Login", route: "/login", w: 1440, h: 900, signedOut: true },
@@ -35,7 +39,14 @@ const pairs: Pair[] = [
     h: 1600,
   },
   { board: "Admin-Shortlist", route: "/picks", w: 1440, h: 1200 },
-  { board: "Admin-Staff", route: "/settings", w: 1440, h: 1300, tab: "Staff accounts" },
+  {
+    board: "Admin-Staff",
+    route: "/settings",
+    w: 1440,
+    h: 1300,
+    tab: "Staff accounts",
+    prepare: staffNeedingHelp,
+  },
   { board: "Admin-Phone-Verify", route: "/verification", w: 430, h: 900 },
   {
     board: "Admin-Phone-VerifyDetail",
@@ -48,6 +59,27 @@ const pairs: Pair[] = [
   { board: "Admin-Phone-Staff", route: "/settings", w: 430, h: 900, tab: "Staff accounts" },
   { board: "Admin-SetPassword", route: "/set-password", w: 1440, h: 900, signedOut: true },
   { board: "Admin-Phone-SetPassword", route: "/set-password", w: 430, h: 900, signedOut: true },
+  { board: "Admin-Forgot", route: "/forgot-password", w: 1440, h: 900, signedOut: true },
+  { board: "Admin-Phone-Forgot", route: "/forgot-password", w: 430, h: 900, signedOut: true },
+  ...(["Admin-ForgotSent", "Admin-Phone-ForgotSent"] as const).map((board) => ({
+    board,
+    route: "/forgot-password",
+    w: board.includes("Phone") ? 430 : 1440,
+    h: 900,
+    signedOut: true,
+    press: {
+      label: "Ask for a reset",
+      fill: ["Email", "someone@example.test"] as [string, string],
+    },
+  })),
+  ...(["Admin-NewPassword", "Admin-Phone-NewPassword"] as const).map((board) => ({
+    board,
+    route: "",
+    w: board.includes("Phone") ? 430 : 1440,
+    h: 900,
+    signedOut: true,
+    prepare: resetLink,
+  })),
 ];
 
 test.skip(!canvasDir || !out, "set CANVAS_DIR and CAPTURE_OUT to capture");
@@ -70,8 +102,14 @@ for (const pair of pairs.filter((p) => !only || only.includes(p.board))) {
     );
     const live = await context.newPage();
     await live.setViewportSize({ width: pair.w, height: Math.min(pair.h, 1200) });
-    await live.goto(pair.route);
+    const route = (await pair.prepare?.()) || pair.route;
+    await live.goto(route);
     await live.waitForTimeout(2500);
+    if (pair.press) {
+      if (pair.press.fill) await live.getByLabel(pair.press.fill[0]).fill(pair.press.fill[1]);
+      await live.getByRole("button", { name: pair.press.label }).click();
+      await live.waitForTimeout(1200);
+    }
     if (pair.tab) {
       await live.getByRole("tab", { name: pair.tab }).click();
       await live.waitForTimeout(800);

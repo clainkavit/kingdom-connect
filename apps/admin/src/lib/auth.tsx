@@ -4,6 +4,7 @@ import { routeFor, routePaths, userIdOf, type Session } from "@kingdom-connect/s
 import { usePathname, useRouter } from "next/navigation";
 import { createContext, useContext, useEffect, useState } from "react";
 import { AdminShell } from "@/components/shell";
+import { FORGOT_PASSWORD_PATH, SET_PASSWORD_PATH } from "./paths";
 import { demoLinks, supabase } from "./supabase";
 
 type Auth = {
@@ -24,7 +25,6 @@ export function useAuth(): Auth {
   return auth;
 }
 
-export const SET_PASSWORD_PATH = "/set-password";
 const DEMO_PATH = "/demo";
 
 const pageRoutes: Record<string, "login" | "verify" | "wrong_app"> = {
@@ -54,7 +54,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const route = routeFor(accessToken, "admin");
   const pageRoute = pageRoutes[pathname];
-  const open = pathname === SET_PASSWORD_PATH || (demoLinks && pathname === DEMO_PATH);
+  const open =
+    pathname === SET_PASSWORD_PATH ||
+    pathname === FORGOT_PASSWORD_PATH ||
+    (demoLinks && pathname === DEMO_PATH);
   const allowed = open || (pageRoute ? pageRoute === route : route === "app");
 
   useEffect(() => {

@@ -851,6 +851,43 @@ export const sw: Strings = {
   setPassword: "Weka nenosiri",
   passwordSet: "Nenosiri lako limewekwa. Ingia ili uendelee.",
   goToLogin: "Nenda kuingia",
+  staffForgotIntro:
+    "Weka barua pepe ya akaunti yako ya mfanyakazi. Msimamizi Mkuu atahakikisha ni wewe kweli, kisha atakutumia kiungo cha kuchagua nenosiri jipya.",
+  askForReset: "Omba kubadilisha",
+  staffResetSentTitle: "Ombi limetumwa",
+  staffResetSentIntro:
+    "Kama barua pepe hii ni ya akaunti ya mfanyakazi, Wasimamizi Wakuu wamejulishwa. Mmoja wao anaweza kukupigia simu kuhakikisha ni wewe kweli.",
+  staffResetStep1: "Msimamizi Mkuu anakagua ombi lako.",
+  staffResetStep2: "Unapata barua pepe yenye kiungo. Kinatumika kwa saa 24.",
+  staffResetStep3:
+    "Unachagua nenosiri jipya, kisha unaingia kwa barua pepe yako na msimbo tunaokutumia.",
+  staffNewPasswordTitle: "Chagua nenosiri jipya",
+  staffNewPasswordIntro:
+    "Msimamizi Mkuu ameidhinisha ombi lako. Chagua nenosiri jipya la akaunti yako ya mfanyakazi.",
+  staffAccountFor: "Akaunti ya mfanyakazi ya",
+  confirmNewPassword: "Thibitisha nenosiri jipya",
+  saveNewPassword: "Hifadhi nenosiri jipya",
+  staffNewPasswordNote:
+    "Ukihifadhi, utatolewa kwenye kila kifaa kingine. Kiungo hiki kinatumika kwa saa 24.",
+  staffResetLinkInvalid:
+    "Kiungo hiki kimeisha muda au kimeshatumika. Omba tena kupitia ukurasa wa kuingia.",
+  staffAccessTitle: "Maombi ya kubadilisha nenosiri na akaunti zilizofungwa",
+  staffAccessWarning:
+    "Kabla ya kutuma kiungo, hakikisha ni yeye kweli, kwa mfano kwa kumpigia namba uliyonayo. Huwezi kuidhinisha ombi lako mwenyewe.",
+  staffAskedReset: (when: string) => `Ameomba kubadilisha nenosiri · ${when}`,
+  staffLockedAfter: (failed: number, when: string) =>
+    `Imefungwa baada ya majaribio ${failed} yaliyoshindwa · ${when}`,
+  sendResetLink: "Tuma kiungo",
+  refuse: "Kataa",
+  unlock: "Fungua",
+  staffAccessAudit:
+    "Kila kubadilisha, kukataa na kufungua kunaandikwa kwenye kumbukumbu za ukaguzi.",
+  staffAccessEmpty: "Hakuna maombi ya kubadilisha wala akaunti za wafanyakazi zilizofungwa.",
+  staffLinkSent: (name: string) => `Kiungo kimetumwa kwa ${name}. Kinatumika kwa saa 24.`,
+  staffResetRefused: (name: string) => `Umekataa ombi la ${name}.`,
+  staffUnlocked: (name: string) => `${name} anaweza kuingia tena.`,
+  staffOwnRequest: "Huwezi kuidhinisha ombi lako mwenyewe. Mwombe Msimamizi Mkuu mwingine.",
+  staffAccessGone: "Mtu ameshalishughulikia hili. Orodha sasa iko sahihi.",
   inviteLinkInvalid:
     "Kiungo hiki kimeisha muda au kimeshatumika. Mwombe Msimamizi Mkuu akutumie mwaliko mpya.",
   myProfile: "Wasifu wangu",

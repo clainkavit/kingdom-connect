@@ -335,12 +335,15 @@ export function PicksAdmin({ api }: { api: PickAdminApi }) {
   const [queue, reload] = useLoaded(() => api.queue(), [api]);
   return (
     <>
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <ScreenTitle>{t.adminNavPicks}</ScreenTitle>
-        {queue.state === "ready" && queue.value.length ? (
-          <Chip tone="warn">{t.pickWaiting(queue.value.length)}</Chip>
-        ) : null}
-      </div>
+      <ScreenTitle
+        subtitle={
+          queue.state === "ready" && queue.value.length
+            ? t.pickWaiting(queue.value.length)
+            : undefined
+        }
+      >
+        {t.adminNavPicks}
+      </ScreenTitle>
       <div className="flex flex-col gap-4">
         <Notice tone="good" text={sent} />
         <p className="-mt-3 text-sm text-ink-2">{t.pickAdminBeta}</p>

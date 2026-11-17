@@ -36,6 +36,16 @@ const pairs: Pair[] = [
   },
   { board: "Admin-Shortlist", route: "/picks", w: 1440, h: 1200 },
   { board: "Admin-Staff", route: "/settings", w: 1440, h: 1300, tab: "Staff accounts" },
+  { board: "Admin-Phone-Verify", route: "/verification", w: 430, h: 900 },
+  {
+    board: "Admin-Phone-VerifyDetail",
+    route: "/verification/5eed0000-0000-4000-8000-00000000f101",
+    w: 430,
+    h: 900,
+  },
+  { board: "Admin-Phone-Ideas", route: "/ideas", w: 430, h: 900 },
+  { board: "Admin-Phone-Shortlist", route: "/picks", w: 430, h: 900 },
+  { board: "Admin-Phone-Staff", route: "/settings", w: 430, h: 900, tab: "Staff accounts" },
 ];
 
 test.skip(!canvasDir || !out, "set CANVAS_DIR and CAPTURE_OUT to capture");

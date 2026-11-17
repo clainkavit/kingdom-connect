@@ -606,13 +606,10 @@ export function IdeasOverviewScreen({ api }: { api: IdeasOverviewApi }) {
 
   return (
     <>
-      <div className="flex flex-wrap items-end justify-between gap-3">
-        <div className="flex flex-col">
-          <p className="text-sm text-ink-2">{t.adminIdeasStaffOnly}</p>
-          <ScreenTitle>{t.adminIdeasTitle}</ScreenTitle>
-        </div>
+      <div className="flex flex-col">
+        <ScreenTitle eyebrow={t.adminIdeasStaffOnly}>{t.adminIdeasTitle}</ScreenTitle>
         {loadedAt ? (
-          <p className="mb-5 flex items-center gap-1.5 text-[13px] text-ink-2">
+          <p className="-mt-3 mb-4 flex items-center gap-1.5 text-[13px] text-ink-2">
             <RefreshCw size={13} aria-hidden />
             {t.adminCountsRefresh(
               `${String((loadedAt.getUTCHours() + 3) % 24).padStart(2, "0")}:${String(loadedAt.getUTCMinutes()).padStart(2, "0")}`,

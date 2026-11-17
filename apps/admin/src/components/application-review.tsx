@@ -461,45 +461,47 @@ export function ApplicationReview({
   const name = app.fullName || t.reviewTitle;
   return (
     <div className="flex flex-col gap-5">
-      {back}
-      <div className="flex items-center gap-4">
-        {app.facePhotoUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={app.facePhotoUrl}
-            alt=""
-            className="size-16 shrink-0 rounded-full border-2 border-card object-cover shadow-card"
-          />
-        ) : (
-          <span
-            aria-hidden
-            className="grid size-16 shrink-0 place-items-center rounded-full bg-blue-soft text-xl font-bold text-primary"
-          >
-            {name
-              .split(/\s+/)
-              .filter(Boolean)
-              .slice(0, 2)
-              .map((w) => w[0]!.toUpperCase())
-              .join("")}
-          </span>
-        )}
-        <div className="flex flex-col gap-1.5">
-          <h1 className="text-[30px] leading-9 font-extrabold tracking-tight text-primary">
-            {name}
-          </h1>
-          <div className="flex flex-wrap gap-1.5 text-xs font-bold">
-            <span className="rounded-full bg-warn-soft px-2.5 py-0.5 text-warn-text">
-              {t.reviewMemberApplication}
+      <div className="flex flex-col gap-5 max-[880px]:-mx-5 max-[880px]:-mt-4 max-[880px]:bg-sidebar max-[880px]:px-5 max-[880px]:pt-1 max-[880px]:pb-5 max-[880px]:gap-2 max-[880px]:[&_a]:text-white">
+        {back}
+        <div className="flex items-center gap-4">
+          {app.facePhotoUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={app.facePhotoUrl}
+              alt=""
+              className="size-16 shrink-0 rounded-full border-2 border-card object-cover shadow-card max-[880px]:hidden"
+            />
+          ) : (
+            <span
+              aria-hidden
+              className="grid size-16 shrink-0 place-items-center rounded-full bg-blue-soft text-xl font-bold text-primary max-[880px]:hidden"
+            >
+              {name
+                .split(/\s+/)
+                .filter(Boolean)
+                .slice(0, 2)
+                .map((w) => w[0]!.toUpperCase())
+                .join("")}
             </span>
-            <span className="rounded-full bg-surface-2 px-2.5 py-0.5 text-ink-2">
-              {t.reviewSubmittedOn(formatDate(app.submittedAt, language))}
-            </span>
-            {app.pending ? (
-              <span className="flex items-center gap-1 rounded-full bg-warn-soft px-2.5 py-0.5 text-warn-text">
-                <Clock size={12} aria-hidden />
-                {t.reviewWaited(ageText(t, app.submittedAt, today))}
+          )}
+          <div className="flex flex-col gap-1.5">
+            <h1 className="text-[30px] leading-9 font-extrabold tracking-tight text-primary max-[880px]:text-[24px] max-[880px]:leading-[30px] max-[880px]:text-white">
+              {name}
+            </h1>
+            <div className="flex flex-wrap gap-1.5 text-xs font-bold">
+              <span className="rounded-full bg-warn-soft px-2.5 py-0.5 text-warn-text">
+                {t.reviewMemberApplication}
               </span>
-            ) : null}
+              <span className="rounded-full bg-surface-2 px-2.5 py-0.5 text-ink-2">
+                {t.reviewSubmittedOn(formatDate(app.submittedAt, language))}
+              </span>
+              {app.pending ? (
+                <span className="flex items-center gap-1 rounded-full bg-warn-soft px-2.5 py-0.5 text-warn-text">
+                  <Clock size={12} aria-hidden />
+                  {t.reviewWaited(ageText(t, app.submittedAt, today))}
+                </span>
+              ) : null}
+            </div>
           </div>
         </div>
       </div>

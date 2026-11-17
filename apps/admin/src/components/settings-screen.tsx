@@ -622,10 +622,9 @@ export function SettingsScreen({ api, superAdmin }: { api: SettingsApi; superAdm
 
   return (
     <>
-      <p className="text-sm text-ink-2">
-        {t.adminNavSettings} · {t.settingsSuperOnlyTag}
-      </p>
-      <ScreenTitle>{title}</ScreenTitle>
+      <ScreenTitle eyebrow={`${t.adminNavSettings} · ${t.settingsSuperOnlyTag}`}>
+        {title}
+      </ScreenTitle>
       {tabs.length ? (
         <div role="tablist" aria-label={t.adminNavSettings} className="mb-5 flex flex-wrap gap-2">
           {tabs.map(([key, label]) => (

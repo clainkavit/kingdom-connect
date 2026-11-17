@@ -18,7 +18,7 @@ function Tag({ tone, children }: { tone: "type" | "warn" | "bad"; children: Reac
   }[tone];
   return (
     <span
-      className={`flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-bold ${colours}`}
+      className={`flex items-center gap-1 rounded-full whitespace-nowrap px-2.5 py-0.5 text-xs font-bold ${colours}`}
     >
       {children}
     </span>
@@ -76,15 +76,16 @@ export function VerificationQueue({
 
   return (
     <>
-      <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
-        <div className="flex flex-col gap-1">
-          <ScreenTitle>{t.adminNavVerification}</ScreenTitle>
-          {items && items.length > 0 ? (
-            <p className="-mt-3 text-[15px] text-ink-2">
-              {t.queueSubtitle(items.length, ageText(t, items[0]!.submittedAt, at))}
-            </p>
-          ) : null}
-        </div>
+      <ScreenTitle
+        subtitle={
+          items && items.length > 0
+            ? t.queueSubtitle(items.length, ageText(t, items[0]!.submittedAt, at))
+            : undefined
+        }
+      >
+        {t.adminNavVerification}
+      </ScreenTitle>
+      <div className="-mt-3 mb-4 flex">
         <Link
           href="/recoveries"
           className="flex items-center gap-1.5 pt-2 text-sm font-semibold text-primary underline"
@@ -158,7 +159,7 @@ export function VerificationQueue({
                       >
                         {initialsOf(name)}
                       </span>
-                      <span className="flex min-w-0 flex-1 flex-col gap-1">
+                      <span className="flex min-w-0 flex-1 flex-col gap-1 max-[880px]:basis-[calc(100%-60px)]">
                         <span className="truncate text-[16px] font-bold text-foreground">
                           {name}
                         </span>
@@ -181,7 +182,7 @@ export function VerificationQueue({
                           ) : null}
                         </span>
                       </span>
-                      <span className="text-[13px] text-ink-2">
+                      <span className="text-[13px] text-ink-2 max-[880px]:flex-1 max-[880px]:pl-[60px]">
                         {t.queueSubmitted(
                           formatShortDate(item.submittedAt, language),
                           ageText(t, item.submittedAt, at),

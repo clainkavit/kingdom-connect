@@ -31,8 +31,10 @@ test("a Member with skills sees the posts that fit them first, and can switch to
   );
   const firstCard = page.getByRole("link", { name: fit });
   await expect(firstCard).toBeVisible();
-  await expect(firstCard.getByText(/^Matches /)).toContainText(`weaving${stamp}`);
-  await expect(firstCard.getByText(/^Matches /)).toContainText(`dyeing${stamp}`);
+  await expect(firstCard.getByText(/^Your skills: /)).toContainText(`weaving${stamp}`);
+  await expect(firstCard.getByText(/^Your skills: /)).toContainText(`dyeing${stamp}`);
+  await expect(firstCard.getByText("Remote work")).toBeVisible();
+  await expect(firstCard.getByText("Verified business")).toBeVisible();
   const cards = page.getByRole("link", { name: new RegExp(`${stamp}$`) });
   await expect(cards.first()).toHaveAccessibleName(fit);
 

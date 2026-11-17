@@ -19,7 +19,16 @@ export const legalTitleKeys: Record<LegalKind, TextKey> = {
   handoff: "legalHandoff",
 };
 
-export function LegalTextView({ body, entityName }: { body: string; entityName: string }) {
+export function LegalTextView({
+  body,
+  entityName,
+  large = false,
+}: {
+  body: string;
+  entityName: string;
+  large?: boolean;
+}) {
+  const size = large ? "text-[15px] leading-6" : "text-sm leading-5";
   const { platformName } = useLanguage();
   const blocks = legalBlocks(
     fillLegalText(body, { entity_name: entityName || platformName, platform_name: platformName }),
@@ -32,7 +41,7 @@ export function LegalTextView({ body, entityName }: { body: string; entityName: 
             key={i}
             role="heading"
             aria-level={i === 0 ? 2 : 3}
-            className={`font-figtree-bold text-ink ${i === 0 ? "text-lg" : "mt-2 text-base"}`}
+            className={`font-figtree-bold text-ink ${i === 0 ? "text-lg" : large ? "mt-3 text-[17px]" : "mt-2 text-base"}`}
           >
             {block.text}
           </Text>
@@ -41,10 +50,10 @@ export function LegalTextView({ body, entityName }: { body: string; entityName: 
             <Text aria-hidden className="font-figtree text-sm text-ink-2">
               •
             </Text>
-            <Text className="flex-1 font-figtree text-sm leading-5 text-ink-2">{block.text}</Text>
+            <Text className={`flex-1 font-figtree text-ink-2 ${size}`}>{block.text}</Text>
           </View>
         ) : (
-          <Text key={i} className="font-figtree text-sm leading-5 text-ink-2">
+          <Text key={i} className={`font-figtree text-ink-2 ${size}`}>
             {block.text}
           </Text>
         ),

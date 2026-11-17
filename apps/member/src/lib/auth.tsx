@@ -65,6 +65,7 @@ export function Guard({
   if (!ready) return null;
   const actual = routeFor(accessToken, "member");
   const allowed: readonly Route[] = typeof route === "string" ? [route] : route;
-  if (!allowed.includes(actual)) return <Redirect href={routePaths[actual]} />;
+  if (!allowed.includes(actual))
+    return <Redirect href={actual === "login" ? "/welcome" : routePaths[actual]} />;
   return <>{children}</>;
 }

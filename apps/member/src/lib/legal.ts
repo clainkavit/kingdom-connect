@@ -52,3 +52,27 @@ export function usePendingTexts(): {
   }, [round]);
   return { pending, failed, reload: () => setRound((r) => r + 1) };
 }
+
+export type PublicLegalText = {
+  version: string;
+  body_en: string;
+  body_sw: string;
+  approved_at: string | null;
+  effective_at: string;
+};
+
+/** The terms or privacy notice in effect, which visitors may read before they have an account. */
+export async function readPublicLegal(
+  kind: LegalKind,
+): Promise<{ text: PublicLegalText | null; entityName: string }> {
+  const { data, error } = await supabase
+    .from("legal_texts")
+    .select("version, body_en, body_sw, approved_at, effective_at")
+    .eq("kind", kind)
+    .lte("effective_at", new Date().toISOString())
+    .order("effective_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  if (error) throw error;
+  return { text: (data as PublicLegalText | null) ?? null, entityName: await legalEntityName() };
+}

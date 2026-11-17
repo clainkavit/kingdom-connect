@@ -120,7 +120,8 @@ test("a person signs up, does the five steps in the profile and is approved (REG
 
   await page.goto("/account");
   await page.getByRole("button", { name: "Log out" }).click();
-  await expect(page).toHaveURL(/\/login$/);
+  await expect(page).toHaveURL(/\/welcome$/);
+  await page.getByRole("link", { name: "Log in" }).click();
   const email = `${username.replace(/_/g, ".")}@example.test`;
   await page.getByLabel(memberLoginLabel.en, { exact: true }).fill(username);
   await page.getByLabel("Password", { exact: true }).fill("kingdom-test-1");

@@ -11,7 +11,7 @@ export const firstSignInApi: FirstSignInApi = {
   },
   email: async () => {
     const { data } = await supabase.auth.getUser();
-    return data.user?.email ?? "";
+    return data.user?.email || (data.user?.phone ? `+${data.user.phone}` : "");
   },
   texts: textsToAccept,
   complete: async (username, accepted) => {
@@ -24,14 +24,18 @@ export const firstSignInApi: FirstSignInApi = {
   },
 };
 
-/** Starts Continue with Google; Google sends the person back to this site. */
-export async function startGoogleSignIn(): Promise<boolean> {
+/** Starts Continue with Google, Facebook or Apple; the provider sends the person back to this site. */
+export async function startProviderSignIn(
+  provider: "google" | "facebook" | "apple",
+): Promise<boolean> {
   const { error } = await supabase.auth.signInWithOAuth({
-    provider: "google",
+    provider,
     options: { redirectTo: `${window.location.origin}/` },
   });
   return !error;
 }
+
+export const startGoogleSignIn = () => startProviderSignIn("google");
 
 /** Google sends people back with an error in the address when they cancel or sign-in fails. */
 export const returnedFromGoogleWithError = (): boolean =>

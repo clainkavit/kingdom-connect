@@ -10,6 +10,7 @@ async function signUp(page: Page, username: string) {
   const email = `${username.replace(/_/g, ".")}@example.test`;
   await page.goto("/login");
   await page.getByRole("button", { name: "Create an account" }).click();
+  await page.getByRole("button", { name: "Continue with email" }).click();
   const fields = [
     ["Username", username],
     ["Email", email],

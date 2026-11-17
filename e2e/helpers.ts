@@ -307,6 +307,30 @@ export async function giveSession(memberId: string) {
   await db`insert into auth.sessions (id, user_id) values (gen_random_uuid(), ${memberId})`;
 }
 
+/** The last phone sign-in code the local test sender kept for this number (R29). */
+export async function nextSmsCode(phone: string): Promise<string> {
+  let code: string | undefined;
+  await expect
+    .poll(
+      async () => {
+        const [row] = await db`
+          select body from private.test_sms
+          where phone = ${phone} and created_at > now() - interval '1 minute'
+          order by created_at desc limit 1`;
+        code = (row?.body as string | undefined)?.match(/\b\d{6}\b/)?.[0];
+        return Boolean(code);
+      },
+      { timeout: 15_000 },
+    )
+    .toBe(true);
+  return code!;
+}
+
+export async function memberIdByPhone(phone: string): Promise<string | undefined> {
+  const [row] = await db`select member_id from public.member_private where phone = ${phone}`;
+  return row?.member_id as string | undefined;
+}
+
 export async function memberState(memberId: string) {
   const [row] = await db`select m.status,
       (select count(*)::int from auth.sessions s where s.user_id = m.id) as sessions

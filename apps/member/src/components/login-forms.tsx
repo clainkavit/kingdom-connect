@@ -12,7 +12,7 @@ import { useLanguage } from "../lib/language";
 import { Button, Field, Message } from "./form";
 import { LinkButton } from "./link-button";
 
-function useCountdown(initialSeconds: number) {
+export function useCountdown(initialSeconds: number) {
   const [endsAt, setEndsAt] = useState(() => Date.now() + initialSeconds * 1000);
   const [now, setNow] = useState(() => Date.now());
   useEffect(() => {
@@ -30,7 +30,15 @@ function useCountdown(initialSeconds: number) {
 
 const CODE_LENGTH = 6;
 
-function CodeBoxes({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+export function CodeBoxes({
+  value,
+  onChange,
+  label,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  label?: string;
+}) {
   const { t } = useLanguage();
   const [focused, setFocused] = useState(false);
   const active = Math.min(value.length, CODE_LENGTH - 1);
@@ -47,7 +55,7 @@ function CodeBoxes({ value, onChange }: { value: string; onChange: (v: string) =
         ))}
       </View>
       <TextInput
-        aria-label={t.emailCode}
+        aria-label={label ?? t.emailCode}
         value={value}
         onChangeText={(v) => onChange(v.replace(/\D/g, "").slice(0, CODE_LENGTH))}
         onFocus={() => setFocused(true)}

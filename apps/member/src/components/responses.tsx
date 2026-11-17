@@ -2,6 +2,7 @@ import { formatDate, type Strings, type TextKey } from "@kingdom-connect/shared"
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { Linking, Pressable, Text, View } from "react-native";
+import Lock from "lucide-react-native/icons/lock";
 import SquarePlus from "lucide-react-native/icons/square-plus";
 import { useLanguage } from "../lib/language";
 import type { OpportunityDetail } from "../lib/opportunity-browse";
@@ -172,17 +173,28 @@ export function RespondPanel({ api, post }: { api: ResponsesApi; post: Opportuni
 
   if (post.type === "tender" && level < 2)
     return (
-      <View className="gap-2 rounded-card border border-line bg-surface px-5 py-[18px]">
-        <Text role="heading" aria-level={2} className="font-figtree-bold text-[16px] text-ink">
-          {t.respLevel2}
+      <View className="gap-2.5 rounded-card border-2 border-navy bg-surface px-5 py-5">
+        <View className="flex-row items-center gap-2">
+          <Lock size={18} color={palette.ink} aria-hidden />
+          <Text
+            role="heading"
+            aria-level={2}
+            className="flex-1 font-figtree-bold text-[18px] text-ink"
+          >
+            {t.respLevel2}
+          </Text>
+        </View>
+        <Text className="font-figtree text-[14px] leading-[21px] text-ink-2">
+          {t.respLevel2Hint}
         </Text>
-        <Text className="font-figtree text-sm leading-5 text-ink-2">{t.respLevel2Hint}</Text>
         <LinkButton
           href="/business"
           label={t.respVerifyBusiness}
-          className="min-h-[44px] justify-center"
+          className="min-h-[48px] items-center justify-center rounded-full bg-blue px-5"
         >
-          <Text className="font-figtree-semibold text-sm text-blue">{t.respVerifyBusiness}</Text>
+          <Text className="font-figtree-bold text-[15px] text-blue-ink">
+            {t.respVerifyBusiness}
+          </Text>
         </LinkButton>
       </View>
     );

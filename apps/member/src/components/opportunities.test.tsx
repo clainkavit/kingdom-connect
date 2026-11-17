@@ -301,7 +301,7 @@ describe("OpportunityDetailScreen (S17)", () => {
     );
     expect(screen.getByText("Dodoma City Council")).toBeTruthy();
     expect(screen.getByText("DCC/PR/2026/114")).toBeTruthy();
-    expect(screen.getByText("• BRELA certificate")).toBeTruthy();
+    expect(screen.getByText("BRELA certificate, TRA TIN certificate")).toBeTruthy();
     expect(screen.getByText("2 December 2026, 16:00")).toBeTruthy();
     expect(screen.getByText("TZS 120,000,000")).toBeTruthy();
     await act(async () =>

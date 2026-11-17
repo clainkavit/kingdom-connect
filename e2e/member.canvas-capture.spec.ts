@@ -95,7 +95,7 @@ const pairs: Pair[] = [
   { board: "Phone-Messages", route: "/messages", w: 430, h: 900 },
   {
     board: "Opp-Phone-Detail",
-    route: "/opportunities/cd5a587a-5b96-4599-9fe7-1c139d33ae6a",
+    route: "/opportunities/42042068-2779-4806-9181-d0c456fba9c3",
     w: 430,
     h: 900,
   },

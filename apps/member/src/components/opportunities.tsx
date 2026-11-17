@@ -1003,14 +1003,29 @@ function Fact({ label, value }: { label: string; value: string | null }) {
 
 const shillings = (n: number) => `TZS ${n.toLocaleString("en-US")}`;
 
+function TenderRow({ label, value }: { label: string; value: string | null }) {
+  if (!value) return null;
+  return (
+    <View className="gap-0.5 border-t border-line pt-3">
+      <Text className="font-figtree-bold text-[12px] text-ink-2">{label}</Text>
+      <Text className="font-figtree text-[15px] leading-[22px] text-ink">{value}</Text>
+    </View>
+  );
+}
+
 function TenderSection({
   api,
   tender,
   closingAt,
+  head,
+  extra,
 }: {
   api: OpportunityBrowseApi;
   tender: TenderDetails;
   closingAt: string;
+  /** On a phone the card opens with the chips and the poster, as on the canvas. */
+  head?: React.ReactNode;
+  extra?: [string, string | null][];
 }) {
   const { t, language } = useLanguage();
   const [linkFailed, setLinkFailed] = useState(false);
@@ -1025,28 +1040,26 @@ function TenderSection({
     : closingDay(closingAt, language);
   return (
     <View className="gap-3 rounded-card border border-line bg-surface px-5 py-[18px]">
-      <Text role="heading" aria-level={2} className="font-figtree-bold text-[16px] text-ink">
-        {t.oppTenderTitle}
+      <Text role="heading" aria-level={2} className="font-figtree-bold text-[17px] text-ink">
+        {head ? (t[typeLabel.tender] as string) : t.oppTenderTitle}
       </Text>
-      <Fact label={t.oppTenderIssuer} value={tender.issuingOrg} />
-      <Fact label={t.oppTenderReference} value={tender.referenceNo} />
-      <Fact label={t.oppTenderScope} value={tender.scope} />
-      <Fact label={t.oppTenderEligibility} value={tender.eligibility} />
-      {tender.requiredDocuments.length ? (
-        <View className="gap-0.5">
-          <Text className="font-figtree text-[13px] text-ink-2">{t.oppTenderDocuments}</Text>
-          {tender.requiredDocuments.map((d) => (
-            <Text key={d} className="font-figtree text-[15px] text-ink">
-              {`• ${d}`}
-            </Text>
-          ))}
-        </View>
-      ) : null}
-      <Fact label={t.oppTenderCloses} value={closes} />
-      <Fact
+      {head ?? null}
+      <TenderRow label={t.oppTenderIssuer} value={tender.issuingOrg} />
+      <TenderRow label={t.oppTenderReference} value={tender.referenceNo} />
+      <TenderRow label={t.oppTenderScope} value={tender.scope} />
+      <TenderRow label={t.oppTenderEligibility} value={tender.eligibility} />
+      <TenderRow
+        label={t.oppTenderDocuments}
+        value={tender.requiredDocuments.length ? tender.requiredDocuments.join(", ") : null}
+      />
+      <TenderRow label={t.oppTenderCloses} value={closes} />
+      <TenderRow
         label={t.oppTenderValue}
         value={tender.estimatedValue !== null ? shillings(tender.estimatedValue) : null}
       />
+      {(extra ?? []).map(([label, value]) => (
+        <TenderRow key={label} label={label} value={value} />
+      ))}
       {tender.documentPath ? (
         <Pressable
           role="link"
@@ -1237,22 +1250,61 @@ export function OpportunityDetailScreen({
         title={post.title}
         subtitle={post.posterName}
       />
-      <View className="flex-row flex-wrap items-center gap-2">
-        <Badge text={t[typeLabel[post.type]] as string} />
-        {post.featured ? <Badge tone="gold" text={t.oppFeatured} /> : null}
-        {post.isMine ? null : <View className="ml-auto">{save}</View>}
-      </View>
-      {post.readOnly ? <Message tone="info" text={t.oppReadOnly} /> : null}
-      <Text className="font-figtree text-[15px] leading-6 text-ink">{post.description}</Text>
-      <View className="gap-3 rounded-card border border-line bg-surface px-5 py-[18px]">
-        <Fact label={t.oppRoleLabel} value={role} />
-        <Fact label={t.oppPlaceLabel} value={placeLine(t, post, language)} />
-        <Fact label={t.filterSector} value={named(post.sector, language)} />
-        <Fact label={t.fieldSkills} value={post.skills.join(", ") || null} />
-        <Fact label={t.fieldClosing} value={closingDay(post.closingAt, language)} />
-      </View>
+      {tender ? (
+        <>
+          {post.isMine ? null : <View className="items-start">{save}</View>}
+          {post.readOnly ? <Message tone="info" text={t.oppReadOnly} /> : null}
+          <TenderSection
+            api={api}
+            tender={tender}
+            closingAt={post.closingAt}
+            head={
+              <View className="gap-2">
+                <View className="flex-row flex-wrap gap-1.5">
+                  <Badge text={t[typeLabel[post.type]] as string} />
+                  <Badge
+                    tone="gold"
+                    text={t.oppCloses(
+                      tender.closingTime
+                        ? t.oppTenderClosesAt(
+                            closingDay(post.closingAt, language),
+                            tender.closingTime.slice(0, 5),
+                          )
+                        : closingDay(post.closingAt, language),
+                    )}
+                  />
+                  {post.featured ? <Badge tone="gold" text={t.oppFeatured} /> : null}
+                </View>
+                <Text className="font-figtree text-[14px] text-ink">{post.posterName}</Text>
+              </View>
+            }
+            extra={[
+              [t.oppPlaceLabel, placeLine(t, post, language)],
+              [t.filterSector, named(post.sector, language)],
+            ]}
+          />
+          <Text className="font-figtree text-[15px] leading-6 text-ink">{post.description}</Text>
+        </>
+      ) : (
+        <>
+          <View className="flex-row flex-wrap items-center gap-2">
+            <Badge text={t[typeLabel[post.type]] as string} />
+            {post.featured ? <Badge tone="gold" text={t.oppFeatured} /> : null}
+            {post.isMine ? null : <View className="ml-auto">{save}</View>}
+          </View>
+          {post.readOnly ? <Message tone="info" text={t.oppReadOnly} /> : null}
+          <Text className="font-figtree text-[15px] leading-6 text-ink">{post.description}</Text>
+          <View className="gap-3 rounded-card border border-line bg-surface px-5 py-[18px]">
+            <Fact label={t.oppRoleLabel} value={role} />
+            <Fact label={t.oppPlaceLabel} value={placeLine(t, post, language)} />
+            <Fact label={t.filterSector} value={named(post.sector, language)} />
+            <Fact label={t.fieldSkills} value={post.skills.join(", ") || null} />
+            <Fact label={t.fieldClosing} value={closingDay(post.closingAt, language)} />
+          </View>
+        </>
+      )}
       {yourSkills}
-      {tender ? <TenderSection api={api} tender={tender} closingAt={post.closingAt} /> : null}
+      {tender ? action : null}
       {post.isMine ? (
         <LinkButton
           href="/opportunities/mine"
@@ -1270,7 +1322,7 @@ export function OpportunityDetailScreen({
         </View>
       )}
       <Text className="font-figtree text-[13px] leading-5 text-ink-2">{t.oppNoFeeNote}</Text>
-      {action ? (
+      {action && !tender ? (
         <View
           style={stickToBottom}
           className="-mx-5 -mb-4 border-t border-line bg-surface px-5 pb-4 pt-3"

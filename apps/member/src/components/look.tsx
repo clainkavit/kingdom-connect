@@ -57,6 +57,7 @@ export function LookProvider({
   children: React.ReactNode;
 }) {
   const { t } = useLanguage();
+  const palette = usePalette();
   const router = useRouter();
   const [asked, setAsked] = useState<LookAction | null>(null);
   return (
@@ -67,6 +68,9 @@ export function LookProvider({
         title={asked ? askFor(t, asked) : ""}
         onClose={() => setAsked(null)}
       >
+        <View className="h-11 w-11 items-center justify-center rounded-[12px] bg-warn-soft">
+          <ShieldCheck size={20} color={palette.navy} aria-hidden />
+        </View>
         <Text className="font-figtree text-[15px] leading-[22px] text-ink-2">{t.lookAskBody}</Text>
         <Button
           label={t.lookContinue}

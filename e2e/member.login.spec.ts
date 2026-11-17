@@ -12,6 +12,9 @@ import {
 
 test("a Member logs in with the email code and logs out again (REG-4)", async ({ page }) => {
   await page.goto("/");
+  await expect(page).toHaveURL(/\/welcome$/);
+  await expect(page.getByRole("heading", { name: /^Find people/ })).toBeVisible();
+  await page.getByRole("link", { name: "Log in" }).click();
   await expect(page).toHaveURL(/\/login$/);
 
   const sentAfter = new Date();
@@ -29,7 +32,7 @@ test("a Member logs in with the email code and logs out again (REG-4)", async ({
   await page.getByRole("link", { name: "My account" }).click();
   await expect(page.getByRole("link", { name: "Reports & Safety" })).toBeVisible();
   await page.getByRole("button", { name: "Log out" }).click();
-  await expect(page).toHaveURL(/\/login$/);
+  await expect(page).toHaveURL(/\/welcome$/);
 });
 
 test("a Member logs in with their phone number or their email instead of the username (12 Nov 2026)", async ({
@@ -47,6 +50,7 @@ test("a Member logs in with their phone number or their email instead of the use
   await expect(page.getByRole("heading", { name: /^(Home|Welcome, .+)$/ })).toBeVisible();
   await page.getByRole("link", { name: "My account" }).click();
   await page.getByRole("button", { name: "Log out" }).click();
+  await page.getByRole("link", { name: "Log in" }).click();
 
   sentAfter = new Date();
   await logIn(page, "Username", member.email.toUpperCase());

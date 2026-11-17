@@ -5,6 +5,7 @@ import hands from "../../assets/brand/joined-hands.jpg";
 import logo from "../../assets/brand/logo.jpg";
 import { useLanguage } from "../lib/language";
 import { LanguageSwitch } from "./language-switch";
+import { LinkButton } from "./link-button";
 import { usePalette } from "./palette";
 import { usePhone } from "./sheet";
 
@@ -78,7 +79,10 @@ export function AuthCard({
         </View>
         {children}
       </View>
-      {footer ? <View className="gap-2">{footer}</View> : null}
+      <View className="gap-2">
+        {footer ?? null}
+        <LegalLinks end={!phone} />
+      </View>
     </View>
   );
   if (phone)
@@ -112,6 +116,25 @@ export function AuthCard({
           </View>
         </View>
       </View>
+    </View>
+  );
+}
+
+/** Terms of use and Privacy notice, open to visitors (Web-Terms, Web-Privacy). */
+export function LegalLinks({ end }: { end?: boolean }) {
+  const { t } = useLanguage();
+  return (
+    <View className={`flex-row flex-wrap gap-4 ${end ? "self-end" : "self-start"}`}>
+      {(
+        [
+          ["/terms", t.legalTerms],
+          ["/privacy", t.legalPrivacy],
+        ] as const
+      ).map(([href, label]) => (
+        <LinkButton key={href} href={href} label={label} className="min-h-[36px] justify-center">
+          <Text className="font-figtree text-[13px] text-ink-2 underline">{label}</Text>
+        </LinkButton>
+      ))}
     </View>
   );
 }

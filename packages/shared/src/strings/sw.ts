@@ -2311,4 +2311,12 @@ export const sw: Strings = {
     'Unaangalia kimya. Wamiliki wanaona "Imetazamwa na wawekezaji N", si jina lako. Hakuna mwingine anayeweza kuona kuwa wewe ni mwekezaji.',
   workConfirmPageTitle: "Thibitisha kazi",
   workConfirmFrom: (name: string) => `Kutoka kwa ${name}`,
+  landingTitle: "Pata watu, fursa na mawazo ya kukua pamoja",
+  landingBody: "Jukwaa la wanachama pekee kwa Tanzania. Kila mwanachama amethibitishwa.",
+  legalLanguage: "Lugha ya maandishi",
+  legalEnglish: "English",
+  legalKiswahili: "Kiswahili",
+  legalDraftChip: (version: string, date: string) => `Rasimu · toleo ${version} · ${date}`,
+  legalVersionChip: (version: string, date: string) => `Toleo ${version} · ${date}`,
+  legalLoadFailed: "Hatukuweza kupakia maandishi haya. Angalia mtandao wako kisha ujaribu tena.",
 };

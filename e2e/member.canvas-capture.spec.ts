@@ -266,6 +266,28 @@ const pairs: Pair[] = [
   },
   { board: "Business-Phone-Dashboard", route: "/", w: 430, h: 900 },
   { board: "Biz-Phone-Verify", route: "/business", w: 430, h: 900 },
+  { board: "Phone-Forgot", route: "/forgot-password", w: 430, h: 900, signedOut: true },
+  { board: "Phone-Recover", route: "/recover", w: 430, h: 900, signedOut: true },
+  {
+    board: "Web-Locked-Action",
+    route: "/opportunities/cd5a587a-5b96-4599-9fe7-1c139d33ae6a",
+    w: 1440,
+    h: 1000,
+    press: "Apply",
+  },
+  {
+    board: "Phone-Locked-Action",
+    route: "/opportunities/cd5a587a-5b96-4599-9fe7-1c139d33ae6a",
+    w: 430,
+    h: 900,
+    press: "Apply",
+  },
+  { board: "Web-Landing", route: "/welcome", w: 1440, h: 900, signedOut: true },
+  { board: "Phone-Landing", route: "/welcome", w: 430, h: 900, signedOut: true },
+  { board: "Web-Terms", route: "/terms", w: 1440, h: 900, signedOut: true },
+  { board: "Phone-Terms", route: "/terms", w: 430, h: 900, signedOut: true },
+  { board: "Web-Privacy", route: "/privacy", w: 1440, h: 900, signedOut: true },
+  { board: "Phone-Privacy", route: "/privacy", w: 430, h: 900, signedOut: true },
 ];
 
 test.skip(!canvasDir || !out, "set CANVAS_DIR and CAPTURE_OUT to capture");
@@ -286,6 +308,10 @@ for (const pair of pairs.filter((p) => !only || only.includes(p.board))) {
       await out1.setViewportSize({ width: pair.w, height: Math.min(pair.h, 1200) });
       await out1.goto(pair.route);
       await out1.waitForTimeout(2000);
+      if (pair.press) {
+        await out1.getByRole("button", { name: pair.press }).click();
+        await out1.waitForTimeout(500);
+      }
       await out1.screenshot({ path: join(out!, `${pair.board}.live.png`), fullPage: true });
       await fresh.close();
       return;

@@ -2268,4 +2268,12 @@ export const en = {
     'You browse silently. Owners see "Viewed by N investors", never your name. Nobody else can see that you are an investor.',
   workConfirmPageTitle: "Confirm the work",
   workConfirmFrom: (name: string) => `From ${name}`,
+  landingTitle: "Find people, opportunities and ideas to grow together",
+  landingBody: "A members-only platform for Tanzania. Every member is verified.",
+  legalLanguage: "Language of the text",
+  legalEnglish: "English",
+  legalKiswahili: "Kiswahili",
+  legalDraftChip: (version: string, date: string) => `Draft · version ${version} · ${date}`,
+  legalVersionChip: (version: string, date: string) => `Version ${version} · ${date}`,
+  legalLoadFailed: "We couldn't load this text. Check your connection and try again.",
 };

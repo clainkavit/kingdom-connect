@@ -84,7 +84,7 @@ export function IdeaCard({ idea, children }: { idea: IdeaSummary; children?: Rea
       label={idea.title}
       className="flex-1 gap-2.5 rounded-card border border-line bg-surface px-[18px] py-[18px]"
     >
-      <View className="flex-row flex-wrap gap-1.5">
+      <View className={`flex-row flex-wrap gap-1.5 ${children ? "pr-14" : ""}`}>
         <ToneChip
           text={language === "sw" ? idea.sectorSw : idea.sectorEn}
           tone="bg-blue-soft text-navy"
@@ -126,9 +126,9 @@ export function IdeaCard({ idea, children }: { idea: IdeaSummary; children?: Rea
   );
   if (!children) return card;
   return (
-    <View className="gap-2">
+    <View className="relative flex-1">
       {card}
-      {children}
+      <View className="absolute right-4 top-4">{children}</View>
     </View>
   );
 }

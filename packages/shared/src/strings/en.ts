@@ -2257,4 +2257,13 @@ export const en = {
   pickStepAskingNote: "Everyone we pick is asked to share their profile with you",
   pickStepListNote: "You get the people who said yes, with why we picked them",
   interestOwnerSees: "The owner will see",
+  investorPoolIntro:
+    "Every published idea from verified members. Save the ones you like and ask the owners for the details.",
+  investorToolsTitle: "Investor tools",
+  investorOnlyYou: "Only you see this",
+  investorAllIdeas: "All ideas",
+  investorByStage: "Ideas by stage",
+  investorMatching: "shown",
+  investorSilentNote:
+    'You browse silently. Owners see "Viewed by N investors", never your name. Nobody else can see that you are an investor.',
 };

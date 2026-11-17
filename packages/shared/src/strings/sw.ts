@@ -2319,4 +2319,29 @@ export const sw: Strings = {
   legalDraftChip: (version: string, date: string) => `Rasimu · toleo ${version} · ${date}`,
   legalVersionChip: (version: string, date: string) => `Toleo ${version} · ${date}`,
   legalLoadFailed: "Hatukuweza kupakia maandishi haya. Angalia mtandao wako kisha ujaribu tena.",
+  welcomeTitle: (platformName: string) => `Karibu ${platformName}`,
+  welcomeIntro: "Ingia au fungua akaunti. Iko wazi kwa yeyote aliye Tanzania.",
+  welcomeNote:
+    "Unathibitisha utambulisho wako ukishaingia. Wanachama wengine hawaoni jinsi ulivyoingia.",
+  facebookContinue: "Endelea na Facebook",
+  appleContinue: "Endelea na Apple",
+  emailContinue: "Endelea na barua pepe",
+  phoneContinueWith: "Endelea na namba ya simu",
+  phoneTitle: "Endelea na simu yako",
+  phoneIntro:
+    "Tunatuma msimbo wa tarakimu 6 kwa SMS kwenye namba hii. Tumia namba ya Tanzania inayoanza na +255.",
+  phoneNumberLabel: "Namba ya simu",
+  phoneSend: "Nitumie msimbo",
+  phoneAnotherWay: "Tumia njia nyingine",
+  phoneRates:
+    "Gharama za kawaida za SMS za mtandao wako zinaweza kutozwa. Namba yako haionyeshwi kwa wanachama wengine.",
+  phoneNotTanzanian: "Tumia namba ya Tanzania inayoanza na +255.",
+  phoneWait: "Tumetuma msimbo sasa hivi. Subiri dakika moja kabla ya kuomba mwingine.",
+  phoneCodeTitle: "Weka msimbo",
+  phoneCodeSent: (phone: string) =>
+    `Tumetuma msimbo wa tarakimu 6 kwa ${phone}. Unatumika kwa dakika 10.`,
+  smsCodeLabel: "Msimbo wa SMS",
+  needSmsCode: "Weka namba 6 kutoka kwenye SMS.",
+  phoneContinue: "Endelea",
+  phoneChange: "Badilisha namba",
 };

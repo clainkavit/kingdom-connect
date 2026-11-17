@@ -1,39 +1,67 @@
 import { useRouter } from "expo-router";
+import { useState } from "react";
 import { Text, View } from "react-native";
 import { AuthCard, TextButton } from "../src/components/auth-card";
-import { GoogleButton } from "../src/components/first-sign-in";
-import { returnedFromGoogleWithError, startGoogleSignIn } from "../src/lib/first-sign-in";
 import { SignUpForm } from "../src/components/sign-up-form";
+import { WelcomeChoices } from "../src/components/welcome-choices";
+import { returnedFromGoogleWithError, startProviderSignIn } from "../src/lib/first-sign-in";
 import { Guard, useAuth } from "../src/lib/auth";
 import { useLanguage } from "../src/lib/language";
-import { googleSignIn, loginClient, registrationClient } from "../src/lib/supabase";
+import {
+  appleSignIn,
+  facebookSignIn,
+  googleSignIn,
+  loginClient,
+  phoneSignIn,
+  registrationClient,
+} from "../src/lib/supabase";
 
+const providers = { google: googleSignIn, facebook: facebookSignIn, apple: appleSignIn };
+const anyOtherWay = googleSignIn || facebookSignIn || appleSignIn || phoneSignIn;
+
+/** S01 Welcome, then S02 sign-up with email. With only email switched on, the form shows at once. */
 export default function SignUpScreen() {
   const { startSession } = useAuth();
   const { t, platformName } = useLanguage();
   const router = useRouter();
+  const [withEmail, setWithEmail] = useState(!anyOtherWay);
+  const footer = (
+    <View className="flex-row flex-wrap items-center gap-1">
+      <Text className="font-figtree text-sm text-ink-2">{t.haveAccount}</Text>
+      <TextButton label={t.logIn} onPress={() => router.replace("/login")} />
+    </View>
+  );
   return (
     <Guard route="login">
-      <AuthCard
-        title={platformName ? t.signUpTitle(platformName) : t.createAccount}
-        footer={
-          <View className="flex-row flex-wrap items-center gap-1">
-            <Text className="font-figtree text-sm text-ink-2">{t.haveAccount}</Text>
-            <TextButton label={t.logIn} onPress={() => router.replace("/login")} />
-          </View>
-        }
-      >
-        <GoogleButton
-          enabled={googleSignIn}
-          onPress={startGoogleSignIn}
-          returnedWithError={googleSignIn && returnedFromGoogleWithError()}
-        />
-        <SignUpForm
-          registration={registrationClient}
-          login={loginClient}
-          onCodeSent={startSession}
-        />
-      </AuthCard>
+      {withEmail ? (
+        <AuthCard
+          title={platformName ? t.signUpTitle(platformName) : t.createAccount}
+          subtitle={t.signUpIntro}
+          back={anyOtherWay ? { label: t.back, onPress: () => setWithEmail(false) } : undefined}
+          footer={footer}
+        >
+          <SignUpForm
+            registration={registrationClient}
+            login={loginClient}
+            onCodeSent={startSession}
+          />
+        </AuthCard>
+      ) : (
+        <AuthCard
+          title={platformName ? t.welcomeTitle(platformName) : t.createAccount}
+          subtitle={t.welcomeIntro}
+          footer={footer}
+        >
+          <WelcomeChoices
+            providers={providers}
+            phone={phoneSignIn}
+            returnedWithError={anyOtherWay && returnedFromGoogleWithError()}
+            onProvider={startProviderSignIn}
+            onPhone={() => router.push("/phone-sign-in")}
+            onEmail={() => setWithEmail(true)}
+          />
+        </AuthCard>
+      )}
     </Guard>
   );
 }

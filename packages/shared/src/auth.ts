@@ -79,6 +79,16 @@ export type VerifyResult =
   | { kind: "no_code" }
   | { kind: "network" };
 
+export type PhoneStart =
+  | { kind: "sent" }
+  | { kind: "not_tanzanian" }
+  | { kind: "wait" }
+  | { kind: "too_many_codes" }
+  | { kind: "network" };
+
+export type PhoneVerify =
+  Exclude<VerifyResult, { kind: "verified" }> | { kind: "verified"; session: Session };
+
 export type ResendResult =
   | { kind: "sent"; resendAfterSeconds: number }
   | { kind: "too_soon"; retryAfterSeconds: number }
@@ -180,6 +190,33 @@ export function createLoginClient(options: FunctionOptions) {
         return { kind: "too_soon", retryAfterSeconds: Number(r.retry_after_seconds) };
       if (r.error === "too_many_codes") return { kind: "too_many_codes" };
       return { kind: "sent", resendAfterSeconds: Number(r.resend_after_seconds ?? 60) };
+    },
+
+    /** S04b step 1 (R29). The answer is the same whether or not the number has an account. */
+    async startPhoneSignIn(phone: string): Promise<PhoneStart> {
+      const r = await call("phone-start", { phone });
+      if (!r) return { kind: "network" };
+      if (r.ok) return { kind: "sent" };
+      if (r.error === "not_tanzanian") return { kind: "not_tanzanian" };
+      if (r.error === "wait") return { kind: "wait" };
+      if (r.error === "too_many_codes") return { kind: "too_many_codes" };
+      return { kind: "network" };
+    },
+
+    /** S04b step 2: a right code returns the session, still to be refreshed into a checked one. */
+    async verifyPhoneCode(phone: string, code: string): Promise<PhoneVerify> {
+      const r = await call("phone-verify", { phone, code });
+      if (!r) return { kind: "network" };
+      if (typeof r.access_token === "string" && typeof r.refresh_token === "string")
+        return {
+          kind: "verified",
+          session: { access_token: r.access_token, refresh_token: r.refresh_token },
+        };
+      if (r.error === "wrong_code")
+        return { kind: "wrong_code", attemptsLeft: Number(r.attempts_left ?? 0) };
+      if (r.error === "too_many") return { kind: "too_many" };
+      if (r.error === "expired") return { kind: "expired" };
+      return { kind: "no_code" };
     },
 
     /** S04a step 1. The answer is the same whether or not the username exists. */

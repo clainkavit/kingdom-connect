@@ -11,6 +11,8 @@ const fakeClient = (overrides: Partial<LoginClient>): LoginClient => ({
   startPasswordReset: vi.fn(),
   checkResetCode: vi.fn(),
   saveNewPassword: vi.fn(),
+  startPhoneSignIn: vi.fn(),
+  verifyPhoneCode: vi.fn(),
   ...overrides,
 });
 

@@ -2276,4 +2276,28 @@ export const en = {
   legalDraftChip: (version: string, date: string) => `Draft · version ${version} · ${date}`,
   legalVersionChip: (version: string, date: string) => `Version ${version} · ${date}`,
   legalLoadFailed: "We couldn't load this text. Check your connection and try again.",
+  welcomeTitle: (platformName: string) => `Welcome to ${platformName}`,
+  welcomeIntro: "Sign in or create an account. Open to anyone in Tanzania.",
+  welcomeNote:
+    "You check your identity once you are in. Other members never see how you signed in.",
+  facebookContinue: "Continue with Facebook",
+  appleContinue: "Continue with Apple",
+  emailContinue: "Continue with email",
+  phoneContinueWith: "Continue with phone number",
+  phoneTitle: "Continue with your phone",
+  phoneIntro:
+    "We send a 6-digit code by SMS to this number. Use a Tanzanian number that starts with +255.",
+  phoneNumberLabel: "Phone number",
+  phoneSend: "Send me a code",
+  phoneAnotherWay: "Use another way",
+  phoneRates:
+    "Standard SMS rates from your network may apply. Your number is never shown to other members.",
+  phoneNotTanzanian: "Use a Tanzanian number that starts with +255.",
+  phoneWait: "We sent a code a moment ago. Wait a minute before asking for another.",
+  phoneCodeTitle: "Enter the code",
+  phoneCodeSent: (phone: string) => `We sent a 6-digit code to ${phone}. It works for 10 minutes.`,
+  smsCodeLabel: "SMS code",
+  needSmsCode: "Enter the 6 numbers from the SMS.",
+  phoneContinue: "Continue",
+  phoneChange: "Change the number",
 };

@@ -70,8 +70,14 @@ Deno.serve(async (req) => {
       counts.failed++;
       continue;
     }
+    const address = toEmail ?? account?.email;
+    if (!address) {
+      await finish(row.id, "skipped", "no email address");
+      counts.skipped++;
+      continue;
+    }
     try {
-      await sendEmail(toEmail ?? account!.email, plan.email);
+      await sendEmail(address, plan.email);
       await finish(row.id, "sent");
       counts.sent++;
     } catch (error) {

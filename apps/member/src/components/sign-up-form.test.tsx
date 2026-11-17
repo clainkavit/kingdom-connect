@@ -29,6 +29,8 @@ const clients = (signUp: RegistrationClient["signUp"]) => ({
     startPasswordReset: vi.fn(),
     checkResetCode: vi.fn(),
     saveNewPassword: vi.fn(),
+    startPhoneSignIn: vi.fn(),
+    verifyPhoneCode: vi.fn(),
   } as LoginClient,
 });
 

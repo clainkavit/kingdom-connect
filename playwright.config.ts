@@ -27,7 +27,7 @@ export default defineConfig({
       url: memberUrl,
       reuseExistingServer: !process.env.CI,
       timeout: 180_000,
-      env: { CI: "1" },
+      env: { CI: "1", EXPO_PUBLIC_PHONE_SIGN_IN: "1" },
     },
     {
       command: process.env.CI

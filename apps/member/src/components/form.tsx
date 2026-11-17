@@ -40,6 +40,7 @@ export function Field(props: {
   problem?: string | null;
   keyboardType?: "default" | "email-address" | "phone-pad" | "number-pad";
   multiline?: boolean;
+  placeholder?: string;
 }) {
   return (
     <View className="gap-1.5">
@@ -54,6 +55,7 @@ export function Field(props: {
         autoCorrect={false}
         keyboardType={props.keyboardType ?? "default"}
         multiline={props.multiline}
+        placeholder={props.placeholder}
         className={`border bg-surface font-figtree text-[15px] text-ink ${props.problem ? "border-bad" : "border-field"} ${props.multiline ? "min-h-[96px] rounded-[18px] px-4 py-3" : "min-h-[52px] rounded-full px-5"}`}
       />
       {props.hint && !props.problem ? (

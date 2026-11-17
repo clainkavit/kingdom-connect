@@ -20,12 +20,22 @@ export const demoLinks = process.env.EXPO_PUBLIC_DEMO_LINKS === "1";
 /** Continue with Google (R26, #273): on the web, when switched on for this environment. */
 export const googleSignIn = process.env.EXPO_PUBLIC_GOOGLE_SIGN_IN === "1" && Platform.OS === "web";
 
+/** Continue with Facebook (R30), once Meta's app review passes and the provider is on. */
+export const facebookSignIn =
+  process.env.EXPO_PUBLIC_FACEBOOK_SIGN_IN === "1" && Platform.OS === "web";
+
+/** Continue with Apple (M05), once the Apple provider is on. */
+export const appleSignIn = process.env.EXPO_PUBLIC_APPLE_SIGN_IN === "1" && Platform.OS === "web";
+
+/** Continue with phone number (R29), once an SMS sender is set up for this environment. */
+export const phoneSignIn = process.env.EXPO_PUBLIC_PHONE_SIGN_IN === "1";
+
 export const supabase = createClient(url, anonKey, {
   auth: {
     storage: AsyncStorage,
     persistSession: true,
     autoRefreshToken: true,
-    detectSessionInUrl: demoLinks || googleSignIn,
+    detectSessionInUrl: demoLinks || googleSignIn || facebookSignIn || appleSignIn,
   },
 });
 

@@ -2219,4 +2219,13 @@ export const en = {
   lookVerifyToApply: "Verify to apply",
   lookSeeAllOpportunities: "See all opportunities",
   lookCanLookAt: "Training, events and ideas you can look at",
+  workConfirmMarkedLead: (name: string) => `${name} marked you as hired for`,
+  workConfirmRateFor: "If you say yes, you can rate each other for 14 days.",
+  workConfirmNeitherSees:
+    "Neither of you sees the other's rating until both have rated, or the 14 days end.",
+  rateHiddenChip: "Hidden",
+  rateHiddenBody: (name: string, days: number) =>
+    `${name} cannot see your rating until they rate you too, or the window ends. You have ${days} ${days === 1 ? "day" : "days"} left. Once sent, a rating cannot be changed.`,
+  workYouHiredLabel: "You hired",
+  workHiredYouLabel: "Hired you",
 };

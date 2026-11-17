@@ -1,6 +1,8 @@
 import { formatDate } from "@kingdom-connect/shared";
 import { useState } from "react";
-import { Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
+import ChevronLeft from "lucide-react-native/icons/chevron-left";
+import Star from "lucide-react-native/icons/star";
 import { useLanguage } from "../lib/language";
 import {
   daysLeft,
@@ -14,6 +16,7 @@ import {
 import { useLoad } from "./events";
 import { Button, Chips, Field, Message } from "./form";
 import { LinkButton } from "./link-button";
+import { usePalette } from "./palette";
 import { Section } from "./profile";
 import { ScreenTitle } from "./screens";
 import { EmptyState, ErrorState, LoadingRows } from "./states";
@@ -50,19 +53,26 @@ function ConfirmWork({
     else setProblem(t.workFailed);
   };
   return (
-    <View className="gap-2">
-      <Text role="heading" aria-level={2} className="font-figtree-bold text-[17px] text-ink">
+    <View className="gap-4">
+      <Text role="heading" aria-level={2} className="font-figtree-extrabold text-[24px] text-ink">
         {t.workConfirmTitle}
       </Text>
-      <Body text={t.workConfirmMarked(work.otherName, work.title)} />
-      <Muted text={t.workConfirmYesMeans} />
-      <Muted text={t.workConfirmNoMeans} />
-      <Message text={problem} />
-      <View className="flex-row flex-wrap gap-2">
-        <Button label={t.workConfirmYes} disabled={busy} onPress={() => answer(true)} />
-        <Button secondary label={t.workConfirmNo} disabled={busy} onPress={() => answer(false)} />
+      <Text className="font-figtree text-[15px] leading-[22px] text-ink-2">
+        {t.workConfirmMarkedLead(work.otherName)}{" "}
+        <Text className="font-figtree-bold text-ink">{work.title}</Text>.
+      </Text>
+      <View className="gap-1.5 rounded-card border border-line bg-surface-2 px-5 py-4">
+        {[t.workConfirmRateFor, t.workConfirmNeitherSees, t.workConfirmNoMeans].map((line) => (
+          <View key={line} className="flex-row gap-2">
+            <Text className="font-figtree text-[14px] text-ink">•</Text>
+            <Text className="flex-1 font-figtree text-[14px] leading-[21px] text-ink">{line}</Text>
+          </View>
+        ))}
       </View>
-      <Muted text={t.workConfirmPrivate} />
+      <Message text={problem} />
+      <Button label={t.workConfirmYes} disabled={busy} onPress={() => answer(true)} />
+      <Button secondary label={t.workConfirmNo} disabled={busy} onPress={() => answer(false)} />
+      <Text className="font-figtree text-[13px] leading-5 text-ink-2">{t.workConfirmPrivate}</Text>
     </View>
   );
 }
@@ -147,6 +157,7 @@ function rateProblem(t: ReturnType<typeof useLanguage>["t"], result: Exclude<Rat
 
 function RateForm({ api, work, onSent }: { api: WorkApi; work: Engagement; onSent: () => void }) {
   const { t } = useLanguage();
+  const palette = usePalette();
   const [scores, setScores] = useState<Partial<Record<keyof Scores, Score>>>({});
   const [again, setAgain] = useState<"yes" | "no" | undefined>(undefined);
   const [comment, setComment] = useState("");
@@ -185,25 +196,74 @@ function RateForm({ api, work, onSent }: { api: WorkApi; work: Engagement; onSen
   };
   return (
     <View className="gap-4">
-      <Message tone="info" text={t.rateHidden(work.otherName, daysLeft(work))} />
-      {questions.map(([key, label]) => (
-        <Chips<Score>
-          key={key}
-          label={label}
-          options={SCORE_OPTIONS.map((v) => ({ value: v, label: v }))}
-          value={scores[key]}
-          onChange={(v) => setScores((s) => ({ ...s, [key]: v }))}
-        />
-      ))}
-      <Chips<"yes" | "no">
-        label={t.rateAgain(work.otherName)}
-        options={[
-          { value: "yes", label: t.yes },
-          { value: "no", label: t.no },
-        ]}
-        value={again}
-        onChange={setAgain}
-      />
+      <View className="flex-row items-start gap-3 rounded-card bg-warn-soft px-5 py-4">
+        <Text className="rounded-full bg-warn-text px-2.5 py-1 font-figtree-extrabold text-[11px] tracking-[0.06em] text-warn-soft">
+          {t.rateHiddenChip.toUpperCase()}
+        </Text>
+        <Text className="flex-1 font-figtree text-[14px] leading-[21px] text-warn-text">
+          {t.rateHiddenBody(work.otherName, daysLeft(work))}
+        </Text>
+      </View>
+      <View className="rounded-card border border-line bg-surface px-5 py-1">
+        {questions.map(([key, label], i) => (
+          <View
+            key={key}
+            role="radiogroup"
+            aria-label={label}
+            className={`min-h-[60px] flex-row flex-wrap items-center justify-between gap-3 py-2 ${i > 0 ? "border-t border-line" : ""}`}
+          >
+            <Text className="font-figtree-bold text-[15px] text-ink">{label}</Text>
+            <View className="flex-row gap-1">
+              {SCORE_OPTIONS.map((v) => {
+                const on = Number(scores[key] ?? 0) >= Number(v);
+                return (
+                  <Pressable
+                    key={v}
+                    role="radio"
+                    aria-label={v}
+                    aria-checked={scores[key] === v}
+                    onPress={() => setScores((s) => ({ ...s, [key]: v }))}
+                    className="h-10 w-10 items-center justify-center"
+                  >
+                    <Star
+                      size={24}
+                      color={on ? palette.goldDeep : palette.line2}
+                      fill={on ? palette.goldDeep : palette.line2}
+                      aria-hidden
+                    />
+                  </Pressable>
+                );
+              })}
+            </View>
+          </View>
+        ))}
+      </View>
+      <View role="radiogroup" aria-label={t.rateAgain(work.otherName)} className="gap-2">
+        <Text className="font-figtree-bold text-[15px] text-ink">
+          {t.rateAgain(work.otherName)}
+        </Text>
+        <View className="flex-row gap-3">
+          {(["yes", "no"] as const).map((v) => (
+            <Pressable
+              key={v}
+              role="radio"
+              aria-label={v === "yes" ? t.yes : t.no}
+              aria-checked={again === v}
+              onPress={() => setAgain(v)}
+              className={`min-h-[60px] flex-1 flex-row items-center gap-3 rounded-[18px] px-4 ${again === v ? "border-2 border-navy bg-surface-2" : "border border-line-2 bg-surface"}`}
+            >
+              <View
+                className={`h-5 w-5 items-center justify-center rounded-full border-2 ${again === v ? "border-navy" : "border-line-2"}`}
+              >
+                {again === v ? <View className="h-2.5 w-2.5 rounded-full bg-navy" /> : null}
+              </View>
+              <Text className="font-figtree-bold text-[15px] text-ink">
+                {v === "yes" ? t.yes : t.no}
+              </Text>
+            </Pressable>
+          ))}
+        </View>
+      </View>
       <Field
         label={t.rateComment}
         hint={t.rateCommentHint(work.otherName)}
@@ -219,9 +279,7 @@ function RateForm({ api, work, onSent }: { api: WorkApi; work: Engagement; onSen
         multiline
       />
       <Message text={problem} />
-      <View className="items-start">
-        <Button label={t.rateSend} disabled={busy} onPress={send} />
-      </View>
+      <Button label={t.rateSend} disabled={busy} onPress={send} />
       <Muted text={t.rateRules} />
     </View>
   );
@@ -230,11 +288,17 @@ function RateForm({ api, work, onSent }: { api: WorkApi; work: Engagement; onSen
 /** S53: rate confirmed work once, hidden until both rate or the 14 days end. */
 export function RateWork({ api, engagementId }: { api: WorkApi; engagementId: string }) {
   const { t } = useLanguage();
+  const palette = usePalette();
   const [attempt, setAttempt] = useState(0);
   const loaded = useLoad(() => api.engagements(), attempt);
   const back = (
-    <LinkButton href="/work" label={t.workTitle} className="min-h-[40px] justify-center">
-      <Text className="font-figtree-semibold text-sm text-blue">{t.workTitle}</Text>
+    <LinkButton
+      href="/work"
+      label={t.workTitle}
+      className="min-h-[36px] flex-row items-center gap-1.5 self-start"
+    >
+      <ChevronLeft size={16} color={palette.navy} aria-hidden />
+      <Text className="font-figtree-semibold text-[15px] text-navy underline">{t.workTitle}</Text>
     </LinkButton>
   );
   if (loaded.state === "failed")
@@ -243,20 +307,49 @@ export function RateWork({ api, engagementId }: { api: WorkApi; engagementId: st
   const work = loaded.value.find((w) => w.id === engagementId);
   if (!work) return <EmptyState title={t.workNotFound} message={t.workEmptyHint} />;
   const stage = workStage(work);
-  return (
-    <View className="gap-3">
+  const frame = (children: React.ReactNode) => (
+    <View className="w-full max-w-[1200px] self-center">
+      <View className="w-full max-w-[720px] gap-4">{children}</View>
+    </View>
+  );
+  if (stage === "confirm")
+    return frame(
+      <>
+        {back}
+        <ConfirmWork api={api} work={work} onDone={() => setAttempt((a) => a + 1)} />
+      </>,
+    );
+  return frame(
+    <>
       {back}
-      <ScreenTitle>{t.rateTitle(work.otherName)}</ScreenTitle>
-      <Muted
-        text={
-          work.role === "poster" ? t.workYouHired(work.otherName) : t.workHiredYou(work.otherName)
-        }
-      />
-      <Body text={work.title} />
+      <Text
+        role="heading"
+        aria-level={1}
+        className="font-figtree-extrabold text-[30px] leading-[36px] text-navy"
+      >
+        {t.rateTitle(work.otherName)}
+      </Text>
+      <View className="flex-row items-center gap-3">
+        <View className="h-14 w-14 items-center justify-center rounded-full bg-warn-soft">
+          <Text className="font-figtree-extrabold text-[18px] text-navy">
+            {work.otherName
+              .split(/\s+/)
+              .filter(Boolean)
+              .slice(0, 2)
+              .map((w) => w[0]!.toUpperCase())
+              .join("")}
+          </Text>
+        </View>
+        <View className="min-w-0 flex-1 gap-0.5">
+          <Text className="font-figtree-semibold text-[13px] text-ink-2">
+            {work.role === "poster" ? t.workYouHiredLabel : t.workHiredYouLabel}
+          </Text>
+          <Text className="font-figtree-bold text-[18px] text-ink">{work.otherName}</Text>
+          <Text className="font-figtree text-[14px] text-ink-2">{work.title}</Text>
+        </View>
+      </View>
       {stage === "rate" ? (
         <RateForm api={api} work={work} onSent={() => setAttempt((a) => a + 1)} />
-      ) : stage === "confirm" ? (
-        <ConfirmWork api={api} work={work} onDone={() => setAttempt((a) => a + 1)} />
       ) : (
         <Message
           tone="info"
@@ -271,7 +364,7 @@ export function RateWork({ api, engagementId }: { api: WorkApi; engagementId: st
           }
         />
       )}
-    </View>
+    </>,
   );
 }
 

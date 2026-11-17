@@ -3,6 +3,7 @@ import { LOCAL_SERVICE_ROLE_KEY } from "@kingdom-connect/shared/src/local-dev";
 
 export { LOCAL_SERVICE_ROLE_KEY };
 import { expect, type Page } from "@playwright/test";
+import { createHash, randomBytes } from "node:crypto";
 import postgres from "postgres";
 
 export const TEST_PASSWORD = "kingdom-test-only";
@@ -210,6 +211,52 @@ export async function auditActions(targetId: string): Promise<string[]> {
   const rows =
     await db`select action from private.audit_log where target_id = ${targetId} order by created_at`;
   return rows.map((r) => r.action as string);
+}
+
+export async function userIdByEmail(email: string): Promise<string> {
+  const [row] = await db`select id from auth.users where lower(email) = ${email.toLowerCase()}`;
+  return row!.id as string;
+}
+
+/** A reset link a Super Administrator has approved, as the staff member would open it (R30). */
+export async function approvedResetLink(email: string): Promise<string> {
+  const token = randomBytes(32).toString("hex");
+  const hash = createHash("sha256").update(token).digest("hex");
+  await db`select private.request_staff_reset(${email}, null)`;
+  const [row] = await db`
+    update private.staff_resets set status = 'sent', decided_at = now(), token_hash = ${hash},
+      link_expires_at = now() + interval '24 hours',
+      decided_by = (select id from public.staff where role = 'super_admin' and active limit 1)
+    where staff_id = (select id from auth.users where lower(email) = ${email.toLowerCase()})
+      and status = 'waiting'
+    returning id`;
+  return `/set-password?reset=${row!.id}&token=${token}`;
+}
+
+/** A waiting reset request and a locked staff account, for the Staff accounts card (R30). */
+export async function staffNeedingHelp(): Promise<void> {
+  const stamp = Date.now();
+  await db`select private.request_staff_reset(${await createStaff(`Asha Kombo ${stamp}`)}, null)`;
+  const locked = await createStaff(`Joseph Mrema ${stamp}`);
+  await db`insert into private.login_attempts (identifier, user_id, failed_count, locked_until)
+    select 'email:' || ${locked}, id, 5, now() + interval '15 minutes' from auth.users where email = ${locked}`;
+}
+
+/** The HTML and text of an email, together. */
+export async function emailBody(to: string, after: Date, subject: RegExp): Promise<string> {
+  const email = await nextEmail(to, after, subject);
+  const res = await fetch(`${MAILPIT}/api/v1/message/${email.ID}`);
+  const { HTML, Text } = (await res.json()) as { HTML: string; Text: string };
+  return `${HTML}
+${Text}`;
+}
+
+/** The first web address in a plain-text email. */
+export async function urlInTextEmail(to: string, after: Date, subject: RegExp): Promise<string> {
+  const email = await nextEmail(to, after, subject);
+  const res = await fetch(`${MAILPIT}/api/v1/message/${email.ID}`);
+  const { Text } = (await res.json()) as { Text: string };
+  return Text.match(/https?:\/\/\S+/)![0]!;
 }
 
 export async function notificationKinds(memberId: string): Promise<string[]> {

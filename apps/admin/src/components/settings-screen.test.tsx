@@ -14,6 +14,8 @@ const fakeApi = (over: Partial<SettingsApi> = {}): SettingsApi => ({
   ]),
   invite: vi.fn().mockResolvedValue("done"),
   setActive: vi.fn().mockResolvedValue("done"),
+  staffAccess: vi.fn().mockResolvedValue([]),
+  decideStaffAccess: vi.fn().mockResolvedValue("done"),
   synonyms: vi.fn().mockResolvedValue([{ id: "y1", fromName: "js", skillName: "javascript" }]),
   addSynonym: vi.fn().mockResolvedValue("done"),
   removeSynonym: vi.fn().mockResolvedValue(true),
@@ -163,6 +165,53 @@ describe("SettingsScreen (A16)", () => {
       fireEvent.click(screen.getByRole("button", { name: "Deactivate Test Super Administrator" })),
     );
     expect(screen.getByRole("alert").textContent).toMatch(/You cannot deactivate yourself/);
+  });
+
+  it("lists reset requests and locked staff accounts, and acts on them (R30)", async () => {
+    const reset = {
+      kind: "reset" as const,
+      id: "r1",
+      fullName: "Asha Kombo",
+      email: "asha@example.test",
+      at: new Date("2026-11-18T08:10:00+03:00"),
+      failed: null,
+    };
+    const locked = {
+      kind: "locked" as const,
+      id: "s9",
+      fullName: "Joseph Mrema",
+      email: "joseph@example.test",
+      at: new Date("2026-11-18T07:42:00+03:00"),
+      failed: 5,
+    };
+    const api = fakeApi({
+      staffAccess: vi.fn().mockResolvedValueOnce([reset, locked]).mockResolvedValue([locked]),
+      decideStaffAccess: vi.fn().mockResolvedValueOnce("done").mockResolvedValueOnce("own_request"),
+    });
+    await show(api);
+    await openTab("Staff accounts");
+    expect(
+      screen.getByRole("heading", { name: "Password resets and locked accounts" }),
+    ).toBeTruthy();
+    expect(screen.getByText(/Asked to reset their password/)).toBeTruthy();
+    expect(screen.getByText(/Locked after 5 failed sign-ins/)).toBeTruthy();
+
+    await click("Send reset link: Asha Kombo");
+    expect(api.decideStaffAccess).toHaveBeenCalledWith("send_link", "r1");
+    expect(screen.getByText("Reset link sent to Asha Kombo. It works for 24 hours.")).toBeTruthy();
+    expect(screen.queryByText(/Asked to reset their password/)).toBeNull();
+
+    await click("Unlock: Joseph Mrema");
+    expect(api.decideStaffAccess).toHaveBeenCalledWith("unlock", "s9");
+    expect(screen.getByRole("alert").textContent).toBe(
+      "You cannot approve your own request. Ask another Super Administrator.",
+    );
+  });
+
+  it("says when there is nothing to check (R30)", async () => {
+    await show(fakeApi());
+    await openTab("Staff accounts");
+    expect(screen.getByText("No reset requests and no locked staff accounts.")).toBeTruthy();
   });
 
   it("keeps the platform, weights and legal versions from an Administrator (D02)", async () => {

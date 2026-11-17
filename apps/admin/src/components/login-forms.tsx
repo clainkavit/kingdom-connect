@@ -7,9 +7,11 @@ import {
   type LoginClient,
   type Session,
 } from "@kingdom-connect/shared";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/lib/language";
+import { FORGOT_PASSWORD_PATH } from "@/lib/paths";
 import { Field } from "./field";
 
 function useCountdown(initialSeconds: number) {
@@ -66,12 +68,12 @@ function CodeBoxes({ value, onChange }: { value: string; onChange: (v: string) =
   );
 }
 
-const primaryButton =
+export const primaryButton =
   "min-h-[54px] rounded-full bg-primary px-5 text-[16px] font-bold text-primary-foreground disabled:opacity-50";
 const secondaryButton =
   "min-h-[44px] rounded-full border border-line-2 bg-card px-5 text-sm font-semibold text-primary disabled:opacity-50";
 
-function Message({ text, tone = "bad" }: { text: string | null; tone?: "bad" | "info" }) {
+export function Message({ text, tone = "bad" }: { text: string | null; tone?: "bad" | "info" }) {
   if (!text) return null;
   return (
     <p
@@ -133,6 +135,12 @@ export function LoginForm({
       >
         {t.logIn}
       </button>
+      <Link
+        href={FORGOT_PASSWORD_PATH}
+        className="self-start text-sm font-semibold text-primary underline underline-offset-2"
+      >
+        {t.forgotPassword}
+      </Link>
     </form>
   );
 }

@@ -4,12 +4,32 @@ import {
   normalizeSkill,
   type InviteResult,
   type NewStaff,
+  type StaffAccessAction,
+  type StaffAccessResult,
   type StaffRole,
 } from "@kingdom-connect/shared";
 import { anonKey, supabase, url } from "./supabase";
 
 export type StaffMember = { id: string; fullName: string; role: StaffRole; active: boolean };
 export type ActiveResult = "done" | "refused" | "failed";
+export type StaffAccessItem = {
+  kind: "reset" | "locked";
+  id: string;
+  fullName: string;
+  email: string;
+  at: Date;
+  failed: number | null;
+};
+
+type StaffAccessRow = {
+  kind: "reset" | "locked";
+  request_id: string | null;
+  staff_id: string;
+  full_name: string;
+  email: string;
+  at: string;
+  failed: number | null;
+};
 export type Synonym = { id: string; fromName: string; skillName: string };
 export type SynonymResult = "done" | "same" | "exists" | "invalid" | "failed";
 
@@ -40,6 +60,8 @@ export type SettingsApi = {
   staff: () => Promise<StaffMember[]>;
   invite: (staff: NewStaff) => Promise<InviteResult>;
   setActive: (id: string, active: boolean) => Promise<ActiveResult>;
+  staffAccess: () => Promise<StaffAccessItem[]>;
+  decideStaffAccess: (action: StaffAccessAction, id: string) => Promise<StaffAccessResult>;
   synonyms: () => Promise<Synonym[]>;
   addSynonym: (variant: string, skill: string) => Promise<SynonymResult>;
   removeSynonym: (id: string) => Promise<boolean>;
@@ -94,6 +116,24 @@ export const settingsApi: SettingsApi = {
       .select("id");
     if (error) return error.code === "42501" ? "refused" : "failed";
     return data.length === 1 ? "done" : "refused";
+  },
+
+  async staffAccess() {
+    const { data, error } = await supabase.rpc("staff_access_queue");
+    if (error) throw error;
+    return ((data ?? []) as StaffAccessRow[]).map((row) => ({
+      kind: row.kind,
+      id: row.kind === "reset" ? row.request_id! : row.staff_id,
+      fullName: row.full_name,
+      email: row.email,
+      at: new Date(row.at),
+      failed: row.failed,
+    }));
+  },
+
+  async decideStaffAccess(action, id) {
+    const { data } = await supabase.auth.getSession();
+    return staffClient.decide(data.session?.access_token ?? "", action, id);
   },
 
   async synonyms() {

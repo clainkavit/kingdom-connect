@@ -2,11 +2,14 @@
 
 import {
   formatDate,
+  formatDateTime,
   MAX_SKILL_LENGTH,
   staffRoles,
+  type StaffAccessAction,
   type StaffRole,
   type Strings,
 } from "@kingdom-connect/shared";
+import { TriangleAlert } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useLanguage } from "@/lib/language";
 import type {
@@ -17,6 +20,7 @@ import type {
   PlatformResult,
   PlatformSettings,
   SettingsApi,
+  StaffAccessItem,
   StaffMember,
   Synonym,
   Weight,
@@ -27,6 +31,8 @@ import { EmptyState, ErrorState, LoadingRows } from "./states";
 
 const pill =
   "min-h-[40px] rounded-full border border-line-2 bg-card px-4 text-sm font-semibold text-foreground hover:bg-surface-2";
+const darkPill =
+  "min-h-[40px] rounded-full bg-primary px-4 text-sm font-bold text-primary-foreground disabled:opacity-50";
 const primaryPill =
   "min-h-[50px] rounded-full bg-primary px-6 text-[16px] font-bold text-primary-foreground disabled:opacity-50";
 
@@ -226,6 +232,119 @@ function StaffCard({
         <Notice outcome={listResult} />
       </Card>
     </>
+  );
+}
+
+/** R30: reset requests and locked staff accounts, for a Super Administrator to check and act on. */
+function StaffAccessCard({
+  api,
+  items,
+  onChanged,
+}: {
+  api: SettingsApi;
+  items: StaffAccessItem[];
+  onChanged: () => void;
+}) {
+  const { t, language } = useLanguage();
+  const [outcome, setOutcome] = useState<Outcome>(null);
+  const [busy, setBusy] = useState(false);
+
+  const done = (item: StaffAccessItem, action: StaffAccessAction) =>
+    action === "send_link"
+      ? t.staffLinkSent(item.fullName)
+      : action === "refuse"
+        ? t.staffResetRefused(item.fullName)
+        : t.staffUnlocked(item.fullName);
+
+  const act = async (item: StaffAccessItem, action: StaffAccessAction) => {
+    setBusy(true);
+    const result = await api.decideStaffAccess(action, item.id);
+    setBusy(false);
+    setOutcome(
+      result === "done"
+        ? { tone: "good", text: done(item, action) }
+        : {
+            tone: "bad",
+            text:
+              result === "own_request"
+                ? t.staffOwnRequest
+                : result === "gone"
+                  ? t.staffAccessGone
+                  : t.saveFailed,
+          },
+    );
+    if (result === "done" || result === "gone") onChanged();
+  };
+
+  const button = (
+    item: StaffAccessItem,
+    action: StaffAccessAction,
+    label: string,
+    dark: boolean,
+  ) => (
+    <button
+      type="button"
+      disabled={busy}
+      aria-label={`${label}: ${item.fullName}`}
+      onClick={() => act(item, action)}
+      className={dark ? darkPill : pill}
+    >
+      {label}
+    </button>
+  );
+
+  return (
+    <Card title={t.staffAccessTitle}>
+      <p className="flex items-start gap-2.5 rounded-[14px] bg-warn-soft px-4 py-3 text-[13px] leading-[1.45] text-warn-text">
+        <TriangleAlert size={16} aria-hidden className="mt-px shrink-0" />
+        {t.staffAccessWarning}
+      </p>
+      {items.length === 0 ? (
+        <p className="border-t pt-4 text-sm text-ink-2">{t.staffAccessEmpty}</p>
+      ) : (
+        <ul className="flex flex-col divide-y border-t">
+          {items.map((item) => (
+            <li
+              key={`${item.kind}-${item.id}`}
+              className="flex flex-wrap items-center gap-x-4 gap-y-3 py-4"
+            >
+              <span
+                aria-hidden
+                className="grid size-10 shrink-0 place-items-center rounded-full bg-blue-soft text-sm font-bold text-primary"
+              >
+                {initialsOf(item.fullName)}
+              </span>
+              <span className="flex min-w-[200px] flex-1 flex-col">
+                <span className="text-[15px] text-foreground">
+                  <span className="font-bold">{item.fullName}</span>
+                  <span className="text-ink-2 max-[880px]:hidden"> · </span>
+                  <span className="break-all text-ink-2 max-[880px]:block max-[880px]:text-[13px]">
+                    {item.email}
+                  </span>
+                </span>
+                <span className="text-[13px] text-ink-2">
+                  {item.kind === "reset"
+                    ? t.staffAskedReset(formatDateTime(item.at, language))
+                    : t.staffLockedAfter(item.failed ?? 0, formatDateTime(item.at, language))}
+                </span>
+              </span>
+              <span className="flex gap-2 max-[880px]:w-full max-[880px]:[&>button]:flex-1">
+                {item.kind === "reset" ? (
+                  <>
+                    {button(item, "send_link", t.sendResetLink, true)}
+                    {button(item, "refuse", t.refuse, false)}
+                  </>
+                ) : (
+                  button(item, "unlock", t.unlock, true)
+                )}
+              </span>
+            </li>
+          ))}
+        </ul>
+      )}
+      <Notice outcome={outcome} />
+      <p className="text-[13px] text-ink-2">{t.staffAccessAudit}</p>
+    </Card>
   );
 }
 
@@ -580,7 +699,7 @@ function LoadedCard<T>({
   return <>{children(value)}</>;
 }
 
-type Loaded = { cap: number | null; staff: StaffMember[] };
+type Loaded = { cap: number | null; staff: StaffMember[]; access: StaffAccessItem[] };
 type Tab = "cap" | "staff" | "synonyms" | "weights" | "platform" | "legal";
 
 export function SettingsScreen({ api, superAdmin }: { api: SettingsApi; superAdmin: boolean }) {
@@ -593,8 +712,8 @@ export function SettingsScreen({ api, superAdmin }: { api: SettingsApi; superAdm
   useEffect(() => {
     if (!superAdmin) return;
     let live = true;
-    Promise.all([api.cap(), api.staff()]).then(
-      ([cap, staff]) => live && setLoaded({ cap, staff }),
+    Promise.all([api.cap(), api.staff(), api.staffAccess()]).then(
+      ([cap, staff, access]) => live && setLoaded({ cap, staff, access }),
       () => live && setFailed(true),
     );
     return () => {
@@ -656,7 +775,10 @@ export function SettingsScreen({ api, superAdmin }: { api: SettingsApi; superAdm
           ) : shown === "cap" ? (
             <CapCard key={String(loaded.cap)} api={api} initial={loaded.cap} />
           ) : (
-            <StaffCard api={api} staff={loaded.staff} onChanged={reload} />
+            <>
+              <StaffAccessCard api={api} items={loaded.access} onChanged={reload} />
+              <StaffCard api={api} staff={loaded.staff} onChanged={reload} />
+            </>
           )
         ) : null}
         {superAdmin && shown === "platform" ? (

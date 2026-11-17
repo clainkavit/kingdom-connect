@@ -837,6 +837,41 @@ export const en = {
   setPassword: "Set password",
   passwordSet: "Your password is set. Log in to continue.",
   goToLogin: "Go to log in",
+  staffForgotIntro:
+    "Enter the email of your staff account. A Super Administrator checks that it is really you, then sends you a link to choose a new password.",
+  askForReset: "Ask for a reset",
+  staffResetSentTitle: "Request sent",
+  staffResetSentIntro:
+    "If this email belongs to a staff account, your Super Administrators have been told. One of them may call you to check it is really you.",
+  staffResetStep1: "A Super Administrator checks your request.",
+  staffResetStep2: "You get an email with a link. It works for 24 hours.",
+  staffResetStep3:
+    "You choose a new password, then log in with your email and the code we send you.",
+  staffNewPasswordTitle: "Choose a new password",
+  staffNewPasswordIntro:
+    "Your Super Administrator approved the reset. Choose a new password for your staff account.",
+  staffAccountFor: "Staff account for",
+  confirmNewPassword: "Confirm new password",
+  saveNewPassword: "Save new password",
+  staffNewPasswordNote: "Saving signs you out on every other device. This link works for 24 hours.",
+  staffResetLinkInvalid:
+    "This link has expired or was already used. Ask for a new reset from the log in page.",
+  staffAccessTitle: "Password resets and locked accounts",
+  staffAccessWarning:
+    "Before you send a link, check it is really them, for example by calling the number you have for them. You cannot approve your own request.",
+  staffAskedReset: (when: string) => `Asked to reset their password · ${when}`,
+  staffLockedAfter: (failed: number, when: string) =>
+    `Locked after ${failed} failed sign-ins · ${when}`,
+  sendResetLink: "Send reset link",
+  refuse: "Refuse",
+  unlock: "Unlock",
+  staffAccessAudit: "Every reset, refusal and unlock is written to the audit log.",
+  staffAccessEmpty: "No reset requests and no locked staff accounts.",
+  staffLinkSent: (name: string) => `Reset link sent to ${name}. It works for 24 hours.`,
+  staffResetRefused: (name: string) => `You refused the request from ${name}.`,
+  staffUnlocked: (name: string) => `${name} can log in again.`,
+  staffOwnRequest: "You cannot approve your own request. Ask another Super Administrator.",
+  staffAccessGone: "Someone already handled this. The list is now up to date.",
   inviteLinkInvalid:
     "This link has expired or was already used. Ask a Super Administrator to send a new invite.",
   myProfile: "My profile",

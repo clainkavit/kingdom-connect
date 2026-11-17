@@ -248,6 +248,16 @@ otp_expiry = 86400
 subject = "Your staff account for the admin console"
 content_path = "./supabase/templates/invite.html"
 
+# R30: Supabase Auth's own recovery and magic-link emails would let anyone who reads the inbox set a
+# password without the staff approval or the member reset code, so they carry no link or code.
+[auth.email.template.recovery]
+subject = "Use Forgot password in the app"
+content_path = "./supabase/templates/no-link.html"
+
+[auth.email.template.magic_link]
+subject = "Use Forgot password in the app"
+content_path = "./supabase/templates/no-link.html"
+
 # Uncomment to customize notification email template
 # [auth.email.notification.password_changed]
 # enabled = true
@@ -405,6 +415,8 @@ OTP_SECRET = "local-development-only-otp-secret"
 # R29: phone sign-in codes go to private.test_sms instead of a real SMS provider.
 SMS_SENDER = "test"
 MAIL_FROM = "noreply@example.test"
+# R30: staff reset links point at the admin console.
+ADMIN_URL = "http://localhost:3000"
 
 [analytics]
 # Off locally: not needed for development or tests, and on Windows it would require exposing the Docker daemon over TCP.
@@ -454,6 +466,12 @@ verify_jwt = false
 verify_jwt = false
 
 [functions.phone-verify]
+verify_jwt = false
+
+[functions.staff-reset-request]
+verify_jwt = false
+
+[functions.staff-reset-finish]
 verify_jwt = false
 
 [functions.send-notification-emails]

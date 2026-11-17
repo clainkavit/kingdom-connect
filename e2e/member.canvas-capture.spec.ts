@@ -176,6 +176,49 @@ const pairs: Pair[] = [
   },
   { board: "Member-Phone-Dashboard", route: "/", w: 430, h: 900 },
   { board: "Opp-Phone-List", route: "/opportunities", w: 430, h: 900 },
+  {
+    board: "Opp-Phone-Apply",
+    route: "/opportunities/cd5a587a-5b96-4599-9fe7-1c139d33ae6a",
+    w: 430,
+    h: 900,
+    press: "Apply",
+  },
+  { board: "Opp-Phone-Saved", route: "/opportunities/saved", w: 430, h: 900 },
+  { board: "Opp-Phone-Alerts", route: "/settings/alerts", w: 430, h: 900 },
+  { board: "Opp-Phone-Post", route: "/opportunities/new", w: 430, h: 900 },
+  { board: "Opp-Phone-Post-Mode", route: "/opportunities/new", w: 430, h: 900 },
+  {
+    board: "Opp-Phone-ConfirmWork",
+    route: "/work/942207ec-deea-4852-95d2-16572f2c345f",
+    w: 430,
+    h: 900,
+  },
+  { board: "Phone-Rate-Work", route: "/work/df7d7842-f25c-4671-b7ac-42339791fe1a", w: 430, h: 900 },
+  {
+    board: "Phone-Profile-References",
+    route: "/profile/5eed0000-0000-4000-8000-000000000002",
+    w: 430,
+    h: 900,
+  },
+  { board: "Opp-Phone-Picked-Invite", route: "/picked", w: 430, h: 900 },
+  {
+    board: "Opp-Phone-Picking",
+    route: "/opportunities/0663cf0d-8e3b-43d9-a9dc-fe085500047f/pick",
+    w: 430,
+    h: 900,
+  },
+  {
+    board: "Opp-Phone-Shortlist",
+    route: "/opportunities/a3948acf-a6fb-436e-9e72-446c6e01b010/pick",
+    w: 430,
+    h: 900,
+  },
+  {
+    board: "Opp-Phone-MarkHired",
+    route: "/opportunities/a3948acf-a6fb-436e-9e72-446c6e01b010/responses",
+    w: 430,
+    h: 900,
+  },
 ];
 
 test.skip(!canvasDir || !out, "set CANVAS_DIR and CAPTURE_OUT to capture");

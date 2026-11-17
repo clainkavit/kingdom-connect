@@ -26,7 +26,7 @@ import type { Option } from "../lib/registration";
 import { Button, Checkbox, ChoiceList, Chips, Field, Message, Switch } from "./form";
 import { LinkButton } from "./link-button";
 import { Section } from "./profile";
-import { PageHeader, ScreenTitle } from "./screens";
+import { PageHeader } from "./screens";
 import { usePhone } from "./sheet";
 import { usePalette } from "./palette";
 import ShieldCheck from "lucide-react-native/icons/shield-check";
@@ -293,11 +293,11 @@ export function OpportunityFormScreen({
   if (done)
     return (
       <View className="gap-4">
-        <ScreenTitle>{id ? t.editPostTitle : t.postTitle}</ScreenTitle>
+        <PageHeader
+          back={{ label: t.myPostsTitle, href: "/opportunities/mine" }}
+          title={id ? t.editPostTitle : t.postTitle}
+        />
         <Message tone="info" text={done} />
-        <LinkButton href="/opportunities/mine" label={t.myPostsTitle} className="py-1">
-          <Text className="font-figtree-semibold text-sm text-blue">{t.myPostsTitle}</Text>
-        </LinkButton>
       </View>
     );
 
@@ -573,14 +573,12 @@ export function OpportunityFormScreen({
 
   return (
     <View className="gap-4">
-      <ScreenTitle>{id ? t.editPostTitle : t.postTitle}</ScreenTitle>
-      <LinkButton href="/opportunities/mine" label={t.myPostsTitle} className="py-1">
-        <Text className="font-figtree-semibold text-sm text-blue">{t.myPostsTitle}</Text>
-      </LinkButton>
+      <PageHeader
+        back={{ label: t.myPostsTitle, href: "/opportunities/mine" }}
+        title={id ? t.editPostTitle : t.postTitle}
+        subtitle={t.stepOf(step + 1, postSteps.length)}
+      />
       <Section title={t[postSteps[step]!] as string}>
-        <Text className="font-figtree text-[13px] text-ink-2">
-          {t.stepOf(step + 1, postSteps.length)}
-        </Text>
         {fields}
         <Message text={problem} />
         <View className="flex-row flex-wrap gap-2">

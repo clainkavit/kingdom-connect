@@ -1,7 +1,6 @@
 import { formatDate } from "@kingdom-connect/shared";
 import { useState } from "react";
 import { Pressable, Text, View } from "react-native";
-import ChevronLeft from "lucide-react-native/icons/chevron-left";
 import Star from "lucide-react-native/icons/star";
 import { useLanguage } from "../lib/language";
 import {
@@ -18,7 +17,7 @@ import { Button, Chips, Field, Message } from "./form";
 import { LinkButton } from "./link-button";
 import { usePalette } from "./palette";
 import { Section } from "./profile";
-import { ScreenTitle } from "./screens";
+import { PageHeader, ScreenTitle } from "./screens";
 import { EmptyState, ErrorState, LoadingRows } from "./states";
 
 const COMMENT_MAX = 500;
@@ -291,16 +290,6 @@ export function RateWork({ api, engagementId }: { api: WorkApi; engagementId: st
   const palette = usePalette();
   const [attempt, setAttempt] = useState(0);
   const loaded = useLoad(() => api.engagements(), attempt);
-  const back = (
-    <LinkButton
-      href="/work"
-      label={t.workTitle}
-      className="min-h-[36px] flex-row items-center gap-1.5 self-start"
-    >
-      <ChevronLeft size={16} color={palette.navy} aria-hidden />
-      <Text className="font-figtree-semibold text-[15px] text-navy underline">{t.workTitle}</Text>
-    </LinkButton>
-  );
   if (loaded.state === "failed")
     return <ErrorState message={t.workLoadFailed} onRetry={() => setAttempt((a) => a + 1)} />;
   if (loaded.state === "loading") return <LoadingRows />;
@@ -315,20 +304,20 @@ export function RateWork({ api, engagementId }: { api: WorkApi; engagementId: st
   if (stage === "confirm")
     return frame(
       <>
-        {back}
+        <PageHeader
+          back={{ label: t.workTitle, href: "/work" }}
+          title={t.workConfirmPageTitle}
+          subtitle={t.workConfirmFrom(work.otherName)}
+        />
         <ConfirmWork api={api} work={work} onDone={() => setAttempt((a) => a + 1)} />
       </>,
     );
   return frame(
     <>
-      {back}
-      <Text
-        role="heading"
-        aria-level={1}
-        className="font-figtree-extrabold text-[30px] leading-[36px] text-navy"
-      >
-        {t.rateTitle(work.otherName)}
-      </Text>
+      <PageHeader
+        back={{ label: t.workTitle, href: "/work" }}
+        title={t.rateTitle(work.otherName)}
+      />
       <View className="flex-row items-center gap-3">
         <View className="h-14 w-14 items-center justify-center rounded-full bg-warn-soft">
           <Text className="font-figtree-extrabold text-[18px] text-navy">

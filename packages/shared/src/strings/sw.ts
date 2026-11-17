@@ -2309,4 +2309,6 @@ export const sw: Strings = {
   investorMatching: "yanaonyeshwa",
   investorSilentNote:
     'Unaangalia kimya. Wamiliki wanaona "Imetazamwa na wawekezaji N", si jina lako. Hakuna mwingine anayeweza kuona kuwa wewe ni mwekezaji.',
+  workConfirmPageTitle: "Thibitisha kazi",
+  workConfirmFrom: (name: string) => `Kutoka kwa ${name}`,
 };

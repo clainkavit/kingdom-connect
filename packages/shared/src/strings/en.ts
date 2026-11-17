@@ -2266,4 +2266,6 @@ export const en = {
   investorMatching: "shown",
   investorSilentNote:
     'You browse silently. Owners see "Viewed by N investors", never your name. Nobody else can see that you are an investor.',
+  workConfirmPageTitle: "Confirm the work",
+  workConfirmFrom: (name: string) => `From ${name}`,
 };

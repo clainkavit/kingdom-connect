@@ -2273,4 +2273,6 @@ export const sw: Strings = {
   workHiredYouLabel: "Aliyekuajiri",
   messagesConnectionsOnly:
     "Ni wale uliounganishwa nao tu wanaoweza kukutumia ujumbe. Kuanza mazungumzo, fungua muunganisho kisha gusa Ujumbe.",
+  refAgainCount: (again: number, total: number) => `${again} kati ya ${total}`,
+  refAgainLine: (name: string) => `ya waliofanya kazi na ${name} wangefanya naye kazi tena`,
 };

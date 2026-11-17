@@ -174,10 +174,12 @@ describe("ProfileReferences (S11)", () => {
     const api = fakeWork({ references: vi.fn().mockResolvedValue(refs) });
     await show(<ProfileReferences api={api} memberId="m1" name="Grace" own />);
     expect(
-      screen.getByText("3 of 3 members who worked with Grace would work with them again"),
+      screen.getByText("members who worked with Grace would work with them again", {
+        exact: false,
+      }),
     ).toBeTruthy();
     expect(screen.getByText("4.9")).toBeTruthy();
-    expect(screen.getByText("Every uniform was ready a day early.")).toBeTruthy();
+    expect(screen.getByText('"Every uniform was ready a day early."')).toBeTruthy();
     await press("Reply");
     await act(async () =>
       fireEvent.change(screen.getByLabelText("Reply"), { target: { value: "Thank you." } }),

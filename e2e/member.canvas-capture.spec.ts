@@ -105,6 +105,12 @@ const pairs: Pair[] = [
     w: 430,
     h: 900,
   },
+  {
+    board: "Profile-References",
+    route: "/profile/5eed0000-0000-4000-8000-000000000002",
+    w: 1440,
+    h: 1600,
+  },
   { board: "Member-Phone-Dashboard", route: "/", w: 430, h: 900 },
   { board: "Opp-Phone-List", route: "/opportunities", w: 430, h: 900 },
 ];

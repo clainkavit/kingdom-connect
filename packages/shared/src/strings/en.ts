@@ -2230,4 +2230,6 @@ export const en = {
   workHiredYouLabel: "Hired you",
   messagesConnectionsOnly:
     "Only your connections can message you. To start a conversation, open a connection and tap Message.",
+  refAgainCount: (again: number, total: number) => `${again} of ${total}`,
+  refAgainLine: (name: string) => `members who worked with ${name} would work with them again`,
 };

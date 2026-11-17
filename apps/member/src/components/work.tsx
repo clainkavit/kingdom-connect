@@ -440,37 +440,71 @@ export function ProfileReferences({
     [t.rateHonesty, refs.averages.honesty],
   ];
   return (
-    <Section title={t.refTitle}>
-      <Muted text={t.refFromConfirmed} />
-      <Text className="font-figtree-bold text-[17px] text-ink">
-        {t.refAgain(refs.againCount, refs.total, name)}
+    <View className="gap-4 rounded-card border border-line bg-surface px-6 py-6">
+      <View className="flex-row flex-wrap items-center justify-between gap-2">
+        <Text role="heading" aria-level={2} className="font-figtree-bold text-[18px] text-ink">
+          {t.refTitle}
+        </Text>
+        <Text className="rounded-full bg-warn-soft px-2.5 py-1 font-figtree-bold text-[12px] text-warn-text">
+          {t.refFromConfirmed}
+        </Text>
+      </View>
+      <Text className="font-figtree text-[15px] text-ink-2">
+        <Text className="font-figtree-extrabold text-[28px] text-ink">
+          {t.refAgainCount(refs.againCount, refs.total)}
+        </Text>{" "}
+        {t.refAgainLine(name)}
       </Text>
-      <View className="gap-1">
+      <View className="gap-2.5">
         {averages.map(([label, value]) => (
-          <View key={label} className="flex-row items-center justify-between gap-3">
-            <Muted text={label} />
-            <Text className="font-figtree-bold text-[15px] text-ink">{value.toFixed(1)}</Text>
+          <View key={label} className="flex-row items-center gap-4">
+            <Text className="w-[200px] font-figtree text-[14px] text-ink">{label}</Text>
+            <View className="h-2 flex-1 overflow-hidden rounded-full bg-surface-2">
+              <View
+                className="h-full rounded-full bg-navy"
+                style={{ width: `${(value / 5) * 100}%` }}
+              />
+            </View>
+            <Text className="w-9 text-right font-figtree-bold text-[14px] text-ink">
+              {value.toFixed(1)}
+            </Text>
           </View>
         ))}
       </View>
       {refs.items.map((item) => (
-        <View key={item.id} className="gap-1 border-t border-line pt-3">
-          <Text className="font-figtree-semibold text-[15px] text-ink">{item.raterName}</Text>
-          <Muted
-            text={[item.title, formatDate(item.ratedAt, language)].filter(Boolean).join(" · ")}
-          />
-          {item.comment ? <Body text={item.comment} /> : null}
+        <View key={item.id} className="gap-2 border-t border-line pt-4">
+          <View className="flex-row items-center gap-3">
+            <View className="h-9 w-9 items-center justify-center rounded-full bg-warn-soft">
+              <Text className="font-figtree-bold text-[13px] text-navy">
+                {item.raterName
+                  .split(/\s+/)
+                  .filter(Boolean)
+                  .slice(0, 2)
+                  .map((w) => w[0]!.toUpperCase())
+                  .join("")}
+              </Text>
+            </View>
+            <View className="min-w-0 flex-1">
+              <Text className="font-figtree-bold text-[15px] text-ink">{item.raterName}</Text>
+              <Text className="font-figtree text-[13px] text-ink-2">
+                {[item.title, formatDate(item.ratedAt, language)].filter(Boolean).join(" · ")}
+              </Text>
+            </View>
+          </View>
+          {item.comment ? <Body text={`"${item.comment}"`} /> : null}
           {item.reply ? (
-            <View className="ml-3 gap-0.5 border-l-2 border-line pl-3">
-              <Muted text={t.refReplied(name)} />
-              <Body text={item.reply} />
+            <View className="ml-4 gap-0.5 border-l-2 border-line pl-3">
+              <Text className="font-figtree text-[14px] text-ink-2">
+                <Text className="font-figtree-bold text-ink">{t.refReplied(name)}</Text>{" "}
+                {item.reply}
+              </Text>
             </View>
           ) : own ? (
             <ReplyBox api={api} item={item} onDone={() => setAttempt((a) => a + 1)} />
           ) : null}
         </View>
       ))}
-      <Muted text={t.refFootnote} />
-    </Section>
+      <Text className="font-figtree text-[13px] leading-5 text-ink-2">{t.refFootnote}</Text>
+    </View>
   );
 }

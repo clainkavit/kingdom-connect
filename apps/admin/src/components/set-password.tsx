@@ -40,9 +40,14 @@ export function SetPassword({ api, tokenHash }: { api: SetPasswordApi; tokenHash
   if (stage === "checking") return null;
   if (stage === "invalid")
     return (
-      <p role="alert" className="text-sm text-bad-text">
-        {t.inviteLinkInvalid}
-      </p>
+      <>
+        <p role="alert" className="text-sm text-bad-text">
+          {t.inviteLinkInvalid}
+        </p>
+        <Link href={routePaths.login} className={buttonVariants({ variant: "outline" })}>
+          {t.goToLogin}
+        </Link>
+      </>
     );
   if (stage === "done")
     return (

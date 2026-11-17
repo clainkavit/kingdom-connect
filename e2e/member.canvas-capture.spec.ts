@@ -297,10 +297,13 @@ test.skip(!canvasDir || !out, "set CANVAS_DIR and CAPTURE_OUT to capture");
 
 const account = process.env.CAPTURE_AS ?? "test_level3";
 
+/** CAPTURE_TALL shows the whole board height at once, for pages that scroll inside the app shell. */
+const viewportHeight = (pair: Pair) => (process.env.CAPTURE_TALL ? pair.h : Math.min(pair.h, 1200));
+
 for (const pair of pairs.filter((p) => !only || only.includes(p.board))) {
   test(`capture ${pair.board}`, async ({ page, browser, baseURL }) => {
     mkdirSync(out!, { recursive: true });
-    await page.setViewportSize({ width: pair.w, height: Math.min(pair.h, 1200) });
+    await page.setViewportSize({ width: pair.w, height: viewportHeight(pair) });
     await page.goto(pathToFileURL(join(canvasDir!, `${pair.board}.dc.html`)).href);
     await page.waitForTimeout(300);
     await page.screenshot({ path: join(out!, `${pair.board}.canvas.png`), fullPage: true });
@@ -308,7 +311,7 @@ for (const pair of pairs.filter((p) => !only || only.includes(p.board))) {
     if (pair.signedOut) {
       const fresh = await browser.newContext({ baseURL });
       const out1 = await fresh.newPage();
-      await out1.setViewportSize({ width: pair.w, height: Math.min(pair.h, 1200) });
+      await out1.setViewportSize({ width: pair.w, height: viewportHeight(pair) });
       await out1.goto(pair.route);
       await out1.waitForTimeout(2000);
       if (pair.press) {
@@ -326,7 +329,7 @@ for (const pair of pairs.filter((p) => !only || only.includes(p.board))) {
     }
     const context = await browser.newContext({ storageState: state, baseURL });
     const live = await context.newPage();
-    await live.setViewportSize({ width: pair.w, height: Math.min(pair.h, 1200) });
+    await live.setViewportSize({ width: pair.w, height: viewportHeight(pair) });
     await live.goto(pair.route);
     await expect(live.locator("body")).toBeVisible();
     await live.waitForTimeout(2000);

@@ -9,6 +9,8 @@ import { loadMyActivity } from "../../src/lib/my-activity";
 import { memberNewsApi } from "../../src/lib/news";
 import { peopleYouMayKnowApi } from "../../src/lib/people-you-may-know";
 import { scanApi } from "../../src/lib/scan";
+import { opportunitiesApi } from "../../src/lib/opportunities";
+import { memberResponsesApi } from "../../src/lib/responses-api";
 import { verifyProgress } from "@kingdom-connect/shared";
 import { accessToken, loadDraft } from "../../src/lib/registration";
 import { registrationClient } from "../../src/lib/supabase";
@@ -33,6 +35,7 @@ export default function DashboardPage() {
       scan={scanApi}
       profile={() => memberProfileApi.load(null, language)}
       activity={loadMyActivity}
+      poster={{ posts: opportunitiesApi.mine, responses: memberResponsesApi }}
     />
   );
 }

@@ -34,6 +34,7 @@ import type { PeopleYouMayKnowApi } from "../lib/people-you-may-know";
 import { FeaturedList, LatestItems, NewsPreview } from "./dashboard-widgets";
 import { closingDay } from "./opportunities";
 import { typeLabel } from "./opportunity-form";
+import { PosterHome } from "./poster-home";
 import { usePalette } from "./palette";
 import { PeopleYouMayKnow } from "./people-you-may-know";
 import { usePhoneHeader } from "./phone-header";
@@ -524,6 +525,7 @@ export function DashboardScreen({
   scan,
   profile,
   activity,
+  poster,
   today = new Date(),
 }: {
   api: DashboardApi;
@@ -534,6 +536,7 @@ export function DashboardScreen({
   scan?: ScanApi;
   profile?: () => Promise<Profile | null>;
   activity?: () => Promise<MyActivity>;
+  poster?: React.ComponentProps<typeof PosterHome>["api"];
   today?: Date;
 }) {
   const { t } = useLanguage();
@@ -695,6 +698,7 @@ export function DashboardScreen({
           <MyProfiles welcome={welcome} profile={me} />
         </View>
       </View>
+      {poster && welcome.level >= POSTER_LEVEL ? <PosterHome api={poster} /> : null}
       {phone ? requests : null}
       {people ? <PeopleYouMayKnow api={people} /> : null}
       {scan ? <HomeMatches scan={scan} business={business} /> : null}

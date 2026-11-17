@@ -12,6 +12,7 @@ import {
   type TextKey,
 } from "@kingdom-connect/shared";
 import { useState } from "react";
+import Camera from "lucide-react-native/icons/camera";
 import { Pressable, Text, View } from "react-native";
 import { useLanguage } from "../lib/language";
 import type { Option } from "../lib/registration";
@@ -25,6 +26,7 @@ import {
   PrivacyNote,
   problemText,
 } from "./form";
+import { usePalette } from "./palette";
 
 export type StepProps = {
   draft: RegistrationDraft;
@@ -37,6 +39,13 @@ const categoryLabel: Record<MemberCategory, TextKey> = {
   businessperson: "categoryBusinessperson",
   entrepreneur: "categoryEntrepreneur",
   other: "categoryOther",
+};
+
+const categoryHintKey: Record<MemberCategory, TextKey> = {
+  professional: "categoryHintProfessional",
+  businessperson: "categoryHintBusiness",
+  entrepreneur: "categoryHintEntrepreneur",
+  other: "categoryHintOther",
 };
 
 const idTypeLabel: Record<IdType, TextKey> = {
@@ -152,16 +161,19 @@ export function CategoryStep({ draft, update, problems }: StepProps) {
     update({ categories, category: undefined, categoryDetails: details });
   };
   return (
-    <View role="group" aria-label={t.stepCategory} className="gap-1.5">
-      <Text className="font-figtree-bold text-sm text-ink">{t.stepCategory}</Text>
-      <Text className="font-figtree text-sm leading-5 text-ink-2">{t.categoryHint}</Text>
+    <View role="group" aria-label={t.stepCategory} className="gap-2">
+      <Text className="font-figtree text-[15px] leading-[22px] text-ink-2">{t.categoryIntro}</Text>
       {selectableCategories.map((category) => (
-        <Checkbox
-          key={category}
-          label={t[categoryLabel[category]]}
-          checked={chosen.includes(category)}
-          onChange={(on) => toggle(category, on)}
-        />
+        <View key={category}>
+          <Checkbox
+            label={t[categoryLabel[category]]}
+            checked={chosen.includes(category)}
+            onChange={(on) => toggle(category, on)}
+          />
+          <Text className="-mt-2 pl-8 font-figtree text-[13px] text-ink-2">
+            {t[categoryHintKey[category]] as string}
+          </Text>
+        </View>
       ))}
       <Message text={say(t, problems, "category")} />
     </View>
@@ -178,62 +190,87 @@ export function DetailsStep({
   const categories = draftCategories(draft);
   if (categories.length === 0) return <Message text={t.problemRequired} />;
   const details = draft.categoryDetails ?? {};
+  const shown = new Set<keyof CategoryDetails>();
+  const input = (field: keyof CategoryDetails) =>
+    field === "sectorId" ? (
+      <ChoiceList
+        key={field}
+        label={t.sector}
+        options={sectors}
+        value={details.sectorId}
+        onChange={(sectorId) => update({ categoryDetails: { ...details, sectorId } })}
+        problem={say(t, problems, `categoryDetails.${field}`)}
+      />
+    ) : (
+      <Field
+        key={field}
+        label={t[detailLabel[field]]}
+        value={details[field] ?? ""}
+        multiline={field === "description" || field === "building"}
+        hint={field === "certifications" ? t.certificationsHint : undefined}
+        onChange={(value) => update({ categoryDetails: { ...details, [field]: value } })}
+        problem={say(t, problems, `categoryDetails.${field}`)}
+      />
+    );
   return (
-    <View className="gap-3">
-      {fieldsFor(categories).map((field) =>
-        field === "sectorId" ? (
-          <ChoiceList
-            key={field}
-            label={t.sector}
-            options={sectors}
-            value={details.sectorId}
-            onChange={(sectorId) => update({ categoryDetails: { ...details, sectorId } })}
-            problem={say(t, problems, `categoryDetails.${field}`)}
-          />
-        ) : (
-          <Field
-            key={field}
-            label={t[detailLabel[field]]}
-            value={details[field] ?? ""}
-            multiline={field === "description" || field === "building"}
-            hint={field === "certifications" ? t.certificationsHint : undefined}
-            onChange={(value) => update({ categoryDetails: { ...details, [field]: value } })}
-            problem={say(t, problems, `categoryDetails.${field}`)}
-          />
-        ),
-      )}
+    <View className="gap-4">
+      {categories.map((category) => {
+        const fields = categoryFields[category]
+          .map(({ field }) => field)
+          .filter((field) => !shown.has(field) && shown.add(field));
+        if (fields.length === 0) return null;
+        return (
+          <View key={category} className="gap-3">
+            <Text className="font-figtree-bold text-[15px] text-ink">
+              {t[categoryLabel[category]]}
+            </Text>
+            {fields.map(input)}
+          </View>
+        );
+      })}
+      <Text className="font-figtree text-[13px] leading-5 text-ink-2">{t.detailsNoDocsNote}</Text>
     </View>
   );
 }
 
 function PhotoPicker({
   label,
+  hint,
   added,
   busy,
   onPick,
   problem,
 }: {
   label: string;
+  hint: string;
   added: boolean;
   busy: boolean;
   onPick: () => void;
   problem?: string | null;
 }) {
   const { t } = useLanguage();
+  const palette = usePalette();
   return (
-    <View className="gap-1.5">
-      <View className="flex-row flex-wrap items-center justify-between gap-2">
-        <Text className="font-figtree-semibold text-sm text-ink">{label}</Text>
+    <View className="min-w-[220px] flex-1 gap-1.5">
+      <Text className="font-figtree-semibold text-sm text-ink">{label}</Text>
+      <Pressable
+        role="button"
+        aria-label={added ? t.replacePhoto : t.choosePhoto}
+        aria-disabled={busy}
+        disabled={busy}
+        onPress={onPick}
+        className={`min-h-[124px] items-center justify-center gap-1.5 rounded-[18px] border border-dashed px-4 py-4 ${added ? "border-good bg-good-soft" : "border-line-2 bg-surface-2"}`}
+      >
+        <Camera size={22} color={added ? palette.good : palette.ink} aria-hidden />
+        <Text className="font-figtree-bold text-[14px] text-ink">
+          {added ? t.replacePhoto : t.photoTakeOrUpload}
+        </Text>
         {added ? (
           <Text className="font-figtree-semibold text-[13px] text-good-text">{t.photoAdded}</Text>
-        ) : null}
-      </View>
-      <Button
-        secondary
-        label={added ? t.replacePhoto : t.choosePhoto}
-        onPress={onPick}
-        disabled={busy}
-      />
+        ) : (
+          <Text className="font-figtree text-[12px] text-ink-2">{hint}</Text>
+        )}
+      </Pressable>
       {problem ? <Text className="font-figtree text-[13px] text-bad-text">{problem}</Text> : null}
     </View>
   );
@@ -288,21 +325,25 @@ export function IdentityStep({
         onPress={() => (ready ? onSaveId(idNumber) : setAskedEarly(true))}
         disabled={busy}
       />
+      <View className="flex-row flex-wrap gap-3">
+        <PhotoPicker
+          label={t.facePhoto}
+          hint={t.photoFaceHint}
+          added={Boolean(draft.facePhoto)}
+          busy={busy}
+          onPick={() => onPickPhoto("face")}
+          problem={say(t, problems, "facePhoto")}
+        />
+        <PhotoPicker
+          label={t.idPhoto}
+          hint={t.photoIdHint}
+          added={Boolean(draft.idPhoto)}
+          busy={busy}
+          onPick={() => onPickPhoto("id")}
+          problem={say(t, problems, "idPhoto")}
+        />
+      </View>
       <PrivacyNote text={t.photosPrivate} />
-      <PhotoPicker
-        label={t.facePhoto}
-        added={Boolean(draft.facePhoto)}
-        busy={busy}
-        onPick={() => onPickPhoto("face")}
-        problem={say(t, problems, "facePhoto")}
-      />
-      <PhotoPicker
-        label={t.idPhoto}
-        added={Boolean(draft.idPhoto)}
-        busy={busy}
-        onPick={() => onPickPhoto("id")}
-        problem={say(t, problems, "idPhoto")}
-      />
     </View>
   );
 }
@@ -317,11 +358,27 @@ export function ReviewStep({
   onEdit: (step: number) => void;
 }) {
   const { t } = useLanguage();
-  const rows: { step: number; label: string; value: string | undefined }[] = [
-    { step: 1, label: t.fullName, value: draft.fullName },
-    { step: 1, label: t.region, value: labelOf("region", draft.regionId) },
-    { step: 1, label: t.district, value: labelOf("district", draft.districtId) },
-    { step: 1, label: t.addressLabel, value: draft.address },
+  const details = draft.categoryDetails ?? {};
+  const place = [labelOf("district", draft.districtId), labelOf("region", draft.regionId)]
+    .filter(Boolean)
+    .join(", ");
+  const work = [
+    details.profession,
+    details.businessName,
+    labelOf("sector", details.sectorId),
+    details.description,
+  ]
+    .filter(Boolean)
+    .join(" · ");
+  const photos = [draft.idPhoto ? t.idPhoto : null, draft.facePhoto ? t.facePhoto : null]
+    .filter(Boolean)
+    .join(", ");
+  const rows: { step: number; label: string; value: string }[] = [
+    {
+      step: 1,
+      label: t.stepPersonal,
+      value: [draft.fullName, place, draft.address].filter(Boolean).join(" · "),
+    },
     {
       step: 2,
       label: t.stepCategory,
@@ -329,36 +386,41 @@ export function ReviewStep({
         .map((c) => t[categoryLabel[c]])
         .join(", "),
     },
-    { step: 4, label: t.idType, value: draft.idType && t[idTypeLabel[draft.idType]] },
-    { step: 4, label: t.facePhoto, value: draft.facePhoto ? t.photoAdded : undefined },
-    { step: 4, label: t.idPhoto, value: draft.idPhoto ? t.photoAdded : undefined },
+    { step: 3, label: t.stepCategoryDetails, value: work },
+    {
+      step: 4,
+      label: t.stepIdentity,
+      value: [
+        draft.idType ? t[idTypeLabel[draft.idType]] : null,
+        draft.identitySaved ? t.idSavedShort : null,
+        photos ? t.photosAddedList(photos) : null,
+      ]
+        .filter(Boolean)
+        .join(" · "),
+    },
   ];
   return (
-    <View className="gap-3">
-      <Text className="font-figtree text-sm leading-5 text-ink-2">{t.reviewIntro}</Text>
-      <View className="rounded-card border border-line">
-        {rows.map((row, i) => (
-          <View
-            key={`${row.label}-${i}`}
-            className={`min-h-[48px] flex-row items-center gap-3 px-3 ${i < rows.length - 1 ? "border-b border-line" : ""}`}
-          >
-            <View className="flex-1 py-2">
-              <Text className="font-figtree text-xs text-ink-2">{row.label}</Text>
-              <Text className="font-figtree-semibold text-sm text-ink">
-                {row.value || t.notGiven}
-              </Text>
-            </View>
-            <Pressable
-              role="button"
-              aria-label={`${t.edit}: ${row.label}`}
-              onPress={() => onEdit(row.step)}
-              className="min-h-[44px] justify-center px-2"
-            >
-              <Text className="font-figtree-semibold text-sm text-blue">{t.edit}</Text>
-            </Pressable>
+    <View className="gap-1">
+      <Text className="pb-2 font-figtree text-sm leading-5 text-ink-2">{t.reviewIntro}</Text>
+      {rows.map((row) => (
+        <View
+          key={row.step}
+          className="min-h-[56px] flex-row items-center gap-3 border-t border-line py-3"
+        >
+          <View className="flex-1 gap-0.5">
+            <Text className="font-figtree-bold text-[13px] text-ink-2">{row.label}</Text>
+            <Text className="font-figtree text-[15px] text-ink">{row.value || t.notGiven}</Text>
           </View>
-        ))}
-      </View>
+          <Pressable
+            role="button"
+            aria-label={`${t.edit}: ${row.label}`}
+            onPress={() => onEdit(row.step)}
+            className="min-h-[44px] justify-center px-2"
+          >
+            <Text className="font-figtree-semibold text-sm text-navy underline">{t.edit}</Text>
+          </Pressable>
+        </View>
+      ))}
     </View>
   );
 }

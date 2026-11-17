@@ -2239,4 +2239,27 @@ export const sw: Strings = {
   postWhereTitle: "Inakokwenda",
   postWhereBody:
     "Rasimu, kisha Inasubiri ukaguzi, kisha Imechapishwa. Majibu yanafika kwenye Machapisho yangu kwenye dashibodi yako.",
+  accessViewsNote: "Wawekezaji wanaweza kuangalia bila kukuambia ni nani. Huoni majina yao hapa.",
+  accessInterested: (n: number) => `Wana nia ${n}`,
+  accessWaitingWith: (waiting: number, withAccess: number) =>
+    `${waiting} wanakusubiri, ${withAccess} wana ruhusa`,
+  accessWaitingTitle: "Maombi yanayokusubiri",
+  accessWithTitle: "Wenye ruhusa",
+  accessNobodyYet: "Bado hakuna mwenye ruhusa.",
+  accessDeclineNote:
+    "Ukikataa, wanapata taarifa fupi isiyo na upande. Jina la mwekezaji asiyejulikana linaonyeshwa kwako tu baada ya kukubali NDA.",
+  accessRemoveNote:
+    "Kuondoa ruhusa kunafunga taarifa kamili mara moja. Inaandikwa kwenye kumbukumbu.",
+  ideaSharedWithName: "Limeshirikiwa kwa jina lako. Muhtasari pekee ndio wa umma.",
+  ideaSharedWithoutName:
+    'Limeshirikiwa kama "Mwanachama aliyethibitishwa". Muhtasari pekee ndio wa umma.',
+  alertsKeepNote:
+    "Unaweza kuwa na arifa hadi 5. Kuongeza moja, chagua vichujio na maneno kwenye Fursa kisha washa Nitumie barua pepe kuhusu machapisho mapya kama haya.",
+  lookWelcome: "Karibu",
+  lookIntro:
+    "Unaweza kuangalia huku utambulisho wako ukikaguliwa. Chochote kinachomfikia mwanachama mwingine kinasubiri hadi wakati huo.",
+  lookLatestOpportunities: "Fursa za karibuni",
+  lookVerifyToApply: "Thibitisha ili kuomba",
+  lookSeeAllOpportunities: "Tazama fursa zote",
+  lookCanLookAt: "Mafunzo, matukio na mawazo unayoweza kuangalia",
 };

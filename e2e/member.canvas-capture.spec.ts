@@ -81,6 +81,9 @@ const pairs: Pair[] = [
   { board: "Phone-Verify-Start", route: "/profile/verify", w: 430, h: 900 },
   { board: "Opp-Post", route: "/opportunities/new", w: 1440, h: 1400 },
   { board: "Ideas-Share", route: "/ideas/new", w: 1440, h: 1400 },
+  { board: "Ideas-Manage", route: "/ideas/9860f9cd-c663-4040-b80c-db7722be2600", w: 1440, h: 1200 },
+  { board: "Opp-Alerts", route: "/settings/alerts", w: 1440, h: 900 },
+  { board: "Home-Unverified", route: "/", w: 1440, h: 1200 },
   { board: "Member-Phone-Dashboard", route: "/", w: 430, h: 900 },
   { board: "Opp-Phone-List", route: "/opportunities", w: 430, h: 900 },
 ];

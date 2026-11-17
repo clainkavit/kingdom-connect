@@ -39,14 +39,14 @@ const tabLabel = (t: Strings, tab: LatestTab): string =>
     ideas: t.navIdeas,
   })[tab];
 
-const hrefOf = (item: LatestItem) =>
+export const hrefOf = (item: LatestItem) =>
   item.kind === "opportunity"
     ? `/opportunities/${item.id}`
     : item.kind === "training"
       ? `/training/${item.id}`
       : `/ideas/${item.id}`;
 
-function kindLine(t: Strings, item: LatestItem): string {
+export function kindLine(t: Strings, item: LatestItem): string {
   if (item.kind === "opportunity" && item.subtype)
     return t[typeLabel[item.subtype as PostKind] ?? "navOpportunities"] as string;
   if (item.kind === "training")

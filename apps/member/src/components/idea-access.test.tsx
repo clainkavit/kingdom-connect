@@ -106,9 +106,7 @@ describe("AccessManager (S28)", () => {
     requests.mockResolvedValue([card({ status: "approved" })]);
     await click("button", "Approve");
     expect(decide).toHaveBeenCalledWith("r1", true);
-    expect(
-      screen.getByText("Wants to join as Partner · Approved, waiting for the NDA"),
-    ).toBeTruthy();
+    expect(screen.getByText("Partner · Approved, waiting for the NDA")).toBeTruthy();
     await click("button", "Remove access");
     await click("button", "Remove access");
     expect(revoke).toHaveBeenCalledWith("r1");

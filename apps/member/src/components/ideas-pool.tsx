@@ -322,6 +322,60 @@ export function IdeaSummaryScreen({
     <IdeaInterest api={access} ideaId={idea.id} />
   );
 
+  if (idea.isMine)
+    return (
+      <View className="gap-5">
+        <LinkButton
+          href="/ideas"
+          label={t.ideaBackToPool}
+          className="min-h-[36px] flex-row items-center gap-1.5 self-start"
+        >
+          <ChevronLeft size={16} color={palette.navy} aria-hidden />
+          <Text className="font-figtree-semibold text-[15px] text-navy underline">
+            {t.ideaBackToPool}
+          </Text>
+        </LinkButton>
+        <View className="flex-row flex-wrap items-end justify-between gap-4">
+          <View className="min-w-0 flex-1 basis-[360px] gap-2">
+            <View className="flex-row flex-wrap gap-1.5">
+              <ToneChip text={t.ideaYours} tone="bg-warn-soft text-warn-text" />
+              <ToneChip text={t.adminIdeaStatusPublished} tone="bg-good-soft text-good-text" />
+              <ToneChip text={stageLabel(t, idea.stage)} tone={stageTone[idea.stage]} />
+            </View>
+            <Text
+              role="heading"
+              aria-level={1}
+              className={`font-figtree-extrabold text-navy ${phone ? "text-[24px] leading-[28px]" : "text-[32px] leading-[37px]"}`}
+            >
+              {idea.title}
+            </Text>
+            <Text className="font-figtree text-[15px] text-ink-2">
+              {idea.ownerName ? t.ideaSharedWithName : t.ideaSharedWithoutName}
+            </Text>
+          </View>
+          <View className="flex-row flex-wrap gap-2.5">
+            <LinkButton
+              href={`/ideas/${idea.id}/details`}
+              label={t.ideaOpenDetails}
+              className="min-h-[46px] items-center justify-center rounded-full border border-line-2 bg-surface px-5"
+            >
+              <Text className="font-figtree-semibold text-[15px] text-ink">
+                {t.ideaOpenDetails}
+              </Text>
+            </LinkButton>
+            <LinkButton
+              href="/ideas/mine"
+              label={t.ideaManageMine}
+              className="min-h-[46px] items-center justify-center rounded-full border border-line-2 bg-surface px-5"
+            >
+              <Text className="font-figtree-semibold text-[15px] text-ink">{t.ideaManageMine}</Text>
+            </LinkButton>
+          </View>
+        </View>
+        <AccessManager api={access} ideaId={idea.id} />
+      </View>
+    );
+
   return (
     <View className="gap-4">
       <LinkButton

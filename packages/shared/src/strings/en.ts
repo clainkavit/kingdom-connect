@@ -2197,4 +2197,26 @@ export const en = {
   postWhereTitle: "Where it goes",
   postWhereBody:
     "Draft, then Pending review, then Published. Responses arrive in My posts on your dashboard.",
+  accessViewsNote:
+    "Investors can look without telling you who they are. You never see their names here.",
+  accessInterested: (n: number) => `${n} interested`,
+  accessWaitingWith: (waiting: number, withAccess: number) =>
+    `${waiting} waiting for you, ${withAccess} with access`,
+  accessWaitingTitle: "Requests waiting for you",
+  accessWithTitle: "People with access",
+  accessNobodyYet: "Nobody has access yet.",
+  accessDeclineNote:
+    "If you decline, they get a short, neutral notice. An anonymous investor's name is shown to you only after they accept the NDA.",
+  accessRemoveNote: "Removing access closes the details at once. It is written to the log.",
+  ideaSharedWithName: "Shared with your name. Only the summary is public.",
+  ideaSharedWithoutName: 'Shared as "A verified member". Only the summary is public.',
+  alertsKeepNote:
+    "You can keep up to 5 alerts. To add one, choose your filters and keywords on Opportunities and switch on Email me new posts like these.",
+  lookWelcome: "Welcome",
+  lookIntro:
+    "You can look around while your identity is checked. Anything that reaches another member waits until then.",
+  lookLatestOpportunities: "Latest opportunities",
+  lookVerifyToApply: "Verify to apply",
+  lookSeeAllOpportunities: "See all opportunities",
+  lookCanLookAt: "Training, events and ideas you can look at",
 };

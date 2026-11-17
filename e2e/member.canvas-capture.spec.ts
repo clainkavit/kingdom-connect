@@ -84,6 +84,13 @@ const pairs: Pair[] = [
   { board: "Ideas-Manage", route: "/ideas/9860f9cd-c663-4040-b80c-db7722be2600", w: 1440, h: 1200 },
   { board: "Opp-Alerts", route: "/settings/alerts", w: 1440, h: 900 },
   { board: "Home-Unverified", route: "/", w: 1440, h: 1200 },
+  {
+    board: "Opp-ConfirmWork",
+    route: "/work/942207ec-deea-4852-95d2-16572f2c345f",
+    w: 1440,
+    h: 900,
+  },
+  { board: "Rate-Work", route: "/work/df7d7842-f25c-4671-b7ac-42339791fe1a", w: 1440, h: 1200 },
   { board: "Member-Phone-Dashboard", route: "/", w: 430, h: 900 },
   { board: "Opp-Phone-List", route: "/opportunities", w: 430, h: 900 },
 ];

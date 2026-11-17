@@ -2262,4 +2262,13 @@ export const sw: Strings = {
   lookVerifyToApply: "Thibitisha ili kuomba",
   lookSeeAllOpportunities: "Tazama fursa zote",
   lookCanLookAt: "Mafunzo, matukio na mawazo unayoweza kuangalia",
+  workConfirmMarkedLead: (name: string) => `${name} amekuweka kama aliyeajiriwa kwa`,
+  workConfirmRateFor: "Ukisema ndiyo, mnaweza kupeana tathmini kwa siku 14.",
+  workConfirmNeitherSees:
+    "Hakuna kati yenu atakayeona tathmini ya mwingine hadi wote wawili mtoe, au siku 14 ziishe.",
+  rateHiddenChip: "Imefichwa",
+  rateHiddenBody: (name: string, days: number) =>
+    `${name} hawezi kuona tathmini yako hadi naye akutathmini, au muda uishe. Umebakiwa na siku ${days}. Ukishatuma, tathmini haiwezi kubadilishwa.`,
+  workYouHiredLabel: "Uliyemwajiri",
+  workHiredYouLabel: "Aliyekuajiri",
 };

@@ -59,9 +59,7 @@ describe("MyWork and Confirm the work (S52)", () => {
       .mockResolvedValue([engagement()]);
     const api = fakeWork({ engagements });
     await show(<MyWork api={api} />);
-    expect(
-      screen.getByText("Rehema Mollel marked you as hired for Tailor, full time."),
-    ).toBeTruthy();
+    expect(screen.getByText(/^Rehema Mollel marked you as hired for/)).toBeTruthy();
     await press("Yes, I did this work");
     expect(api.confirm).toHaveBeenCalledWith("e1", true);
     expect(screen.getByText("9 days left to rate")).toBeTruthy();
@@ -91,7 +89,7 @@ describe("RateWork (S53)", () => {
       .mockResolvedValue([engagement({ iRated: true })]);
     const api = fakeWork({ engagements });
     await show(<RateWork api={api} engagementId="e1" />);
-    expect(screen.getByText(/^Hidden\. Rehema Mollel cannot see your rating/)).toBeTruthy();
+    expect(screen.getByText(/^Rehema Mollel cannot see your rating/)).toBeTruthy();
     await press("Send rating");
     expect(screen.getByText(/Give all four scores/)).toBeTruthy();
     expect(api.rate).not.toHaveBeenCalled();

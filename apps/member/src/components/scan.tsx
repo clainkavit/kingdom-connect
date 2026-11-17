@@ -2,22 +2,13 @@ import type { Strings } from "@kingdom-connect/shared";
 import { useState } from "react";
 import { Text, View } from "react-native";
 import { useLanguage } from "../lib/language";
-import type { MissingField, ScanApi, ScanReason } from "../lib/scan";
+import { reasonText, type MissingField, type ScanApi } from "../lib/scan";
 import { useLoad } from "./events";
 import { Message } from "./form";
 import { LinkButton } from "./link-button";
 import { OpportunityCardView } from "./opportunities";
 import { ScreenTitle } from "./screens";
 import { EmptyState, ErrorState, LoadingRows } from "./states";
-
-export function reasonText(t: Strings, r: ScanReason): string {
-  if (r.code === "skills") return t.scanReasonSkills(r.skills.join(", "));
-  if (r.code === "sector") return t.scanReasonSector;
-  if (r.code === "study") return t.scanReasonStudy;
-  return { district: t.scanReasonDistrict, region: t.scanReasonRegion, remote: t.scanReasonRemote }[
-    r.kind
-  ];
-}
 
 const missingText = (t: Strings, f: MissingField) =>
   ({

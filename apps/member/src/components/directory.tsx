@@ -80,7 +80,7 @@ const placeLine = (card: DirectoryCard) =>
 
 /** A member on a computer: photo, name, what they do and where, top skills, and Connect. */
 /** The canvas card badge (U02): a member whose business is verified at Level 2 or 3. */
-function BusinessBadge() {
+export function BusinessBadge() {
   const { t } = useLanguage();
   const palette = usePalette();
   return (

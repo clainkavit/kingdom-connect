@@ -998,6 +998,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 - Staff forgot password (R30), as drawn on the canvas boards Admin-Forgot, Admin-ForgotSent and Admin-NewPassword. Staff do not reset on their own like members (REG-6): the staff member types their email on Forgot password and always gets the same answer. Every other active Super Administrator gets an email (Y2) and sees the request in Staff accounts, under "Password resets and locked accounts". A Super Administrator checks it is really them, for example by phone, then sends a reset link or refuses (Y4). Nobody approves their own request. The link (Y3) works for 24 hours and once. The staff member types the new password twice; saving signs them out on every device, ends a running lockout and sends "Your password was changed" (E7). The same section lets a Super Administrator end a staff lockout early (Unlock). Each request, link, refusal, unlock and reset is in the audit log. A sole Super Administrator who forgets their password needs a second Super Administrator, so the pilot keeps at least two.
 - Supabase Auth's own recovery and magic-link emails carry no link or code, so nobody gets around REG-6 or R30 by reading an inbox.
 - Admin Ideas (#297): no export, confirming 10 Nov (#186).
+- Opportunities list cards (S16, canvas board Opp-List): a "Verified business" chip beside the poster when the poster is a Verified Business (Level 2 or 3) and their profile is visible to the viewer, and, on a post Scan for Opportunities would list for that member, the same top two reasons Scan gives, worded the same. The list and Scan use one scoring function. Not built by decision: the match count on the Scan button.
 - The joined-hands photo on the sign-in screens is cleared for use (checked by the collaborator), and the Kiswahili text added up to V39 is reviewed.
 
 **Open.** Every open question is a ticket on the [wayfinder map](https://github.com/clainkavit/kingdom-connect/issues/1) and is linked where it applies above.
@@ -1074,6 +1075,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | 10 Nov 2026 | Forgot password (REG-6), admin Ideas page, store accounts under the company, tender document optional; the 9 Nov opportunity rules confirmed | 5, 6, 10, 18 |
 | 14 Nov 2026 | Easier entry: Google, Facebook, Apple, phone or email sign-in, look but not act until verified, verification moved into the profile (REG-7, REG-8); Let Kingdom Connect pick, Beta and free (OPP-7); two-way work references after confirmed work (OPP-8) | 3, 6, 10, 18 |
 | 15 Nov 2026 | Let Kingdom Connect pick: 3 days to answer an ask; suggestions ranked by a points table (#289) | 10 |
+| 18 Nov 2026 | Opportunities list cards show a Verified business chip and Scan's two reasons on posts Scan would list | 10, 18 |
 | 18 Nov 2026 | Staff forgot password approved by a Super Administrator, with Unlock for locked staff accounts (R30); Supabase Auth's own recovery emails carry no link | 18 |
 
 ## Appendix B: Source documents

@@ -93,6 +93,36 @@ describe("OpportunitiesList (S16)", () => {
     expect(screen.getByText("Job")).toBeTruthy();
   });
 
+  it("marks a Verified Business poster and gives Scan's reasons in place of the skills line (18 Nov)", async () => {
+    await show(
+      <OpportunitiesList
+        api={fakeApi({
+          list: vi.fn().mockResolvedValue([
+            card({
+              posterVerified: true,
+              skillsMine: ["excel"],
+              reasons: [
+                { code: "skills", skills: ["excel"] },
+                { code: "location", kind: "region" },
+              ],
+            }),
+            card({
+              id: "o2",
+              title: "Plain post",
+              posterName: "Plain Poster",
+              skillsMine: ["excel"],
+            }),
+          ]),
+        })}
+        now={NOW}
+      />,
+    );
+    expect(screen.getAllByText("Verified business")).toHaveLength(1);
+    expect(screen.getByText("Your skills: excel")).toBeTruthy();
+    expect(screen.getByText("In your region")).toBeTruthy();
+    expect(screen.getAllByText("Matches excel")).toHaveLength(1);
+  });
+
   it("marks a post that closes within 3 days", async () => {
     await show(
       <OpportunitiesList

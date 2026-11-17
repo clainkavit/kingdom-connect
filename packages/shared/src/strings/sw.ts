@@ -2300,4 +2300,13 @@ export const sw: Strings = {
   pickStepAskingNote: "Kila tunayemchagua anaombwa kukushirikisha wasifu wake",
   pickStepListNote: "Unapata waliokubali, pamoja na sababu tuliyowachagua",
   interestOwnerSees: "Mmiliki ataona",
+  investorPoolIntro:
+    "Kila wazo lililochapishwa na wanachama waliothibitishwa. Hifadhi unayopenda na uwaombe wamiliki taarifa kamili.",
+  investorToolsTitle: "Zana za mwekezaji",
+  investorOnlyYou: "Ni wewe tu unayeona hii",
+  investorAllIdeas: "Mawazo yote",
+  investorByStage: "Mawazo kwa hatua",
+  investorMatching: "yanaonyeshwa",
+  investorSilentNote:
+    'Unaangalia kimya. Wamiliki wanaona "Imetazamwa na wawekezaji N", si jina lako. Hakuna mwingine anayeweza kuona kuwa wewe ni mwekezaji.',
 };

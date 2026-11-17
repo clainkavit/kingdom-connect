@@ -1,6 +1,9 @@
 import { IDEA_STAGES, parseTzs, type IdeaStage, type Strings } from "@kingdom-connect/shared";
 import { useState } from "react";
-import { Text, View } from "react-native";
+import Bookmark from "lucide-react-native/icons/bookmark";
+import Lightbulb from "lucide-react-native/icons/lightbulb";
+import Lock from "lucide-react-native/icons/lock";
+import { Pressable, Text, View } from "react-native";
 import type { IdeasApi } from "../lib/ideas";
 import {
   type InvestorApi,
@@ -16,8 +19,10 @@ import { Button, Chips, ChoiceList, Field, Message } from "./form";
 import { stageLabel } from "./ideas";
 import { IdeaCard } from "./ideas-pool";
 import { LinkButton } from "./link-button";
-import { Section } from "./profile";
-import { ScreenTitle } from "./screens";
+import { PageHeader, ScreenTitle } from "./screens";
+import { Donut } from "./donut";
+import { usePalette } from "./palette";
+import { usePhone } from "./sheet";
 import { EmptyState, ErrorState, LoadingRows } from "./states";
 
 const BANDS: TicketBand[] = ["under_10m", "10m_to_50m", "over_50m"];
@@ -32,10 +37,12 @@ function SaveButton({ idea, investor }: { idea: SavableIdea; investor: InvestorA
   const { t } = useLanguage();
   const [saved, setSaved] = useState(idea.saved);
   const [busy, setBusy] = useState(false);
+  const palette = usePalette();
   return (
-    <Button
-      secondary
-      label={saved ? t.investorUnsave : t.investorSave}
+    <Pressable
+      role="button"
+      aria-label={saved ? t.investorUnsave : t.investorSave}
+      aria-disabled={busy}
       disabled={busy}
       onPress={async () => {
         setBusy(true);
@@ -43,7 +50,15 @@ function SaveButton({ idea, investor }: { idea: SavableIdea; investor: InvestorA
         setBusy(false);
         if (result === "ok") setSaved(!saved);
       }}
-    />
+      className={`h-11 w-11 items-center justify-center rounded-full border ${saved ? "border-navy bg-warn-soft" : "border-line-2 bg-surface"}`}
+    >
+      <Bookmark
+        size={18}
+        color={palette.navy}
+        fill={saved ? palette.navy : "transparent"}
+        aria-hidden
+      />
+    </Pressable>
   );
 }
 
@@ -52,12 +67,16 @@ function InvestorList({
   investor,
   filters,
   savedOnly,
+  withSide = false,
 }: {
   investor: InvestorApi;
   filters: InvestorFilters;
   savedOnly: boolean;
+  withSide?: boolean;
 }) {
   const { t } = useLanguage();
+  const palette = usePalette();
+  const phone = usePhone();
   const [attempt, setAttempt] = useState(0);
   const first = useLoad(() => investor.pool(filters, savedOnly, 0), attempt);
   const [more, setMore] = useState<SavableIdea[]>([]);
@@ -80,13 +99,50 @@ function InvestorList({
       <EmptyState title={t.investorNoMatch} message={t.investorNoMatchHint} />
     );
   }
+  const all = [...first.value, ...more];
+  const stageColors = [palette.crimson, palette.goldDeep, palette.teal, palette.violet];
+  const cards = (
+    <View className={phone ? "gap-3" : "flex-row flex-wrap gap-3"}>
+      {all.map((idea) => (
+        <View key={idea.id} className={phone ? "" : "w-[48%] min-w-[260px] flex-grow"}>
+          <IdeaCard idea={idea}>
+            {idea.isMine ? null : <SaveButton idea={idea} investor={investor} />}
+          </IdeaCard>
+        </View>
+      ))}
+    </View>
+  );
+  const side =
+    withSide && !phone ? (
+      <View className="w-[300px] gap-3">
+        <View className="gap-3 rounded-card border border-line bg-surface px-5 py-5">
+          <Text role="heading" aria-level={2} className="font-figtree-bold text-[17px] text-ink">
+            {t.investorByStage}
+          </Text>
+          <Donut
+            unit={t.investorMatching}
+            parts={IDEA_STAGES.map((stage, i) => ({
+              label: stageLabel(t, stage),
+              value: all.filter((idea) => idea.stage === stage).length,
+              color: stageColors[i]!,
+            }))}
+          />
+        </View>
+        <Text className="font-figtree text-[13px] leading-5 text-ink-2">
+          {t.investorSilentNote}
+        </Text>
+      </View>
+    ) : null;
   return (
     <>
-      {[...first.value, ...more].map((idea) => (
-        <IdeaCard key={idea.id} idea={idea}>
-          {idea.isMine ? null : <SaveButton idea={idea} investor={investor} />}
-        </IdeaCard>
-      ))}
+      {side ? (
+        <View className="flex-row items-start gap-4">
+          <View className="min-w-0 flex-1">{cards}</View>
+          {side}
+        </View>
+      ) : (
+        cards
+      )}
       {!done && first.value.length === POOL_PAGE ? (
         <Button
           secondary
@@ -109,6 +165,8 @@ function InvestorList({
 /** S22 for a flag holder: filters by sector, stage, range and region, Save, and a link to Saved. */
 export function InvestorPool({ ideas, investor }: { ideas: IdeasApi; investor: InvestorApi }) {
   const { t, language } = useLanguage();
+  const palette = usePalette();
+  const phone = usePhone();
   const options = useLoad(
     async () => ({
       sectors: await ideas.sectors(language),
@@ -118,7 +176,8 @@ export function InvestorPool({ ideas, investor }: { ideas: IdeasApi; investor: I
   );
   const [draft, setDraft] = useState({ sectorId: "", stage: "", min: "", max: "", regionId: "" });
   const [filters, setFilters] = useState<InvestorFilters>(NO_FILTERS);
-  const [showFilters, setShowFilters] = useState(false);
+  const [filtersOpen, setShowFilters] = useState<boolean | null>(null);
+  const showFilters = filtersOpen ?? !phone;
   const [problem, setProblem] = useState<string | null>(null);
 
   const apply = () => {
@@ -141,89 +200,125 @@ export function InvestorPool({ ideas, investor }: { ideas: IdeasApi; investor: I
     });
   };
 
-  return (
-    <View className="gap-3">
-      <ScreenTitle>{t.navIdeas}</ScreenTitle>
-      <View className="flex-row flex-wrap gap-2">
-        <LinkButton
-          href="/ideas/saved"
-          label={t.investorSaved}
-          className="min-h-[48px] items-center justify-center rounded-full border border-line-2 bg-surface px-4"
-        >
-          <Text className="font-figtree-semibold text-[15px] text-ink">{t.investorSaved}</Text>
-        </LinkButton>
-        <LinkButton
-          href="/ideas/mine"
-          label={t.ideasMine}
-          className="min-h-[48px] items-center justify-center rounded-full border border-line-2 bg-surface px-4"
-        >
-          <Text className="font-figtree-semibold text-[15px] text-ink">{t.ideasMine}</Text>
-        </LinkButton>
-        <LinkButton
-          href="/plans"
-          label={t.plansTitle}
-          className="min-h-[48px] items-center justify-center rounded-full border border-line-2 bg-surface px-4"
-        >
-          <Text className="font-figtree-semibold text-[15px] text-ink">{t.plansTitle}</Text>
-        </LinkButton>
-        <Button
-          secondary
-          label={showFilters ? t.investorHideFilters : t.investorFilters}
-          onPress={() => setShowFilters((s) => !s)}
-        />
-      </View>
-      {showFilters && options.state === "ready" ? (
-        <Section title={t.investorFilters}>
-          <ChoiceList
-            label={t.ideaSectorLabel}
-            options={options.value.sectors}
-            value={draft.sectorId || undefined}
-            onChange={(sectorId) => setDraft({ ...draft, sectorId })}
-          />
-          <Chips<IdeaStage>
-            label={t.ideaStageLabel}
-            options={IDEA_STAGES.map((s) => ({ value: s, label: stageLabel(t, s) }))}
-            value={(draft.stage || undefined) as IdeaStage | undefined}
-            onChange={(stage) => setDraft({ ...draft, stage })}
-          />
-          <Field
-            label={t.investorMinLabel}
-            value={draft.min}
-            keyboardType="number-pad"
-            onChange={(min) => setDraft({ ...draft, min })}
-          />
-          <Field
-            label={t.investorMaxLabel}
-            value={draft.max}
-            keyboardType="number-pad"
-            onChange={(max) => setDraft({ ...draft, max })}
-          />
-          <ChoiceList
-            label={t.investorRegionLabel}
-            options={options.value.regions}
-            value={draft.regionId || undefined}
-            onChange={(regionId) => setDraft({ ...draft, regionId })}
-          />
-          <Message text={problem} />
-          <View className="flex-row flex-wrap gap-2">
-            <Button label={t.investorApplyFilters} onPress={apply} />
-            <Button
-              secondary
-              label={t.investorClearFilters}
-              onPress={() => {
-                setDraft({ sectorId: "", stage: "", min: "", max: "", regionId: "" });
-                setProblem(null);
-                setFilters(NO_FILTERS);
-              }}
+  const tab = (href: string, label: string) => (
+    <LinkButton
+      key={href}
+      href={href}
+      label={label}
+      className="min-h-[40px] items-center justify-center rounded-full px-4"
+    >
+      <Text className="font-figtree-semibold text-[14px] text-ink">{label}</Text>
+    </LinkButton>
+  );
+  const fields =
+    options.state === "ready" ? (
+      <View className="gap-3">
+        <View className="flex-row flex-wrap gap-3">
+          <View className="min-w-[200px] flex-1">
+            <ChoiceList
+              label={t.ideaSectorLabel}
+              options={options.value.sectors}
+              value={draft.sectorId || undefined}
+              onChange={(sectorId) => setDraft({ ...draft, sectorId })}
             />
           </View>
-        </Section>
-      ) : null}
+          <View className="min-w-[160px] flex-1">
+            <Field
+              label={t.investorMinLabel}
+              value={draft.min}
+              keyboardType="number-pad"
+              onChange={(min) => setDraft({ ...draft, min })}
+            />
+          </View>
+          <View className="min-w-[160px] flex-1">
+            <Field
+              label={t.investorMaxLabel}
+              value={draft.max}
+              keyboardType="number-pad"
+              onChange={(max) => setDraft({ ...draft, max })}
+            />
+          </View>
+          <View className="min-w-[200px] flex-1">
+            <ChoiceList
+              label={t.investorRegionLabel}
+              options={options.value.regions}
+              value={draft.regionId || undefined}
+              onChange={(regionId) => setDraft({ ...draft, regionId })}
+            />
+          </View>
+        </View>
+        <Chips<IdeaStage>
+          label={t.ideaStageLabel}
+          options={IDEA_STAGES.map((s) => ({ value: s, label: stageLabel(t, s) }))}
+          value={(draft.stage || undefined) as IdeaStage | undefined}
+          onChange={(stage) => setDraft({ ...draft, stage })}
+        />
+        <Message text={problem} />
+        <View className="flex-row flex-wrap gap-2">
+          <Button label={t.investorApplyFilters} onPress={apply} />
+          <Button
+            secondary
+            label={t.investorClearFilters}
+            onPress={() => {
+              setDraft({ sectorId: "", stage: "", min: "", max: "", regionId: "" });
+              setProblem(null);
+              setFilters(NO_FILTERS);
+            }}
+          />
+        </View>
+      </View>
+    ) : null;
+
+  return (
+    <View className="w-full max-w-[1200px] gap-5 self-center">
+      <PageHeader title={t.navIdeas} subtitle={t.investorPoolIntro}>
+        <LinkButton
+          href="/ideas/new"
+          label={t.ideasShare}
+          className="min-h-[44px] flex-row items-center gap-2 rounded-full border border-line-2 bg-surface px-4"
+        >
+          <Lightbulb size={16} color={palette.navy} aria-hidden />
+          <Text className="font-figtree-semibold text-[15px] text-ink">{t.ideasShare}</Text>
+        </LinkButton>
+      </PageHeader>
+      <View className="gap-3 rounded-card bg-navy px-5 py-4">
+        <View className="flex-row flex-wrap items-center justify-between gap-2">
+          <View className="flex-row items-center gap-2.5">
+            <Text className="font-figtree-bold text-[16px] text-white">{t.investorToolsTitle}</Text>
+            <View className="flex-row items-center gap-1 rounded-full bg-navy-2 px-2.5 py-1">
+              <Lock size={12} color={palette.navyInk} aria-hidden />
+              <Text className="font-figtree-bold text-[12px] text-navy-ink">
+                {t.investorOnlyYou}
+              </Text>
+            </View>
+          </View>
+          <Pressable
+            role="button"
+            aria-label={showFilters ? t.investorHideFilters : t.investorFilters}
+            onPress={() => setShowFilters(!showFilters)}
+            className="min-h-[36px] justify-center"
+          >
+            <Text className="font-figtree-semibold text-[14px] text-white underline">
+              {showFilters ? t.investorHideFilters : t.investorFilters}
+            </Text>
+          </Pressable>
+        </View>
+        {showFilters ? <View className="rounded-[16px] bg-surface px-4 py-4">{fields}</View> : null}
+      </View>
+      <View className="flex-row flex-wrap items-center gap-1 self-start rounded-full border border-line bg-surface p-1">
+        <View className="min-h-[40px] items-center justify-center rounded-full bg-navy px-4">
+          <Text className="font-figtree-bold text-[14px] text-white">{t.investorAllIdeas}</Text>
+        </View>
+        {tab("/ideas/saved", t.investorSaved)}
+        {tab("/ideas/mine", t.ideasMine)}
+        {tab("/plans", t.plansTitle)}
+      </View>
       <InvestorList
         key={JSON.stringify(filters)}
         investor={investor}
         filters={filters}
         savedOnly={false}
+        withSide
       />
     </View>
   );

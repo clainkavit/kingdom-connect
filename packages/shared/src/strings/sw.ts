@@ -2359,4 +2359,23 @@ export const sw: Strings = {
   investorAskedAnon: "Uliomba bila jina",
   investorAskedNamed: "Uliomba kwa jina lako",
   interestFocusLine: (sector: string, band: string) => `Sekta: ${sector} · Kiasi: ${band}`,
+  homeResponsesTitle: "Majibu kwa machapisho yangu",
+  homeResponsesUnit: "majibu",
+  homeAcrossPosts: (n: number) =>
+    n === 1
+      ? "Katika chapisho lako 1 lililochapishwa."
+      : `Katika machapisho yako ${n} yaliyochapishwa.`,
+  homeSeeAllPosts: "Ona machapisho yote",
+  homePostNotPosted: "Bado halijachapishwa",
+  homePostWaitingStaff: "Linasubiri wafanyakazi",
+  homePostCloses: (date: string) => `Linafungwa ${date}`,
+  homePostsChecked:
+    "Wafanyakazi hukagua machapisho 3 ya kwanza ya mchapishaji mpya kabla hayajaonekana.",
+  homeNewResponses: "Majibu mapya",
+  homeNewResponsesNote: "Ni wewe tu unayeona waliojibu. Mawasiliano yanabaki siri hadi muungane.",
+  homeNoNewResponses: "Hakuna majibu mapya",
+  homeAppliedTo: (title: string) => `Ameomba ${title}`,
+  homeInterestedIn: (title: string) => `Anavutiwa na ${title}`,
+  homeCvAttached: "CV imeambatishwa",
+  homeNoteAttached: "Ujumbe umeambatishwa",
 };

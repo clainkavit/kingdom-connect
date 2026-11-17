@@ -2315,4 +2315,21 @@ export const en = {
   investorAskedAnon: "Asked anonymously",
   investorAskedNamed: "Asked with your name",
   interestFocusLine: (sector: string, band: string) => `Sector focus: ${sector} · Ticket: ${band}`,
+  homeResponsesTitle: "Responses to my posts",
+  homeResponsesUnit: "responses",
+  homeAcrossPosts: (n: number) =>
+    n === 1 ? "Across your 1 published post." : `Across your ${n} published posts.`,
+  homeSeeAllPosts: "See all posts",
+  homePostNotPosted: "Not posted yet",
+  homePostWaitingStaff: "Waiting for staff",
+  homePostCloses: (date: string) => `Closes ${date}`,
+  homePostsChecked: "Staff check a new poster's first 3 posts before they go live.",
+  homeNewResponses: "New responses",
+  homeNewResponsesNote:
+    "Only you see who responded. Contact details stay private until you connect.",
+  homeNoNewResponses: "No new responses",
+  homeAppliedTo: (title: string) => `Applied to ${title}`,
+  homeInterestedIn: (title: string) => `Interested in ${title}`,
+  homeCvAttached: "CV attached",
+  homeNoteAttached: "Note attached",
 };

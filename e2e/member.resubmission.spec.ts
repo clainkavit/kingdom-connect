@@ -49,7 +49,7 @@ test("a rejected Applicant fixes and resubmits once, an Administrator reopens th
 
   await reject(admin, username, "The ID has expired");
   await page.reload();
-  await expect(page).toHaveURL(/\/login$/);
+  await expect(page).toHaveURL(/\/welcome$/);
   await signInAsApplicant(page, username, email);
   await expect(page.getByText("Reason: The ID has expired")).toBeVisible();
   await page.getByRole("button", { name: "Fix and resubmit" }).click();
@@ -58,7 +58,7 @@ test("a rejected Applicant fixes and resubmits once, an Administrator reopens th
   await reject(admin, username, "The face photo does not match the ID photo");
   expect(await notificationKinds(id)).toEqual(["A1", "A3", "A1", "A4"]);
   await page.reload();
-  await expect(page).toHaveURL(/\/login$/);
+  await expect(page).toHaveURL(/\/welcome$/);
   await signInAsApplicant(page, username, email);
   await expect(
     page.getByText("This decision is final unless an administrator reopens it."),

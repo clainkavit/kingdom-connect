@@ -27,7 +27,8 @@ test("a Member downloads their data, then deletes it for good (S49, schema secti
   await expect(page.getByText("What is kept")).toBeVisible();
   await page.getByRole("checkbox", { name: "I understand this cannot be undone" }).click();
   await page.getByRole("button", { name: "Delete my data for good" }).click();
-  await expect(page.getByRole("button", { name: "Log in" })).toBeVisible();
+  await expect(page).toHaveURL(/\/welcome$/);
+  await expect(page.getByRole("link", { name: "Log in" })).toBeVisible();
 
   expect(await memberState(member.id)).toEqual({ status: "deleted", sessions: 0 });
   expect(await profileCount(member.id)).toBe(0);

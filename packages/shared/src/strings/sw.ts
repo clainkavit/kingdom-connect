@@ -2271,4 +2271,6 @@ export const sw: Strings = {
     `${name} hawezi kuona tathmini yako hadi naye akutathmini, au muda uishe. Umebakiwa na siku ${days}. Ukishatuma, tathmini haiwezi kubadilishwa.`,
   workYouHiredLabel: "Uliyemwajiri",
   workHiredYouLabel: "Aliyekuajiri",
+  messagesConnectionsOnly:
+    "Ni wale uliounganishwa nao tu wanaoweza kukutumia ujumbe. Kuanza mazungumzo, fungua muunganisho kisha gusa Ujumbe.",
 };

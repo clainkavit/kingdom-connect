@@ -221,21 +221,60 @@ export function MessagesTwoPane({
   );
 }
 
+/** S14 on a phone: a white band with the title, search and All or Unread, then the conversations. */
 export function InboxScreen({ api }: { api: MessagesApi }) {
   const { t } = useLanguage();
+  const palette = usePalette();
   const { threads, failed, retry } = useThreads(api);
+  const [q, setQ] = useState("");
+  const [show, setShow] = useState<"all" | "unread">("all");
   if (failed) return <ErrorState message={t.messagesLoadFailed} onRetry={retry} />;
   if (!threads) return <LoadingRows />;
+  const words = q.trim().toLowerCase();
+  const shown = threads.filter(
+    (th) =>
+      (show === "all" || th.unread) &&
+      (!words || `${th.fullName} ${th.lastBody}`.toLowerCase().includes(words)),
+  );
+  const unread = threads.filter((th) => th.unread).length;
   return (
-    <View className="gap-4">
-      <ScreenTitle>{t.navMessages}</ScreenTitle>
+    <View className="gap-3">
+      <View className="-mx-5 -mt-4 gap-3 border-b border-line bg-surface px-5 pb-4 pt-4">
+        <ScreenTitle>{t.navMessages}</ScreenTitle>
+        {threads.length ? (
+          <>
+            <View className="min-h-[48px] flex-row items-center gap-2.5 rounded-full border border-line bg-bg px-4">
+              <Search size={17} color={palette.ink2} aria-hidden />
+              <TextInput
+                aria-label={t.searchMessages}
+                placeholder={t.searchMessages}
+                placeholderTextColor={palette.ink3}
+                value={q}
+                onChangeText={setQ}
+                className="flex-1 font-figtree text-[15px] text-ink"
+              />
+            </View>
+            <Chips
+              hideLabel
+              label={t.messagesShow}
+              options={[
+                { value: "all", label: t.oppAll },
+                { value: "unread", label: t.unreadCount(unread) },
+              ]}
+              value={show}
+              onChange={(v) => setShow(v as "all" | "unread")}
+            />
+          </>
+        ) : null}
+      </View>
       {threads.length === 0 ? (
         <EmptyState title={t.noMessagesTitle} message={t.noMessagesMessage} />
       ) : (
-        <View className="rounded-card border border-line bg-surface p-2">
-          <InboxList threads={threads} now={new Date()} />
-        </View>
+        <InboxList threads={shown} now={new Date()} />
       )}
+      <Text className="font-figtree text-[14px] leading-[21px] text-ink-2">
+        {t.messagesConnectionsOnly}
+      </Text>
     </View>
   );
 }

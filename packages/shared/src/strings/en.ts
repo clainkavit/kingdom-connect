@@ -2228,4 +2228,6 @@ export const en = {
     `${name} cannot see your rating until they rate you too, or the window ends. You have ${days} ${days === 1 ? "day" : "days"} left. Once sent, a rating cannot be changed.`,
   workYouHiredLabel: "You hired",
   workHiredYouLabel: "Hired you",
+  messagesConnectionsOnly:
+    "Only your connections can message you. To start a conversation, open a connection and tap Message.",
 };

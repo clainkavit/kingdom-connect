@@ -91,6 +91,20 @@ const pairs: Pair[] = [
     h: 900,
   },
   { board: "Rate-Work", route: "/work/df7d7842-f25c-4671-b7ac-42339791fe1a", w: 1440, h: 1200 },
+  { board: "Phone-Growth", route: "/growth", w: 430, h: 900 },
+  { board: "Phone-Messages", route: "/messages", w: 430, h: 900 },
+  {
+    board: "Opp-Phone-Detail",
+    route: "/opportunities/cd5a587a-5b96-4599-9fe7-1c139d33ae6a",
+    w: 430,
+    h: 900,
+  },
+  {
+    board: "Ideas-Phone-Summary",
+    route: "/ideas/5004d0fd-8e7b-4367-a306-7b763e78d77b",
+    w: 430,
+    h: 900,
+  },
   { board: "Member-Phone-Dashboard", route: "/", w: 430, h: 900 },
   { board: "Opp-Phone-List", route: "/opportunities", w: 430, h: 900 },
 ];

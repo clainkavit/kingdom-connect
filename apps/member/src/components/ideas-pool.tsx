@@ -446,6 +446,7 @@ export function IdeaSummaryScreen({
               </View>
             </View>
           </View>
+          {phone ? side : null}
           {idea.isMine ? null : (
             <View className="gap-2 rounded-card border border-dashed border-line-2 bg-surface-2 px-6 py-5">
               <View className="flex-row items-center gap-2">
@@ -475,7 +476,7 @@ export function IdeaSummaryScreen({
             </View>
           )}
         </View>
-        <View className={phone ? "" : "w-[448px] max-w-full"}>{side}</View>
+        {phone ? null : <View className="w-[448px] max-w-full">{side}</View>}
       </View>
     </View>
   );

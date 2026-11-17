@@ -43,7 +43,7 @@ begin
 end $$;
 
 -- What a Super Administrator sees: waiting requests, and staff accounts locked after failed sign-ins.
-create function public.staff_access_queue()
+create function access.staff_access_queue()
 returns table (kind text, request_id uuid, staff_id uuid, full_name text, email text, at timestamptz, failed int)
 language sql stable security definer set search_path = '' as $$
   select 'reset', r.id, s.id, s.full_name, u.email::text, r.requested_at, null::int
@@ -59,6 +59,12 @@ language sql stable security definer set search_path = '' as $$
   where (select access.is_super_admin()) and a.locked_until > now() and s.active
   order by 6 desc;
 $$;
+revoke all on function access.staff_access_queue() from public, anon;
+grant execute on function access.staff_access_queue() to authenticated;
+
+create function public.staff_access_queue()
+returns table (kind text, request_id uuid, staff_id uuid, full_name text, email text, at timestamptz, failed int)
+language sql stable security invoker set search_path = '' as $$ select * from access.staff_access_queue(); $$;
 revoke all on function public.staff_access_queue() from public, anon;
 grant execute on function public.staff_access_queue() to authenticated;
 

@@ -155,13 +155,17 @@ function IdeaTerms({
 
 /** S23: "I'm interested", or where the member's request stands (I03), then the NDA (I04). */
 export function IdeaInterest({ api, ideaId }: { api: IdeaAccessApi; ideaId: string }) {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const palette = usePalette();
   const [attempt, setAttempt] = useState(0);
-  const loaded = useLoad(
-    async () => ({ mine: await api.myRequest(ideaId), investor: await api.isInvestor() }),
-    attempt,
-  );
+  const loaded = useLoad(async () => {
+    const investor = await api.isInvestor();
+    return {
+      mine: await api.myRequest(ideaId),
+      investor,
+      focus: investor ? await api.focus().catch(() => null) : null,
+    };
+  }, attempt);
   const [role, setRole] = useState<IdeaSeeking | undefined>(undefined);
   const [anonymous, setAnonymous] = useState(false);
   const [problem, setProblem] = useState<string | null>(null);
@@ -240,7 +244,14 @@ export function IdeaInterest({ api, ideaId }: { api: IdeaAccessApi; ideaId: stri
                     {t.accessVerifiedInvestor}
                   </Text>
                   <Text className="font-figtree text-[13px] leading-5 text-ink-2">
-                    {t.interestAnonymousHint}
+                    {loaded.value.focus
+                      ? t.interestFocusLine(
+                          (language === "sw"
+                            ? loaded.value.focus.sectorSw
+                            : loaded.value.focus.sectorEn) ?? t.accessAnySector,
+                          bandLabel(t, loaded.value.focus.band),
+                        )
+                      : t.interestAnonymousHint}
                   </Text>
                 </View>
               </View>

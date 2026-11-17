@@ -52,6 +52,25 @@ const ideas = (over: Partial<IdeasApi> = {}): IdeasApi => ({
 });
 
 describe("Investor tools (I06)", () => {
+  it("show the investor's focus, mark matching ideas and list their own requests", async () => {
+    const status = vi.fn().mockResolvedValue("investor");
+    const focus = vi
+      .fn()
+      .mockResolvedValue({ sectorEn: "Agriculture", sectorSw: "Kilimo", band: "10m_to_50m" });
+    const myRequests = vi
+      .fn()
+      .mockResolvedValue([
+        { ideaId: "i9", title: "Cashew drying", anonymous: true, status: "approved" },
+      ]);
+    const pool = vi.fn().mockResolvedValue([savable()]);
+    await show(
+      <IdeasPool api={ideas()} investor={fakeInvestor({ status, focus, myRequests, pool })} />,
+    );
+    expect(screen.getByText("Your focus:")).toBeTruthy();
+    expect(screen.getByText("TZS 10M to 50M")).toBeTruthy();
+    expect(screen.getByText("✓ Matches your focus")).toBeTruthy();
+  });
+
   it("are absent, not locked, for a member without the flag", async () => {
     await show(<IdeasPool api={ideas()} investor={fakeInvestor()} />);
     expect(screen.getByText("Solar dryers")).toBeTruthy();

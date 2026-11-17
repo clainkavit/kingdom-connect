@@ -7,6 +7,7 @@ import { Pressable, Text, View } from "react-native";
 import type { IdeasApi } from "../lib/ideas";
 import {
   type InvestorApi,
+  type InvestorFocus,
   type InvestorFilters,
   NO_FILTERS,
   POOL_PAGE,
@@ -68,11 +69,13 @@ function InvestorList({
   filters,
   savedOnly,
   withSide = false,
+  focus = null,
 }: {
   investor: InvestorApi;
   filters: InvestorFilters;
   savedOnly: boolean;
   withSide?: boolean;
+  focus?: InvestorFocus | null;
 }) {
   const { t } = useLanguage();
   const palette = usePalette();
@@ -105,7 +108,10 @@ function InvestorList({
     <View className={phone ? "gap-3" : "flex-row flex-wrap gap-3"}>
       {all.map((idea) => (
         <View key={idea.id} className={phone ? "" : "w-[48%] min-w-[260px] flex-grow"}>
-          <IdeaCard idea={idea}>
+          <IdeaCard
+            idea={idea}
+            matchesFocus={Boolean(focus?.sectorEn) && idea.sectorEn === focus?.sectorEn}
+          >
             {idea.isMine ? null : <SaveButton idea={idea} investor={investor} />}
           </IdeaCard>
         </View>
@@ -115,6 +121,7 @@ function InvestorList({
   const side =
     withSide && !phone ? (
       <View className="w-[300px] gap-3">
+        <MyRequests investor={investor} />
         <View className="gap-3 rounded-card border border-line bg-surface px-5 py-5">
           <Text role="heading" aria-level={2} className="font-figtree-bold text-[17px] text-ink">
             {t.investorByStage}
@@ -174,6 +181,7 @@ export function InvestorPool({ ideas, investor }: { ideas: IdeasApi; investor: I
     }),
     0,
   );
+  const focus = useLoad(() => investor.focus().catch(() => null), 0);
   const [draft, setDraft] = useState({ sectorId: "", stage: "", min: "", max: "", regionId: "" });
   const [filters, setFilters] = useState<InvestorFilters>(NO_FILTERS);
   const [filtersOpen, setShowFilters] = useState<boolean | null>(null);
@@ -292,6 +300,24 @@ export function InvestorPool({ ideas, investor }: { ideas: IdeasApi; investor: I
               </Text>
             </View>
           </View>
+          {focus.state === "ready" && focus.value ? (
+            <View className="flex-row flex-wrap items-center gap-2">
+              <Text className="font-figtree text-[13px] text-navy-ink">{t.investorYourFocus}</Text>
+              {[
+                (language === "sw" ? focus.value.sectorSw : focus.value.sectorEn) ?? null,
+                focus.value.band ? bandText(t, focus.value.band) : null,
+              ]
+                .filter((x): x is string => Boolean(x))
+                .map((chip, i) => (
+                  <Text
+                    key={chip}
+                    className={`rounded-full px-2.5 py-1 font-figtree-bold text-[12px] ${i === 0 ? "bg-surface text-navy" : "bg-gold text-gold-ink"}`}
+                  >
+                    {chip}
+                  </Text>
+                ))}
+            </View>
+          ) : null}
           <Pressable
             role="button"
             aria-label={showFilters ? t.investorHideFilters : t.investorFilters}
@@ -319,7 +345,75 @@ export function InvestorPool({ ideas, investor }: { ideas: IdeasApi; investor: I
         filters={filters}
         savedOnly={false}
         withSide
+        focus={focus.state === "ready" ? focus.value : null}
       />
+    </View>
+  );
+}
+
+const REQUEST_STATUSES = ["pending", "approved", "nda_accepted", "declined"] as const;
+
+/** S22 for a flag holder: the investor's own interest requests, by status, newest three listed. */
+function MyRequests({ investor }: { investor: InvestorApi }) {
+  const { t } = useLanguage();
+  const palette = usePalette();
+  const loaded = useLoad(() => investor.myRequests().catch(() => []), 0);
+  if (loaded.state !== "ready" || loaded.value.length === 0) return null;
+  const requests = loaded.value;
+  const label = {
+    pending: t.investorReqPending,
+    approved: t.investorReqApproved,
+    nda_accepted: t.investorReqNda,
+    declined: t.investorReqDeclined,
+  };
+  const colour = {
+    pending: palette.crimson,
+    approved: palette.goldDeep,
+    nda_accepted: palette.teal,
+    declined: palette.violet,
+  };
+  const chip = {
+    pending: ["bg-surface-2 text-ink", t.investorReqWaiting],
+    approved: ["bg-warn-soft text-warn-text", t.investorReqAcceptNda],
+    nda_accepted: ["bg-good-soft text-good-text", t.investorReqOpen],
+    declined: ["bg-surface-2 text-ink-2", t.investorReqDeclined],
+    revoked: ["bg-surface-2 text-ink-2", t.investorReqDeclined],
+  } as const;
+  return (
+    <View className="gap-3 rounded-card border border-line bg-surface px-5 py-5">
+      <Text role="heading" aria-level={2} className="font-figtree-bold text-[17px] text-ink">
+        {t.investorMyRequests}
+      </Text>
+      <Donut
+        unit={t.investorRequestsUnit}
+        parts={REQUEST_STATUSES.map((status) => ({
+          label: label[status],
+          value: requests.filter((r) => r.status === status).length,
+          color: colour[status],
+        }))}
+      />
+      {requests.slice(0, 3).map((r) => (
+        <LinkButton
+          key={r.ideaId}
+          href={`/ideas/${r.ideaId}`}
+          label={r.title}
+          className="flex-row items-center gap-2 border-t border-line pt-3"
+        >
+          <View className="min-w-0 flex-1">
+            <Text numberOfLines={1} className="font-figtree-bold text-[14px] text-ink">
+              {r.title}
+            </Text>
+            <Text className="font-figtree text-[12px] text-ink-2">
+              {r.anonymous ? t.investorAskedAnon : t.investorAskedNamed}
+            </Text>
+          </View>
+          <Text
+            className={`rounded-full px-2.5 py-1 font-figtree-bold text-[11px] ${chip[r.status][0]}`}
+          >
+            {chip[r.status][1]}
+          </Text>
+        </LinkButton>
+      ))}
     </View>
   );
 }

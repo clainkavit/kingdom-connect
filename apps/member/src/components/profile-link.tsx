@@ -2,7 +2,7 @@ import CircleUser from "lucide-react-native/icons/circle-user";
 import { useEffect, useState } from "react";
 import { Text, View } from "react-native";
 import { useLanguage } from "../lib/language";
-import { supabase } from "../lib/supabase";
+import { myId, supabase } from "../lib/supabase";
 import { LinkButton } from "./link-button";
 
 export const initialsOf = (name: string) =>
@@ -19,8 +19,7 @@ function useMyInitials(): string | null {
   useEffect(() => {
     let live = true;
     (async () => {
-      const { data } = await supabase.auth.getUser();
-      const id = data.user?.id;
+      const id = await myId();
       if (!id) return;
       const { data: row } = await supabase
         .from("profiles")

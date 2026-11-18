@@ -123,12 +123,6 @@ importers:
 
   apps/member:
     dependencies:
-      '@expo-google-fonts/cormorant-garamond':
-        specifier: 0.4.1
-        version: 0.4.1
-      '@expo-google-fonts/figtree':
-        specifier: ^0.4.1
-        version: 0.4.1
       '@expo/metro-runtime':
         specifier: ~58.0.15
         version: 58.0.15(@expo/log-box@58.0.14)(expo@58.0.17)(react-dom@19.3.0(react@19.3.0))(react-native@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.1(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)
@@ -925,12 +919,6 @@ packages:
     peerDependenciesMeta:
       '@noble/hashes':
         optional: true
-
-  '@expo-google-fonts/cormorant-garamond@0.4.1':
-    resolution: {integrity: sha512-e8J4Cn13K1txygamg50n3odLUsYP7Ck28XOGobMi7uDsWvFmp/jgK0qcALqJTlmi9NczSWUNdERxcLauHCBa/Q==}
-
-  '@expo-google-fonts/figtree@0.4.1':
-    resolution: {integrity: sha512-6IQQddGeR3yZBSwiIjy2kd1gA+5s2esF8JAFw6M1qqU4RUlj4Zxkw9J+gixAtZFgd+QIS875EPHqeYlpaRcCRw==}
 
   '@expo/cli@58.1.14':
     resolution: {integrity: sha512-Qrpkhb9XrQn+wuxaOVR0hh0dLzeFZjGZHC9Jz86hPsexPzP+/mnMigRoWVaeEP8q7b3Hsr98gozL5d94DzFOBw==}
@@ -7358,10 +7346,6 @@ snapshots:
   '@exodus/bytes@1.16.0(@noble/hashes@1.8.0)':
     optionalDependencies:
       '@noble/hashes': 1.8.0
-
-  '@expo-google-fonts/cormorant-garamond@0.4.1': {}
-
-  '@expo-google-fonts/figtree@0.4.1': {}
 
   '@expo/cli@58.1.14(@expo/dom-webview@58.0.2)(@expo/metro-runtime@58.0.15)(expo-constants@58.0.14)(expo-font@58.0.11(expo@58.0.17)(react-native@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.1(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0))(expo-router@58.0.29)(expo@58.0.17)(react-dom@19.3.0(react@19.3.0))(react-native@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.1(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)(supports-color@8.1.1)(typescript@6.0.3)':
     dependencies:

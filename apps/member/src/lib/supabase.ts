@@ -44,3 +44,9 @@ export const loginClient = createLoginClient({ url, anonKey });
 export const registrationClient = createRegistrationClient({ url, anonKey });
 
 export const profileClient = createProfileClient({ url, anonKey });
+
+/** The signed-in account's id from the saved session, with no call to the server. */
+export async function myId(): Promise<string | null> {
+  const { data } = await supabase.auth.getSession();
+  return data.session?.user.id ?? null;
+}

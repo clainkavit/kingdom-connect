@@ -1,7 +1,7 @@
 import type { IdeaStage, Language } from "@kingdom-connect/shared";
 import { type IdeaSummary, POOL_PAGE, type SummaryRow, toSummary } from "./ideas";
 import { regionOptions } from "./registration";
-import { supabase } from "./supabase";
+import { myId, supabase } from "./supabase";
 
 export type InvestorStatus = "investor" | "can_apply" | "applied" | "declined" | "none";
 export type TicketBand = "under_10m" | "10m_to_50m" | "over_50m";
@@ -122,11 +122,11 @@ export const investorApi: InvestorApi = {
   focus: myInvestorFocus,
 
   async myRequests() {
-    const { data: auth } = await supabase.auth.getUser();
+    const me = await myId();
     const { data, error } = await supabase
       .from("idea_access_requests")
       .select("idea_id, anonymous, status")
-      .eq("requester_id", auth.user?.id ?? "")
+      .eq("requester_id", me ?? "")
       .order("created_at", { ascending: false });
     if (error) throw error;
     const rows = data ?? [];

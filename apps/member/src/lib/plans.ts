@@ -1,5 +1,5 @@
 import type { PendingText } from "./legal";
-import { supabase } from "./supabase";
+import { myId, supabase } from "./supabase";
 
 export type PlanStatus = "pending" | "active" | "completed" | "lapsed" | "withdrawn" | "ended";
 
@@ -249,7 +249,7 @@ export function plansApiWith(pickPdf: () => Promise<PickedPdf | null>): PlansApi
     },
 
     async documents(planId) {
-      const me = (await supabase.auth.getUser()).data.user?.id;
+      const me = await myId();
       const [{ data, error }, can] = await Promise.all([
         supabase
           .from("plan_documents")
@@ -273,7 +273,7 @@ export function plansApiWith(pickPdf: () => Promise<PickedPdf | null>): PlansApi
     pickPdf,
 
     async upload(planId, file) {
-      const me = (await supabase.auth.getUser()).data.user?.id;
+      const me = await myId();
       if (!me) return "error";
       const path = `${planId}/${me}.pdf`;
       const blob = await (await fetch(file.uri)).blob();

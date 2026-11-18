@@ -281,7 +281,7 @@ export function GrowthScreen({
           <LinkButton
             href={`/plans/${plan.id}`}
             label={t.growthOpenPlan}
-            className="min-h-[32px] justify-center self-start"
+            className="-my-1.5 min-h-[44px] justify-center self-start"
           >
             <Text className="font-figtree-semibold text-[14px] text-navy underline">
               {t.growthOpenPlan}
@@ -296,7 +296,7 @@ export function GrowthScreen({
           <LinkButton
             href={`/training/${joined.id}`}
             label={t.growthCourseMaterials}
-            className="min-h-[32px] justify-center self-start"
+            className="-my-1.5 min-h-[44px] justify-center self-start"
           >
             <Text className="font-figtree-semibold text-[14px] text-navy underline">
               {t.growthCourseMaterials}
@@ -314,7 +314,7 @@ export function GrowthScreen({
         <LinkButton
           href="/ideas/new"
           label={t.ideasShare}
-          className="min-h-[32px] justify-center self-start"
+          className="-my-1.5 min-h-[44px] justify-center self-start"
         >
           <Text className="font-figtree-semibold text-[14px] text-navy underline">
             {t.ideasShare}

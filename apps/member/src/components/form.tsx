@@ -1,7 +1,7 @@
 import Lock from "lucide-react-native/icons/lock";
 import type { FieldProblem, Strings } from "@kingdom-connect/shared";
-import { useState } from "react";
-import { Pressable, ScrollView, Text, TextInput, View } from "react-native";
+import { useEffect, useRef, useState } from "react";
+import { ActivityIndicator, Pressable, ScrollView, Text, TextInput, View } from "react-native";
 import { Reveal } from "./motion";
 import { useLanguage } from "../lib/language";
 import { usePalette } from "./palette";
@@ -67,21 +67,53 @@ export function Field(props: {
   );
 }
 
+/**
+ * While the action an onPress returns is still running, the button shows a spinner, says it is busy and
+ * ignores further taps, so a slow connection never sends the same thing twice.
+ */
 export function Button(props: {
   label: string;
-  onPress: () => void;
+  onPress: () => unknown;
   disabled?: boolean;
   secondary?: boolean;
 }) {
+  const palette = usePalette();
+  const [pending, setPending] = useState(false);
+  const running = useRef(false);
+  const mounted = useRef(true);
+  useEffect(
+    () => () => {
+      mounted.current = false;
+    },
+    [],
+  );
+  const press = () => {
+    if (running.current) return;
+    const result = props.onPress();
+    if (!(result instanceof Promise)) return;
+    running.current = true;
+    setPending(true);
+    result
+      .catch(() => undefined)
+      .finally(() => {
+        running.current = false;
+        if (mounted.current) setPending(false);
+      });
+  };
+  const off = props.disabled || pending;
   return (
     <Pressable
       role="button"
       aria-label={props.label}
-      aria-disabled={props.disabled}
-      disabled={props.disabled}
-      onPress={props.onPress}
-      className={`items-center justify-center rounded-full px-5 active:opacity-80 ${props.secondary ? "min-h-[44px] border border-line-2 bg-surface" : "min-h-[48px] border border-blue bg-blue"} ${props.disabled ? "opacity-50" : ""}`}
+      aria-disabled={off}
+      aria-busy={pending}
+      disabled={off}
+      onPress={press}
+      className={`flex-row items-center justify-center gap-2 rounded-full px-5 active:opacity-80 ${props.secondary ? "min-h-[44px] border border-line-2 bg-surface" : "min-h-[48px] border border-blue bg-blue"} ${props.disabled ? "opacity-50" : pending ? "opacity-80" : ""}`}
     >
+      {pending ? (
+        <ActivityIndicator size="small" color={props.secondary ? palette.navy : palette.blueInk} />
+      ) : null}
       <Text
         className={
           props.secondary

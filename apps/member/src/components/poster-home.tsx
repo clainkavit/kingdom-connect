@@ -81,7 +81,7 @@ export function PosterHome({ api }: { api: PosterApi }) {
           <LinkButton
             href={action.href}
             label={action.label}
-            className="flex-row items-center gap-1"
+            className="-my-3 min-h-[44px] flex-row items-center gap-1"
           >
             <Text className="font-figtree-semibold text-[13px] text-navy">{action.label}</Text>
             <ChevronRight size={14} color={palette.navy} aria-hidden />

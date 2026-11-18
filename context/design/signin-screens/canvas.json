@@ -523,6 +523,377 @@
       "title": "Choose a new password · phone (proposed, #182)",
       "x": 4080,
       "y": 5360
+    },
+    "Member-Dashboard.dc.html": {
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 2300,
+      "title": "S08 Member dashboard · Professional and Businessperson · computer",
+      "page": "member",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "Member-Phone-Dashboard.dc.html": {
+      "x": 0,
+      "y": 2720,
+      "w": 430,
+      "h": 900,
+      "title": "S08 Member dashboard · phone",
+      "page": "member",
+      "is_interactive": true
+    },
+    "Member-People.dc.html": {
+      "x": 1520,
+      "y": 0,
+      "w": 1440,
+      "h": 1700,
+      "title": "S10 People · Professionals tab · computer",
+      "page": "member",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "Member-Profile.dc.html": {
+      "x": 3040,
+      "y": 0,
+      "w": 1440,
+      "h": 1500,
+      "title": "S11 Member profile, not connected yet · computer",
+      "page": "member",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "Member-Phone-People.dc.html": {
+      "x": 510,
+      "y": 2720,
+      "w": 430,
+      "h": 900,
+      "title": "S10 People · phone",
+      "page": "member",
+      "is_interactive": true
+    },
+    "Member-Phone-Profile.dc.html": {
+      "x": 1020,
+      "y": 2720,
+      "w": 430,
+      "h": 900,
+      "title": "S11 Member profile · phone",
+      "page": "member",
+      "is_interactive": true
+    },
+    "Business-Dashboard.dc.html": {
+      "x": 0,
+      "y": 4040,
+      "w": 1440,
+      "h": 2100,
+      "title": "S08 Member dashboard · business owner, Level 3 · computer",
+      "page": "member",
+      "expand": "fill",
+      "is_interactive": true
+    },
+    "Business-Phone-Dashboard.dc.html": {
+      "x": 1520,
+      "y": 4040,
+      "w": 430,
+      "h": 900,
+      "title": "S08 Member dashboard · business owner, Level 3 · phone",
+      "page": "member",
+      "is_interactive": true
+    },
+    "Ideas-Pool.dc.html": {
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 1500,
+      "title": "S22 Ideas pool · computer",
+      "page": "ideas",
+      "expand": "fill",
+      "is_interactive": true
+    },
+    "Ideas-Summary.dc.html": {
+      "x": 1520,
+      "y": 0,
+      "w": 1440,
+      "h": 1200,
+      "title": "S23 and S24 Someone's idea: summary and I'm interested · computer",
+      "page": "ideas",
+      "expand": "fill",
+      "is_interactive": true
+    },
+    "Ideas-Manage.dc.html": {
+      "x": 3040,
+      "y": 0,
+      "w": 1440,
+      "h": 1300,
+      "title": "S28 My idea: requests and access · computer",
+      "page": "ideas",
+      "expand": "fill",
+      "is_interactive": true
+    },
+    "Ideas-Details.dc.html": {
+      "x": 4560,
+      "y": 0,
+      "w": 1440,
+      "h": 1300,
+      "title": "S25 and S26 Details after the NDA, watermarked · computer",
+      "page": "ideas",
+      "expand": "fill",
+      "is_interactive": true
+    },
+    "Ideas-Share.dc.html": {
+      "x": 6080,
+      "y": 0,
+      "w": 1440,
+      "h": 1400,
+      "title": "S27 Share an idea · computer",
+      "page": "ideas",
+      "expand": "fill",
+      "is_interactive": true
+    },
+    "Ideas-Phone-Pool.dc.html": {
+      "x": 0,
+      "y": 1920,
+      "w": 430,
+      "h": 900,
+      "title": "S22 Ideas pool · phone",
+      "page": "ideas",
+      "is_interactive": true
+    },
+    "Ideas-Phone-Summary.dc.html": {
+      "x": 510,
+      "y": 1920,
+      "w": 430,
+      "h": 900,
+      "title": "S23 and S24 Someone's idea: summary and I'm interested · phone",
+      "page": "ideas",
+      "is_interactive": true
+    },
+    "Ideas-Phone-Manage.dc.html": {
+      "x": 1020,
+      "y": 1920,
+      "w": 430,
+      "h": 900,
+      "title": "S28 My idea: requests and access · phone",
+      "page": "ideas",
+      "is_interactive": true
+    },
+    "Ideas-Phone-Details.dc.html": {
+      "x": 1530,
+      "y": 1920,
+      "w": 430,
+      "h": 900,
+      "title": "S25 and S26 Details after the NDA, watermarked · phone",
+      "page": "ideas",
+      "is_interactive": true
+    },
+    "Ideas-Phone-Share.dc.html": {
+      "x": 2040,
+      "y": 1920,
+      "w": 430,
+      "h": 900,
+      "title": "S27 Share an idea · phone",
+      "page": "ideas",
+      "is_interactive": true
+    },
+    "Admin-Ideas.dc.html": {
+      "x": 4560,
+      "y": 1820,
+      "w": 1440,
+      "h": 1700,
+      "title": "Ideas overview for staff · computer (proposed)",
+      "page": "admin",
+      "expand": "fill",
+      "is_interactive": true
+    },
+    "Admin-Phone-Ideas.dc.html": {
+      "x": 4590,
+      "y": 5360,
+      "w": 430,
+      "h": 900,
+      "title": "Ideas overview for staff · phone (proposed)",
+      "page": "admin",
+      "is_interactive": true
+    },
+    "Investor-Pool.dc.html": {
+      "x": 0,
+      "y": 3240,
+      "w": 1440,
+      "h": 1700,
+      "title": "S22 and S29 Ideas for an investor: focus, filters, Saved, my requests · computer",
+      "page": "ideas",
+      "expand": "fill",
+      "is_interactive": true
+    },
+    "Investor-Interest.dc.html": {
+      "x": 1520,
+      "y": 3240,
+      "w": 1440,
+      "h": 1200,
+      "title": "S24 Ask anonymously as an investor · computer",
+      "page": "ideas",
+      "expand": "fill",
+      "is_interactive": true
+    },
+    "Investor-Phone-Pool.dc.html": {
+      "x": 3040,
+      "y": 3240,
+      "w": 430,
+      "h": 900,
+      "title": "Ideas for an investor · phone",
+      "page": "ideas",
+      "is_interactive": true
+    },
+    "Investor-Phone-Interest.dc.html": {
+      "x": 3550,
+      "y": 3240,
+      "w": 430,
+      "h": 900,
+      "title": "Ask anonymously · phone",
+      "page": "ideas",
+      "is_interactive": true
+    },
+    "Admin-Verify.dc.html": {
+      "x": 0,
+      "y": 6680,
+      "w": 1440,
+      "h": 1300,
+      "title": "A02 Verification queue · computer",
+      "page": "admin",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "Admin-VerifyDetail.dc.html": {
+      "x": 1520,
+      "y": 6680,
+      "w": 1440,
+      "h": 1600,
+      "title": "A03 Verification detail · computer",
+      "page": "admin",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "Admin-Phone-Verify.dc.html": {
+      "x": 3040,
+      "y": 6680,
+      "w": 430,
+      "h": 900,
+      "title": "A02 Verification queue · phone",
+      "page": "admin",
+      "is_interactive": true
+    },
+    "Admin-Phone-VerifyDetail.dc.html": {
+      "x": 3550,
+      "y": 6680,
+      "w": 430,
+      "h": 900,
+      "title": "A03 Verification detail · phone",
+      "page": "admin",
+      "is_interactive": true
+    },
+    "Opp-List.dc.html": {
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 1700,
+      "title": "S16 Opportunities list with Scan · computer",
+      "page": "opps",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "Opp-Detail.dc.html": {
+      "x": 1520,
+      "y": 0,
+      "w": 1440,
+      "h": 1300,
+      "title": "S17 Tender detail, Level 1 · computer",
+      "page": "opps",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "Opp-Apply.dc.html": {
+      "x": 3040,
+      "y": 0,
+      "w": 1440,
+      "h": 1100,
+      "title": "S18 Apply for a job · computer",
+      "page": "opps",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "Opp-Responses.dc.html": {
+      "x": 4560,
+      "y": 0,
+      "w": 1440,
+      "h": 1000,
+      "title": "S19 My responses · computer",
+      "page": "opps",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "Opp-Post.dc.html": {
+      "x": 6080,
+      "y": 0,
+      "w": 1440,
+      "h": 1300,
+      "title": "S20 Post an opportunity, Level 3 · computer",
+      "page": "opps",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "Biz-Verify.dc.html": {
+      "x": 7600,
+      "y": 0,
+      "w": 1440,
+      "h": 1800,
+      "title": "S40 Business verification · computer",
+      "page": "opps",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "Opp-Phone-List.dc.html": {
+      "x": 0,
+      "y": 2220,
+      "w": 430,
+      "h": 900,
+      "title": "S16 Opportunities · phone",
+      "page": "opps",
+      "is_interactive": true
+    },
+    "Opp-Phone-Detail.dc.html": {
+      "x": 510,
+      "y": 2220,
+      "w": 430,
+      "h": 900,
+      "title": "S17 Tender detail · phone",
+      "page": "opps",
+      "is_interactive": true
+    },
+    "Opp-Phone-Apply.dc.html": {
+      "x": 1020,
+      "y": 2220,
+      "w": 430,
+      "h": 900,
+      "title": "S18 Apply · phone",
+      "page": "opps",
+      "is_interactive": true
+    },
+    "Opp-Phone-Post.dc.html": {
+      "x": 1530,
+      "y": 2220,
+      "w": 430,
+      "h": 900,
+      "title": "S20 Post an opportunity · phone",
+      "page": "opps",
+      "is_interactive": true
+    },
+    "Biz-Phone-Verify.dc.html": {
+      "x": 2040,
+      "y": 2220,
+      "w": 430,
+      "h": 900,
+      "title": "S40 Business verification · phone",
+      "page": "opps",
+      "is_interactive": true
     }
   },
   "createdOnFiles": {
@@ -581,9 +952,9 @@
     "adminLogin": {
       "x": 0,
       "y": 1520,
-      "text": "Staff log in, on a computer",
+      "text": "Staff log in, the dashboard and the Ideas overview, on a computer",
       "kind": "title1",
-      "maxW": 4480,
+      "maxW": 6000,
       "page": "admin"
     },
     "adminPhone": {
@@ -591,7 +962,7 @@
       "y": 5060,
       "text": "Admin on a phone",
       "kind": "title1",
-      "maxW": 4510,
+      "maxW": 5020,
       "page": "admin"
     },
     "adminForgot": {
@@ -601,6 +972,78 @@
       "kind": "title1",
       "maxW": 4480,
       "page": "admin"
+    },
+    "memberDash": {
+      "x": 0,
+      "y": -300,
+      "text": "Member after approval (Professional and Businessperson), on a computer",
+      "kind": "title1",
+      "maxW": 4480,
+      "page": "member"
+    },
+    "memberPhone": {
+      "x": 0,
+      "y": 2420,
+      "text": "Member, on a phone",
+      "kind": "title1",
+      "maxW": 1450,
+      "page": "member"
+    },
+    "memberBusiness": {
+      "x": 0,
+      "y": 3740,
+      "text": "Business owner (Opportunity Poster, Level 3)",
+      "kind": "title1",
+      "maxW": 1950,
+      "page": "member"
+    },
+    "ideasComp": {
+      "x": 0,
+      "y": -300,
+      "text": "Ideas, on a computer",
+      "kind": "title1",
+      "maxW": 7520,
+      "page": "ideas"
+    },
+    "ideasPhone": {
+      "x": 0,
+      "y": 1620,
+      "text": "Ideas, on a phone",
+      "kind": "title1",
+      "maxW": 2470,
+      "page": "ideas"
+    },
+    "ideasInvestor": {
+      "x": 0,
+      "y": 2940,
+      "text": "Ideas as an investor sees them (flag holder only)",
+      "kind": "title1",
+      "maxW": 3980,
+      "page": "ideas"
+    },
+    "adminVerify": {
+      "x": 0,
+      "y": 6380,
+      "text": "Verifying members",
+      "kind": "title1",
+      "maxW": 3980,
+      "page": "admin"
+    },
+    "oppsComp": {
+      "x": 0,
+      "y": -300,
+      "text": "Opportunities and business verification, on a computer",
+      "kind": "title1",
+      "maxW": 9040,
+      "page": "opps"
+    },
+    "oppsPhone": {
+      "x": 0,
+      "y": 1920,
+      "text": "On a phone",
+      "kind": "title1",
+      "maxW": 2470,
+      "page": "opps"
     }
   },
   "order": [
@@ -658,7 +1101,46 @@
     "Admin-NewPassword.dc.html",
     "Admin-Phone-Forgot.dc.html",
     "Admin-Phone-ForgotSent.dc.html",
-    "Admin-Phone-NewPassword.dc.html"
+    "Admin-Phone-NewPassword.dc.html",
+    "Member-Dashboard.dc.html",
+    "Member-Phone-Dashboard.dc.html",
+    "Member-People.dc.html",
+    "Member-Profile.dc.html",
+    "Member-Phone-People.dc.html",
+    "Member-Phone-Profile.dc.html",
+    "Business-Dashboard.dc.html",
+    "Business-Phone-Dashboard.dc.html",
+    "Ideas-Pool.dc.html",
+    "Ideas-Summary.dc.html",
+    "Ideas-Manage.dc.html",
+    "Ideas-Details.dc.html",
+    "Ideas-Share.dc.html",
+    "Ideas-Phone-Pool.dc.html",
+    "Ideas-Phone-Summary.dc.html",
+    "Ideas-Phone-Manage.dc.html",
+    "Ideas-Phone-Details.dc.html",
+    "Ideas-Phone-Share.dc.html",
+    "Admin-Ideas.dc.html",
+    "Admin-Phone-Ideas.dc.html",
+    "Investor-Pool.dc.html",
+    "Investor-Interest.dc.html",
+    "Investor-Phone-Pool.dc.html",
+    "Investor-Phone-Interest.dc.html",
+    "Admin-Verify.dc.html",
+    "Admin-VerifyDetail.dc.html",
+    "Admin-Phone-Verify.dc.html",
+    "Admin-Phone-VerifyDetail.dc.html",
+    "Opp-List.dc.html",
+    "Opp-Detail.dc.html",
+    "Opp-Apply.dc.html",
+    "Opp-Responses.dc.html",
+    "Opp-Post.dc.html",
+    "Biz-Verify.dc.html",
+    "Opp-Phone-List.dc.html",
+    "Opp-Phone-Detail.dc.html",
+    "Opp-Phone-Apply.dc.html",
+    "Opp-Phone-Post.dc.html",
+    "Biz-Phone-Verify.dc.html"
   ],
   "pages": [
     {
@@ -668,6 +1150,18 @@
     {
       "id": "admin",
       "name": "Admin"
+    },
+    {
+      "id": "member",
+      "name": "Member"
+    },
+    {
+      "id": "ideas",
+      "name": "Ideas"
+    },
+    {
+      "id": "opps",
+      "name": "Opportunities"
     }
   ],
   "title": "Kingdom Connect sign-in screens"

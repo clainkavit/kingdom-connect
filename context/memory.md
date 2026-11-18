@@ -9,3 +9,4 @@ Facts discovered while working, one per file in [memory/](memory/). Not the onbo
 - [Hosted test environment](memory/hosted-test-environment.md): Supabase test project and two Vercel projects exist (6 Nov 2026), how each was set up, where secrets live; sign-in is blocked until F08 mail.
 - [Phone sign-in setup](memory/phone-sign-in-setup.md): how R29 phone sign-in is wired (Auth OTP plus our 10-minute, 3-attempt check), the local test sender, and the hosted settings and secrets it needs before it is switched on (18 Nov 2026).
 - [Staff reset setup](memory/staff-reset-setup.md): how R30 staff password resets approved by a Super Admin are wired, the `ADMIN_URL` secret and the no-link Auth email templates a hosted project must copy (18 Nov 2026).
+- [Member web speed](memory/member-web-speed.md): measured load times, the boot screen, the cut-down fonts and how to rerun the throttled speed test (18 Nov 2026).

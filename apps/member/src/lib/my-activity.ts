@@ -1,4 +1,4 @@
-import { supabase } from "./supabase";
+import { myId, supabase } from "./supabase";
 
 export type MyActivity = {
   applications: number;
@@ -8,12 +8,8 @@ export type MyActivity = {
 
 /** S08 My activity: the member's own counts (never platform-wide figures, PRD section 7). */
 export async function loadMyActivity(): Promise<MyActivity> {
-  const [responses, user] = await Promise.all([
-    supabase.rpc("my_responses"),
-    supabase.auth.getUser(),
-  ]);
+  const [responses, id] = await Promise.all([supabase.rpc("my_responses"), myId()]);
   const rows = (responses.data ?? []) as { title: string; status: string; created_at: string }[];
-  const id = user.data.user?.id;
   const ideas = id
     ? await supabase
         .from("idea_access_requests")

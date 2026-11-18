@@ -1,16 +1,5 @@
 import "../global.css";
-import {
-  Figtree_400Regular,
-  Figtree_500Medium,
-  Figtree_600SemiBold,
-  Figtree_700Bold,
-  Figtree_800ExtraBold,
-  useFonts,
-} from "@expo-google-fonts/figtree";
-import {
-  CormorantGaramond_600SemiBold,
-  useFonts as useSerif,
-} from "@expo-google-fonts/cormorant-garamond";
+import { useFonts } from "expo-font";
 import { Slot } from "expo-router";
 import { Platform } from "react-native";
 import { StatusBar } from "expo-status-bar";
@@ -20,17 +9,20 @@ import { AuthProvider } from "../src/lib/auth";
 import { LanguageProvider } from "../src/lib/language";
 import { startMonitoring } from "../src/lib/monitoring";
 
+/** Figtree and Cormorant Garamond cut down to Latin letters and punctuation (assets/fonts, SIL OFL). */
+const fonts = {
+  Figtree_400Regular: require("../assets/fonts/Figtree_400Regular.ttf"),
+  Figtree_500Medium: require("../assets/fonts/Figtree_500Medium.ttf"),
+  Figtree_600SemiBold: require("../assets/fonts/Figtree_600SemiBold.ttf"),
+  Figtree_700Bold: require("../assets/fonts/Figtree_700Bold.ttf"),
+  Figtree_800ExtraBold: require("../assets/fonts/Figtree_800ExtraBold.ttf"),
+  CormorantGaramond_600SemiBold: require("../assets/fonts/CormorantGaramond_600SemiBold.ttf"),
+};
+
 export default function RootLayout() {
-  const [fontsLoaded] = useFonts({
-    Figtree_400Regular,
-    Figtree_500Medium,
-    Figtree_600SemiBold,
-    Figtree_700Bold,
-    Figtree_800ExtraBold,
-  });
-  const [serifLoaded] = useSerif({ CormorantGaramond_600SemiBold });
+  const [fontsLoaded] = useFonts(fonts);
   useEffect(startMonitoring, []);
-  if ((!fontsLoaded || !serifLoaded) && Platform.OS !== "web") return null;
+  if (!fontsLoaded && Platform.OS !== "web") return null;
   return (
     <SafeAreaProvider>
       <SafeAreaView className="flex-1 bg-bg">

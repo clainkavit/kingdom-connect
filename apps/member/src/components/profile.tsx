@@ -41,7 +41,7 @@ export function Section({
           <LinkButton
             href={action.href}
             label={action.label}
-            className="min-h-[32px] justify-center"
+            className="-my-1.5 min-h-[44px] justify-center"
           >
             <Text className="font-figtree-semibold text-[14px] text-navy">{action.label} ›</Text>
           </LinkButton>

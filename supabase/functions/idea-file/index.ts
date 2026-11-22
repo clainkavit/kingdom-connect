@@ -1,5 +1,6 @@
 import { platformName, serviceClient, sql } from "../_shared/db.ts";
-import { corsHeaders, isUuid, json, requireUser } from "../_shared/http.ts";
+import { corsHeaders, isUuid, json } from "../_shared/http.ts";
+import { requireVerifiedAccount } from "../_shared/session.ts";
 import { stampLine } from "./stamp-line.ts";
 import { stampFile } from "./stamp.ts";
 
@@ -9,13 +10,13 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
   if (req.method !== "POST") return json({ error: "method_not_allowed" }, 405);
 
-  const user = await requireUser(req);
-  if (!user) return json({ error: "not_signed_in" }, 401);
+  const account = await requireVerifiedAccount(req);
+  if (account instanceof Response) return account;
 
   const body = await req.json().catch(() => ({}));
   if (!isUuid(body.fileId)) return json({ error: "not_found" }, 404);
 
-  const [file] = await sql`select * from private.open_idea_file(${user.userId}, ${body.fileId})`;
+  const [file] = await sql`select * from private.open_idea_file(${account.id}, ${body.fileId})`;
   if (!file) return json({ error: "not_found" }, 404);
 
   const { data, error } = await serviceClient.storage

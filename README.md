@@ -32,6 +32,7 @@ pnpm member:web           # run the member app in a browser
 pnpm admin                # run the admin console on http://localhost:3000
 pnpm typecheck            # TypeScript check in every package
 pnpm test                 # Vitest in watch mode (pnpm test:run runs once)
+pnpm app up               # start Docker, the local database and both apps; pnpm app --help for the rest
 ```
 
 Every commit runs Prettier on the staged files, then the typecheck, then the tests. A failing step blocks the commit.

@@ -13,6 +13,9 @@ export default defineConfig({
         test: { name: "functions", include: ["supabase/functions/**/*.test.ts"], exclude },
       },
       {
+        test: { name: "tools", include: ["tools/**/*.test.ts"], exclude },
+      },
+      {
         esbuild: { jsx: "automatic" },
         resolve: {
           alias: { "@": fileURLToPath(new URL("./apps/admin/src", import.meta.url)) },

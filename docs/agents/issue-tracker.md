@@ -72,6 +72,7 @@ The build is cut into issues labelled `build`, in three milestones: **Release 1:
 - **Claim it.** Assign it to yourself before starting: `gh issue edit <n> --add-assignee @me`. Pick only an issue with no open blocker.
 - **Branch.** `build/<key>-<slug>`, for example `build/f03-local-supabase`. One issue per branch.
 - **Build it.** Run `/implement #<n>` in a fresh session. It commits to the current branch. It does not push or open a pull request.
+- **Proof.** If the change alters what a Member or Administrator sees, run `/check-app` and put the screenshots (and a video for a flow) in the pull request. A change no one can see needs no proof. A new screen also needs its row in [docs/feature-map.md](../feature-map.md); a unit test fails without it.
 - **Pull request.** Push the branch and open a pull request with `Closes #<n>` in the description, written in the `/pr` format. The other person reviews and merges.
 - **Close.** Merging closes the issue.
 

@@ -23,3 +23,5 @@ The words this project uses, and the ones it avoids. Definitions only; requireme
 **Idea access request**: a request to see an Idea's details, named or anonymous, which the owner approves or declines.
 
 **Administrator**: platform staff who verify, moderate and publish. Does not connect or message. _Avoid:_ Church Admin (old Osborn project term).
+
+**Super Administrator**: an Administrator who also manages staff accounts, approves staff password resets and reads the audit log (PRD section 3, SAFE-4). Assigned at setup. _Avoid:_ owner, root admin.

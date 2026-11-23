@@ -49,6 +49,7 @@ export default defineCheck(async ({ as, guest, step, scenario, emailCode, note }
 - **"Wrong username or password" for a seeded account:** the edge functions are down. `pnpm app up` restarts them. `pnpm app status` shows `functions`.
 - **Locked account:** five wrong passwords lock it for 15 minutes. `pnpm app reset --dry-run` explains the reset; only run `--yes` when the user agrees, because it deletes all local data.
 - **Email codes are limited per account per hour.** Saved sign-ins avoid most codes. Do not loop sign-ins.
+- **The app shows old behaviour after an edit, or after switching branch:** a member app started with `CI=1` (as `pnpm e2e` does) does not watch files. Run `pnpm app down`, then `pnpm app up`. Never trust a passing check whose screenshots show otherwise.
 - `pnpm app down` stops the two app servers it started; Docker and Supabase keep running.
 
 ## Keep the map true

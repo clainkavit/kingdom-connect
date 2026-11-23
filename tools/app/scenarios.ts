@@ -77,7 +77,7 @@ export const scenarios: Record<string, Scenario> = {
       const { id, email } = await createApplication(username, `AW${stamp}`);
       return {
         accounts: [member("applicant-waiting", username, email, "Applicant, application sent")],
-        facts: { memberId: id, username, adminPage: `/verification/${id}` },
+        facts: { memberId: id, username, adminQueue: "/verification", queueLink: `@${username} ·` },
       };
     },
   },

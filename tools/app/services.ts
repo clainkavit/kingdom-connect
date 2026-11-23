@@ -153,7 +153,7 @@ const appCommands = {
       "--port",
       new URL(urls.member).port,
     ],
-    env: { CI: "1", EXPO_PUBLIC_PHONE_SIGN_IN: "1" },
+    env: { EXPO_PUBLIC_PHONE_SIGN_IN: "1" },
   },
   admin: {
     args: ["--filter", "@kingdom-connect/admin", "dev", "--port", new URL(urls.admin).port],

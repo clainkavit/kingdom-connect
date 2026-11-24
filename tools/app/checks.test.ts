@@ -2,7 +2,10 @@ import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
-/** Lines with `toHaveCount(0)` whose previous statement is not a `toBeVisible()` that proves the page drew. */
+/**
+ * Lines with `toHaveCount(0)` whose previous statement neither proves the page drew (`toBeVisible()`) nor checks the
+ * server's answer for a section that renders nothing when empty (`.json()`).
+ */
 export function unanchoredAbsences(source: string): number[] {
   const lines = source.split(/\r?\n/);
   const found: number[] = [];
@@ -12,7 +15,7 @@ export function unanchoredAbsences(source: string): number[] {
       .slice(0, i)
       .reverse()
       .find((l) => l.trim() !== "");
-    if (!previous?.includes("toBeVisible()")) found.push(i + 1);
+    if (!previous?.includes("toBeVisible()") && !previous?.includes(".json()")) found.push(i + 1);
   });
   return found;
 }

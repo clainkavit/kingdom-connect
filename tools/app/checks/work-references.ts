@@ -53,6 +53,7 @@ export default defineCheck(async ({ as, step, scenario, note }) => {
   await rate(worker, posterName!, "Clear brief and paid on time.", "worker");
 
   await poster.goto(workerProfile!);
+  await expect(poster.getByRole("heading", { name: "Ideas", exact: true })).toBeVisible();
   await expect(poster.getByRole("heading", { name: "Work references" })).toHaveCount(0);
   await step(poster, "worker profile hidden until both rate", { full: true });
   await rate(poster, workerName!, "Every uniform was ready a day early.", "poster");

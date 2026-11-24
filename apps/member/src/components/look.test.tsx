@@ -131,4 +131,67 @@ describe("look, but not act (R27)", () => {
       "/profile/verify",
     );
   });
+
+  it("does not ask an approved member to verify again while their sign-in catches up", async () => {
+    await act(async () => {
+      render(
+        <LookHome
+          widgets={widgets}
+          status={async () => ({ kind: "approved" })}
+          progress={async () => 0}
+        />,
+      );
+    });
+    expect(screen.queryByText("Verify your identity to connect, apply and post")).toBeNull();
+    expect(screen.queryByText(/steps done/)).toBeNull();
+    expect(screen.queryByRole("link", { name: "Continue verification" })).toBeNull();
+  });
+});
+
+describe("approval reaches someone already signed in", () => {
+  it("renews the sign-in when staff approved them, so the app opens up without signing out", async () => {
+    const onApproved = vi.fn();
+    await act(async () => {
+      render(
+        <LookProvider looking status={async () => ({ kind: "approved" })} onApproved={onApproved}>
+          <p>page</p>
+        </LookProvider>,
+      );
+    });
+    expect(onApproved).toHaveBeenCalledTimes(1);
+  });
+
+  it("asks again on every page they open while still waiting", async () => {
+    const status = vi.fn().mockResolvedValue({ kind: "under_review" });
+    const onApproved = vi.fn();
+    const view = await act(async () =>
+      render(
+        <LookProvider looking status={status} onApproved={onApproved}>
+          <p>page</p>
+        </LookProvider>,
+      ),
+    );
+    router.pathname = "/opportunities";
+    await act(async () =>
+      view.rerender(
+        <LookProvider looking status={status} onApproved={onApproved}>
+          <p>page</p>
+        </LookProvider>,
+      ),
+    );
+    expect(status).toHaveBeenCalledTimes(2);
+    expect(onApproved).not.toHaveBeenCalled();
+  });
+
+  it("never asks for a verified member", async () => {
+    const status = vi.fn().mockResolvedValue({ kind: "approved" });
+    await act(async () => {
+      render(
+        <LookProvider looking={false} status={status} onApproved={vi.fn()}>
+          <p>page</p>
+        </LookProvider>,
+      );
+    });
+    expect(status).not.toHaveBeenCalled();
+  });
 });

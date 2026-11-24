@@ -49,17 +49,47 @@ export function useAct() {
   };
 }
 
+/**
+ * The sign-in token carries the member's status, so a staff decision reaches a signed-in applicant only when the
+ * token is renewed. While they look around, each page asks the server and renews the sign-in once they are approved.
+ */
+function useApprovalCatchUp(
+  looking: boolean,
+  status: (() => Promise<ApplicationStatus>) | undefined,
+  onApproved: (() => unknown) | undefined,
+) {
+  const pathname = usePathname();
+  useEffect(() => {
+    if (!looking || !status || !onApproved) return;
+    let live = true;
+    status().then(
+      (s) => {
+        if (live && s.kind === "approved") onApproved();
+      },
+      () => undefined,
+    );
+    return () => {
+      live = false;
+    };
+  }, [looking, pathname, status, onApproved]);
+}
+
 export function LookProvider({
   looking,
+  status,
+  onApproved,
   children,
 }: {
   looking: boolean;
+  status?: () => Promise<ApplicationStatus>;
+  onApproved?: () => unknown;
   children: React.ReactNode;
 }) {
   const { t } = useLanguage();
   const palette = usePalette();
   const router = useRouter();
   const [asked, setAsked] = useState<LookAction | null>(null);
+  useApprovalCatchUp(looking, status, onApproved);
   return (
     <LookContext.Provider value={{ looking, ask: setAsked }}>
       {children}
@@ -110,6 +140,7 @@ function VerifyBanner({
   const { t } = useLanguage();
   const palette = usePalette();
   const phone = usePhone();
+  if (status === "approved") return null;
   const checking = status === "under_review";
   const sent = checking || status === "rejected";
   const title = checking

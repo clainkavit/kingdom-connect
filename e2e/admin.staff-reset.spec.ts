@@ -57,7 +57,7 @@ test("a staff member asks for a reset, a Super Administrator sends the link, and
   await expect(page.getByRole("heading", { name: "Choose a new password" })).toBeVisible();
   await expect(page.getByText(email)).toBeVisible();
   await page.getByLabel("New password", { exact: true }).fill("new-pass-22");
-  await page.getByLabel("Confirm new password").fill("new-pass-22");
+  await page.getByLabel("Confirm new password", { exact: true }).fill("new-pass-22");
   await page.getByRole("button", { name: "Save new password" }).click();
   await expect(page.getByText("Your password is set. Log in to continue.")).toBeVisible();
 

@@ -100,7 +100,8 @@ test("a Super Administrator invites an Administrator, who sets a password and lo
 
   const invited = await browser.newPage();
   await invited.goto(await linkInEmail(email, sentAfter, /staff account/i));
-  await invited.getByLabel("New password").fill("staff-pass-1");
+  await invited.getByLabel("New password", { exact: true }).fill("staff-pass-1");
+  await invited.getByLabel("Confirm new password", { exact: true }).fill("staff-pass-1");
   await invited.getByRole("button", { name: "Set password" }).click();
   await expect(invited.getByText("Your password is set. Log in to continue.")).toBeVisible();
   await invited.getByRole("link", { name: "Go to log in" }).click();

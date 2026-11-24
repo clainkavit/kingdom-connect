@@ -28,7 +28,7 @@
 - **Issue tracker:** GitHub issues, see [docs/agents/issue-tracker.md](docs/agents/issue-tracker.md).
 - **Domain docs:** single context. The glossary is `GLOSSARY.md` at the repo root and there is no `docs/adr/`, see [docs/agents/domain.md](docs/agents/domain.md).
 - **Spec for build issues:** [docs/prd.md](docs/prd.md), [docs/schema.md](docs/schema.md), [docs/screens.md](docs/screens.md) and [docs/notifications.md](docs/notifications.md), at the parts the issue names.
-- **Building:** claim a `build` issue, make branch `build/<key>-<slug>`, run `/implement #N`, then open a pull request with `Closes #N`. `implement-spec` and `triage` are deliberately not installed.
+- **Building:** claim a `build` issue, make branch `build/<key>-<slug>`, run `/implement #N`, then open a pull request with `Closes #N`. A change someone can see gets proof from `/check-app` (`pnpm app`, local only); every screen is listed in [docs/feature-map.md](docs/feature-map.md). `implement-spec` and `triage` are deliberately not installed.
 
 ## Collaboration
 

@@ -13,3 +13,7 @@ coverage/
 # Playwright
 test-results/
 playwright-report/
+
+# Local app tool (pnpm app): sessions, logs, and proof screenshots and videos
+.app/
+proof/

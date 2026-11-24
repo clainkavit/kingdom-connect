@@ -258,7 +258,18 @@ describe("ForgotPasswordForm (S04a)", () => {
     type("Type the new password again", "newpass13");
     await press("Save password");
     expect(screen.getByText("The two passwords are not the same.")).toBeTruthy();
+    expect(screen.getByLabelText("Type the new password again").getAttribute("aria-invalid")).toBe(
+      "true",
+    );
+    expect(screen.queryByRole("alert")).toBeNull();
     expect(saveNewPassword).not.toHaveBeenCalled();
+
+    type("Type the new password again", "newpass1");
+    expect(screen.queryByText("The two passwords are not the same.")).toBeNull();
+    expect(screen.getByRole("button", { name: "Show password: New password" })).toBeTruthy();
+    expect(
+      screen.getByRole("button", { name: "Show password: Type the new password again" }),
+    ).toBeTruthy();
 
     type("Type the new password again", "newpass12");
     await press("Save password");

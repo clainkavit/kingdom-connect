@@ -1001,6 +1001,10 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 - Opportunities list cards (S16, canvas board Opp-List): a "Verified business" chip beside the poster when the poster is a Verified Business (Level 2 or 3) and their profile is visible to the viewer, and, on a post Scan for Opportunities would list for that member, the same top two reasons Scan gives, worded the same. The list and Scan use one scoring function. Not built by decision: the match count on the Scan button.
 - The joined-hands photo on the sign-in screens is cleared for use (checked by the collaborator), and the Kiswahili text added up to V39 is reviewed.
 
+**Decided on 24 November 2026 (Champion, [#364](https://github.com/clainkavit/kingdom-connect/issues/364))**
+- Every screen that sets a new password asks for it twice: sign-up (S02), forgot password (S04a), the staff invite set-password page and Staff new password (A20). The two are checked when Save is pressed. If they differ, "The two passwords are not the same." shows under the second box, which turns red, and it clears as soon as either box changes.
+- Every password box, log-in ones included, has an eye button that shows and hides what is typed.
+
 **Open.** Every open question is a ticket on the [wayfinder map](https://github.com/clainkavit/kingdom-connect/issues/1) and is linked where it applies above.
 
 **Outside this spec**
@@ -1077,6 +1081,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | 15 Nov 2026 | Let Kingdom Connect pick: 3 days to answer an ask; suggestions ranked by a points table (#289) | 10 |
 | 18 Nov 2026 | Opportunities list cards show a Verified business chip and Scan's two reasons on posts Scan would list | 10, 18 |
 | 18 Nov 2026 | Staff forgot password approved by a Super Administrator, with Unlock for locked staff accounts (R30); Supabase Auth's own recovery emails carry no link | 18 |
+| 24 Nov 2026 | New passwords typed twice on every screen that sets one, and a show/hide eye on every password box (R31) | 18 |
 
 ## Appendix B: Source documents
 

@@ -560,6 +560,9 @@ export const en = {
     "If the username is right, we sent a 6-digit code to its email. It works for 10 minutes.",
   repeatPassword: "Type the new password again",
   passwordsDiffer: "The two passwords are not the same.",
+  showPassword: "Show password",
+  hidePassword: "Hide password",
+  repeatSignUpPassword: "Type the password again",
   savePassword: "Save password",
   passwordChanged:
     "Your password was changed. You are signed out on every other device. Log in with the new password and the code we email you.",

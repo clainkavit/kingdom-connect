@@ -97,7 +97,12 @@ export function StaffNewPassword({ api }: { api: NewPasswordApi }) {
   const [password, setPassword] = useState("");
   const [again, setAgain] = useState("");
   const [problem, setProblem] = useState<string | null>(null);
+  const [mismatch, setMismatch] = useState(false);
   const [busy, setBusy] = useState(false);
+  const edit = (set: (v: string) => void) => (v: string) => {
+    set(v);
+    setMismatch(false);
+  };
 
   useEffect(() => {
     let live = true;
@@ -115,7 +120,10 @@ export function StaffNewPassword({ api }: { api: NewPasswordApi }) {
   const save = async (e: React.FormEvent) => {
     e.preventDefault();
     if (passwordProblem(password)) return setProblem(t.problemPassword);
-    if (password !== again) return setProblem(t.passwordsDiffer);
+    if (password !== again) {
+      setProblem(null);
+      return setMismatch(true);
+    }
     setBusy(true);
     const result = await api.save(password);
     setBusy(false);
@@ -159,7 +167,7 @@ export function StaffNewPassword({ api }: { api: NewPasswordApi }) {
         id="new-password"
         label={t.newPassword}
         value={password}
-        onChange={setPassword}
+        onChange={edit(setPassword)}
         type="password"
         placeholder={t.passwordHint}
         autoComplete="new-password"
@@ -168,10 +176,11 @@ export function StaffNewPassword({ api }: { api: NewPasswordApi }) {
         id="confirm-password"
         label={t.confirmNewPassword}
         value={again}
-        onChange={setAgain}
+        onChange={edit(setAgain)}
         type="password"
         placeholder={t.repeatPassword}
         autoComplete="new-password"
+        problem={mismatch ? t.passwordsDiffer : null}
       />
       <Message text={problem} />
       <button type="submit" disabled={busy || !password || !again} className={primaryButton}>

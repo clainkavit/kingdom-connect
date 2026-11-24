@@ -192,6 +192,7 @@ export function ForgotPasswordForm({
   const [code, setCode] = useState("");
   const [password, setPassword] = useState("");
   const [repeat, setRepeat] = useState("");
+  const [mismatch, setMismatch] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const resend = useCountdown(0);
@@ -224,7 +225,10 @@ export function ForgotPasswordForm({
   const save = async () => {
     if (!password || !repeat) return setMessage(t.needNewPassword);
     if (passwordProblem(password)) return setMessage(t.problemPassword);
-    if (password !== repeat) return setMessage(t.passwordsDiffer);
+    if (password !== repeat) {
+      setMessage(null);
+      return setMismatch(true);
+    }
     setBusy(true);
     const result = await client.saveNewPassword(resetId, code, password);
     setBusy(false);
@@ -251,11 +255,23 @@ export function ForgotPasswordForm({
         <Field
           label={t.newPassword}
           value={password}
-          onChange={setPassword}
+          onChange={(v) => {
+            setPassword(v);
+            setMismatch(false);
+          }}
           secure
           hint={t.passwordHint}
         />
-        <Field label={t.repeatPassword} value={repeat} onChange={setRepeat} secure />
+        <Field
+          label={t.repeatPassword}
+          value={repeat}
+          onChange={(v) => {
+            setRepeat(v);
+            setMismatch(false);
+          }}
+          secure
+          problem={mismatch ? t.passwordsDiffer : null}
+        />
         <Message text={message} />
         <Button label={t.savePassword} onPress={save} disabled={busy} />
       </View>

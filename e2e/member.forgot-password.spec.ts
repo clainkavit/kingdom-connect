@@ -28,7 +28,7 @@ test("a Member who forgot the password sets a new one with the email code (REG-6
 
   const newPassword = "new-pass-2026";
   await page.getByLabel("New password", { exact: true }).fill(newPassword);
-  await page.getByLabel("Type the new password again").fill(newPassword);
+  await page.getByLabel("Type the new password again", { exact: true }).fill(newPassword);
   const savedAfter = new Date();
   await page.getByRole("button", { name: "Save password" }).click();
   await expect(page.getByText(/Your password was changed\./)).toBeVisible();

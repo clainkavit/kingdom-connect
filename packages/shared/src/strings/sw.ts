@@ -571,6 +571,9 @@ export const sw: Strings = {
     "Kama jina la mtumiaji ni sahihi, tumetuma msimbo wa tarakimu 6 kwenye barua pepe yake. Unafanya kazi kwa dakika 10.",
   repeatPassword: "Andika nenosiri jipya tena",
   passwordsDiffer: "Manenosiri mawili hayafanani.",
+  showPassword: "Onyesha nenosiri",
+  hidePassword: "Ficha nenosiri",
+  repeatSignUpPassword: "Andika nenosiri tena",
   savePassword: "Hifadhi nenosiri",
   passwordChanged:
     "Nenosiri lako limebadilishwa. Umetolewa kwenye vifaa vingine vyote. Ingia kwa nenosiri jipya na msimbo tutakaokutumia kwa barua pepe.",

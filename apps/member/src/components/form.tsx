@@ -1,3 +1,5 @@
+import Eye from "lucide-react-native/icons/eye";
+import EyeOff from "lucide-react-native/icons/eye-off";
 import Lock from "lucide-react-native/icons/lock";
 import type { FieldProblem, Strings } from "@kingdom-connect/shared";
 import { useEffect, useRef, useState } from "react";
@@ -42,22 +44,43 @@ export function Field(props: {
   multiline?: boolean;
   placeholder?: string;
 }) {
+  const { t } = useLanguage();
+  const palette = usePalette();
+  const [shown, setShown] = useState(false);
+  const input = (
+    <TextInput
+      aria-label={props.label}
+      aria-invalid={Boolean(props.problem)}
+      value={props.value}
+      onChangeText={props.onChange}
+      secureTextEntry={props.secure && !shown}
+      autoCapitalize="none"
+      autoCorrect={false}
+      keyboardType={props.keyboardType ?? "default"}
+      multiline={props.multiline}
+      placeholder={props.placeholder}
+      className={`border bg-surface font-figtree text-[15px] text-ink ${props.problem ? "border-bad" : "border-field"} ${props.multiline ? "min-h-[96px] rounded-[18px] px-4 py-3" : `min-h-[52px] rounded-full pl-5 ${props.secure ? "pr-14" : "pr-5"}`}`}
+    />
+  );
+  const Icon = shown ? EyeOff : Eye;
   return (
     <View className="gap-1.5">
       <Label text={props.label} />
-      <TextInput
-        aria-label={props.label}
-        aria-invalid={Boolean(props.problem)}
-        value={props.value}
-        onChangeText={props.onChange}
-        secureTextEntry={props.secure}
-        autoCapitalize="none"
-        autoCorrect={false}
-        keyboardType={props.keyboardType ?? "default"}
-        multiline={props.multiline}
-        placeholder={props.placeholder}
-        className={`border bg-surface font-figtree text-[15px] text-ink ${props.problem ? "border-bad" : "border-field"} ${props.multiline ? "min-h-[96px] rounded-[18px] px-4 py-3" : "min-h-[52px] rounded-full px-5"}`}
-      />
+      {props.secure ? (
+        <View>
+          {input}
+          <Pressable
+            role="button"
+            aria-label={`${shown ? t.hidePassword : t.showPassword}: ${props.label}`}
+            onPress={() => setShown(!shown)}
+            className="absolute top-0 right-1 bottom-0 w-12 items-center justify-center rounded-full active:opacity-60"
+          >
+            <Icon size={20} color={palette.ink2} />
+          </Pressable>
+        </View>
+      ) : (
+        input
+      )}
       {props.hint && !props.problem ? (
         <Text className="font-figtree text-[13px] text-ink-2">{props.hint}</Text>
       ) : null}

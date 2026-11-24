@@ -16,6 +16,7 @@ async function signUp(page: Page, username: string) {
     ["Email", email],
     ["Phone", "0712 345 678"],
     ["Password", "kingdom-test-1"],
+    ["Type the password again", "kingdom-test-1"],
   ] as const;
   await expect(async () => {
     for (const [label, value] of fields) {

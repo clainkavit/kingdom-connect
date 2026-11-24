@@ -70,7 +70,12 @@ describe("Staff password reset (R30)", () => {
     type("Confirm new password", "longer-pass-2");
     await click("Save new password");
     expect(screen.getByRole("alert").textContent).toBe("The two passwords are not the same.");
+    expect(screen.getByLabelText("Confirm new password").getAttribute("aria-invalid")).toBe("true");
     expect(save).not.toHaveBeenCalled();
+    expect(screen.getByRole("button", { name: "Show password: New password" })).toBeTruthy();
+    expect(
+      screen.getByRole("button", { name: "Show password: Confirm new password" }),
+    ).toBeTruthy();
 
     type("Confirm new password", "longer-pass-1");
     await click("Save new password");

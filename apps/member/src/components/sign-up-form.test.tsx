@@ -39,6 +39,7 @@ const fillAll = () => {
   fill("Email", "test.user@example.test");
   fill("Phone", "0712 345 678");
   fill("Password", "secret123");
+  fill("Type the password again", "secret123");
 };
 
 const create = () =>
@@ -61,7 +62,33 @@ describe("SignUpForm (S02)", () => {
     expect(
       screen.getByText("Enter a Tanzanian number, for example +255 712 345 678."),
     ).toBeTruthy();
-    expect(screen.getAllByText("This is needed.")).toHaveLength(3);
+    expect(screen.getAllByText("This is needed.")).toHaveLength(4);
+  });
+
+  it("asks for the password twice and sends nothing until the two match", async () => {
+    const signUp = vi.fn().mockResolvedValue({ kind: "created" });
+    render(<SignUpForm {...clients(signUp)} onCodeSent={vi.fn()} />);
+    fillAll();
+    fill("Type the password again", "secret124");
+    await create();
+    expect(signUp).not.toHaveBeenCalled();
+    expect(screen.getByText("The two passwords are not the same.")).toBeTruthy();
+    expect(screen.getByLabelText("Type the password again").getAttribute("aria-invalid")).toBe(
+      "true",
+    );
+
+    fill("Password", "secret124");
+    expect(screen.queryByText("The two passwords are not the same.")).toBeNull();
+    await create();
+    expect(signUp).toHaveBeenCalledWith(expect.objectContaining({ password: "secret124" }));
+  });
+
+  it("lets both password boxes be shown", () => {
+    render(<SignUpForm {...clients(vi.fn())} onCodeSent={vi.fn()} />);
+    expect(screen.getByRole("button", { name: "Show password: Password" })).toBeTruthy();
+    expect(
+      screen.getByRole("button", { name: "Show password: Type the password again" }),
+    ).toBeTruthy();
   });
 
   it("creates the account, then signs straight in to the email code", async () => {

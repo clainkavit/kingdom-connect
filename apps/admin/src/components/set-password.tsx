@@ -19,7 +19,13 @@ export function SetPassword({ api, tokenHash }: { api: SetPasswordApi; tokenHash
   const { t } = useLanguage();
   const [stage, setStage] = useState<Stage>(tokenHash ? "checking" : "invalid");
   const [password, setPassword] = useState("");
+  const [again, setAgain] = useState("");
   const [problem, setProblem] = useState<string | null>(null);
+  const [mismatch, setMismatch] = useState(false);
+  const edit = (set: (v: string) => void) => (v: string) => {
+    set(v);
+    setMismatch(false);
+  };
 
   useEffect(() => {
     if (!tokenHash) return;
@@ -32,6 +38,8 @@ export function SetPassword({ api, tokenHash }: { api: SetPasswordApi; tokenHash
 
   const save = async () => {
     if (passwordProblem(password)) return setProblem(t.problemPassword);
+    setProblem(null);
+    if (password !== again) return setMismatch(true);
     const ok = await api.setPassword(password);
     if (ok) setStage("done");
     else setProblem(t.saveFailed);
@@ -67,8 +75,20 @@ export function SetPassword({ api, tokenHash }: { api: SetPasswordApi; tokenHash
         id="new-password"
         label={t.newPassword}
         value={password}
-        onChange={setPassword}
+        onChange={edit(setPassword)}
         type="password"
+        placeholder={t.passwordHint}
+        autoComplete="new-password"
+      />
+      <Field
+        id="confirm-password"
+        label={t.confirmNewPassword}
+        value={again}
+        onChange={edit(setAgain)}
+        type="password"
+        placeholder={t.repeatPassword}
+        autoComplete="new-password"
+        problem={mismatch ? t.passwordsDiffer : null}
       />
       {problem ? (
         <p role="alert" className="text-sm text-bad-text">

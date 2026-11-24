@@ -16,17 +16,58 @@ async function show(api: SetPasswordApi, tokenHash: string | null = "hash") {
   });
 }
 
+const type = (label: string, value: string) =>
+  fireEvent.change(screen.getByLabelText(label), { target: { value } });
+
+const save = () =>
+  act(async () => fireEvent.click(screen.getByRole("button", { name: "Set password" })));
+
 describe("SetPassword (staff invite)", () => {
+  it("asks for the password twice and saves nothing until the two match", async () => {
+    const api = fakeApi();
+    await show(api);
+    type("New password", "staff-pass-1");
+    type("Confirm new password", "staff-pass-2");
+    await save();
+    expect(api.setPassword).not.toHaveBeenCalled();
+    const again = screen.getByLabelText("Confirm new password");
+    expect(again.getAttribute("aria-invalid")).toBe("true");
+    const problem = document.getElementById(again.getAttribute("aria-describedby") ?? "");
+    expect(problem?.textContent).toBe("The two passwords are not the same.");
+
+    type("New password", "staff-pass-2");
+    expect(screen.queryByText("The two passwords are not the same.")).toBeNull();
+    expect(again.getAttribute("aria-invalid")).not.toBe("true");
+    await save();
+    expect(api.setPassword).toHaveBeenCalledWith("staff-pass-2");
+  });
+
+  it("shows and hides each password with its own eye button", async () => {
+    await show(fakeApi());
+    const box = screen.getByLabelText("New password") as HTMLInputElement;
+    const again = screen.getByLabelText("Confirm new password") as HTMLInputElement;
+    expect(box.type).toBe("password");
+    fireEvent.click(screen.getByRole("button", { name: "Show password: New password" }));
+    expect(box.type).toBe("text");
+    expect(again.type).toBe("password");
+    fireEvent.click(screen.getByRole("button", { name: "Hide password: New password" }));
+    expect(box.type).toBe("password");
+    fireEvent.click(screen.getByRole("button", { name: "Show password: Confirm new password" }));
+    expect(again.type).toBe("text");
+  });
+
   it("opens the invite link, then sets a password that meets the rule", async () => {
     const api = fakeApi();
     await show(api);
     expect(api.verify).toHaveBeenCalledWith("hash");
-    fireEvent.change(screen.getByLabelText("New password"), { target: { value: "short" } });
-    await act(async () => fireEvent.click(screen.getByRole("button", { name: "Set password" })));
+    type("New password", "short");
+    type("Confirm new password", "short");
+    await save();
     expect(api.setPassword).not.toHaveBeenCalled();
 
-    fireEvent.change(screen.getByLabelText("New password"), { target: { value: "staff-pass-1" } });
-    await act(async () => fireEvent.click(screen.getByRole("button", { name: "Set password" })));
+    type("New password", "staff-pass-1");
+    type("Confirm new password", "staff-pass-1");
+    await save();
     expect(api.setPassword).toHaveBeenCalledWith("staff-pass-1");
     expect(screen.getByText("Your password is set. Log in to continue.")).toBeTruthy();
     expect(screen.getByRole("link", { name: "Go to log in" }).getAttribute("href")).toBe("/login");

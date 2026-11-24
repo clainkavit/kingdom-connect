@@ -26,6 +26,8 @@ export function SignUpForm({
     phone: "",
     password: "",
   });
+  const [repeat, setRepeat] = useState("");
+  const [repeatProblem, setRepeatProblem] = useState<string | null>(null);
   const [problems, setProblems] = useState<ReturnType<typeof signUpProblems>>({});
   const [message, setMessage] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -34,9 +36,15 @@ export function SignUpForm({
 
   const submit = async () => {
     const found = signUpProblems(input);
+    const again = !repeat
+      ? t.problemRequired
+      : repeat !== input.password
+        ? t.passwordsDiffer
+        : null;
     setProblems(found);
+    setRepeatProblem(again);
     setMessage(null);
-    if (Object.keys(found).length) return;
+    if (Object.keys(found).length || again) return;
     setBusy(true);
     const result = await registration.signUp({ ...input, language });
     if (result.kind === "created") {
@@ -90,10 +98,23 @@ export function SignUpForm({
       <Field
         label={t.password}
         value={input.password}
-        onChange={set("password")}
+        onChange={(value) => {
+          set("password")(value);
+          setRepeatProblem(null);
+        }}
         secure
         hint={t.passwordHint}
         problem={problemText(t, problems.password)}
+      />
+      <Field
+        label={t.repeatSignUpPassword}
+        value={repeat}
+        onChange={(value) => {
+          setRepeat(value);
+          setRepeatProblem(null);
+        }}
+        secure
+        problem={repeatProblem}
       />
       <Message text={message} />
       <Button label={t.createAccount} onPress={submit} disabled={busy} />

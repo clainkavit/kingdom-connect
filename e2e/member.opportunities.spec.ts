@@ -71,6 +71,7 @@ test("an Administrator posts an opportunity from A15 and it publishes at once (O
   const title = `Admin partnership ${stamp}`;
   await signInToAdmin(page, await createStaff(`Admin Poster ${stamp}`));
   await page.goto(`${ADMIN_URL}/post`);
+  await expect(page.getByLabel("Type")).toBeVisible();
   await expect(page.getByLabel("No fee will be charged to applicants at any stage")).toHaveCount(0);
   await page.getByLabel("Type").selectOption("partnership");
   await page.getByLabel("Title").fill(title);

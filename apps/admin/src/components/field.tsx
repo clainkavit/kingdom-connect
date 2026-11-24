@@ -33,7 +33,7 @@ function PasswordInput(props: {
           onChange={(e) => props.onChange(e.target.value)}
           aria-invalid={props.problem ? true : undefined}
           aria-describedby={props.problem ? problemId : undefined}
-          className={`min-h-[52px] w-full rounded-full ${inputClass} pr-14 ${props.problem ? "border-destructive" : ""}`}
+          className={`min-h-[52px] w-full rounded-full ${inputClass} pr-14 aria-invalid:border-destructive`}
         />
         <button
           type="button"

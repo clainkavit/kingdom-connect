@@ -65,3 +65,19 @@ test("a session made straight at Supabase Auth cannot get an email code", async 
   const noCode = await request.post(fn("resend-otp"), { headers: headers(memberToken), data: {} });
   expect(await noCode.json()).toEqual({ error: "no_code" });
 });
+
+test("a session without the email code cannot open idea files, even for an Administrator", async ({
+  request,
+}) => {
+  const direct = await request.post(`${LOCAL_SUPABASE.url}/auth/v1/token?grant_type=password`, {
+    headers: headers(),
+    data: { email: "test.admin@example.test", password: TEST_PASSWORD },
+  });
+  const { access_token } = await direct.json();
+  const open = await request.post(fn("idea-file"), {
+    headers: headers(access_token),
+    data: { fileId: crypto.randomUUID() },
+  });
+  expect(open.status()).toBe(401);
+  expect(await open.json()).toEqual({ error: "not_signed_in" });
+});

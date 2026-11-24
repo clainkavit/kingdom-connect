@@ -64,7 +64,9 @@ test("a poster marks hired, the member confirms, both rate, and references show 
   await page.getByRole("button", { name: "Yes, I did this work" }).click();
   await rate(page, `Work Poster ${stamp}`, "Clear brief and paid on time.");
 
+  const hidden = posterPage.waitForResponse((r) => r.url().includes("/rpc/work_references"));
   await posterPage.goto(`/profile/${worker.id}`);
+  expect(await (await hidden).json()).toEqual([]);
   await expect(posterPage.getByRole("heading", { name: "Work references" })).toHaveCount(0);
   await rate(posterPage, `Work Tailor ${stamp}`, "Every uniform was ready a day early.");
 

@@ -53,12 +53,12 @@ test("an Administrator cannot change the cap, create staff or see the platform s
 }) => {
   await signInToAdmin(page);
   await page.goto(`${ADMIN_URL}/settings`);
-  await expect(page.getByRole("checkbox", { name: "Limit sign-ups each day" })).toHaveCount(0);
-  await expect(page.getByRole("heading", { name: "Matching weights" })).toHaveCount(0);
-  await expect(page.getByRole("heading", { name: "Platform" })).toHaveCount(0);
   await expect(
     page.getByText("Only Super Administrators can change these settings."),
   ).toBeVisible();
+  await expect(page.getByRole("checkbox", { name: "Limit sign-ups each day" })).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "Matching weights" })).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "Platform" })).toHaveCount(0);
 
   const token = await page.evaluate(() => {
     const key = Object.keys(localStorage).find((k) => k.endsWith("-auth-token"))!;

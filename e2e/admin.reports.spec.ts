@@ -49,5 +49,8 @@ test("an Administrator reads a reported conversation and suspends the account (S
   expect(await auditActions(report.id)).toContain("reports.update");
 
   await page.goto(`${ADMIN_URL}/reports`);
+  await expect(
+    page.locator('main a[href^="/reports/"]').first().or(page.getByText("No open reports")),
+  ).toBeVisible();
   await expect(page.getByRole("link", { name: new RegExp(report.reference) })).toHaveCount(0);
 });

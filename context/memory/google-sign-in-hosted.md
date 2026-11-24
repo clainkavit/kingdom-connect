@@ -12,7 +12,7 @@ metadata:
 - **Supabase.** The Google provider is enabled in the dashboard (Authentication, Sign In / Providers, Google) with the client ID and secret, set up by Champion. The secret is not in `.env.hosted` or git.
 - **Member site.** `EXPO_PUBLIC_GOOGLE_SIGN_IN=1` on the Vercel project `kingdom-connect-member`, production only, added 24 Nov. It is read at build time, so changing it needs a rebuild.
 - **Legal texts.** Privacy 0.3 (mentions Google), Terms 0.2 and NDA 0.2 were loaded hosted on 24 Nov with `pnpm legal:load`, so people who get in with Google accept a notice that names it. 0.3 still has `[TO CONFIRM]` gaps and no lawyer review. Both Super Administrators accept the new texts at their next sign-in.
-- **Checked 24 Nov:** the live sign-up page shows Continue with Google and it opens Google's account chooser with `redirect_to` the member site. The full sign-in, S01a and a `signed_in` row were not yet tried hosted.
+- **Checked 24 Nov:** the live sign-up page shows Continue with Google and it opens Google's account chooser with `redirect_to` the member site. Champion then signed in with a non-staff Google account: S01a made one `signed_in` member with only a Google identity, accepted Terms 0.2 and Privacy 0.3, and no second account.
 - **Test with a Google account that is not a staff email.** Supabase links a Google identity to the account with the same confirmed email, so the two Super Administrator Gmail addresses would sign in to the staff accounts and still need the email code.
 
 Related: [[hosted-test-environment]], [[phone-sign-in-setup]].

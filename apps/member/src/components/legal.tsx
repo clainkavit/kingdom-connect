@@ -131,7 +131,7 @@ export function AcceptTexts({
       })}
       <Text className="font-figtree text-xs text-ink-2">{t.englishGoverns}</Text>
       {failed || (askedEarly && !allTicked) ? (
-        <View role="alert" className="rounded-full bg-bad-soft px-3 py-2.5">
+        <View role="alert" className="rounded-[18px] bg-bad-soft px-3 py-2.5">
           <Text className="font-figtree text-[13px] text-bad-text">
             {failed ? t.network : t.needTicks}
           </Text>

@@ -13,13 +13,26 @@ export function json(body: unknown, status = 200): Response {
   });
 }
 
-export function sessionIdOf(accessToken: string): string {
+function claimsOf(accessToken: string): Record<string, unknown> {
   const part = (accessToken.split(".")[1] ?? "").replace(/-/g, "+").replace(/_/g, "/");
   const padded = part + "=".repeat((4 - (part.length % 4)) % 4);
-  return JSON.parse(atob(padded)).session_id as string;
+  return JSON.parse(atob(padded));
 }
 
-export type SignedIn = { userId: string; sessionId: string };
+export function sessionIdOf(accessToken: string): string {
+  return claimsOf(accessToken).session_id as string;
+}
+
+/** The sign-in methods (the amr claim) of a token, such as "password", "otp" or "oauth". */
+export function methodsOf(accessToken: string): string[] {
+  const amr = claimsOf(accessToken).amr;
+  if (!Array.isArray(amr)) return [];
+  return amr
+    .map((entry) => (entry as { method?: unknown } | null)?.method)
+    .filter((method): method is string => typeof method === "string");
+}
+
+export type SignedIn = { userId: string; sessionId: string; methods: string[] };
 
 /** The caller's verified user and session, or null when the token is missing or not valid. */
 export async function requireUser(req: Request): Promise<SignedIn | null> {
@@ -28,7 +41,7 @@ export async function requireUser(req: Request): Promise<SignedIn | null> {
   const token = header.slice(7);
   const { data } = await serviceClient.auth.getUser(token);
   if (!data.user) return null;
-  return { userId: data.user.id, sessionId: sessionIdOf(token) };
+  return { userId: data.user.id, sessionId: sessionIdOf(token), methods: methodsOf(token) };
 }
 
 /** The role claim of a token the gateway has already verified (verify_jwt). */

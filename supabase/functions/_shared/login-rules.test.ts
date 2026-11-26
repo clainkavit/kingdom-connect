@@ -5,6 +5,7 @@ import {
   loginName,
   CODE_MINUTES,
   skipsCode,
+  passedSecondStep,
   LOCK_AFTER_FAILURES,
   LOCK_MINUTES,
   generateCode,
@@ -131,5 +132,36 @@ describe("loginName (12 Nov 2026)", () => {
     expect(lockKey(phone, "u1")).toBe("member:u1");
     expect(lockKey(loginName("neema"), "u1")).toBe("member:u1");
     expect(lockKey(phone, null)).toBe("phone:+255712345678");
+  });
+});
+
+describe("passedSecondStep (R26, REG-7)", () => {
+  it("counts the email code for anyone", () => {
+    expect(passedSecondStep({ hasEmailCode: true, methods: ["password"], status: "pending" })).toBe(
+      true,
+    );
+    expect(passedSecondStep({ hasEmailCode: true, methods: ["password"], status: "staff" })).toBe(
+      true,
+    );
+  });
+
+  it("counts Google and the other providers as the second step for a member or someone new", () => {
+    for (const status of ["signed_in", "pending", "approved", "rejected", "none"])
+      expect(passedSecondStep({ hasEmailCode: false, methods: ["oauth"], status })).toBe(true);
+  });
+
+  it("never lets staff skip the email code with a provider", () => {
+    for (const status of ["staff", "inactive_staff"])
+      expect(passedSecondStep({ hasEmailCode: false, methods: ["oauth"], status })).toBe(false);
+  });
+
+  it("needs the code after a password or a magic link", () => {
+    expect(
+      passedSecondStep({ hasEmailCode: false, methods: ["password"], status: "approved" }),
+    ).toBe(false);
+    expect(passedSecondStep({ hasEmailCode: false, methods: ["otp"], status: "signed_in" })).toBe(
+      false,
+    );
+    expect(passedSecondStep({ hasEmailCode: false, methods: [], status: "signed_in" })).toBe(false);
   });
 });

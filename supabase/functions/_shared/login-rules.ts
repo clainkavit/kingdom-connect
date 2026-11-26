@@ -88,3 +88,14 @@ export function loginName(typed: string): LoginName {
 /** The lock key: one per account, so a username, email and phone share the 5 tries; per typed name otherwise. */
 export const lockKey = (name: LoginName, accountId: string | null) =>
   accountId ? `member:${accountId}` : `${name.kind}:${name.value}`;
+
+/** Whether a session has passed the second step: the email code, or for anyone but staff a provider sign-in (R26). */
+export function passedSecondStep(session: {
+  hasEmailCode: boolean;
+  methods: readonly string[];
+  status: AccountStatus;
+}): boolean {
+  if (session.hasEmailCode) return true;
+  const staff = session.status === "staff" || session.status === "inactive_staff";
+  return !staff && session.methods.includes("oauth");
+}

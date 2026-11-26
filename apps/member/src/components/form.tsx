@@ -191,7 +191,7 @@ export function Message({ text, tone = "bad" }: { text: string | null; tone?: "b
   return (
     <View
       role="alert"
-      className={`rounded-full px-3 py-2.5 ${tone === "info" ? "bg-blue-soft" : "bg-bad-soft"}`}
+      className={`rounded-[18px] px-3 py-2.5 ${tone === "info" ? "bg-blue-soft" : "bg-bad-soft"}`}
     >
       <Text
         className={`font-figtree text-[13px] leading-[19px] ${tone === "info" ? "text-info-text" : "text-bad-text"}`}
@@ -318,7 +318,7 @@ export function ChoiceList({
       <Reveal
         show={open}
         from="above"
-        className="gap-2 rounded-full border border-line-2 bg-surface p-2"
+        className="gap-2 rounded-[18px] border border-line-2 bg-surface p-2"
       >
         <TextInput
           aria-label={`${t.searchList}: ${label}`}

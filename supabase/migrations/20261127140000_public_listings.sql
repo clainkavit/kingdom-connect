@@ -63,7 +63,12 @@ create policy "staff read" on public.public_listing_sources for select to authen
   using ((select access.is_staff()));
 create policy "staff read" on public.public_listings for select to authenticated
   using ((select access.is_staff()));
-revoke insert, update, delete on public.public_listing_sources, public.public_listings from anon, authenticated;
+revoke all on public.public_listing_sources, public.public_listings from anon, authenticated;
+grant select on public.public_listing_sources, public.public_listings to authenticated;
+create policy "base rule" on public.public_listing_sources as restrictive for all to authenticated
+  using ((select access.is_staff())) with check ((select access.is_staff()));
+create policy "base rule" on public.public_listings as restrictive for all to authenticated
+  using ((select access.is_staff())) with check ((select access.is_staff()));
 
 -- The import (an Edge Function on the service role) saves one listing. A listing seen again keeps the staff's
 -- choices; a waiting one takes the source's newer text and dates.

@@ -339,14 +339,16 @@ language sql immutable set search_path = '' as $$
               or target_type = 'public_listing_sources');
 $$;
 
--- Daily at 05:30 Tanzania time (02:30 UTC).
-select cron.schedule('import-public-listings', '30 2 * * *', $job$
+-- Daily from 05:30 Tanzania time (02:30 UTC), one source every five minutes so each call stays short.
+select cron.schedule('import-public-listings-' || src.key, src.at, format($job$
   select net.http_post(
     url := (select decrypted_secret from vault.decrypted_secrets where name = 'functions_url')
       || '/import-public-listings',
     headers := jsonb_build_object(
       'Content-Type', 'application/json',
       'Authorization', 'Bearer ' || (select decrypted_secret from vault.decrypted_secrets where name = 'service_role_key')),
-    body := '{}'::jsonb,
-    timeout_milliseconds := 120000)
-$job$);
+    body := jsonb_build_object('source', %L),
+    timeout_milliseconds := 150000)
+$job$, src.key))
+from (values ('nest', '30 2 * * *'), ('ajira', '35 2 * * *'), ('crdb', '40 2 * * *'),
+             ('ajira_adverts', '45 2 * * *')) as src (key, at);

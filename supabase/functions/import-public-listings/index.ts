@@ -27,6 +27,7 @@ import {
 
 const MAX_NEST_PAGES = 10;
 const MAX_ADVERTS_PER_RUN = 4;
+const MAX_TRANSLATIONS_PER_RUN = 60;
 const HEADERS = {
   "Content-Type": "application/json",
   "User-Agent": "KingdomConnect-PublicListings/1.0",
@@ -45,15 +46,22 @@ async function getJson(url: string, body?: unknown): Promise<unknown> {
 
 const geminiKey = () => Deno.env.get("GEMINI_API_KEY");
 
+/** One Gemini call. A busy or rate-limited answer is tried once more after a short wait. */
 async function gemini(body: unknown): Promise<unknown> {
-  const res = await fetch(geminiUrl(Deno.env.get("GEMINI_MODEL") ?? GEMINI_MODEL), {
-    method: "POST",
-    headers: { "Content-Type": "application/json", "x-goog-api-key": geminiKey()! },
-    body: JSON.stringify(body),
-    signal: AbortSignal.timeout(90_000),
-  });
-  if (!res.ok) throw new Error(`Gemini answered ${res.status}`);
-  return res.json();
+  for (let attempt = 1; ; attempt++) {
+    const res = await fetch(geminiUrl(Deno.env.get("GEMINI_MODEL") ?? GEMINI_MODEL), {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "x-goog-api-key": geminiKey()! },
+      body: JSON.stringify(body),
+      signal: AbortSignal.timeout(90_000),
+    });
+    if (res.ok) return res.json();
+    if (attempt < 2 && [429, 500, 503].includes(res.status)) {
+      await new Promise((done) => setTimeout(done, 5_000));
+      continue;
+    }
+    throw new Error(`Gemini answered ${res.status}`);
+  }
 }
 
 type Read = { listings: Listing[]; seen: string[]; markGone: boolean };
@@ -67,13 +75,26 @@ async function readNestAll(): Promise<Read> {
     read.entities.forEach((e) => entities.add(e));
     if (!read.hasNext) break;
   }
+  const [known] = await sql`select private.public_listing_ids('nest', '') as ids`;
+  const old = new Set((known?.ids ?? []) as string[]);
+  const fresh = new Set(
+    listings.filter((l) => !old.has(l.external_id)).map((l) => String(l.details.procuring_entity)),
+  );
   const places = new Map<string, { region?: string; district?: string }>();
-  for (const entity of entities) {
-    try {
-      places.set(entity, readNestEntity(await getJson(NEST_ENTITY_URL, nestEntityQuery(entity))));
-    } catch {
-      places.set(entity, {});
-    }
+  const lookups = [...entities].filter((e) => fresh.has(e));
+  for (let i = 0; i < lookups.length; i += 10) {
+    await Promise.all(
+      lookups.slice(i, i + 10).map(async (entity) => {
+        try {
+          places.set(
+            entity,
+            readNestEntity(await getJson(NEST_ENTITY_URL, nestEntityQuery(entity))),
+          );
+        } catch {
+          places.set(entity, {});
+        }
+      }),
+    );
   }
   const all = listings.map((l) => ({ ...l, ...places.get(String(l.details.procuring_entity)) }));
   return { listings: all, seen: all.map((l) => l.external_id), markGone: true };
@@ -126,7 +147,7 @@ const readers: Record<string, () => Promise<Read>> = {
 /** Translate the title and summary of listings that have none yet, 20 at a time. A failed batch waits for staff. */
 async function translate(listings: Listing[]): Promise<void> {
   if (!geminiKey()) return;
-  const todo = listings.filter((l) => !l.translated_title);
+  const todo = listings.filter((l) => !l.translated_title).slice(0, MAX_TRANSLATIONS_PER_RUN);
   for (let i = 0; i < todo.length; i += 20) {
     const batch = todo.slice(i, i + 20);
     const items = batch.flatMap((l) => [
@@ -154,8 +175,10 @@ async function needsTranslation(key: string, listing: Listing): Promise<boolean>
 Deno.serve(async (req) => {
   if (roleOf(req) !== "service_role") return json({ error: "forbidden" }, 403);
 
-  const sources =
-    await sql`select key from public.public_listing_sources where active order by key`;
+  const wanted = ((await req.json().catch(() => ({}))) as { source?: string }).source ?? null;
+  const sources = await sql`
+    select key from public.public_listing_sources
+    where active and (${wanted}::text is null or key = ${wanted}) order by key`;
   const report: Record<string, { found: number; closed: number; error?: string }> = {};
 
   for (const { key } of sources as unknown as { key: string }[]) {

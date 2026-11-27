@@ -264,7 +264,7 @@ export function readAjiraAdverts(answer: unknown): Advert[] {
     }));
 }
 
-export const GEMINI_MODEL = "gemini-2.5-flash";
+export const GEMINI_MODEL = "gemini-3.1-flash-lite";
 export const geminiUrl = (model: string) =>
   `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
 

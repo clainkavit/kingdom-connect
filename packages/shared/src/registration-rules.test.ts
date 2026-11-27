@@ -8,6 +8,8 @@ import {
   verifyProgress,
   VERIFY_STEPS,
   idNumberProblem,
+  photoProblem,
+  PHOTO_MAX_BYTES,
   normalizePhone,
   type RegistrationDraft,
   signUpProblems,
@@ -172,5 +174,26 @@ describe("the Edge Functions copy (pnpm generate)", () => {
       const read = (path: string) => readFileSync(path, "utf8").replace(/\r\n/g, "\n");
       expect(read(copy.to), copy.to).toBe(read(copy.from));
     }
+  });
+});
+
+describe("photoProblem (S05 ID and photos)", () => {
+  it("accepts a JPEG, PNG or WebP up to 5 MB", () => {
+    for (const mimeType of ["image/jpeg", "image/png", "image/webp"])
+      expect(photoProblem({ mimeType, size: PHOTO_MAX_BYTES })).toBeNull();
+  });
+
+  it("refuses a type the identity store does not take, such as an iPhone HEIC or a PDF", () => {
+    expect(photoProblem({ mimeType: "image/heic", size: 1000 })).toBe("photo_type");
+    expect(photoProblem({ mimeType: "application/pdf", size: 1000 })).toBe("photo_type");
+  });
+
+  it("refuses a photo over 5 MB", () => {
+    expect(photoProblem({ mimeType: "image/jpeg", size: PHOTO_MAX_BYTES + 1 })).toBe("photo_size");
+  });
+
+  it("leaves an unknown type or size to the upload", () => {
+    expect(photoProblem({ mimeType: null, size: null })).toBeNull();
+    expect(photoProblem({})).toBeNull();
   });
 });

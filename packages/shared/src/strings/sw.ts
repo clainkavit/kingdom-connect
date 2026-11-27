@@ -701,6 +701,9 @@ export const sw: Strings = {
   choosePhoto: "Chagua picha",
   replacePhoto: "Badilisha picha",
   photoAdded: "Imeongezwa",
+  photoWrongType: "Picha hii haiwezi kutumika. Chagua picha ya JPEG au PNG.",
+  photoTooBig: "Picha hii ni kubwa mno. Chagua iliyo chini ya MB 5.",
+  photoUnreadable: "Hatukuweza kufungua picha hii. Jaribu nyingine, kama JPEG au PNG.",
   photosPrivate: "Wasimamizi pekee ndio wanaoona picha hizi. Hazionyeshwi kamwe kwa wanachama.",
   privacyContact: "Wanachama wengine wanaiona tu mkiunganishwa na ukichagua kuishiriki.",
   privacyIdNumber:

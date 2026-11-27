@@ -64,6 +64,22 @@ export function passwordProblem(password: string): FieldProblem | null {
   return password.length < 8 || !/\d/.test(password) ? "password" : null;
 }
 
+/** The types and size the identity-documents store accepts. */
+export const PHOTO_TYPES = ["image/jpeg", "image/png", "image/webp"] as const;
+export const PHOTO_MAX_BYTES = 5 * 1024 * 1024;
+export type PhotoProblem = "photo_type" | "photo_size";
+
+/** A known type or size the store would refuse; an unknown one is left to the upload. */
+export function photoProblem(photo: {
+  mimeType?: string | null;
+  size?: number | null;
+}): PhotoProblem | null {
+  if (photo.mimeType && !(PHOTO_TYPES as readonly string[]).includes(photo.mimeType))
+    return "photo_type";
+  if (photo.size && photo.size > PHOTO_MAX_BYTES) return "photo_size";
+  return null;
+}
+
 export const normalizeIdNumber = (number: string) => number.replace(/[\s-]/g, "").toUpperCase();
 
 export function idNumberProblem(type: IdType, number: string): FieldProblem | null {

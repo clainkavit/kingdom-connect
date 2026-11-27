@@ -2,6 +2,7 @@ import {
   type FieldProblem,
   type IdType,
   nextVerifyStep,
+  type PhotoProblem,
   previousVerifyStep,
   VERIFY_STEPS,
   shownStepNumber,
@@ -21,6 +22,8 @@ import { usePhone } from "./sheet";
 import { VerifyOverview, verifyStepTitles } from "./verify-overview";
 import { CategoryStep, DetailsStep, IdentityStep, PersonalStep, ReviewStep } from "./wizard-steps";
 
+export type PhotoResult = "uploaded" | "cancelled" | PhotoProblem | "unreadable" | "network";
+
 export type WizardApi = {
   saveDraft: (step: number, draft: RegistrationDraft) => Promise<void>;
   saveIdentity: (identity: {
@@ -28,7 +31,7 @@ export type WizardApi = {
     idNumber: string;
     idExpiresOn?: string;
   }) => Promise<SaveIdentityResult>;
-  pickAndUploadPhoto: (kind: "face" | "id") => Promise<boolean>;
+  pickAndUploadPhoto: (kind: "face" | "id") => Promise<PhotoResult>;
   submit: () => Promise<SubmitResult>;
   regions: () => Promise<Option[]>;
   districts: (regionId: string) => Promise<Option[]>;
@@ -114,14 +117,23 @@ export function RegistrationWizard({
     else setIdMessage(t.network);
   };
 
+  const photoMessages: Record<Exclude<PhotoResult, "uploaded" | "cancelled">, string> = {
+    photo_type: t.photoWrongType,
+    photo_size: t.photoTooBig,
+    unreadable: t.photoUnreadable,
+    network: t.network,
+  };
+
   const pickPhoto = async (kind: "face" | "id") => {
     setBusy(true);
+    setMessage(null);
     try {
-      if (await api.pickAndUploadPhoto(kind)) {
+      const result = await api.pickAndUploadPhoto(kind);
+      if (result === "uploaded") {
         const next = { ...draft, [kind === "face" ? "facePhoto" : "idPhoto"]: true };
         setDraft(next);
         await api.saveDraft(step, next);
-      }
+      } else if (result !== "cancelled") setMessage(photoMessages[result]);
     } catch {
       setMessage(t.network);
     } finally {

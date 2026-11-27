@@ -8,7 +8,7 @@ afterEach(cleanup);
 const fakeApi = (over: Partial<WizardApi> = {}): WizardApi => ({
   saveDraft: vi.fn().mockResolvedValue(undefined),
   saveIdentity: vi.fn().mockResolvedValue({ kind: "saved" }),
-  pickAndUploadPhoto: vi.fn().mockResolvedValue(true),
+  pickAndUploadPhoto: vi.fn().mockResolvedValue("uploaded"),
   submit: vi.fn().mockResolvedValue({ kind: "submitted" }),
   regions: vi.fn().mockResolvedValue([{ value: "r1", label: "Mwanza" }]),
   districts: vi.fn().mockResolvedValue([{ value: "d1", label: "Nyamagana" }]),
@@ -173,6 +173,11 @@ describe("Verify your identity (S05, R28)", () => {
     ).toBeTruthy();
   });
 
+  it("says which photos are accepted before any photo is chosen", async () => {
+    await show(4, {}, fakeApi());
+    expect(screen.getByText("Use a JPEG or PNG photo, up to 5 MB.")).toBeTruthy();
+  });
+
   it("says to choose the ID type and number when Save ID is pressed early", async () => {
     const api = fakeApi();
     await show(4, {}, api);
@@ -190,6 +195,32 @@ describe("Verify your identity (S05, R28)", () => {
     expect(api.pickAndUploadPhoto).toHaveBeenCalledWith("face");
     expect(api.saveDraft).toHaveBeenCalledWith(4, expect.objectContaining({ facePhoto: true }));
     expect(screen.getByText("Added")).toBeTruthy();
+  });
+
+  it.each([
+    ["photo_type", "This photo can't be used. Choose a JPEG or PNG photo."],
+    ["photo_size", "This photo is too big. Choose one under 5 MB."],
+    ["unreadable", "We couldn't open this photo. Try another one, such as a JPEG or PNG."],
+    ["network", "We couldn't reach the server. Check your connection and try again."],
+  ] as const)("says what went wrong when a photo comes back %s", async (result, message) => {
+    const api = fakeApi({ pickAndUploadPhoto: vi.fn().mockResolvedValue(result) });
+    await show(4, {}, api);
+    await act(async () =>
+      fireEvent.click(screen.getAllByRole("button", { name: "Choose photo" })[0]!),
+    );
+    expect(screen.getByText(message)).toBeTruthy();
+    expect(api.saveDraft).not.toHaveBeenCalledWith(4, expect.objectContaining({ facePhoto: true }));
+    expect(screen.queryByText("Added")).toBeNull();
+  });
+
+  it("says nothing when the person closes the photo picker", async () => {
+    const api = fakeApi({ pickAndUploadPhoto: vi.fn().mockResolvedValue("cancelled") });
+    await show(4, {}, api);
+    await act(async () =>
+      fireEvent.click(screen.getAllByRole("button", { name: "Choose photo" })[0]!),
+    );
+    expect(screen.queryByText(/couldn't|too big|can't be used/)).toBeNull();
+    expect(screen.queryByText("Added")).toBeNull();
   });
 
   it("goes back to an unfinished step when the server says so", async () => {

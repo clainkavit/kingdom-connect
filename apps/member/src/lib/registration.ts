@@ -1,4 +1,4 @@
-import { type Language, type RegistrationDraft } from "@kingdom-connect/shared";
+import { type Language, type PhotoProblem, type RegistrationDraft } from "@kingdom-connect/shared";
 import { supabase } from "./supabase";
 
 export type SavedDraft = { step: number; data: RegistrationDraft; submitted: boolean };
@@ -29,16 +29,26 @@ export async function accessToken(): Promise<string> {
   return data.session?.access_token ?? "";
 }
 
-/** Uploads a picked photo to the Applicant's own folder in the admin-only identity store. */
-export async function uploadPhoto(kind: "face" | "id", uri: string): Promise<void> {
+/** Uploads a photo to the Applicant's own folder in the admin-only identity store. */
+export async function uploadPhoto(
+  kind: "face" | "id",
+  blob: Blob,
+): Promise<"uploaded" | PhotoProblem | "network"> {
   const { data } = await supabase.auth.getSession();
   const memberId = data.session?.user.id;
-  if (!memberId) throw new Error("not signed in");
-  const blob = await (await fetch(uri)).blob();
+  if (!memberId) return "network";
   const { error } = await supabase.storage
     .from("identity-documents")
     .upload(`${memberId}/${kind}`, blob, { upsert: true, contentType: blob.type || "image/jpeg" });
-  if (error) throw error;
+  if (!error) return "uploaded";
+  const status = String(
+    (error as { statusCode?: unknown; status?: unknown }).statusCode ??
+      (error as { status?: unknown }).status ??
+      "",
+  );
+  if (status === "413") return "photo_size";
+  if (status === "415" || /mime/i.test(error.message)) return "photo_type";
+  return "network";
 }
 
 type NamedRow = { id: string; name_en: string; name_sw: string };

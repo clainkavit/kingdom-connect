@@ -1,0 +1,47 @@
+{
+  "data": {
+    "items": {
+      "totalPages": 70,
+      "currentPage": 1,
+      "hasNext": true,
+      "rows": [
+        {
+          "descriptionOfTheProcurement": "Supply of pipes and fittings for CBWSOs at Kwimba District in Mwanza Region",
+          "entityNumber": "FA/2026/2027/61162/TR140/015/G/02",
+          "entityType": "FRAMEWORK",
+          "entityUuid": "6300da6b-1936-492b-9aa1-c5bcd56157d1",
+          "invitationDate": "2026-11-27T14:00",
+          "procurementCategoryName": "Goods",
+          "entitySubCategoryName": "Closed Framework Contracts for Supplies of Goods",
+          "procuringEntityName": "RUWASA - MWANZA REGIONAL OFFICE",
+          "procuringEntityUuid": "16534d19-8f49-44e2-87c7-765f6e95e60e",
+          "submissionOrOpeningDate": "2026-12-04T14:00"
+        },
+        {
+          "descriptionOfTheProcurement": "Supply of ICT Equipment and Consumables",
+          "entityNumber": "FA/2026/2027/13/TR112/G/03",
+          "entityType": "FRAMEWORK",
+          "entityUuid": "ee2290d2-f81b-4d5a-aee1-51b47683c98d",
+          "invitationDate": "2026-11-27T14:00",
+          "procurementCategoryName": "Goods",
+          "entitySubCategoryName": "Closed Framework Contracts for Supplies of Goods",
+          "procuringEntityName": "THE HIGHER EDUCATION STUDENTS' LOANS BOARD",
+          "procuringEntityUuid": "4501ef40-8d72-4bdb-87bc-3ed7934e3b3b",
+          "submissionOrOpeningDate": "2026-12-04T14:00"
+        },
+        {
+          "descriptionOfTheProcurement": "Consultancy Services for strategic marketing plan development and value chain analysis for octopus, prawns, mud crab, and lobster fisheries in Tanzania",
+          "entityNumber": "TR99/TASFAM/P179969/2026/2027/C/07",
+          "entityType": "PLANNED_TENDER",
+          "entityUuid": "5361957d-006f-4dd8-8a91-0744f13005e1",
+          "invitationDate": "2026-11-27T00:00",
+          "procurementCategoryName": "Consultancy",
+          "entitySubCategoryName": "WB - Request for Proposals Consulting Services (Project Management Services)",
+          "procuringEntityName": "MINISTRY OF LIVESTOCK AND FISHERIES - TASFAM",
+          "procuringEntityUuid": "1fa43aa0-71b5-41a2-a3e2-af7bee7f1cb7",
+          "submissionOrOpeningDate": "2026-12-04T14:00"
+        }
+      ]
+    }
+  }
+}

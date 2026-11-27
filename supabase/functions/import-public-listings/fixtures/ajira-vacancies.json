@@ -1,0 +1,61 @@
+{
+  "data": {
+    "getVacancies": [
+      {
+        "closeDate": "2026-12-10T00:00",
+        "id": 14564,
+        "noOfPost": 4,
+        "openDate": "2026-11-27T00:00",
+        "scheme": {
+          "codeNo": "MWANDISHI MWENDESHA OFISI DARAJA LA II (OFFICE MANAGEMENT SECRETARY GRADE II)",
+          "emp": { "id": 220, "name": "Halmashauri ya Wilaya ya Siha" }
+        },
+        "vacancyStatus": { "isClosed": false }
+      },
+      {
+        "closeDate": "2026-12-10T00:00",
+        "id": 14565,
+        "noOfPost": 3,
+        "openDate": "2026-11-27T00:00",
+        "scheme": {
+          "codeNo": "MWANDISHI MWENDESHA OFISI DARAJA LA II (OFFICE MANAGEMENT SECRETARY GRADE II)",
+          "emp": { "id": 220, "name": "Halmashauri ya Wilaya ya Siha" }
+        },
+        "vacancyStatus": { "isClosed": false }
+      },
+      {
+        "closeDate": "2026-11-30T00:00",
+        "id": 14556,
+        "noOfPost": 1,
+        "openDate": "2026-11-17T00:00",
+        "scheme": {
+          "codeNo": "MANAGER - ELECTRONIC BUSINESS SECTION",
+          "emp": { "id": 100, "name": "Shirika la Posta Tanzania (TPC)" }
+        },
+        "vacancyStatus": { "isClosed": false }
+      },
+      {
+        "closeDate": "2026-11-26T00:00",
+        "id": 14541,
+        "noOfPost": 3,
+        "openDate": "2026-11-13T00:00",
+        "scheme": {
+          "codeNo": "MWANDISHI MWENDESHA OFISI DARAJA LA II (OFFICE MANAGEMENT SECRETARY GRADE II)",
+          "emp": { "id": 259, "name": "Halmashauri ya Wilaya ya Magu" }
+        },
+        "vacancyStatus": { "isClosed": true }
+      },
+      {
+        "closeDate": "2026-11-25T00:00",
+        "id": 14540,
+        "noOfPost": 1,
+        "openDate": "2026-11-12T00:00",
+        "scheme": {
+          "codeNo": "RESEARCH OFFICER II (VETERINARY MEDICINE)",
+          "emp": { "id": 112, "name": "Taasisi ya Utafiti wa Wanyamapori Tanzania (TAWIRI)" }
+        },
+        "vacancyStatus": { "isClosed": true }
+      }
+    ]
+  }
+}

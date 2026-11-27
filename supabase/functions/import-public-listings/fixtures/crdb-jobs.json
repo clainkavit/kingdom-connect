@@ -1,0 +1,133 @@
+{
+  "code": 1000,
+  "message": "Success",
+  "data": {
+    "content": [
+      {
+        "id": 2611,
+        "title": "MANAGER INTEGRATION SERVICES",
+        "location": "Tanzania Head Office",
+        "businessUnit": "DEPARTMENT OF ICT",
+        "creationDate": "2026-11-23",
+        "deadline": "2026-12-06",
+        "jobAlert": "INTERNAL_AND_EXTERNAL",
+        "status": "OPEN",
+        "numberOfCandidates": 1,
+        "recommendedEmails": []
+      },
+      {
+        "id": 2583,
+        "title": "MANAGER QUALITY ASSURANCE AUDIT",
+        "location": "Tanzania Head Office",
+        "businessUnit": "DEPARTMENT OF INTERNAL AUDIT",
+        "creationDate": "2026-11-16",
+        "deadline": "2026-11-29",
+        "jobAlert": "INTERNAL_AND_EXTERNAL",
+        "status": "OPEN",
+        "numberOfCandidates": 1,
+        "recommendedEmails": []
+      },
+      {
+        "id": 2584,
+        "title": "SPECIALIST INTERNAL AUDIT – ICT AND BUSINESS OPERATIONS",
+        "location": "Tanzania Head Office",
+        "businessUnit": "DEPARTMENT OF INTERNAL AUDIT",
+        "creationDate": "2026-11-16",
+        "deadline": "2026-11-29",
+        "jobAlert": "INTERNAL_AND_EXTERNAL",
+        "status": "OPEN",
+        "numberOfCandidates": 1,
+        "recommendedEmails": []
+      },
+      {
+        "id": 2585,
+        "title": "SPECIALIST INTERNAL AUDIT",
+        "location": "Tanzania Head Office",
+        "businessUnit": "DEPARTMENT OF INTERNAL AUDIT",
+        "creationDate": "2026-11-16",
+        "deadline": "2026-11-29",
+        "jobAlert": "INTERNAL_AND_EXTERNAL",
+        "status": "OPEN",
+        "numberOfCandidates": 1,
+        "recommendedEmails": []
+      },
+      {
+        "id": 2586,
+        "title": "MANAGER INTERNAL AUDIT - ICT",
+        "location": "Tanzania Head Office",
+        "businessUnit": "DEPARTMENT OF INTERNAL AUDIT",
+        "creationDate": "2026-11-16",
+        "deadline": "2026-11-29",
+        "jobAlert": "INTERNAL_AND_EXTERNAL",
+        "status": "OPEN",
+        "numberOfCandidates": 1,
+        "recommendedEmails": []
+      },
+      {
+        "id": 2603,
+        "title": "STRATEGY MANAGER SUBSIDIARIES & AFFILIATES",
+        "location": "Tanzania Head Office",
+        "businessUnit": "DEPARTMENT OF BUSINESS TRANSFORMATION",
+        "creationDate": "2026-11-18",
+        "deadline": "2026-11-29",
+        "jobAlert": "INTERNAL_AND_EXTERNAL",
+        "status": "OPEN",
+        "numberOfCandidates": 1,
+        "recommendedEmails": []
+      },
+      {
+        "id": 2588,
+        "title": "MANAGER WAN & LAN",
+        "location": "Tanzania Head Office",
+        "businessUnit": "DEPARTMENT OF ICT",
+        "creationDate": "2026-11-16",
+        "deadline": "2026-11-30",
+        "jobAlert": "INTERNAL_AND_EXTERNAL",
+        "status": "OPEN",
+        "numberOfCandidates": 1,
+        "recommendedEmails": []
+      },
+      {
+        "id": 2604,
+        "title": "SENIOR MANAGER FINANCE AND REGULATORY COMPLIANCE AUDITS",
+        "location": "Tanzania Head Office",
+        "businessUnit": "DEPARTMENT OF INTERNAL AUDIT",
+        "creationDate": "2026-11-18",
+        "deadline": "2026-12-02",
+        "jobAlert": "INTERNAL_AND_EXTERNAL",
+        "status": "OPEN",
+        "numberOfCandidates": 1,
+        "recommendedEmails": []
+      },
+      {
+        "id": 2510,
+        "title": "SPECIALIST DATA CATALOG ADMINISTRATOR",
+        "location": "Tanzania Head Office",
+        "businessUnit": "DATA MANAGEMENT OFFICE",
+        "creationDate": "2026-11-02",
+        "deadline": "2026-12-06",
+        "jobAlert": "INTERNAL_AND_EXTERNAL",
+        "status": "OPEN",
+        "numberOfCandidates": 1,
+        "recommendedEmails": []
+      }
+    ],
+    "pageable": {
+      "pageNumber": 0,
+      "pageSize": 50,
+      "sort": { "empty": true, "unsorted": true, "sorted": false },
+      "offset": 0,
+      "unpaged": false,
+      "paged": true
+    },
+    "totalPages": 1,
+    "totalElements": 9,
+    "last": true,
+    "size": 50,
+    "number": 0,
+    "sort": { "empty": true, "unsorted": true, "sorted": false },
+    "numberOfElements": 9,
+    "first": true,
+    "empty": false
+  }
+}

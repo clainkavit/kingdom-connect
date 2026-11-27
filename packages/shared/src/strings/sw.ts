@@ -1347,6 +1347,11 @@ export const sw: Strings = {
   auditSayDataDeleted: "Data ya mwanachama ilifutwa kwa ombi lake",
   auditSayRecoveryAsked: (m: string) => `Ombi la kurejesha barua pepe ya ${m} lilitumwa`,
   auditSayRecoveryApplied: "Barua pepe iliyorejeshwa ilianza kutumika",
+  auditSayListingApproved: (a: string, title: string, source: string) =>
+    `${a} aliidhinisha tangazo la umma ${title} kutoka ${source}`,
+  auditSayListingDiscarded: (a: string, title: string) => `${a} aliondoa tangazo la umma ${title}`,
+  auditSayListingsImported: (source: string, found: string) =>
+    `Uingizaji wa kila siku ulisoma matangazo ${found} kutoka ${source}`,
   auditSayAdded: (a: string, thing: string) => `${a} aliongeza ${thing}`,
   auditSayChanged: (a: string, thing: string) => `${a} alibadilisha ${thing}`,
   auditSayRemoved: (a: string, thing: string) => `${a} aliondoa ${thing}`,

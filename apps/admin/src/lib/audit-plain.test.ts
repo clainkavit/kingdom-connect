@@ -130,6 +130,27 @@ group("describe", () => {
     ).toBe("**Champion Joseph** verified **Mwanza Fresh Produce**, Level 2");
   });
 
+  it("describes public listings and the daily import", () => {
+    expect(
+      say(
+        entry({
+          action: "public_listing.approved",
+          after: { status: "approved", title: "Supply of ICT equipment", source: "NeST" },
+        }),
+      ),
+    ).toBe("**Champion Joseph** approved the public listing **Supply of ICT equipment** from NeST");
+    expect(
+      say(
+        entry({
+          actorKind: "system",
+          action: "public_listings.imported",
+          after: { source: "NeST", found: 209 },
+          routine: true,
+        }),
+      ),
+    ).toBe("The daily import read 209 listings from **NeST**");
+  });
+
   it("falls back to the kind of record for an action it does not know", () => {
     expect(say(entry({ action: "plan_documents.insert", targetType: "plan_documents" }))).toBe(
       "**Champion Joseph** added a plan document",

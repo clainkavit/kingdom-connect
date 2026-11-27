@@ -35,59 +35,97 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        gap: 14px;
-        background: #4a0e1a;
-        color: #f6efe6;
-        font-family: Georgia, "Times New Roman", serif;
+        gap: 1rem;
+        padding: 1.5rem;
+        overflow: auto;
+        background: #f7f1ea;
+        color: #4a0e1a;
+        font-family: system-ui, sans-serif;
+        text-align: center;
       }
       .kc-boot img {
-        border-radius: 22px;
+        width: clamp(6rem, 18vw, 8rem);
+        height: auto;
+        border-radius: 1.5rem;
       }
       .kc-boot p {
         margin: 0;
-        font-size: 22px;
-        letter-spacing: 0.02em;
+        max-width: 30ch;
+        font-size: 1rem;
+        line-height: 1.5;
       }
-      .kc-dots {
-        display: flex;
-        gap: 6px;
+      .kc-boot-indicator {
+        width: 2rem;
+        height: 3px;
+        border-radius: 100px;
+        background: #a86c23;
       }
-      .kc-dots i {
-        width: 7px;
-        height: 7px;
-        border-radius: 50%;
-        background: #e3b04b;
-        opacity: 0.35;
-        animation: kc-pulse 1.2s ease-in-out infinite;
+      .kc-boot button {
+        min-height: 44px;
+        padding: 0.5rem 1.25rem;
+        border: 1px solid currentColor;
+        border-radius: 100px;
+        background: transparent;
+        color: inherit;
+        font: inherit;
+        font-weight: 600;
+        cursor: pointer;
       }
-      .kc-dots i:nth-child(2) {
-        animation-delay: 0.2s;
+      .kc-boot button:focus-visible {
+        outline: 2px solid #4a0e1a;
+        outline-offset: 3px;
       }
-      .kc-dots i:nth-child(3) {
-        animation-delay: 0.4s;
+      @media (prefers-reduced-motion: no-preference) {
+        .kc-boot-indicator {
+          animation: kc-pulse 1.6s ease-in-out infinite;
+        }
       }
       @keyframes kc-pulse {
         50% {
-          opacity: 1;
-        }
-      }
-      @media (prefers-reduced-motion: reduce) {
-        .kc-dots i {
-          animation: none;
-          opacity: 0.7;
+          opacity: 0.45;
         }
       }
     </style>
   </head>
 
   <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root">
-      <div class="kc-boot" role="status" aria-label="Kingdom Connect is loading">
-        <img src="/icons/boot.jpg" alt="" width="88" height="88" />
-        <p>Kingdom Connect</p>
-        <span class="kc-dots" aria-hidden="true"><i></i><i></i><i></i></span>
-      </div>
+      <main class="kc-boot">
+        <img src="/icons/boot.jpg" alt="Kingdom Connect" width="176" height="176" />
+        <p id="kc-boot-status" role="status" hidden>Loading…</p>
+        <span id="kc-boot-indicator" class="kc-boot-indicator" aria-hidden="true" hidden></span>
+        <button id="kc-boot-retry" type="button" hidden>Try again</button>
+        <noscript><p>Enable JavaScript to open Kingdom Connect.</p></noscript>
+      </main>
     </div>
+    <script>
+      (() => {
+        let kiswahili = false;
+        try {
+          kiswahili = localStorage.getItem("kc.language") === "sw";
+        } catch {
+          // The loading screen also works when storage is unavailable.
+        }
+        const status = document.getElementById("kc-boot-status");
+        const indicator = document.getElementById("kc-boot-indicator");
+        const retry = document.getElementById("kc-boot-retry");
+        if (kiswahili) {
+          document.documentElement.lang = "sw";
+          status.textContent = "Inapakia…";
+          retry.textContent = "Jaribu tena";
+        }
+        status.hidden = false;
+        indicator.hidden = false;
+        retry.addEventListener("click", () => window.location.reload());
+        window.setTimeout(() => {
+          if (!status.isConnected) return;
+          status.textContent = kiswahili
+            ? "Programu inachukua muda kufunguka."
+            : "The app is taking a while to open.";
+          indicator.hidden = true;
+          retry.hidden = false;
+        }, 12000);
+      })();
+    </script>
   </body>
 </html>

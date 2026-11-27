@@ -1,0 +1,196 @@
+.kc-welcome {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  background: var(--kc-bg);
+  color: var(--kc-ink);
+  font-family: system-ui, sans-serif;
+  padding: 1rem clamp(1rem, 5vw, 5rem);
+}
+
+.kc-welcome > * {
+  width: 100%;
+  max-width: 72rem;
+  margin-inline: auto;
+}
+
+.kc-welcome-header,
+.kc-welcome-footer {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.kc-welcome-header {
+  justify-content: space-between;
+}
+
+.kc-welcome-languages {
+  display: flex;
+  border: 1px solid var(--kc-line-2);
+  border-radius: 100px;
+  padding: 2px;
+  background: var(--kc-surface);
+}
+
+.kc-welcome-languages button {
+  min-width: 44px;
+  min-height: 44px;
+  border-radius: 100px;
+  color: var(--kc-navy);
+  font-size: 0.875rem;
+  font-weight: 650;
+}
+
+.kc-welcome-languages button[aria-pressed="true"] {
+  background: var(--kc-navy);
+  color: white;
+}
+
+.kc-welcome-main {
+  display: grid;
+  gap: clamp(1.75rem, 5vw, 4.5rem);
+  align-items: center;
+  align-content: center;
+  flex: 1 0 auto;
+  padding-block: clamp(1.5rem, 5vh, 4rem);
+}
+
+.kc-welcome-tagline {
+  font-size: 0.875rem;
+  font-weight: 650;
+  color: var(--kc-navy);
+}
+
+.kc-welcome h1 {
+  margin-block: 0.75rem 1rem;
+  font-size: clamp(2rem, 5vw, 4.75rem);
+  font-weight: 700;
+  line-height: 1.06;
+  letter-spacing: -0.045em;
+  text-wrap: balance;
+}
+
+.kc-welcome-description {
+  max-width: 36ch;
+  color: var(--kc-ink-2);
+  font-size: clamp(1rem, 1.65vw, 1.25rem);
+  line-height: 1.5;
+}
+
+.kc-welcome-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.625rem;
+  margin-top: clamp(1.25rem, 4vw, 2rem);
+}
+
+.kc-welcome-actions a {
+  display: inline-flex;
+  min-height: 48px;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1.35rem;
+  border: 1px solid var(--kc-navy);
+  border-radius: 100px;
+  background: var(--kc-navy);
+  color: white;
+  font-weight: 650;
+  text-align: center;
+  text-decoration: none;
+}
+
+.kc-welcome-actions a + a {
+  background: transparent;
+  color: var(--kc-navy);
+}
+
+.kc-welcome-photo {
+  height: clamp(8rem, 30vw, 15rem);
+  overflow: hidden;
+  border-radius: 1.5rem;
+  background: var(--kc-navy);
+}
+
+.kc-welcome-footer {
+  flex-wrap: wrap;
+  color: var(--kc-ink-2);
+  font-size: 0.875rem;
+}
+
+.kc-welcome-footer a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.kc-welcome :is(a, button):focus-visible {
+  outline: 2px solid var(--kc-navy);
+  outline-offset: 3px;
+}
+
+@media (min-width: 56.25rem) {
+  .kc-welcome-main {
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  }
+
+  .kc-welcome-photo {
+    height: auto;
+    aspect-ratio: 5 / 4;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .kc-welcome-actions a {
+    transition: opacity 120ms ease-out;
+  }
+}
+
+@media (hover: hover) {
+  .kc-welcome-actions a:hover {
+    opacity: 0.85;
+  }
+}
+
+.kc-entry-main {
+  max-width: 30rem;
+  flex: 1 0 auto;
+  align-content: center;
+  padding-block: clamp(1.5rem, 5vh, 4rem);
+}
+
+.kc-entry h1 {
+  font-size: clamp(2rem, 5vw, 3.25rem);
+  margin-block: 0 0.625rem;
+  text-wrap: initial;
+}
+
+.kc-entry .kc-welcome-description {
+  max-width: none;
+  font-size: 1rem;
+}
+
+.kc-entry-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.kc-entry-account {
+  margin-top: 1rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--kc-line);
+}
+
+.kc-entry-back {
+  min-height: 44px;
+  margin-bottom: 0.5rem;
+  color: var(--kc-navy);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}

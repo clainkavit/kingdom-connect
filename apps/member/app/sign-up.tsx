@@ -1,7 +1,8 @@
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { Text, View } from "react-native";
-import { AuthCard, TextButton } from "../src/components/auth-card";
+import { TextButton } from "../src/components/auth-card";
+import { EntryCard } from "../src/components/entry-card";
 import { SignUpForm } from "../src/components/sign-up-form";
 import { WelcomeChoices } from "../src/components/welcome-choices";
 import { returnedFromGoogleWithError, startProviderSignIn } from "../src/lib/first-sign-in";
@@ -34,7 +35,7 @@ export default function SignUpScreen() {
   return (
     <Guard route="login">
       {withEmail ? (
-        <AuthCard
+        <EntryCard
           title={platformName ? t.signUpTitle(platformName) : t.createAccount}
           subtitle={t.signUpIntro}
           back={anyOtherWay ? { label: t.back, onPress: () => setWithEmail(false) } : undefined}
@@ -45,13 +46,9 @@ export default function SignUpScreen() {
             login={loginClient}
             onCodeSent={startSession}
           />
-        </AuthCard>
+        </EntryCard>
       ) : (
-        <AuthCard
-          title={platformName ? t.welcomeTitle(platformName) : t.createAccount}
-          subtitle={t.welcomeIntro}
-          footer={footer}
-        >
+        <EntryCard title={t.createAccount} subtitle={t.welcomeIntro} footer={footer}>
           <WelcomeChoices
             providers={providers}
             phone={phoneSignIn}
@@ -60,7 +57,7 @@ export default function SignUpScreen() {
             onPhone={() => router.push("/phone-sign-in")}
             onEmail={() => setWithEmail(true)}
           />
-        </AuthCard>
+        </EntryCard>
       )}
     </Guard>
   );

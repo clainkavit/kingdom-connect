@@ -1,6 +1,7 @@
 import { useRouter } from "expo-router";
 import { Text, View } from "react-native";
-import { AuthCard, TextButton } from "../src/components/auth-card";
+import { TextButton } from "../src/components/auth-card";
+import { EntryCard } from "../src/components/entry-card";
 import { GoogleButton } from "../src/components/first-sign-in";
 import { returnedFromGoogleWithError, startGoogleSignIn } from "../src/lib/first-sign-in";
 import { LoginForm } from "../src/components/login-forms";
@@ -14,7 +15,7 @@ export default function LoginScreen() {
   const router = useRouter();
   return (
     <Guard route="login">
-      <AuthCard
+      <EntryCard
         title={platformName ? t.loginTitle(platformName) : t.logIn}
         subtitle={t.loginSubtitle}
         footer={
@@ -26,11 +27,6 @@ export default function LoginScreen() {
           </>
         }
       >
-        <GoogleButton
-          enabled={googleSignIn}
-          onPress={startGoogleSignIn}
-          returnedWithError={googleSignIn && returnedFromGoogleWithError()}
-        />
         <LoginForm
           client={loginClient}
           onCodeSent={startSession}
@@ -42,7 +38,21 @@ export default function LoginScreen() {
             />
           }
         />
-      </AuthCard>
+        {googleSignIn ? (
+          <View className="gap-3">
+            <View className="flex-row items-center gap-3">
+              <View className="h-px flex-1 bg-line" />
+              <Text className="font-figtree text-sm text-ink-2">{t.orDivider}</Text>
+              <View className="h-px flex-1 bg-line" />
+            </View>
+            <GoogleButton
+              enabled
+              onPress={startGoogleSignIn}
+              returnedWithError={returnedFromGoogleWithError()}
+            />
+          </View>
+        ) : null}
+      </EntryCard>
     </Guard>
   );
 }

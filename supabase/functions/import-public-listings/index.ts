@@ -28,6 +28,7 @@ import {
 const MAX_NEST_PAGES = 10;
 const MAX_ADVERTS_PER_RUN = 4;
 const MAX_TRANSLATIONS_PER_RUN = 60;
+const LOOKUP_SECONDS = 40;
 const HEADERS = {
   "Content-Type": "application/json",
   "User-Agent": "KingdomConnect-PublicListings/1.0",
@@ -82,7 +83,8 @@ async function readNestAll(): Promise<Read> {
   );
   const places = new Map<string, { region?: string; district?: string }>();
   const lookups = [...entities].filter((e) => fresh.has(e));
-  for (let i = 0; i < lookups.length; i += 10) {
+  const stopAt = Date.now() + LOOKUP_SECONDS * 1000;
+  for (let i = 0; i < lookups.length && Date.now() < stopAt; i += 10) {
     await Promise.all(
       lookups.slice(i, i + 10).map(async (entity) => {
         try {
@@ -166,10 +168,13 @@ async function translate(listings: Listing[]): Promise<void> {
   }
 }
 
-async function needsTranslation(key: string, listing: Listing): Promise<boolean> {
-  const [row] =
-    await sql`select private.public_listing_translated(${key}, ${listing.external_id}) as done`;
-  return !row?.done;
+/** The listings of a source that already have a translation, in one query. */
+async function translatedIds(key: string): Promise<Set<string>> {
+  const rows = await sql`
+    select l.external_id from public.public_listings l
+    join public.public_listing_sources s on s.id = l.source_id
+    where s.key = ${key} and l.translated_title is not null`;
+  return new Set(rows.map((r) => r.external_id as string));
 }
 
 Deno.serve(async (req) => {
@@ -190,15 +195,16 @@ Deno.serve(async (req) => {
     }
     try {
       const { listings, seen, markGone } = await read();
-      const fresh: Listing[] = [];
-      for (const l of listings) if (await needsTranslation(key, l)) fresh.push(l);
-      await translate(fresh);
-      for (const l of listings) {
-        await sql`select private.save_public_listing(${key}, ${sql.json(l as never)})`;
+      const done = await translatedIds(key);
+      await translate(listings.filter((l) => !done.has(l.external_id)));
+      for (let i = 0; i < listings.length; i += 100) {
+        await sql`
+          select count(private.save_public_listing(${key}, item))
+          from jsonb_array_elements(${sql.json(listings.slice(i, i + 100) as never)}) item`;
       }
-      const [done] = await sql`
+      const [run] = await sql`
         select private.finish_public_listing_run(${key}, ${seen}::text[], null, ${markGone}) as closed`;
-      report[key] = { found: listings.length, closed: Number(done?.closed ?? 0) };
+      report[key] = { found: listings.length, closed: Number(run?.closed ?? 0) };
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       await sql`select private.finish_public_listing_run(${key}, ${[]}::text[], ${message})`;

@@ -6,7 +6,10 @@ import {
   CRDB_PAGE,
   guessSector,
   NEST_PAGE,
-  pickTranslations,
+  geminiAdvertRequest,
+  readAdvertPosts,
+  readAjiraAdverts,
+  readTranslations,
   readAjira,
   readCrdb,
   readNest,
@@ -102,31 +105,97 @@ describe("guessSector (O19)", () => {
   });
 });
 
-describe("pickTranslations (O19)", () => {
-  it("gives Swahili text English and English text Swahili", () => {
-    const answer = [
-      {
-        detectedLanguage: { language: "sw" },
-        translations: [
-          { text: "Office management secretary", to: "en" },
-          { text: "Mwandishi mwendesha ofisi", to: "sw" },
+const geminiAnswer = (value: unknown) => ({
+  candidates: [{ content: { parts: [{ text: JSON.stringify(value) }] }, finishReason: "STOP" }],
+});
+
+describe("readAjiraAdverts (O19)", () => {
+  it("lists the newest advert PDFs", () => {
+    const adverts = readAjiraAdverts(sample("ajira-adverts.json"));
+    expect(adverts.length).toBe(5);
+    expect(adverts[0]).toEqual({
+      id: "0109dc0b-6421-4de6-9f9d-7047ecd7c9cb",
+      title: "TANGAZO LA NAFASI ZA KAZI HALMASHAURI YA WILAYA YA SIHA",
+      published_on: "2026-11-27",
+      token: "83d7a300-4075-4202-9a41-86515d469065",
+    });
+  });
+});
+
+describe("readAdvertPosts (O19)", () => {
+  const advert = {
+    id: "0109dc0b-6421-4de6-9f9d-7047ecd7c9cb",
+    title: "TANGAZO LA NAFASI ZA KAZI HALMASHAURI YA WILAYA YA SIHA",
+    published_on: "2026-11-27",
+    token: "t",
+  };
+
+  it("sends the PDF to Gemini and asks for every post with a translation", () => {
+    const request = geminiAdvertRequest("UERG", advert.title);
+    expect(request.contents[0]!.parts[0]).toEqual({
+      inline_data: { mime_type: "application/pdf", data: "UERG" },
+    });
+    expect(request.generationConfig.responseMimeType).toBe("application/json");
+  });
+
+  it("turns each post Gemini found into a listing with its own id", () => {
+    const listings = readAdvertPosts(
+      geminiAnswer({
+        posts: [
+          {
+            title: "Mwandishi Mwendesha Ofisi Daraja la II",
+            employer: "Halmashauri ya Wilaya ya Siha",
+            number_of_posts: 4,
+            closing_date: "2026-12-10",
+            region: "Kilimanjaro",
+            district: null,
+            language: "sw",
+            summary: "Kidato cha nne na stashahada ya uhazili",
+            title_translated: "Office Management Secretary Grade II",
+            summary_translated: "Form four and a diploma in secretarial studies",
+          },
+          { title: "Dereva Daraja la II", language: "sw", closing_date: "2026-12-10" },
         ],
-      },
-      {
-        detectedLanguage: { language: "en" },
-        translations: [
-          { text: "Manager integration services", to: "en" },
-          { text: "Meneja wa huduma za muunganiko", to: "sw" },
-        ],
-      },
-    ];
-    expect(pickTranslations(answer, ["sw", "en"])).toEqual([
-      "Office management secretary",
-      "Meneja wa huduma za muunganiko",
+      }),
+      advert,
+    );
+    expect(listings).toHaveLength(2);
+    expect(listings[0]).toMatchObject({
+      external_id: "0109dc0b-6421-4de6-9f9d-7047ecd7c9cb#1",
+      title: "Mwandishi Mwendesha Ofisi Daraja la II",
+      employer: "Halmashauri ya Wilaya ya Siha",
+      details: { posts: 4 },
+      language: "sw",
+      opens_on: "2026-11-27",
+      closing_on: "2026-12-10",
+      region: "Kilimanjaro",
+      district: "Siha",
+      sector: "Professional services",
+      translated_title: "Office Management Secretary Grade II",
+    });
+    expect(listings[1]).toMatchObject({
+      external_id: "0109dc0b-6421-4de6-9f9d-7047ecd7c9cb#2",
+      sector: "Transport and logistics",
+    });
+  });
+
+  it("fails the advert when Gemini gives nothing", () => {
+    expect(() => readAdvertPosts({ candidates: [] }, advert)).toThrow(/no answer/);
+  });
+});
+
+describe("readTranslations (O19)", () => {
+  it("matches translations to the inputs by position", () => {
+    expect(readTranslations(geminiAnswer(["Driver Grade II", "Meneja wa huduma"]), 2)).toEqual([
+      "Driver Grade II",
+      "Meneja wa huduma",
     ]);
   });
 
-  it("gives nothing when Azure did not answer", () => {
-    expect(pickTranslations({ error: { code: 403000 } }, ["en"])).toEqual([undefined]);
+  it("gives nothing when the count does not match or the answer is not JSON", () => {
+    expect(readTranslations(geminiAnswer(["only one"]), 2)).toEqual([undefined, undefined]);
+    expect(
+      readTranslations({ candidates: [{ content: { parts: [{ text: "not json" }] } }] }, 1),
+    ).toEqual([undefined]);
   });
 });

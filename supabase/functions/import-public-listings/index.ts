@@ -1,23 +1,32 @@
+import { encodeBase64 } from "jsr:@std/encoding@1/base64";
 import { sql } from "../_shared/db.ts";
 import { json, roleOf } from "../_shared/http.ts";
 import {
+  AJIRA_ADVERTS_URL,
   AJIRA_QUERY,
   AJIRA_URL,
-  AZURE_TRANSLATE_URL,
+  ajiraAdvertPdf,
   CRDB_URL,
+  GEMINI_MODEL,
+  geminiAdvertRequest,
+  geminiTranslateRequest,
+  geminiUrl,
   type Listing,
   NEST_ENTITY_URL,
   NEST_URL,
   nestEntityQuery,
   nestQuery,
-  pickTranslations,
+  readAdvertPosts,
   readAjira,
+  readAjiraAdverts,
   readCrdb,
   readNest,
   readNestEntity,
+  readTranslations,
 } from "../_shared/public-listings.ts";
 
 const MAX_NEST_PAGES = 10;
+const MAX_ADVERTS_PER_RUN = 4;
 const HEADERS = {
   "Content-Type": "application/json",
   "User-Agent": "KingdomConnect-PublicListings/1.0",
@@ -34,7 +43,22 @@ async function getJson(url: string, body?: unknown): Promise<unknown> {
   return res.json();
 }
 
-async function readNestAll(): Promise<Listing[]> {
+const geminiKey = () => Deno.env.get("GEMINI_API_KEY");
+
+async function gemini(body: unknown): Promise<unknown> {
+  const res = await fetch(geminiUrl(Deno.env.get("GEMINI_MODEL") ?? GEMINI_MODEL), {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "x-goog-api-key": geminiKey()! },
+    body: JSON.stringify(body),
+    signal: AbortSignal.timeout(90_000),
+  });
+  if (!res.ok) throw new Error(`Gemini answered ${res.status}`);
+  return res.json();
+}
+
+type Read = { listings: Listing[]; seen: string[]; markGone: boolean };
+
+async function readNestAll(): Promise<Read> {
   const listings: Listing[] = [];
   const entities = new Set<string>();
   for (let page = 1; page <= MAX_NEST_PAGES; page++) {
@@ -51,40 +75,69 @@ async function readNestAll(): Promise<Listing[]> {
       places.set(entity, {});
     }
   }
-  return listings.map((l) => ({ ...l, ...places.get(String(l.details.procuring_entity)) }));
+  const all = listings.map((l) => ({ ...l, ...places.get(String(l.details.procuring_entity)) }));
+  return { listings: all, seen: all.map((l) => l.external_id), markGone: true };
 }
 
-const readers: Record<string, () => Promise<Listing[]>> = {
+/** New advert PDFs are read by Gemini, a few per run; adverts read before are only counted as seen. */
+async function readAjiraAdvertsAll(): Promise<Read> {
+  if (!geminiKey()) throw new Error("GEMINI_API_KEY is not set, so advert PDFs cannot be read");
+  const adverts = readAjiraAdverts(await getJson(AJIRA_ADVERTS_URL));
+  const listings: Listing[] = [];
+  const seen: string[] = [];
+  let read = 0;
+  for (const advert of adverts) {
+    const [known] =
+      await sql`select private.public_listing_ids('ajira_adverts', ${advert.id + "#"}) as ids`;
+    const ids = (known?.ids ?? []) as string[];
+    if (ids.length > 0) {
+      seen.push(...ids);
+      continue;
+    }
+    if (read >= MAX_ADVERTS_PER_RUN) continue;
+    read++;
+    const pdf = await fetch(ajiraAdvertPdf(advert.token), { signal: AbortSignal.timeout(60_000) });
+    if (!pdf.ok) continue;
+    const posts = readAdvertPosts(
+      await gemini(
+        geminiAdvertRequest(encodeBase64(new Uint8Array(await pdf.arrayBuffer())), advert.title),
+      ),
+      advert,
+    );
+    listings.push(...posts);
+    seen.push(...posts.map((p) => p.external_id));
+  }
+  return { listings, seen, markGone: false };
+}
+
+const fromList = (listings: Listing[]): Read => ({
+  listings,
+  seen: listings.map((l) => l.external_id),
+  markGone: true,
+});
+
+const readers: Record<string, () => Promise<Read>> = {
   nest: readNestAll,
-  ajira: async () => readAjira(await getJson(AJIRA_URL, AJIRA_QUERY)),
-  crdb: async () => readCrdb(await getJson(CRDB_URL)),
+  ajira: async () => fromList(readAjira(await getJson(AJIRA_URL, AJIRA_QUERY))),
+  crdb: async () => fromList(readCrdb(await getJson(CRDB_URL))),
+  ajira_adverts: readAjiraAdvertsAll,
 };
 
+/** Translate the title and summary of listings that have none yet, 20 at a time. A failed batch waits for staff. */
 async function translate(listings: Listing[]): Promise<void> {
-  const key = Deno.env.get("AZURE_TRANSLATOR_KEY");
-  if (!key || listings.length === 0) return;
-  const headers: Record<string, string> = {
-    "Content-Type": "application/json",
-    "Ocp-Apim-Subscription-Key": key,
-  };
-  const region = Deno.env.get("AZURE_TRANSLATOR_REGION");
-  if (region) headers["Ocp-Apim-Subscription-Region"] = region;
-  for (let i = 0; i < listings.length; i += 25) {
-    const batch = listings.slice(i, i + 25);
-    const texts = batch.flatMap((l) => [l.title, l.summary ?? ""]);
-    const languages = batch.flatMap((l) => [l.language, l.language]);
+  if (!geminiKey()) return;
+  const todo = listings.filter((l) => !l.translated_title);
+  for (let i = 0; i < todo.length; i += 20) {
+    const batch = todo.slice(i, i + 20);
+    const items = batch.flatMap((l) => [
+      { text: l.title, language: l.language },
+      { text: l.summary ?? "", language: l.language },
+    ]);
     try {
-      const res = await fetch(AZURE_TRANSLATE_URL, {
-        method: "POST",
-        headers,
-        body: JSON.stringify(texts.map((Text) => ({ Text: Text || " " }))),
-        signal: AbortSignal.timeout(30_000),
-      });
-      if (!res.ok) return;
-      const picked = pickTranslations(await res.json(), languages);
+      const out = readTranslations(await gemini(geminiTranslateRequest(items)), items.length);
       batch.forEach((l, n) => {
-        l.translated_title = picked[n * 2];
-        if (l.summary) l.translated_summary = picked[n * 2 + 1];
+        l.translated_title = out[n * 2];
+        if (l.summary) l.translated_summary = out[n * 2 + 1];
       });
     } catch {
       return;
@@ -113,7 +166,7 @@ Deno.serve(async (req) => {
       continue;
     }
     try {
-      const listings = await read();
+      const { listings, seen, markGone } = await read();
       const fresh: Listing[] = [];
       for (const l of listings) if (await needsTranslation(key, l)) fresh.push(l);
       await translate(fresh);
@@ -121,7 +174,7 @@ Deno.serve(async (req) => {
         await sql`select private.save_public_listing(${key}, ${sql.json(l as never)})`;
       }
       const [done] = await sql`
-        select private.finish_public_listing_run(${key}, ${listings.map((l) => l.external_id)}::text[]) as closed`;
+        select private.finish_public_listing_run(${key}, ${seen}::text[], null, ${markGone}) as closed`;
       report[key] = { found: listings.length, closed: Number(done?.closed ?? 0) };
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);

@@ -1,7 +1,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 create or replace function access.accepted_terms_and_privacy() returns boolean language sql stable as 'select true';
-select plan(25);
+select plan(28);
 
 insert into auth.users (id, email)
 select ('00000000-0000-0000-0000-0000000009' || k)::uuid, 'pl' || k || '@test.invalid'
@@ -15,8 +15,9 @@ create function pg_temp.login(who text) returns void language sql as $$
     'sub', '00000000-0000-0000-0000-0000000009' || who, 'role', 'authenticated', 'otp_verified', true)::text, true);
 $$;
 
-select ok((select count(*) = 3 from public.public_listing_sources where key in ('nest', 'ajira', 'crdb') and active),
-  'NeST, Ajira and CRDB are sources from the start');
+select ok((select count(*) = 4 from public.public_listing_sources
+           where key in ('nest', 'ajira', 'crdb', 'ajira_adverts') and active),
+  'NeST, Ajira, CRDB and Ajira adverts are sources from the start');
 
 select set_config('test.tender', private.save_public_listing('nest', jsonb_build_object(
   'external_id', 'tender-1', 'title', 'Constructions of Ikungi bus stand', 'employer', 'IKUNGI DISTRICT COUNCIL',
@@ -62,7 +63,8 @@ select throws_ok($$select private.save_public_listing('nest', '{}'::jsonb)$$, '4
   'nor write listings directly');
 
 select pg_temp.login('a1');
-select is((select count(*)::int from public.public_listings), 3, 'staff see the queue');
+select is((select count(*)::int from public.public_listings
+           where external_id in ('tender-1', 'vacancy-1', 'vacancy-2')), 3, 'staff see the queue');
 select is((select result from public.approve_public_listing(current_setting('test.tender')::uuid,
            null, null, false, (select id from public.sectors where name_en = 'Construction'))),
   'place_and_sector', 'a listing needs a place unless it is remote');
@@ -102,6 +104,16 @@ select is((select row(action, access.audit_kind(action),
                       access.audit_routine(actor_staff_id, actor_member_id, target_type, after))::text
            from private.audit_log where action = 'public_listings.imported' order by created_at desc limit 1),
   '(public_listings.imported,opportunities,t)', 'each run is logged as a routine system entry');
+
+select set_config('test.advert', private.save_public_listing('ajira_adverts', jsonb_build_object(
+  'external_id', 'advert-9#1', 'title', 'Dereva daraja la II', 'original_url', 'https://www.ajira.go.tz/archive?type=vacancies',
+  'language', 'sw', 'closing_on', (current_date + 10)::text))::text, true);
+select is(private.public_listing_ids('ajira_adverts', 'advert-9#'), array['advert-9#1'],
+  'the posts already read from an advert are known, so its PDF is not read again');
+select is(private.finish_public_listing_run('ajira_adverts', array[]::text[], null, false), 0,
+  'a run that keeps old adverts closes nothing');
+select is((select gone_at from public.public_listings where id = current_setting('test.advert')::uuid), null,
+  'and does not mark their posts gone');
 
 select * from finish();
 rollback;

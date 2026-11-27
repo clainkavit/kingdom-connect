@@ -20,7 +20,8 @@ create trigger set_updated_at before update on public.public_listing_sources
 insert into public.public_listing_sources (key, name, kind, page_url) values
   ('nest', 'NeST', 'tenders', 'https://nest.go.tz/tenders/published-tenders'),
   ('ajira', 'Ajira Portal', 'jobs', 'https://portal.ajira.go.tz/vacancies'),
-  ('crdb', 'CRDB Bank', 'jobs', 'https://careers.crdbbank.co.tz/jobs');
+  ('crdb', 'CRDB Bank', 'jobs', 'https://careers.crdbbank.co.tz/jobs'),
+  ('ajira_adverts', 'Ajira adverts', 'jobs', 'https://www.ajira.go.tz/archive?type=vacancies');
 
 create table public.public_listings (
   id uuid primary key default gen_random_uuid(),
@@ -116,6 +117,14 @@ begin
 end;
 $$;
 
+-- The listings already saved from one advert (external ids that start with it), so a PDF is read only once.
+create function private.public_listing_ids(source_key text, prefix text) returns text[]
+language sql stable security definer set search_path = '' as $$
+  select coalesce(array_agg(l.external_id), '{}') from public.public_listings l
+  join public.public_listing_sources s on s.id = l.source_id
+  where s.key = public_listing_ids.source_key and starts_with(l.external_id, public_listing_ids.prefix);
+$$;
+
 -- Whether a listing is already known with a translation, so the import does not translate it again.
 create function private.public_listing_translated(source_key text, external_id text) returns boolean
 language sql stable security definer set search_path = '' as $$
@@ -126,7 +135,8 @@ $$;
 
 -- After a run: the source's last run, what it found or why it failed. When a run succeeds, listings the source no
 -- longer shows are marked gone, and a published post made from one closes.
-create function private.finish_public_listing_run(source_key text, seen text[], failure text default null)
+create function private.finish_public_listing_run(source_key text, seen text[], failure text default null,
+                                                   mark_gone boolean default true)
 returns int
 language plpgsql volatile security definer set search_path = '' as $$
 declare
@@ -141,7 +151,7 @@ begin
   set last_run_at = now(), last_error = left(failure, 500),
       last_found = case when failure is null then cardinality(seen) else last_found end
   where id = src.id;
-  if failure is null then
+  if failure is null and finish_public_listing_run.mark_gone then
     update public.public_listings
     set gone_at = now()
     where source_id = src.id and gone_at is null and not (external_id = any (seen));
@@ -160,7 +170,8 @@ end;
 $$;
 
 revoke all on function private.save_public_listing(text, jsonb), private.public_listing_translated(text, text),
-  private.finish_public_listing_run(text, text[], text) from public, anon, authenticated;
+  private.public_listing_ids(text, text), private.finish_public_listing_run(text, text[], text, boolean)
+  from public, anon, authenticated;
 
 -- Staff approve a waiting listing: it becomes a published post by the approving Administrator. Staff set the place,
 -- sector, skills, closing date and, for a job, the employment type, and may correct the translation and fee note.

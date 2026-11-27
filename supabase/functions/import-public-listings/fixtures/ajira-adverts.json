@@ -1,0 +1,61 @@
+{
+  "data": {
+    "items": [
+      {
+        "id": "0109dc0b-6421-4de6-9f9d-7047ecd7c9cb",
+        "title": "TANGAZO LA NAFASI ZA KAZI HALMASHAURI YA WILAYA YA SIHA",
+        "description": "",
+        "category": "vacancies",
+        "published_at": "2026-11-27T09:00:00Z",
+        "attachment_name": "2026_11_27_19_51_09TANGAZO LA KAZI SIHA DC NOVEMBA 2026-1-3.pdf",
+        "attachment_ext": "pdf",
+        "download_token": "83d7a300-4075-4202-9a41-86515d469065"
+      },
+      {
+        "id": "62a466a3-e560-4600-b634-ad313a089272",
+        "title": "TANGAZO LA NAFASI ZA KUJITOLEA WAKALA WA MABASI YAENDAYO HARAKA (DART)",
+        "description": "",
+        "category": "vacancies",
+        "published_at": "2026-11-21T09:00:00Z",
+        "attachment_name": "2026_11_21_06_38_07DART-INTERSHIP VACANCIES.pdf",
+        "attachment_ext": "pdf",
+        "download_token": "34de7452-ecfe-4d2a-9ede-98517e22b7a6"
+      },
+      {
+        "id": "80c4eb7b-59fc-4ffd-bfe6-65f1c8148ddf",
+        "title": "TANGAZO LA NAFASI YA KAZI SHIRIKA LA POSTA TANZANIA",
+        "description": "",
+        "category": "vacancies",
+        "published_at": "2026-11-17T09:00:00Z",
+        "attachment_name": "2026_11_17_17_11_26TANGAZO LA NAFASI YA KAZI YA TPC- ELECTRONICS BUSINESS MANAGER.pdf",
+        "attachment_ext": "pdf",
+        "download_token": "ed4709d4-d640-47c4-b345-4887674f4f1e"
+      },
+      {
+        "id": "3df90078-5c97-4ccb-b65d-803ed19ebfa9",
+        "title": "TANGAZO LA NAFASI ZA KAZI CHUO KIKUU CHA AFYA NA SAYANSI SHIRIKISHI MUHIMBILI (MUHAS)",
+        "description": "",
+        "category": "vacancies",
+        "published_at": "2026-11-15T09:00:00Z",
+        "attachment_name": "2026_11_15_18_12_37TANGAZO LA KAZI LA MUHAS.pdf",
+        "attachment_ext": "pdf",
+        "download_token": "526286cf-2cfb-45b0-b8b0-ac60a4277adb"
+      },
+      {
+        "id": "06850279-4e1d-4551-9322-23c76092873d",
+        "title": "TANGAZO LA NAFASI ZA KAZI ZA KUJITOLEA HALMASHAURI YA WILAYA YA BUKOBA",
+        "description": "",
+        "category": "vacancies",
+        "published_at": "2026-11-13T09:00:00Z",
+        "attachment_name": "2026_11_13_14_14_32TANGAZO LA KAZI 28. 2026 BUKOBA.pdf",
+        "attachment_ext": "pdf",
+        "download_token": "59fbfdb1-ff0a-468c-ad1e-adf23eee6995"
+      }
+    ],
+    "limit": 5,
+    "page": 1,
+    "total_items": 1563,
+    "total_pages": 313
+  },
+  "status": "success"
+}

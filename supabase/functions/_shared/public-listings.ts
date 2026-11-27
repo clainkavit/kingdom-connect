@@ -237,33 +237,175 @@ export function guessSector(text: string): string | undefined {
   return SECTOR_WORDS.find(([, words]) => words.test(text))?.[0];
 }
 
-export const AZURE_TRANSLATE_URL =
-  "https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&to=en&to=sw";
+export const AJIRA_ADVERTS_URL =
+  "https://www.ajira.go.tz/api/v1/archive?page=1&limit=20&category=vacancies";
+export const AJIRA_ADVERTS_PAGE = "https://www.ajira.go.tz/archive?type=vacancies";
+export const ajiraAdvertPdf = (token: string) =>
+  `https://www.ajira.go.tz/api/v1/vacancies/attachment/token/${token}/download`;
 
-type AzureAnswer = {
-  detectedLanguage?: { language?: string };
-  translations?: { text: string; to: string }[];
-}[];
+export type Advert = { id: string; title: string; published_on?: string; token: string };
 
-/**
- * The other-language text for each input, from Azure's answer: Swahili text gets English and the rest Swahili.
- * An input already in the target language, or missing from the answer, gets nothing.
- */
-export function pickTranslations(
-  answer: unknown,
-  sourceLanguages: ("en" | "sw")[],
-): (string | undefined)[] {
-  const rows = Array.isArray(answer) ? (answer as AzureAnswer) : [];
-  return sourceLanguages.map((fallback, i) => {
-    const row = rows[i];
-    const detected =
-      row?.detectedLanguage?.language === "sw"
-        ? "sw"
-        : row?.detectedLanguage?.language === "en"
-          ? "en"
-          : fallback;
-    const target = detected === "sw" ? "en" : "sw";
-    const text = row?.translations?.find((t) => t.to === target)?.text?.trim();
-    return text || undefined;
-  });
+/** Ajira adverts: the newest public-service vacancy notices, each a PDF. */
+export function readAjiraAdverts(answer: unknown): Advert[] {
+  const items = (answer as { data?: { items?: Record<string, unknown>[] } })?.data?.items;
+  if (!Array.isArray(items)) throw new Error("Ajira adverts answered in an unexpected shape");
+  return items
+    .filter(
+      (i) =>
+        typeof i.id === "string" &&
+        typeof i.download_token === "string" &&
+        i.attachment_ext === "pdf",
+    )
+    .map((i) => ({
+      id: i.id as string,
+      title: clean(i.title) ?? "",
+      published_on: datePart(i.published_at),
+      token: i.download_token as string,
+    }));
+}
+
+export const GEMINI_MODEL = "gemini-2.5-flash";
+export const geminiUrl = (model: string) =>
+  `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
+
+const POSTS_SCHEMA = {
+  type: "OBJECT",
+  properties: {
+    posts: {
+      type: "ARRAY",
+      items: {
+        type: "OBJECT",
+        properties: {
+          title: { type: "STRING" },
+          employer: { type: "STRING", nullable: true },
+          number_of_posts: { type: "INTEGER", nullable: true },
+          closing_date: { type: "STRING", nullable: true },
+          region: { type: "STRING", nullable: true },
+          district: { type: "STRING", nullable: true },
+          language: { type: "STRING", enum: ["en", "sw"] },
+          summary: { type: "STRING", nullable: true },
+          title_translated: { type: "STRING", nullable: true },
+          summary_translated: { type: "STRING", nullable: true },
+        },
+        required: ["title", "language"],
+      },
+    },
+  },
+  required: ["posts"],
+};
+
+/** Ask Gemini to list every vacant post in one advert PDF (text or scanned), with a translation of each. */
+export function geminiAdvertRequest(pdfBase64: string, advertTitle: string) {
+  return {
+    contents: [
+      {
+        parts: [
+          { inline_data: { mime_type: "application/pdf", data: pdfBase64 } },
+          {
+            text:
+              `This is a Tanzanian public-service vacancy advert titled "${advertTitle}". ` +
+              "List every vacant post it advertises. For each post give: the post title as written; the employer; " +
+              "the number of posts; the closing date for applications as YYYY-MM-DD; the region and district of the " +
+              "duty station if stated; the language of the advert (en or sw); a one-line summary (under 200 characters) " +
+              "of the main requirement in the advert's language; and the title and summary translated into the other " +
+              "language (English if the advert is Swahili, Swahili if it is English). Use null for anything not stated. " +
+              "Do not invent details.",
+          },
+        ],
+      },
+    ],
+    generationConfig: {
+      responseMimeType: "application/json",
+      responseSchema: POSTS_SCHEMA,
+      temperature: 0,
+    },
+  };
+}
+
+/** The text Gemini returned, or nothing if it answered with no candidate. */
+export function geminiText(answer: unknown): string | undefined {
+  const parts = (answer as { candidates?: { content?: { parts?: { text?: string }[] } }[] })
+    ?.candidates?.[0]?.content?.parts;
+  const text = parts?.map((p) => p.text ?? "").join("");
+  return text || undefined;
+}
+
+type GeminiPost = {
+  title?: string;
+  employer?: string | null;
+  number_of_posts?: number | null;
+  closing_date?: string | null;
+  region?: string | null;
+  district?: string | null;
+  language?: string;
+  summary?: string | null;
+  title_translated?: string | null;
+  summary_translated?: string | null;
+};
+
+/** The listings from Gemini's reading of one advert. Each post is "<advert id>#<n>". */
+export function readAdvertPosts(answer: unknown, advert: Advert): Listing[] {
+  const text = geminiText(answer);
+  if (!text) throw new Error("Gemini gave no answer for an advert");
+  const posts = (JSON.parse(text) as { posts?: GeminiPost[] }).posts;
+  if (!Array.isArray(posts)) throw new Error("Gemini answered an advert in an unexpected shape");
+  return posts
+    .filter((p) => clean(p.title))
+    .map((p, n) => {
+      const title = clean(p.title)!;
+      const employer = clean(p.employer ?? undefined);
+      const summary = clean(p.summary ?? undefined);
+      return {
+        external_id: `${advert.id}#${n + 1}`,
+        title,
+        employer,
+        summary,
+        details: { posts: p.number_of_posts ?? undefined, advert: advert.title },
+        original_url: AJIRA_ADVERTS_PAGE,
+        language: p.language === "en" ? "en" : "sw",
+        opens_on: advert.published_on,
+        closing_on: datePart(p.closing_date ?? undefined),
+        region: clean(p.region ?? undefined),
+        district: clean(p.district ?? undefined) ?? councilDistrict(employer),
+        sector: guessSector(`${title} ${summary ?? ""} ${employer ?? ""}`),
+        translated_title: clean(p.title_translated ?? undefined),
+        translated_summary: clean(p.summary_translated ?? undefined),
+      };
+    });
+}
+
+/** Ask Gemini to translate short texts: Swahili into English, English into Swahili, in the same order. */
+export function geminiTranslateRequest(items: { text: string; language: "en" | "sw" }[]) {
+  return {
+    contents: [
+      {
+        parts: [
+          {
+            text:
+              "Translate each item: Swahili (sw) into English, English (en) into Swahili. These are titles and short " +
+              "summaries of Tanzanian job and tender adverts. Keep names, numbers and acronyms as they are. Return " +
+              "the translations in the same order, one per item.\n" +
+              JSON.stringify(items),
+          },
+        ],
+      },
+    ],
+    generationConfig: {
+      responseMimeType: "application/json",
+      responseSchema: { type: "ARRAY", items: { type: "STRING" } },
+      temperature: 0,
+    },
+  };
+}
+
+/** The translations from Gemini's answer, matched to the inputs by position; nothing where it did not answer. */
+export function readTranslations(answer: unknown, count: number): (string | undefined)[] {
+  let list: unknown = [];
+  try {
+    list = JSON.parse(geminiText(answer) ?? "[]");
+  } catch {
+    list = [];
+  }
+  const rows = Array.isArray(list) && list.length === count ? list : [];
+  return Array.from({ length: count }, (_, i) => clean(rows[i]) || undefined);
 }

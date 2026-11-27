@@ -688,6 +688,7 @@ export const en = {
   choosePhoto: "Choose photo",
   replacePhoto: "Replace photo",
   photoAdded: "Added",
+  photoRules: "Use a JPEG or PNG photo, up to 5 MB.",
   photoWrongType: "This photo can't be used. Choose a JPEG or PNG photo.",
   photoTooBig: "This photo is too big. Choose one under 5 MB.",
   photoUnreadable: "We couldn't open this photo. Try another one, such as a JPEG or PNG.",

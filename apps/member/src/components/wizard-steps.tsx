@@ -325,6 +325,7 @@ export function IdentityStep({
         onPress={() => (ready ? onSaveId(idNumber) : setAskedEarly(true))}
         disabled={busy}
       />
+      <Text className="font-figtree text-[13px] text-ink-2">{t.photoRules}</Text>
       <View className="flex-row flex-wrap gap-3">
         <PhotoPicker
           label={t.facePhoto}

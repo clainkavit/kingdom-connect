@@ -173,6 +173,11 @@ describe("Verify your identity (S05, R28)", () => {
     ).toBeTruthy();
   });
 
+  it("says which photos are accepted before any photo is chosen", async () => {
+    await show(4, {}, fakeApi());
+    expect(screen.getByText("Use a JPEG or PNG photo, up to 5 MB.")).toBeTruthy();
+  });
+
   it("says to choose the ID type and number when Save ID is pressed early", async () => {
     const api = fakeApi();
     await show(4, {}, api);

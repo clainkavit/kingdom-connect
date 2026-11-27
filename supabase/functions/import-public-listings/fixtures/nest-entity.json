@@ -1,0 +1,13 @@
+{
+  "data": {
+    "getProcuringEntityDetailsByUuid": {
+      "code": 9000,
+      "data": {
+        "uuid": "07e3c207-c78e-4985-8ccd-2c93ca7d69e4",
+        "name": "IKUNGI  DISTRICT COUNCIL",
+        "region": { "areaName": "SINGIDA" },
+        "district": { "areaName": "IKUNGI" }
+      }
+    }
+  }
+}

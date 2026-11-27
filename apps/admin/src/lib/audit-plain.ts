@@ -207,6 +207,12 @@ export function describe(
         return t.auditSayRecoveryAsked(name(r.member_id));
       case "recovery.applied":
         return t.auditSayRecoveryApplied;
+      case "public_listing.approved":
+        return t.auditSayListingApproved(a, bold(String(r.title ?? "")), String(r.source ?? ""));
+      case "public_listing.discarded":
+        return t.auditSayListingDiscarded(a, bold(String(r.title ?? "")));
+      case "public_listings.imported":
+        return t.auditSayListingsImported(bold(String(r.source ?? "")), String(r.found ?? 0));
     }
     const what = t.auditThing(table);
     if (op === "insert") return t.auditSayAdded(a, what);

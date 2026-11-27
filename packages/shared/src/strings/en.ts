@@ -1321,6 +1321,12 @@ export const en = {
   auditSayDataDeleted: "A member's data was deleted at their request",
   auditSayRecoveryAsked: (m: string) => `Email recovery was asked for ${m}`,
   auditSayRecoveryApplied: "A recovered email took effect",
+  auditSayListingApproved: (a: string, title: string, source: string) =>
+    `${a} approved the public listing ${title} from ${source}`,
+  auditSayListingDiscarded: (a: string, title: string) =>
+    `${a} discarded the public listing ${title}`,
+  auditSayListingsImported: (source: string, found: string) =>
+    `The daily import read ${found} listings from ${source}`,
   auditSayAdded: (a: string, thing: string) => `${a} added ${thing}`,
   auditSayChanged: (a: string, thing: string) => `${a} changed ${thing}`,
   auditSayRemoved: (a: string, thing: string) => `${a} removed ${thing}`,

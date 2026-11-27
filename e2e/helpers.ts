@@ -390,9 +390,14 @@ export async function reportStatus(reportId: string) {
   return row!.status as string;
 }
 
-export async function addAuditEntry(action: string, before: object, after: object) {
+export async function addAuditEntry(
+  action: string,
+  before: object,
+  after: object,
+  targetType = "e2e",
+) {
   await db`insert into private.audit_log (action, target_type, before, after)
-    values (${action}, 'e2e', ${db.json(before as never)}, ${db.json(after as never)})`;
+    values (${action}, ${targetType}, ${db.json(before as never)}, ${db.json(after as never)})`;
 }
 
 export async function requestConnection(from: string, to: string, note: string) {

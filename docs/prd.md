@@ -853,6 +853,11 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 - The actor filter is a list of staff accounts, a member username, or system entries.
 - Idea-detail views are logged when ideas arrive in Release 2.
 
+**Decided on 27 November 2026 (audit log in plain language, R13b, [#370](https://github.com/clainkavit/kingdom-connect/issues/370))**
+- The audit log is a day timeline in plain sentences with names, for example "Champion Joseph made Neema Mushi an investor, by invitation". Action keys, table names and ids appear only under "Technical details".
+- Filters: a person (a staff account, a member username or the system), kinds of change and a date range. Clicking an entry opens a side panel with who, when, the internet address and what changed, old value to new.
+- Routine system jobs (a job stamping its last run time) are hidden by default and stay in the log; "Show routine system jobs" brings them back.
+
 **Decided on 4 November 2026 (member dashboard, R14)**
 - R14 builds Welcome, my connection requests, My activity and quick actions. People you may know (O08), featured and latest opportunities and news arrive with their tickets.
 - In Release 1, My activity lists the connection requests the member sent that are still waiting. Applications, interests, idea requests and registrations join it in Release 2.
@@ -1055,6 +1060,7 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | 3 Nov 2026 | Reports: profiles and threads now, KC-year-number references that run on across years, one open report per item with a Block offer, one staff-only screenshot, 10 reports a day | 13, 18 |
 | 3 Nov 2026 | Reports queue: Release 1 actions, cases decided together, repeat rule per member and decision, a message to the member separate from the staff note, X3 warning, pauses until lifted | 13, 14, 18 |
 | 3 Nov 2026 | Audit log: Super Admins only, changed fields with the full record on demand, staff, username or system actor filter | 13, 18 |
+| 27 Nov 2026 | Audit log in plain language: day timeline, filters by person and kind of change, side panel, routine system jobs hidden (#370) | 18 |
 | 4 Nov 2026 | Member dashboard: Release 1 widgets, My activity as requests sent, quick actions by level | 7, 18 |
 | 4 Nov 2026 | Admin dashboard: Release 1 counts only, live counts reloaded every 15 minutes | 7, 18 |
 | 4 Nov 2026 | Legal acceptance enforced on the server: no member data until the current terms and privacy notice are accepted | 13, 18 |

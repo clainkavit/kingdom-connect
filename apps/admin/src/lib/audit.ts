@@ -17,7 +17,27 @@ export type AuditEntry = {
   before: RowValues;
   after: RowValues;
   ip: string | null;
+  kind: AuditKind;
+  routine: boolean;
 };
+
+export const AUDIT_KINDS = [
+  "people",
+  "investors",
+  "business",
+  "opportunities",
+  "ideas",
+  "training",
+  "moderation",
+  "staff",
+  "settings",
+  "other",
+] as const;
+
+export type AuditKind = (typeof AUDIT_KINDS)[number];
+
+/** Names for the ids an entry mentions: staff, members, businesses, opportunities, ideas and trainings. */
+export type AuditNames = Map<string, string>;
 
 /** Where the next page starts: the exact server time and id of the last entry shown. */
 export type AuditCursor = { createdAt: string; id: string };
@@ -26,37 +46,17 @@ export type AuditFilters = {
   staffId?: string;
   username?: string;
   systemOnly?: boolean;
-  action?: string;
+  kinds?: AuditKind[];
   from?: string;
   to?: string;
+  showRoutine?: boolean;
 };
 
 export type AuditApi = {
   page: (filters: AuditFilters, after: AuditCursor | null) => Promise<AuditEntry[]>;
-  actions: () => Promise<string[]>;
+  names: (ids: string[]) => Promise<AuditNames>;
   staff: () => Promise<{ id: string; name: string }[]>;
 };
-
-/** One changed field. `from` or `to` is absent when the field did not exist on that side. */
-export type FieldChange = { field: string; from?: string; to?: string };
-
-const TIMESTAMPS = new Set(["created_at", "updated_at"]);
-
-const asText = (value: unknown) => (typeof value === "string" ? value : JSON.stringify(value));
-
-/** The fields an entry changed, leaving out row timestamps. A new row lists every field. */
-export function changedFields(before: RowValues, after: RowValues): FieldChange[] {
-  const fields = [...new Set([...Object.keys(before ?? {}), ...Object.keys(after ?? {})])];
-  return fields
-    .filter((field) => !TIMESTAMPS.has(field))
-    .filter((field) => JSON.stringify(before?.[field]) !== JSON.stringify(after?.[field]))
-    .map((field) => {
-      const change: FieldChange = { field };
-      if (before && field in before) change.from = asText(before[field]);
-      if (after && field in after) change.to = asText(after[field]);
-      return change;
-    });
-}
 
 export const auditApi: AuditApi = {
   async page(filters, after) {
@@ -64,7 +64,8 @@ export const auditApi: AuditApi = {
       actor_staff: filters.staffId ?? null,
       actor_username: filters.username ?? null,
       system_only: filters.systemOnly ?? false,
-      action_name: filters.action ?? null,
+      kinds: filters.kinds?.length ? filters.kinds : null,
+      show_routine: filters.showRoutine ?? false,
       from_date: filters.from ?? null,
       to_date: filters.to ?? null,
       before_at: after?.createdAt ?? null,
@@ -85,6 +86,8 @@ export const auditApi: AuditApi = {
         before: RowValues;
         after: RowValues;
         ip_address: string | null;
+        kind: AuditKind;
+        routine: boolean;
       }[]
     ).map((r) => ({
       id: r.id,
@@ -99,13 +102,16 @@ export const auditApi: AuditApi = {
       before: r.before,
       after: r.after,
       ip: r.ip_address,
+      kind: r.kind,
+      routine: r.routine,
     }));
   },
 
-  async actions() {
-    const { data, error } = await supabase.rpc("audit_actions");
+  async names(ids) {
+    if (ids.length === 0) return new Map();
+    const { data, error } = await supabase.rpc("audit_names", { ids });
     if (error) throw error;
-    return data as string[];
+    return new Map((data as { id: string; name: string }[]).map((r) => [r.id, r.name]));
   },
 
   async staff() {

@@ -61,3 +61,36 @@ test("an Administrator approves a public tender and discards another (O20)", asy
   if (process.env.SCREENSHOT_DIR)
     await page.screenshot({ path: `${process.env.SCREENSHOT_DIR}/o20-public-listings.png` });
 });
+
+test("an Administrator approves the ticked listings that are ready (O22)", async ({ page }) => {
+  const stamp = Date.now();
+  const ready = `Supply of desks ${stamp}`;
+  const unplaced = `Supply of benches ${stamp}`;
+  const readyId = await addPublicListing("nest", {
+    external_id: `e2e-bulk-${stamp}-1`,
+    title: ready,
+    original_url: "https://nest.go.tz/tenders/published-tenders",
+    closing_on: inDays(14),
+    region: "SINGIDA",
+    sector: "Construction",
+  });
+  const unplacedId = await addPublicListing("nest", {
+    external_id: `e2e-bulk-${stamp}-2`,
+    title: unplaced,
+    original_url: "https://nest.go.tz/tenders/published-tenders",
+    closing_on: inDays(14),
+    sector: "Construction",
+  });
+
+  await signInToAdmin(page, await createStaff(`Bulk Admin ${stamp}`));
+  await page.goto("/public-listings");
+  await page.getByLabel("Search titles").fill(String(stamp));
+  await expect(page.getByText("Page 1 of 1")).toBeVisible();
+  await page.getByLabel("Select all shown").check();
+  await page.getByRole("button", { name: "Approve selected (2)" }).click();
+  await expect(page.getByText(/^1 listing approved and published\. 1 still needs/)).toBeVisible();
+  await expect.poll(() => publicListingStatus(readyId)).toBe("approved");
+  expect(await publicListingStatus(unplacedId)).toBe("waiting");
+  await expect(page.getByLabel(`Select ${unplaced}`)).toBeChecked();
+  await expect(page.getByRole("button", { name: new RegExp(ready) })).toHaveCount(0);
+});

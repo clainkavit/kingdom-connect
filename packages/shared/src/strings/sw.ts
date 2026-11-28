@@ -2638,6 +2638,27 @@ export const sw: Strings = {
   plDiscarded: (n: number) =>
     n === 1 ? "Tangazo 1 limeondolewa." : `Matangazo ${n} yameondolewa.`,
   plDiscardFailed: "Hatukuweza kuyaondoa. Jaribu tena.",
+  plApproveSelected: (n: number) => `Idhinisha yaliyochaguliwa (${n})`,
+  plApproveHint:
+    "Kuidhinisha yaliyochaguliwa kunatumia mahali, sekta na tafsiri iliyopendekezwa kwa kila tangazo, bila ujuzi. Kazi zinaidhinishwa kama za muda wote.",
+  plApprovedMany: (approved: number, left: number) =>
+    [
+      approved === 1
+        ? "Tangazo 1 limeidhinishwa na kuchapishwa."
+        : `Matangazo ${approved} yameidhinishwa na kuchapishwa.`,
+      left === 0
+        ? ""
+        : left === 1
+          ? "Tangazo 1 bado linahitaji mkoa, sekta au tarehe ya kufunga. Limebaki limechaguliwa: lifungue ulikamilishe."
+          : `Matangazo ${left} bado yanahitaji mkoa, sekta au tarehe ya kufunga. Yamebaki yamechaguliwa: fungua kila moja ulikamilishe.`,
+    ]
+      .filter(Boolean)
+      .join(" "),
+  plApproveManyFailed: "Hatukuweza kuyaidhinisha. Jaribu tena.",
+  plPageSize: "Onyesha",
+  plPage: (page: number, pages: number) => `Ukurasa ${page} wa ${pages}`,
+  plPrevious: "Iliyotangulia",
+  plNext: "Inayofuata",
   plBack: "Rudi kwenye foleni",
   plOpenNotice: "Fungua tangazo rasmi",
   plSummary: "Muhtasari",

@@ -311,6 +311,8 @@ function Queue({ api }: { api: PublicListingsApi }) {
     null,
   );
   const [busy, setBusy] = useState(false);
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(20);
 
   const sources = useMemo(
     () =>
@@ -329,6 +331,9 @@ function Queue({ api }: { api: PublicListingsApi }) {
           (l.translatedTitle ?? "").toLowerCase().includes(words)),
     );
   }, [items, source, query]);
+  const pages = Math.max(1, Math.ceil(shown.length / pageSize));
+  const pageNow = Math.min(page, pages - 1);
+  const paged = shown.slice(pageNow * pageSize, (pageNow + 1) * pageSize);
 
   const remove = (ids: string[]) => {
     setItems((list) => (list ?? []).filter((l) => !ids.includes(l.id)));
@@ -341,7 +346,20 @@ function Queue({ api }: { api: PublicListingsApi }) {
       else next.delete(id);
       return next;
     });
-  const allShown = shown.length > 0 && shown.every((l) => selected.has(l.id));
+  const allShown = paged.length > 0 && paged.every((l) => selected.has(l.id));
+
+  const approveSelected = async () => {
+    const ids = [...selected];
+    setBusy(true);
+    const done = await api.approveMany(ids).catch(() => null);
+    setBusy(false);
+    if (!done) return setNotice({ tone: "bad", text: t.plApproveManyFailed });
+    remove(done.approved);
+    setNotice({
+      tone: done.needsDetails ? "warn" : "good",
+      text: t.plApprovedMany(done.approved.length, done.needsDetails),
+    });
+  };
 
   const discardSelected = async () => {
     const ids = [...selected];
@@ -384,35 +402,57 @@ function Queue({ api }: { api: PublicListingsApi }) {
               id="pl-source"
               label={t.plFilterSource}
               value={source}
-              onChange={setSource}
+              onChange={(value) => {
+                setSource(value);
+                setPage(0);
+              }}
               options={[{ value: "", label: t.plAllSources }, ...sources]}
             />
-            <Field id="pl-search" label={t.plSearch} value={query} onChange={setQuery} />
+            <Field
+              id="pl-search"
+              label={t.plSearch}
+              value={query}
+              onChange={(value) => {
+                setQuery(value);
+                setPage(0);
+              }}
+            />
           </div>
           <div className="flex flex-wrap items-center justify-between gap-3">
             <label className="flex min-h-[44px] items-center gap-3 text-sm font-semibold text-foreground">
               <input
                 type="checkbox"
                 checked={allShown}
-                onChange={(e) => shown.forEach((l) => toggle(l.id, e.target.checked))}
+                onChange={(e) => paged.forEach((l) => toggle(l.id, e.target.checked))}
                 className={checkboxClass}
               />
               {t.plSelectAll}
             </label>
-            <button
-              type="button"
-              disabled={busy || selected.size === 0}
-              onClick={discardSelected}
-              className={buttonVariants({ variant: "outline" })}
-            >
-              {t.plDiscardSelected(selected.size)}
-            </button>
+            <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                disabled={busy || selected.size === 0}
+                onClick={approveSelected}
+                className={buttonVariants()}
+              >
+                {t.plApproveSelected(selected.size)}
+              </button>
+              <button
+                type="button"
+                disabled={busy || selected.size === 0}
+                onClick={discardSelected}
+                className={buttonVariants({ variant: "outline" })}
+              >
+                {t.plDiscardSelected(selected.size)}
+              </button>
+            </div>
           </div>
+          <p className="text-[13px] text-ink-2">{t.plApproveHint}</p>
           {shown.length === 0 ? (
             <p className="text-sm text-ink-2">{t.plNoMatch}</p>
           ) : (
             <ul className="flex flex-col divide-y rounded-[22px] border bg-card shadow-card">
-              {shown.map((l) => (
+              {paged.map((l) => (
                 <li key={l.id} className="flex items-start gap-3 px-4 py-3">
                   <input
                     type="checkbox"
@@ -446,6 +486,43 @@ function Queue({ api }: { api: PublicListingsApi }) {
               ))}
             </ul>
           )}
+          {shown.length > 0 ? (
+            <div className="flex flex-wrap items-end justify-between gap-3">
+              <div className="w-[120px]">
+                <Select
+                  id="pl-page-size"
+                  label={t.plPageSize}
+                  value={String(pageSize)}
+                  onChange={(value) => {
+                    setPageSize(Number(value));
+                    setPage(0);
+                  }}
+                  options={[10, 20, 50].map((n) => ({ value: String(n), label: String(n) }))}
+                />
+              </div>
+              <nav aria-label={t.plPage(pageNow + 1, pages)} className="flex items-center gap-2">
+                <button
+                  type="button"
+                  disabled={pageNow === 0}
+                  onClick={() => setPage(pageNow - 1)}
+                  className={buttonVariants({ variant: "outline" })}
+                >
+                  {t.plPrevious}
+                </button>
+                <span className="px-2 text-sm font-semibold text-foreground">
+                  {t.plPage(pageNow + 1, pages)}
+                </span>
+                <button
+                  type="button"
+                  disabled={pageNow >= pages - 1}
+                  onClick={() => setPage(pageNow + 1)}
+                  className={buttonVariants({ variant: "outline" })}
+                >
+                  {t.plNext}
+                </button>
+              </nav>
+            </div>
+          ) : null}
         </>
       )}
     </div>

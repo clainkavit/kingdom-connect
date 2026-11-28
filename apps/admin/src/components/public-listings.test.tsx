@@ -74,6 +74,9 @@ const fakeApi = (over: Partial<PublicListingsApi> = {}): PublicListingsApi => ({
   districts: vi.fn().mockResolvedValue([{ value: "d-ikungi", label: "Ikungi" }]),
   slots: vi.fn().mockResolvedValue({ used: 2, limit: 5 }),
   approve: vi.fn().mockResolvedValue({ result: "ok", featured: null }),
+  approveMany: vi
+    .fn()
+    .mockImplementation(async (ids: string[]) => ({ approved: ids, needsDetails: 0 })),
   discard: vi.fn().mockImplementation(async (ids: string[]) => ids.length),
   setActive: vi.fn().mockResolvedValue("ok"),
   addSource: vi.fn().mockResolvedValue("ok"),
@@ -134,6 +137,53 @@ describe("PublicListingsScreen queue (O20)", () => {
     expect(api.discard).toHaveBeenCalledWith(["l1", "l2"]);
     expect(screen.getByText("2 listings discarded.")).toBeTruthy();
     expect(screen.getByText("Nothing waiting")).toBeTruthy();
+  });
+
+  it("approves the ticked listings, keeping the ones that still need details ticked (O22)", async () => {
+    const api = fakeApi({
+      approveMany: vi.fn().mockResolvedValue({ approved: ["l1"], needsDetails: 1 }),
+    });
+    await show(api);
+    expect(screen.getByText(/Jobs are approved as Full-time/)).toBeTruthy();
+    await act(async () => fireEvent.click(screen.getByLabelText("Select all shown")));
+    await click("Approve selected (2)");
+    expect(api.approveMany).toHaveBeenCalledWith(["l1", "l2"]);
+    expect(
+      screen.getByText(
+        "1 listing approved and published. 1 still needs a region, sector or closing date. It stays ticked: open it to finish it.",
+      ),
+    ).toBeTruthy();
+    expect(screen.queryByText("Constructions of Ikungi bus stand")).toBeNull();
+    expect(
+      (screen.getByLabelText("Select Mwandishi mwendesha ofisi daraja la II") as HTMLInputElement)
+        .checked,
+    ).toBe(true);
+    expect(screen.getByRole("button", { name: "Approve selected (1)" })).toBeTruthy();
+  });
+
+  it("shows 20 listings a page, with a choice of 10 or 50 and Previous and Next (O22)", async () => {
+    const many = Array.from({ length: 45 }, (_, i) =>
+      listing({ id: `p${i}`, title: `Listing ${i + 1}`, translatedTitle: null }),
+    );
+    await show(fakeApi({ waiting: vi.fn().mockResolvedValue(many) }));
+    expect(screen.getByText("Page 1 of 3")).toBeTruthy();
+    expect(screen.getByText("Listing 20")).toBeTruthy();
+    expect(screen.queryByText("Listing 21")).toBeNull();
+    expect((screen.getByRole("button", { name: "Previous" }) as HTMLButtonElement).disabled).toBe(
+      true,
+    );
+    await click("Next");
+    expect(screen.getByText("Page 2 of 3")).toBeTruthy();
+    expect(screen.getByText("Listing 21")).toBeTruthy();
+    await act(async () => fireEvent.click(screen.getByLabelText("Select all shown")));
+    expect(screen.getByRole("button", { name: "Discard selected (20)" })).toBeTruthy();
+    await type("Show", "50");
+    expect(screen.getByText("Page 1 of 1")).toBeTruthy();
+    expect(screen.getByText("Listing 45")).toBeTruthy();
+    await type("Show", "10");
+    await click("Next");
+    await type("Search titles", "Listing 4");
+    expect(screen.getByText("Page 1 of 1")).toBeTruthy();
   });
 
   it("says when nothing is waiting", async () => {

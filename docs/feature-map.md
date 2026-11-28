@@ -96,6 +96,7 @@ When you add a screen, add its row in the same pull request.
 | `/recoveries` | A02 | Email recovery requests | Verification > Recoveries | Administrator, Super Administrator | |
 | `/moderation` | A04 | Moderation queue for posts, ideas, trainings, events | Moderation in the menu | Administrator, Super Administrator | admin.dashboard.spec.ts |
 | `/moderation/[id]` | A05 | One item to approve or reject | Moderation > an item | Administrator, Super Administrator | |
+| `/public-listings` | A21 | Public listings queue and sources: approve or discard imported tenders and jobs, switch sources, add a company | Public listings in the menu | Administrator, Super Administrator | admin.public-listings.spec.ts |
 | `/picks` | A18 | Picks for posters | Picks in the menu | Administrator, Super Administrator | admin.picks.spec.ts |
 | `/ideas` | | Ideas oversight | Ideas in the menu | Administrator, Super Administrator | admin.ideas.spec.ts |
 | `/reports` | A06 | Reports queue | Reports in the menu | Administrator, Super Administrator | admin.reports.spec.ts |

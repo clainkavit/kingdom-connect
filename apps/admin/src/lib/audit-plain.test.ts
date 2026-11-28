@@ -149,6 +149,23 @@ group("describe", () => {
         }),
       ),
     ).toBe("The daily import read 209 listings from **NeST**");
+    expect(
+      say(
+        entry({
+          action: "public_listing_sources.switched",
+          before: { active: true, name: "CRDB Bank" },
+          after: { active: false, name: "CRDB Bank" },
+        }),
+      ),
+    ).toBe("**Champion Joseph** switched off the source **CRDB Bank**");
+    expect(
+      say(
+        entry({
+          action: "public_listing_sources.added",
+          after: { name: "NMB Bank", kind: "jobs" },
+        }),
+      ),
+    ).toBe("**Champion Joseph** added the company **NMB Bank** as a source");
   });
 
   it("falls back to the kind of record for an action it does not know", () => {

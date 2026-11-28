@@ -83,6 +83,7 @@ export const adminNav: readonly NavItem[] = [
   { key: "adminNavDashboard", href: "/", icon: "layout-grid" },
   { key: "adminNavVerification", href: "/verification", icon: "shield-check" },
   { key: "adminNavModeration", href: "/moderation", icon: "square-check" },
+  { key: "adminNavPublicListings", href: "/public-listings", icon: "megaphone" },
   { key: "adminNavPicks", href: "/picks", icon: "star" },
   { key: "adminNavIdeas", href: "/ideas", icon: "lightbulb" },
   { key: "adminNavReports", href: "/reports", icon: "flag" },

@@ -685,3 +685,15 @@ export async function pickRequestStatus(opportunityId: string) {
     await db`select status from public.pick_requests where opportunity_id = ${opportunityId}`;
   return row?.status as string | undefined;
 }
+
+/** A listing waiting in the public listings queue, as the daily import saves it (O19). */
+export async function addPublicListing(source: string, listing: Record<string, unknown>) {
+  const [row] =
+    await db`select private.save_public_listing(${source}, ${db.json(listing as never)}) as id`;
+  return row!.id as string;
+}
+
+export async function publicListingStatus(id: string) {
+  const [row] = await db`select status from public.public_listings where id = ${id}`;
+  return row?.status as string | undefined;
+}

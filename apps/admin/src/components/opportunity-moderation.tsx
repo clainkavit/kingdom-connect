@@ -40,7 +40,7 @@ export const typeText: Record<PostDetail["type"], TextKey> = {
   tender: "typeTender",
 };
 
-const employmentText: Record<(typeof employmentTypes)[number], TextKey> = {
+export const employmentText: Record<(typeof employmentTypes)[number], TextKey> = {
   full_time: "empFullTime",
   part_time: "empPartTime",
   contract: "empContract",
@@ -309,7 +309,7 @@ const emptyPost: OpportunityInput = {
 const selectClass =
   "min-h-[44px] rounded-[9px] border border-field bg-card px-3 text-[15px] text-foreground outline-none focus-visible:ring-3 focus-visible:ring-ring/50";
 
-function Select({
+export function OptionSelect({
   id,
   label,
   value,
@@ -484,7 +484,7 @@ export function AdminPostForm({ api }: { api: OpportunityModerationApi }) {
         className="flex flex-col gap-4 rounded-lg border bg-card p-4 shadow-card"
         onSubmit={(e) => e.preventDefault()}
       >
-        <Select
+        <OptionSelect
           id="post-type"
           label={t.fieldType}
           value={form.type}
@@ -510,7 +510,7 @@ export function AdminPostForm({ api }: { api: OpportunityModerationApi }) {
           onChange={(v) => set("role", v)}
         />
         {form.type === "job" ? (
-          <Select
+          <OptionSelect
             id="post-employment"
             label={t.fieldEmployment}
             value={form.employmentType}
@@ -532,7 +532,7 @@ export function AdminPostForm({ api }: { api: OpportunityModerationApi }) {
         </label>
         {!form.remote ? (
           <>
-            <Select
+            <OptionSelect
               id="post-region"
               label={t.region}
               value={form.regionId}
@@ -542,7 +542,7 @@ export function AdminPostForm({ api }: { api: OpportunityModerationApi }) {
                 setForm((f) => ({ ...f, regionId: v, districtId: "" }));
               }}
             />
-            <Select
+            <OptionSelect
               id="post-district"
               label={t.district}
               value={form.districtId}
@@ -551,7 +551,7 @@ export function AdminPostForm({ api }: { api: OpportunityModerationApi }) {
             />
           </>
         ) : null}
-        <Select
+        <OptionSelect
           id="post-sector"
           label={t.businessSector}
           value={form.sectorId}

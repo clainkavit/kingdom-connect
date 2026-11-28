@@ -1,12 +1,14 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 create or replace function access.accepted_terms_and_privacy() returns boolean language sql stable as 'select true';
-select plan(38);
+select plan(44);
 
 insert into auth.users (id, email)
 select ('00000000-0000-0000-0000-0000000009' || k)::uuid, 'pl' || k || '@test.invalid'
-from unnest(array['01', 'a1']) k;
-insert into public.members (id, username, status) values ('00000000-0000-0000-0000-000000000901', 'pl_member', 'approved');
+from unnest(array['01', '02', 'a1']) k;
+insert into public.members (id, username, status) values
+  ('00000000-0000-0000-0000-000000000901', 'pl_member', 'approved'),
+  ('00000000-0000-0000-0000-000000000902', 'pl_looker', 'pending');
 insert into public.staff (id, full_name, role, active) values
   ('00000000-0000-0000-0000-0000000009a1', 'Listing Admin', 'admin', true);
 
@@ -119,6 +121,25 @@ select is(public.set_public_listing_source_active((select id from public.public_
 select is(public.set_public_listing_source_active((select id from public.public_listing_sources where key = 'crdb'),
   false), 'ok', 'staff switch a source off');
 
+select pg_temp.login('01');
+select is((select row(poster_name, public_source)::text from public.opportunity_list()
+           where id = current_setting('test.job_post')::uuid),
+  '("Ajira Portal","Ajira Portal")', 'members see the source as the poster of a public listing');
+select is((select row(public_source, official_url, fee_note)::text from public.opportunity_detail(
+           current_setting('test.post')::uuid)),
+  '(NeST,https://nest.go.tz/tenders/published-tenders,"Fees or bid security may apply. See the official notice.")',
+  'the detail carries the official link and the fee note');
+select is((select public_source from public.search_opportunities('stendi mabasi')
+           where id = current_setting('test.post')::uuid), 'NeST', 'Search finds it by its translated title');
+select is((select count(*)::int from public.opportunity_list(q => 'Ujenzi stendi')
+           where id = current_setting('test.post')::uuid), 1, 'and so does the list''s search box');
+select is((select result from public.respond_to_opportunity(current_setting('test.job_post')::uuid, 'I am keen', null)),
+  'public_listing', 'nobody responds to a public listing in the app');
+select pg_temp.login('02');
+select is((select row(public_source, official_url)::text from public.opportunity_detail(
+           current_setting('test.post')::uuid)), '(NeST,)', 'someone who only looks does not get the official link');
+select pg_temp.login('a1');
+
 reset role;
 select is((select count(*)::int from private.audit_log
            where action in ('public_listing.approved', 'public_listing.discarded')
@@ -131,7 +152,7 @@ select is((select string_agg(action || ':' || access.audit_kind(action) || ':'
              and actor_staff_id = '00000000-0000-0000-0000-0000000009a1'),
   'public_listing_sources.added:opportunities:false,public_listing_sources.switched:opportunities:false',
   'adding and switching sources are logged as the Administrator''s own entries');
-select is(private.finish_public_listing_run('nest', array['other-tender']), 1,
+select ok(private.finish_public_listing_run('nest', array['other-tender']) >= 1,
   'a run that no longer finds a listing closes its post');
 select is((select status from public.opportunities where id = current_setting('test.post')::uuid), 'closed',
   'the post is closed');

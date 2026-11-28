@@ -693,6 +693,29 @@ export async function addPublicListing(source: string, listing: Record<string, u
   return row!.id as string;
 }
 
+/** Approves a waiting public listing as the staff member with this email, as the review queue does (O20). */
+export async function approvePublicListing(
+  id: string,
+  staffEmail: string,
+  region: string,
+  sector: string,
+) {
+  return db.begin(async (sql) => {
+    const [staff] = await sql`select id from auth.users where email = ${staffEmail}`;
+    await sql`select set_config('request.jwt.claims', ${JSON.stringify({
+      sub: staff!.id,
+      role: "authenticated",
+      otp_verified: true,
+    })}, true)`;
+    await sql`set local role authenticated`;
+    const [row] = await sql`
+      select result, opportunity_id from public.approve_public_listing(${id},
+        (select id from public.regions where name_en = ${region}), null, false,
+        (select id from public.sectors where name_en = ${sector}))`;
+    return row as unknown as { result: string; opportunity_id: string | null };
+  });
+}
+
 export async function publicListingStatus(id: string) {
   const [row] = await db`select status from public.public_listings where id = ${id}`;
   return row?.status as string | undefined;

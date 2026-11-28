@@ -1669,6 +1669,11 @@ export const en = {
   oppEmptyMessage: "New posts from verified members appear here.",
   oppNoFeeNote:
     "No opportunity may charge a fee to apply. If anyone asks you for money, report the post.",
+  oppPublicFrom: (source: string) => `Public listing from ${source}`,
+  oppApplyOfficial: "Apply on the official site",
+  oppApplyOfficialNote: "You apply on the advertiser's own site. Nothing is sent through this app.",
+  oppPublicFeeUnknown:
+    "Any fee is set by the advertiser. Read the official notice before you pay anything.",
   oppTenderTitle: "Tender details",
   oppTenderIssuer: "Issuing organisation",
   oppTenderReference: "Reference number",
@@ -2148,6 +2153,7 @@ export const en = {
   pickLapsed: "The time to answer has passed. The poster will never know you were asked.",
   respPickedPost:
     "This post is not open for applications. Kingdom Connect is picking people for it.",
+  respPublicListing: "This is a public listing. Apply on the official site.",
   adminNavPicks: "Picks for posters",
   pickAdminBeta: "Let Kingdom Connect pick is a Beta feature and free for posters.",
   pickAdminLoadFailed: "We couldn't load the picks. Try again.",

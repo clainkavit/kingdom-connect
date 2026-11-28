@@ -1700,6 +1700,12 @@ export const sw: Strings = {
   oppEmptyMessage: "Matangazo mapya kutoka kwa wanachama waliothibitishwa yataonekana hapa.",
   oppNoFeeNote:
     "Hakuna fursa inayoruhusiwa kutoza ada ya kuomba. Mtu akikuomba pesa, ripoti tangazo hilo.",
+  oppPublicFrom: (source: string) => `Tangazo la umma kutoka ${source}`,
+  oppApplyOfficial: "Omba kwenye tovuti rasmi",
+  oppApplyOfficialNote:
+    "Unaomba kwenye tovuti ya mtangazaji mwenyewe. Hakuna kinachotumwa kupitia programu hii.",
+  oppPublicFeeUnknown:
+    "Ada yoyote huwekwa na mtangazaji. Soma tangazo rasmi kabla ya kulipa chochote.",
   oppTenderTitle: "Maelezo ya zabuni",
   oppTenderIssuer: "Taasisi inayotoa zabuni",
   oppTenderReference: "Namba ya kumbukumbu",
@@ -2187,6 +2193,7 @@ export const sw: Strings = {
   pickAnsweredNo: "Umesema hapana. Mtangazaji hatajua kamwe kwamba uliulizwa.",
   pickLapsed: "Muda wa kujibu umepita. Mtangazaji hatajua kamwe kwamba uliulizwa.",
   respPickedPost: "Tangazo hili halipokei maombi. Kingdom Connect inachagua watu kwa ajili yake.",
+  respPublicListing: "Hili ni tangazo la umma. Omba kwenye tovuti rasmi.",
   adminNavPicks: "Uchaguzi kwa watangazaji",
   pickAdminBeta: "Kingdom Connect ikuchagulie ni huduma ya Beta na ni bure kwa watangazaji.",
   pickAdminLoadFailed: "Hatukuweza kupakia uchaguzi. Jaribu tena.",

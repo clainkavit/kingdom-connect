@@ -2,6 +2,7 @@ import "../test-router";
 import { COMPUTER, PHONE, setWidth } from "../test-width";
 import { stringsFor } from "@kingdom-connect/shared";
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { Linking } from "react-native";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   OPPORTUNITY_PAGE,
@@ -540,5 +541,94 @@ describe("Post an opportunity button (O14)", () => {
     expect(screen.getByRole("link", { name: "Scan now" }).getAttribute("href")).toBe(
       "/opportunities/scan",
     );
+  });
+});
+
+describe("Public listings (O21)", () => {
+  const listing = (over: Partial<OpportunityDetail> = {}) =>
+    detail({
+      type: "tender",
+      title: "Constructions of Ikungi bus stand",
+      posterId: null,
+      posterName: "NeST",
+      publicSource: "NeST",
+      officialUrl: "https://nest.go.tz/tenders/published-tenders",
+      feeNote: "Fees or bid security may apply. See the official notice.",
+      ...over,
+    });
+
+  it("names the source on the list card, with no Level 2 lock on a public tender", async () => {
+    await show(
+      <OpportunitiesList
+        api={fakeApi({
+          list: vi
+            .fn()
+            .mockResolvedValue([
+              card({ type: "tender", posterName: "NeST", publicSource: "NeST" }),
+            ]),
+        })}
+      />,
+    );
+    expect(screen.getByText(/Public listing from NeST/)).toBeTruthy();
+    expect(screen.queryByText(en.oppVerifyToRespond)).toBeNull();
+  });
+
+  it("sends the member to the official site instead of responding, with the fee note", async () => {
+    const open = vi.spyOn(Linking, "openURL").mockResolvedValue(undefined);
+    const respond = vi.fn(() => <></>);
+    await show(
+      <OpportunityDetailScreen
+        api={fakeApi({ detail: vi.fn().mockResolvedValue(listing({ type: "job" })) })}
+        id="o1"
+        respond={respond}
+      />,
+    );
+    expect(screen.getByText("Public listing from NeST")).toBeTruthy();
+    expect(respond).not.toHaveBeenCalled();
+    expect(screen.getByText(en.oppApplyOfficialNote)).toBeTruthy();
+    expect(
+      screen.getByText("Fees or bid security may apply. See the official notice."),
+    ).toBeTruthy();
+    expect(screen.queryByText(en.oppNoFeeNote)).toBeNull();
+    await press("Apply on the official site");
+    expect(open).toHaveBeenCalledWith("https://nest.go.tz/tenders/published-tenders");
+  });
+
+  it("warns that the advertiser sets any fee when the listing names none", async () => {
+    await show(
+      <OpportunityDetailScreen
+        api={fakeApi({
+          detail: vi.fn().mockResolvedValue(listing({ type: "job", feeNote: null })),
+        })}
+        id="o1"
+      />,
+    );
+    expect(screen.getByText(en.oppPublicFeeUnknown)).toBeTruthy();
+  });
+
+  it("on a phone, keeps the official link in the bar at the bottom", async () => {
+    setWidth(PHONE);
+    await show(
+      <OpportunityDetailScreen
+        api={fakeApi({ detail: vi.fn().mockResolvedValue(listing({ type: "job" })) })}
+        id="o1"
+      />,
+    );
+    const bar = screen
+      .getByRole("button", { name: "Apply on the official site" })
+      .closest("[style*=sticky]");
+    expect(bar).toBeTruthy();
+  });
+
+  it("offers no link once the listing has closed", async () => {
+    await show(
+      <OpportunityDetailScreen
+        api={fakeApi({
+          detail: vi.fn().mockResolvedValue(listing({ type: "job", readOnly: true })),
+        })}
+        id="o1"
+      />,
+    );
+    expect(screen.queryByRole("button", { name: "Apply on the official site" })).toBeNull();
   });
 });

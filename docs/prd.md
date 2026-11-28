@@ -293,6 +293,7 @@ Level 3 businesses and Administrators post opportunities, including tenders. Eve
 - **OPP-6** As an admin, I want to post opportunities and tenders on behalf of the community so that members see them without waiting for a business to post (changed 15 Oct).
 - **OPP-7** As a poster, I want Kingdom Connect to pick the most trusted people for my post so that I get a short list instead of reading every response (decided 14 Nov).
 - **OPP-8** As a member who did work through Kingdom Connect, I want to rate the other side, and be rated, so that good work and fair posters are known (decided 14 Nov).
+- **OPP-9** As a member, I want to see public Tanzanian tenders and jobs alongside members' posts, so that I find them without searching government and company sites one by one (decided 27 Nov, [#373](https://github.com/clainkavit/kingdom-connect/issues/373)).
 
 **Posting form: required fields**
 
@@ -307,7 +308,7 @@ Level 3 businesses and Administrators post opportunities, including tenders. Eve
 | Skills wanted | 1 to 5 tags. Required for Jobs and Collaboration; optional for other types (changed 20 Oct) |
 | Sector | Chosen from a fixed list (changed 20 Oct) |
 | Closing date | Required, maximum 90 days ahead |
-| No-fee declaration | Required tick for Level 3 posters: "No fee will be charged to applicants at any stage". It covers tenders too, so a tender that charges a document fee or bid security cannot be posted in Phase 1 (decided 19 Oct). Not shown for admin posts (changed 15 Oct), but admin posts never ask members for a fee either |
+| No-fee declaration | Required tick for Level 3 posters: "No fee will be charged to applicants at any stage". It covers tenders too, so a tender that charges a document fee or bid security cannot be posted in Phase 1 (decided 19 Oct). Not shown for admin posts (changed 15 Oct), but admin posts never ask members for a fee either. Public listings are the one exception: a public tender may charge a document fee or bid security, which the listing shows (decided 27 Nov, see Public listings below) |
 
 **Types and responses (decided 19 Oct).** Members apply to Jobs and express interest in every other type. Both are stored as a Response. Decided in [Tenders as an Opportunity type: how do they differ?](https://github.com/clainkavit/kingdom-connect/issues/5)
 
@@ -317,6 +318,14 @@ Level 3 businesses and Administrators post opportunities, including tenders. Eve
 | Partnership, Collaboration | Express interest | Profile, short note, optional attachment (PDF, max 5 MB) | Any member |
 | Investment | Express interest | Profile, short note, optional attachment (PDF, max 5 MB) | Any member |
 | Tender | Express interest | Profile, short note, optional attachment such as a company profile (PDF, max 5 MB) | Verified Business (Level 2) and up |
+
+**Public listings (OPP-9, decided 27 Nov, [#373](https://github.com/clainkavit/kingdom-connect/issues/373), built in [#374](https://github.com/clainkavit/kingdom-connect/issues/374), [#376](https://github.com/clainkavit/kingdom-connect/issues/376) and [#375](https://github.com/clainkavit/kingdom-connect/issues/375)).** Public tenders from NeST, government jobs from Ajira, and listings from company careers pages that staff add are read once a day into the admin Public listings queue. No source is asked for permission first; a source that blocks the reader or changes its layout shows as failed to staff. Only the title and a one-line summary are machine-translated (Gemini, free tier); staff can edit the translation. Any Administrator approves or discards a listing, sets its region and district, sector and skills, and may feature it within the featured slot limit. Approving publishes it at once as a normal opportunity, so it shows in the list, filters, Scan for Opportunities, Featured and Search, and Search also matches the translated title and summary.
+
+- **Poster.** It shows "Public listing from" and the source (for example "Public listing from NeST"). Members never see it as a member's post or as Kingdom Connect's own. On the server it is stored as a staff post by the Administrator who approved it.
+- **Responding.** There is no Apply or Express interest. The post has an "Apply on the official site" button that opens the original notice, and no responses come in; the server refuses one. Every verified member gets the button, tenders included, because the notice is public and members apply outside the app (decided 28 Nov, [#375](https://github.com/clainkavit/kingdom-connect/issues/375)). Someone who only looks sees the post but is asked to verify first.
+- **Fees.** The no-fee rule does not cover public listings. A public tender shows "Fees or bid security may apply. See the official notice." unless staff type the exact fee. A listing with no fee note tells the member that any fee is set by the advertiser and to read the official notice before paying anything.
+- **Closing.** A listing closes on its closing date, or when the daily read no longer finds it at the source. Listings past their closing date, or gone from their source, leave the staff queue.
+- **Audit.** Each import run (as a routine system entry), each approval or discard, each feature and each change to the sources is written to the audit log.
 
 Partnership and Collaboration keep both names from the Plan but share the same fields and action.
 
@@ -599,7 +608,7 @@ On Supabase/Postgres (the stack, decided 20 Oct, see section 15), these rules ar
 | Verification request | Member, level requested, documents, reviewer, reason | Pending, Approved, Rejected |
 | Connection | Requester, receiver, note | Sent, Accepted, Declined, Withdrawn, Expired |
 | Message thread / message | Members, idea link (optional), body, attachments | Active, Reported, Closed |
-| Opportunity | Poster (Level 3 member or admin), type (including Tender), title, location, sector, skills wanted (tags), closing date, no-fee flag, featured flag | Draft, Pending review, Published, Closed, Expired, Hidden, Removed |
+| Opportunity | Poster (Level 3 member, admin, or a public listing's source), type (including Tender), title, location, sector, skills wanted (tags), closing date, no-fee flag, featured flag | Draft, Pending review, Published, Closed, Expired, Hidden, Removed |
 | Response (replaces Application, 19 Oct) | Opportunity, member, kind (Application for Jobs, Interest for other types), CV or attachment, note | New, Shortlisted, Declined, Withdrawn |
 | Idea | Owner, summary fields, details, attachments, visibility | Draft, Pending moderation, Published, Archived, Hidden, Removed |
 | Idea access request | Idea, requester, role, anonymous flag, NDA version, accepted at | Pending, Approved, Declined, NDA accepted, Revoked |
@@ -1010,6 +1019,17 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 - Every screen that sets a new password asks for it twice: sign-up (S02), forgot password (S04a), the staff invite set-password page and Staff new password (A20). The two are checked when Save is pressed. If they differ, "The two passwords are not the same." shows under the second box, which turns red, and it clears as soon as either box changes.
 - Every password box, log-in ones included, has an eye button that shows and hides what is typed.
 
+**Decided on 27 November 2026 (public listings, Champion, [#373](https://github.com/clainkavit/kingdom-connect/issues/373) and [#374](https://github.com/clainkavit/kingdom-connect/issues/374); the collaborator's agreement on #373 is still pending)**
+- Public Tanzanian tenders (NeST) and jobs (Ajira), and listings from companies staff add (starting with CRDB Bank), are imported once a day into a staff review queue. No permission is asked of a source first.
+- Approving a listing creates a normal opportunity, so lists, filters, matching, Featured and Search keep working. Any Administrator approves listings and manages the sources.
+- Public listings are an exception to the Phase 1 no-fee rule (19 Oct): a public tender shows a fee note instead.
+- Members apply on the official site; no responses come in through the platform.
+
+**Decided on 28 November 2026 (Champion, [#376](https://github.com/clainkavit/kingdom-connect/issues/376) and [#375](https://github.com/clainkavit/kingdom-connect/issues/375))**
+- A company added by staff is saved switched off and marked "Waiting for a developer"; it cannot be switched on until its reader exists.
+- The staff queue hides listings past their closing date and ones gone from their source. Staff can tick several and discard them at once; each gets its own audit entry.
+- Every verified member gets "Apply on the official site", tenders included. The Level 2 rule for responding to tenders does not apply to public listings.
+
 **Open.** Every open question is a ticket on the [wayfinder map](https://github.com/clainkavit/kingdom-connect/issues/1) and is linked where it applies above.
 
 **Outside this spec**
@@ -1061,6 +1081,8 @@ Year 1 targets come from the Project Plan v1.1; the product measures below show 
 | 3 Nov 2026 | Reports queue: Release 1 actions, cases decided together, repeat rule per member and decision, a message to the member separate from the staff note, X3 warning, pauses until lifted | 13, 14, 18 |
 | 3 Nov 2026 | Audit log: Super Admins only, changed fields with the full record on demand, staff, username or system actor filter | 13, 18 |
 | 27 Nov 2026 | Audit log in plain language: day timeline, filters by person and kind of change, side panel, routine system jobs hidden (#370) | 18 |
+| 27 Nov 2026 | Public listings (OPP-9): public tenders and jobs imported daily for staff review, and the no-fee exception for them (#373, #374) | 10, 16, 18 |
+| 28 Nov 2026 | Public listings: the staff review queue and sources (#376), and what members see, with "Apply on the official site" for every verified member (#375) | 5, 10, 18 |
 | 4 Nov 2026 | Member dashboard: Release 1 widgets, My activity as requests sent, quick actions by level | 7, 18 |
 | 4 Nov 2026 | Admin dashboard: Release 1 counts only, live counts reloaded every 15 minutes | 7, 18 |
 | 4 Nov 2026 | Legal acceptance enforced on the server: no member data until the current terms and privacy notice are accepted | 13, 18 |

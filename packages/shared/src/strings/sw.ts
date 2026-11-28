@@ -1699,7 +1699,9 @@ export const sw: Strings = {
   oppEmptyTitle: "Bado hakuna fursa zilizo wazi",
   oppEmptyMessage: "Matangazo mapya kutoka kwa wanachama waliothibitishwa yataonekana hapa.",
   oppNoFeeNote:
-    "Hakuna fursa inayoruhusiwa kutoza ada ya kuomba. Mtu akikuomba pesa, ripoti tangazo hilo.",
+    "Fursa hii hairuhusiwi kutoza ada ya kuomba. Mtu akikuomba pesa, ripoti tangazo hili.",
+  oppNoFeeNoteTender:
+    "Zabuni hii hairuhusiwi kutoza ada ya kuomba. Mtu akikuomba pesa, ripoti tangazo hili.",
   oppPublicFrom: (source: string) => `Tangazo la umma kutoka ${source}`,
   oppApplyOfficial: "Omba kwenye tovuti rasmi",
   oppApplyOfficialNote:
@@ -2257,8 +2259,7 @@ export const sw: Strings = {
   adminIdeasUnderReview: "Inakaguliwa",
   adminIdeasNotInPool: "Haipo kwenye hazina",
   adminIdeasReview: "Kagua kwenye foleni ya ukaguzi",
-  oppSubtitle:
-    "Kazi, ushirikiano, mashirikiano, uwekezaji na zabuni kutoka kwa wanachama waliothibitishwa na Kingdom Connect.",
+  oppSubtitle: "Kazi, ushirikiano, mashirikiano, uwekezaji na zabuni mahali pamoja.",
   oppClosesShort: (date: string) => `Inafungwa ${date}`,
   oppMatchesSkills: (skills: string) => `Inalingana na ${skills}`,
   oppVerifyToRespond: "Thibitisha biashara yako ili ujibu",

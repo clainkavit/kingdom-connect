@@ -1668,7 +1668,9 @@ export const en = {
   oppEmptyTitle: "No open opportunities yet",
   oppEmptyMessage: "New posts from verified members appear here.",
   oppNoFeeNote:
-    "No opportunity may charge a fee to apply. If anyone asks you for money, report the post.",
+    "This opportunity may not charge a fee to apply. If anyone asks you for money, report the post.",
+  oppNoFeeNoteTender:
+    "This tender may not charge a fee to apply. If anyone asks you for money, report the post.",
   oppPublicFrom: (source: string) => `Public listing from ${source}`,
   oppApplyOfficial: "Apply on the official site",
   oppApplyOfficialNote: "You apply on the advertiser's own site. Nothing is sent through this app.",
@@ -2216,8 +2218,7 @@ export const en = {
   adminIdeasUnderReview: "Under review",
   adminIdeasNotInPool: "Not in the pool",
   adminIdeasReview: "Review in the moderation queue",
-  oppSubtitle:
-    "Jobs, partnerships, collaborations, investments and tenders from verified members and Kingdom Connect.",
+  oppSubtitle: "Jobs, partnerships, collaborations, investments and tenders in one place.",
   oppClosesShort: (date: string) => `Closes ${date}`,
   oppMatchesSkills: (skills: string) => `Matches ${skills}`,
   oppVerifyToRespond: "Verify your business to respond",

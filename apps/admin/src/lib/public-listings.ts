@@ -78,6 +78,8 @@ export type PublicListingsApi = {
     id: string,
     input: ApproveInput,
   ) => Promise<{ result: ApproveResult; featured: FeatureResult | null }>;
+  /** O22: approves each listing with its own suggestions, a job as Full-time; the rest still need details. */
+  approveMany: (ids: string[]) => Promise<{ approved: string[]; needsDetails: number }>;
   /** How many of the listings were discarded. */
   discard: (ids: string[]) => Promise<number>;
   setActive: (id: string, active: boolean) => Promise<SourceResult>;
@@ -205,6 +207,16 @@ export const publicListingsApi: PublicListingsApi = {
     if (result !== "ok" || !input.feature || !row?.opportunity_id)
       return { result, featured: null };
     return { result, featured: await featuredApi.setFeatured(row.opportunity_id, true) };
+  },
+
+  async approveMany(ids) {
+    const { data, error } = await supabase.rpc("approve_public_listings", { listings: ids });
+    if (error) throw error;
+    const rows = (data as { listing_id: string; outcome: string }[] | null) ?? [];
+    return {
+      approved: rows.filter((r) => r.outcome === "ok").map((r) => r.listing_id),
+      needsDetails: rows.filter((r) => r.outcome !== "ok").length,
+    };
   },
 
   async discard(ids) {

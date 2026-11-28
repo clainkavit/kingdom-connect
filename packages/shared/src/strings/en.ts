@@ -2586,6 +2586,27 @@ export const en = {
   plDiscardSelected: (n: number) => `Discard selected (${n})`,
   plDiscarded: (n: number) => (n === 1 ? "1 listing discarded." : `${n} listings discarded.`),
   plDiscardFailed: "We couldn't discard them. Try again.",
+  plApproveSelected: (n: number) => `Approve selected (${n})`,
+  plApproveHint:
+    "Approve selected uses each listing's suggested place, sector and translation, with no skills. Jobs are approved as Full-time.",
+  plApprovedMany: (approved: number, left: number) =>
+    [
+      approved === 1
+        ? "1 listing approved and published."
+        : `${approved} listings approved and published.`,
+      left === 0
+        ? ""
+        : left === 1
+          ? "1 still needs a region, sector or closing date. It stays ticked: open it to finish it."
+          : `${left} still need a region, sector or closing date. They stay ticked: open each to finish it.`,
+    ]
+      .filter(Boolean)
+      .join(" "),
+  plApproveManyFailed: "We couldn't approve them. Try again.",
+  plPageSize: "Show",
+  plPage: (page: number, pages: number) => `Page ${page} of ${pages}`,
+  plPrevious: "Previous",
+  plNext: "Next",
   plBack: "Back to the queue",
   plOpenNotice: "Open the official notice",
   plSummary: "Summary",

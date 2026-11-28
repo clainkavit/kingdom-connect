@@ -14,6 +14,7 @@ export type RespondResult =
   | "not_open"
   | "own_post"
   | "picked_post"
+  | "public_listing"
   | "level2_required"
   | "already_responded"
   | "invalid_note"

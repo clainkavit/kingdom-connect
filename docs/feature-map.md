@@ -40,7 +40,7 @@ When you add a screen, add its row in the same pull request.
 | `/messages` | S14 | Message threads | Messages tab | Verified Member, connected people only | member.messaging.spec.ts |
 | `/messages/[id]` | S15 | One conversation | Messages > a thread | Verified Member in the thread | member.messaging.spec.ts |
 | `/opportunities` | S16 | Opportunity list, filters, Best matches | Opportunities tab | Look | member.browse-opportunities.spec.ts |
-| `/opportunities/[id]` | S16 | One opportunity: apply or express interest, save, report | Opportunities > an opportunity | Look (acting needs verification) | member.respond.spec.ts |
+| `/opportunities/[id]` | S16 | One opportunity: apply or express interest, save, report; a public listing sends you to its official site | Opportunities > an opportunity | Look (acting needs verification) | member.respond.spec.ts, member.public-listings.spec.ts |
 | `/opportunities/new` | S20 | Post an opportunity | Opportunities > Post | Opportunity Poster (Level 3) | member.poster.spec.ts |
 | `/opportunities/[id]/edit` | S20 | Edit my post | My posts > a post > Edit | The poster | member.picks.spec.ts |
 | `/opportunities/[id]/responses` | S21 | Responses to my post, shortlist, Mark as hired | My posts > a post > Responses | The poster | member.work-references.spec.ts |

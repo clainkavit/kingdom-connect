@@ -47,12 +47,17 @@ export type OpportunityCard = {
   posterVerified?: boolean;
   /** List rows only: Scan's top two reasons, when Scan would list the post for this member. */
   reasons?: ScanReason[];
+  /** O21: the source of a public listing (NeST, Ajira, a company); members apply on its official site. */
+  publicSource?: string | null;
 };
 
 export type OpportunityDetail = OpportunityCard & {
   description: string;
   status: string;
   readOnly: boolean;
+  /** O21: a public listing's notice; only verified members get the link. */
+  officialUrl?: string | null;
+  feeNote?: string | null;
 };
 
 export type TenderDetails = {
@@ -114,6 +119,7 @@ export type CardRow = {
   skills_mine?: string[] | null;
   poster_verified?: boolean | null;
   reasons?: { code: string; detail: { skills?: string[]; kind?: string } }[] | null;
+  public_source?: string | null;
 };
 
 const named = (en: string | null, sw: string | null): Named | null =>
@@ -144,6 +150,7 @@ export const card = (r: CardRow): OpportunityCard => ({
   reasons: r.reasons
     ? r.reasons.map(parseReason).filter((x): x is ScanReason => x !== null)
     : undefined,
+  publicSource: r.public_source ?? null,
 });
 
 /** S16 and S17 (O02): published open posts, featured first; one post with its tender fields (O04). */
@@ -201,7 +208,13 @@ export const opportunityBrowseApi: OpportunityBrowseApi = {
     const { data, error } = await supabase.rpc("opportunity_detail", { opportunity: id });
     if (error) throw error;
     const row = (
-      data as (CardRow & { description: string; status: string; read_only: boolean })[]
+      data as (CardRow & {
+        description: string;
+        status: string;
+        read_only: boolean;
+        official_url?: string | null;
+        fee_note?: string | null;
+      })[]
     )[0];
     if (!row) return null;
     return {
@@ -209,6 +222,8 @@ export const opportunityBrowseApi: OpportunityBrowseApi = {
       description: row.description,
       status: row.status,
       readOnly: row.read_only,
+      officialUrl: row.official_url ?? null,
+      feeNote: row.fee_note ?? null,
     };
   },
 

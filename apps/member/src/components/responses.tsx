@@ -60,6 +60,7 @@ function respondMessage(t: Strings, result: Exclude<RespondResult, "ok">): strin
     not_open: t.respNotOpen,
     own_post: t.respOwnPost,
     picked_post: t.respPickedPost,
+    public_listing: t.respPublicListing,
     level2_required: t.respLevel2,
     already_responded: t.respAlready,
     invalid_note: t.respNoteTooLong(NOTE_MAX),

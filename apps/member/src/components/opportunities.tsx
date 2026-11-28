@@ -87,6 +87,10 @@ export function placeLine(t: Strings, post: OpportunityCard, language: Language)
     .join(", ");
 }
 
+/** Who the post is from; a public listing names its source. */
+export const posterLine = (t: Strings, post: OpportunityCard): string =>
+  post.publicSource ? t.oppPublicFrom(post.publicSource) : post.posterName;
+
 function roleLine(t: Strings, post: OpportunityCard): string | null {
   const parts = [
     post.role,
@@ -172,7 +176,7 @@ export function OpportunityCardView({
         </Text>
       ) : null}
       <Text className="font-figtree text-[13px] text-ink-2">
-        {[post.posterName, placeLine(t, post, language), named(post.sector, language)]
+        {[posterLine(t, post), placeLine(t, post, language), named(post.sector, language)]
           .filter(Boolean)
           .join(" · ")}
       </Text>
@@ -322,7 +326,7 @@ function OpportunityTile({
             <Text className="font-figtree-bold text-[16px] text-ink">{post.title}</Text>
           </View>
           <View className="flex-row flex-wrap items-center gap-2">
-            <Text className="font-figtree text-[13px] text-ink">{post.posterName}</Text>
+            <Text className="font-figtree text-[13px] text-ink">{posterLine(t, post)}</Text>
             {post.posterVerified ? <BusinessBadge /> : null}
           </View>
           <View className="flex-row flex-wrap items-center gap-x-3 gap-y-1">
@@ -358,7 +362,7 @@ function OpportunityTile({
               </Text>
             </View>
           ) : null}
-          {post.type === "tender" ? (
+          {post.type === "tender" && !post.publicSource ? (
             <View className="flex-row items-center gap-1.5">
               <Lock size={13} color={palette.ink} aria-hidden />
               <Text className="font-figtree text-[13px] text-ink">{t.oppVerifyToRespond}</Text>
@@ -1088,6 +1092,27 @@ function TenderSection({
 }
 
 /** S17: one post. Closed and expired posts are read-only; hidden or reported ones come back empty (O02). */
+/** O21: a public listing is applied for on the advertiser's site; nothing comes back through the app. */
+function OfficialApply({ url }: { url: string | null }) {
+  const { t } = useLanguage();
+  const act = useAct();
+  return (
+    <View className="gap-2">
+      <Button
+        label={t.oppApplyOfficial}
+        onPress={() =>
+          act("apply", () => {
+            if (url) void Linking.openURL(url);
+          })
+        }
+      />
+      <Text className="font-figtree text-[13px] leading-5 text-ink-2">
+        {t.oppApplyOfficialNote}
+      </Text>
+    </View>
+  );
+}
+
 export function OpportunityDetailScreen({
   api,
   id,
@@ -1125,7 +1150,14 @@ export function OpportunityDetailScreen({
     );
 
   const role = roleLine(t, post);
-  const action = !post.isMine && !post.readOnly && respond ? respond(post) : null;
+  const action = post.publicSource ? (
+    post.readOnly ? null : (
+      <OfficialApply url={post.officialUrl ?? null} />
+    )
+  ) : !post.isMine && !post.readOnly && respond ? (
+    respond(post)
+  ) : null;
+  const feeLine = post.publicSource ? (post.feeNote ?? t.oppPublicFeeUnknown) : t.oppNoFeeNote;
   const save = (
     <SaveButton
       withWords
@@ -1181,7 +1213,7 @@ export function OpportunityDetailScreen({
               >
                 {post.title}
               </Text>
-              <Text className="font-figtree text-[13px] text-ink">{post.posterName}</Text>
+              <Text className="font-figtree text-[13px] text-ink">{posterLine(t, post)}</Text>
               <View className="flex-row flex-wrap items-center gap-x-4 gap-y-1">
                 {place ? (
                   <View className="flex-row items-center gap-1.5">
@@ -1238,7 +1270,7 @@ export function OpportunityDetailScreen({
             <View className="flex-row items-start gap-2 px-1">
               <ShieldCheck size={14} color={palette.ink2} aria-hidden />
               <Text className="flex-1 font-figtree text-[13px] leading-5 text-ink-2">
-                {t.oppNoFeeNote}
+                {feeLine}
               </Text>
             </View>
             {post.isMine ? null : (
@@ -1260,7 +1292,7 @@ export function OpportunityDetailScreen({
       <InPhoneBand
         back={{ label: t.oppBack, href: "/opportunities" }}
         title={post.title}
-        subtitle={post.posterName}
+        subtitle={posterLine(t, post)}
       />
       {tender ? (
         <>
@@ -1287,7 +1319,7 @@ export function OpportunityDetailScreen({
                   />
                   {post.featured ? <Badge tone="gold" text={t.oppFeatured} /> : null}
                 </View>
-                <Text className="font-figtree text-[14px] text-ink">{post.posterName}</Text>
+                <Text className="font-figtree text-[14px] text-ink">{posterLine(t, post)}</Text>
               </View>
             }
             extra={[
@@ -1333,7 +1365,7 @@ export function OpportunityDetailScreen({
           />
         </View>
       )}
-      <Text className="font-figtree text-[13px] leading-5 text-ink-2">{t.oppNoFeeNote}</Text>
+      <Text className="font-figtree text-[13px] leading-5 text-ink-2">{feeLine}</Text>
       {action && !tender ? (
         <View
           style={stickToBottom}
@@ -1428,7 +1460,9 @@ export function SavedOpportunities({
                   </View>
                   <Text className="font-figtree-bold text-[17px] text-ink">{post.title}</Text>
                   <Text className="font-figtree text-[14px] text-ink-2">
-                    {[post.posterName, placeLine(t, post, language)].filter(Boolean).join(" · ")}
+                    {[posterLine(t, post), placeLine(t, post, language)]
+                      .filter(Boolean)
+                      .join(" · ")}
                   </Text>
                 </LinkButton>
                 <View className="h-11 w-11 items-center justify-center rounded-full bg-blue-soft">

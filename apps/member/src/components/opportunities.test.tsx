@@ -288,6 +288,17 @@ describe("OpportunityDetailScreen (S17)", () => {
     expect(bar.previousElementSibling?.textContent).toBe(en.oppNoFeeNote);
   });
 
+  it("says a member's tender may not charge a fee", async () => {
+    await show(
+      <OpportunityDetailScreen
+        api={fakeApi({ detail: vi.fn().mockResolvedValue(detail({ type: "tender" })) })}
+        id="o1"
+      />,
+    );
+    expect(screen.getByText(en.oppNoFeeNoteTender)).toBeTruthy();
+    expect(screen.queryByText(en.oppNoFeeNote)).toBeNull();
+  });
+
   it("says a hidden or reported post is not available", async () => {
     await show(
       <OpportunityDetailScreen
@@ -429,12 +440,12 @@ describe("Saving opportunities (O10)", () => {
 });
 
 describe("Opportunities layout (13 Nov 2026 redesign)", () => {
-  it("on a computer, follows the canvas: title and subtitle, top pills, Scan card and the no-fee line", async () => {
+  it("on a computer, follows the canvas: title and subtitle, top pills and Scan card, with no no-fee line", async () => {
     await show(<OpportunitiesList api={fakeApi()} />);
     expect(screen.getByRole("heading", { name: en.navOpportunities })).toBeTruthy();
     expect(screen.getByText(en.oppSubtitle)).toBeTruthy();
     expect(screen.getByRole("heading", { name: en.scanTitle })).toBeTruthy();
-    expect(screen.getByText(en.oppNoFeeNote)).toBeTruthy();
+    expect(screen.queryByText(en.oppNoFeeNote)).toBeNull();
     expect(screen.getByRole("link", { name: en.respMineTitle })).toBeTruthy();
     expect(screen.getByRole("link", { name: en.myPostsTitle })).toBeTruthy();
     expect(screen.getByRole("link", { name: en.savedCount(0) })).toBeTruthy();
@@ -472,7 +483,7 @@ describe("Opportunities layout (13 Nov 2026 redesign)", () => {
     expect(screen.getByRole("link", { name: en.respMineTitle })).toBeTruthy();
     expect(screen.queryByRole("heading", { name: en.oppStaySafe })).toBeNull();
     expect(screen.getByRole("link", { name: en.myPostsTitle })).toBeTruthy();
-    expect(screen.getByText(en.oppNoFeeNote)).toBeTruthy();
+    expect(screen.queryByText(en.oppNoFeeNote)).toBeNull();
   });
 });
 
@@ -590,6 +601,7 @@ describe("Public listings (O21)", () => {
       screen.getByText("Fees or bid security may apply. See the official notice."),
     ).toBeTruthy();
     expect(screen.queryByText(en.oppNoFeeNote)).toBeNull();
+    expect(screen.queryByText(en.oppNoFeeNoteTender)).toBeNull();
     await press("Apply on the official site");
     expect(open).toHaveBeenCalledWith("https://nest.go.tz/tenders/published-tenders");
   });

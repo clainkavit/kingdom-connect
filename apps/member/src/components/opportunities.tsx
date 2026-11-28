@@ -868,12 +868,6 @@ export function OpportunitiesList({
             <AlertSwitch api={alerts} filters={filters} />
           </View>
         ) : null}
-        <View className="flex-row items-start gap-2 px-1">
-          <ShieldCheck size={14} color={palette.ink2} aria-hidden />
-          <Text className="flex-1 font-figtree text-[13px] leading-5 text-ink-2">
-            {t.oppNoFeeNote}
-          </Text>
-        </View>
       </View>
     );
 
@@ -995,12 +989,6 @@ export function OpportunitiesList({
               </LinkButton>
             </View>
           ) : null}
-          <View className="flex-row items-start gap-2 px-1">
-            <ShieldCheck size={14} color={palette.ink2} aria-hidden />
-            <Text className="flex-1 font-figtree text-[13px] leading-5 text-ink-2">
-              {t.oppNoFeeNote}
-            </Text>
-          </View>
         </View>
       </View>
     </View>
@@ -1157,7 +1145,11 @@ export function OpportunityDetailScreen({
   ) : !post.isMine && !post.readOnly && respond ? (
     respond(post)
   ) : null;
-  const feeLine = post.publicSource ? (post.feeNote ?? t.oppPublicFeeUnknown) : t.oppNoFeeNote;
+  const feeLine = post.publicSource
+    ? (post.feeNote ?? t.oppPublicFeeUnknown)
+    : post.type === "tender"
+      ? t.oppNoFeeNoteTender
+      : t.oppNoFeeNote;
   const save = (
     <SaveButton
       withWords

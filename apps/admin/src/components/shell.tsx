@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { adminStatsApi } from "@/lib/admin-dashboard";
+import { publicListingsApi } from "@/lib/public-listings";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/lib/language";
 import { LanguageSwitch } from "./language-switch";
@@ -20,7 +21,8 @@ function useNavCounts(): NavCounts {
     Promise.all([adminStatsApi.stats(), adminStatsApi.overview()])
       .then(([stats, overview]) => {
         if (!live) return;
-        setCounts({
+        setCounts((c) => ({
+          ...c,
           "/verification":
             stats.pendingSubmittedAt.length +
             overview.pendingBusinessL2 +
@@ -31,8 +33,12 @@ function useNavCounts(): NavCounts {
             overview.moderation.tenders +
             overview.moderation.ideas,
           "/reports": stats.openReportCases,
-        });
+        }));
       })
+      .catch(() => undefined);
+    publicListingsApi
+      .waitingCount()
+      .then((waiting) => live && setCounts((c) => ({ ...c, "/public-listings": waiting })))
       .catch(() => undefined);
     return () => {
       live = false;

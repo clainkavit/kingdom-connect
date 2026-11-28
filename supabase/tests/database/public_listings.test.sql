@@ -1,7 +1,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 create or replace function access.accepted_terms_and_privacy() returns boolean language sql stable as 'select true';
-select plan(28);
+select plan(38);
 
 insert into auth.users (id, email)
 select ('00000000-0000-0000-0000-0000000009' || k)::uuid, 'pl' || k || '@test.invalid'
@@ -51,6 +51,10 @@ select set_config('test.spare', private.save_public_listing('ajira', jsonb_build
   'external_id', 'vacancy-2', 'title', 'Research officer II', 'original_url', 'https://portal.ajira.go.tz/vacancies',
   'closing_on', (current_date + 10)::text))::text, true);
 
+select set_config('test.bulk', (select string_agg(private.save_public_listing('ajira', jsonb_build_object(
+  'external_id', 'vacancy-bulk-' || n, 'title', 'Bulk post ' || n, 'original_url', 'https://portal.ajira.go.tz/vacancies',
+  'closing_on', (current_date + 10)::text))::text, ',') from generate_series(1, 2) n), true);
+
 set local role authenticated;
 select pg_temp.login('01');
 select is((select count(*)::int from public.public_listings), 0, 'members never see the queue');
@@ -61,6 +65,8 @@ select is((select result from public.approve_public_listing(current_setting('tes
 select is(public.discard_public_listing(current_setting('test.spare')::uuid), 'not_staff', 'or discard');
 select throws_ok($$select private.save_public_listing('nest', '{}'::jsonb)$$, '42501', null,
   'nor write listings directly');
+select is(public.add_public_listing_source('Some Bank', 'https://careers.somebank.co.tz', 'jobs'), 'not_staff',
+  'nor add a company');
 
 select pg_temp.login('a1');
 select is((select count(*)::int from public.public_listings
@@ -90,12 +96,41 @@ select is((select result from public.approve_public_listing(current_setting('tes
            (select id from public.sectors where name_en = 'Construction'))),
   'already_decided', 'a listing is approved only once');
 select is(public.discard_public_listing(current_setting('test.spare')::uuid), 'ok', 'staff discard a listing');
+select is(public.discard_public_listings(string_to_array(current_setting('test.bulk'), ',')::uuid[]
+           || current_setting('test.spare')::uuid), 2, 'staff discard several at once, skipping ones already decided');
+select set_config('test.job_post', (select opportunity_id::text from public.approve_public_listing(
+  current_setting('test.job')::uuid, (select id from public.regions where name_en = 'Kilimanjaro'), null, false,
+  (select id from public.sectors where name_en = 'Other'), array['Civil engineering', ' surveying '], null,
+  'full_time')), true);
+select is((select array_agg(lower(s.name::text) order by s.name) from public.opportunity_skills os
+           join public.skills s on s.id = os.skill_id
+           where os.opportunity_id = current_setting('test.job_post')::uuid),
+  array['civil engineering', 'surveying'], 'approving takes skill names as typed');
+
+select is(public.add_public_listing_source('Some Bank', 'not a link', 'jobs'), 'invalid', 'a company needs a web address');
+select is(public.add_public_listing_source('Some Bank', 'https://careers.somebank.co.tz', 'jobs'), 'ok',
+  'staff add a company');
+select is((select row(key, active, reader_ready)::text from public.public_listing_sources where name = 'Some Bank'),
+  '(some_bank,f,f)', 'it is saved switched off, waiting for a developer');
+select is(public.add_public_listing_source('some bank', 'https://other.example.tz', 'jobs'), 'exists',
+  'the same company is not added twice');
+select is(public.set_public_listing_source_active((select id from public.public_listing_sources where key = 'some_bank'),
+  true), 'no_reader', 'it cannot be switched on before its reader exists');
+select is(public.set_public_listing_source_active((select id from public.public_listing_sources where key = 'crdb'),
+  false), 'ok', 'staff switch a source off');
 
 reset role;
 select is((select count(*)::int from private.audit_log
            where action in ('public_listing.approved', 'public_listing.discarded')
-             and actor_staff_id = '00000000-0000-0000-0000-0000000009a1'), 2,
+             and actor_staff_id = '00000000-0000-0000-0000-0000000009a1'), 5,
   'approving and discarding are written to the audit log with the Administrator');
+select is((select string_agg(action || ':' || access.audit_kind(action) || ':'
+                             || access.audit_routine(actor_staff_id, actor_member_id, target_type, after), ','
+                             order by action)
+           from private.audit_log where target_type = 'public_listing_sources'
+             and actor_staff_id = '00000000-0000-0000-0000-0000000009a1'),
+  'public_listing_sources.added:opportunities:false,public_listing_sources.switched:opportunities:false',
+  'adding and switching sources are logged as the Administrator''s own entries');
 select is(private.finish_public_listing_run('nest', array['other-tender']), 1,
   'a run that no longer finds a listing closes its post');
 select is((select status from public.opportunities where id = current_setting('test.post')::uuid), 'closed',

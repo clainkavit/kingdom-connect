@@ -213,6 +213,13 @@ export function describe(
         return t.auditSayListingDiscarded(a, bold(String(r.title ?? "")));
       case "public_listings.imported":
         return t.auditSayListingsImported(bold(String(r.source ?? "")), String(r.found ?? 0));
+      case "public_listing_sources.switched":
+        return (r.active ? t.auditSaySourceSwitchedOn : t.auditSaySourceSwitchedOff)(
+          a,
+          bold(String(r.name ?? "")),
+        );
+      case "public_listing_sources.added":
+        return t.auditSaySourceAdded(a, bold(String(r.name ?? "")));
     }
     const what = t.auditThing(table);
     if (op === "insert") return t.auditSayAdded(a, what);

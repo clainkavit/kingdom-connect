@@ -115,7 +115,7 @@ Members and administrators get different menus; a member never sees admin items,
 
 **Investor additions (inside Ideas only):** investor filters, Saved ideas, anonymous "Express interest" option. No separate menu item.
 
-**Admin sidebar:** Dashboard · Verification queue (members, businesses, investors) · Moderation queue (opportunities, ideas, training, events, tenders) · Ideas (decided 10 Nov, [#186](https://github.com/clainkavit/kingdom-connect/issues/186)) · Reports · Re-verification · Members and investors · News and featured · Milestone plans · Post as admin · Audit log. Platform settings are on the Super Administrator's pages.
+**Admin sidebar:** Dashboard · Verification queue (members, businesses, investors) · Moderation queue (opportunities, ideas, training, events, tenders) · Public listings (tenders and jobs imported from public sources, and their sources; added 28 Nov, [#376](https://github.com/clainkavit/kingdom-connect/issues/376)) · Ideas (decided 10 Nov, [#186](https://github.com/clainkavit/kingdom-connect/issues/186)) · Reports · Re-verification · Members and investors · News and featured · Milestone plans · Post as admin · Audit log. Platform settings are on the Super Administrator's pages.
 
 **On phones** the menu becomes a bottom tab bar: Home, People, Opportunities, Messages, More for members, shown as icons with their names read out by screen readers; Home, Verify, Moderate, Reports, More for admins. More lists the remaining menu items.
 
